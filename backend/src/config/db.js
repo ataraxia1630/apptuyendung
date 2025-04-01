@@ -1,10 +1,16 @@
-const knex = require('knex');
-const config = require('../../knexfile');
+const { PrismaClient } = require('@prisma/client');
 
-const db = knex(config);
+const prisma = new PrismaClient();
 
-db.raw('SELECT 1')
-  .then(() => console.log('✅ Kết nối PostgreSQL thành công!'))
-  .catch((err) => console.error('❌ Lỗi kết nối DB:', err));
+async function testConnection() {
+  try {
+    await prisma.$connect();
+    console.log('✅ Kết nối database thành công!');
+  } catch (error) {
+    console.error('❌ Lỗi kết nối database:', error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
 
-module.exports = db;
+testConnection();
