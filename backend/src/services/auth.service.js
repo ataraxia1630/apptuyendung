@@ -5,10 +5,17 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.JWT_SECRET || 'secret';
 
 const AuthService = {
-  register: async (username, password, email, role) => {
-    console.log('Registering user:', username, email, role, prisma.user);
+  register: async (username, password, email, phoneNumber, role) => {
+    console.log(
+      'Registering user:',
+      username,
+      email,
+      phoneNumber,
+      role,
+      prisma.user
+    );
     // Validate input
-    if (!username || !password || !email || !role) {
+    if (!username || !password || !email || !role || !phoneNumber) {
       throw new Error('All fields are required');
     }
 
@@ -40,9 +47,28 @@ const AuthService = {
         username,
         password: hashedPassword,
         email,
+        phoneNumber,
         role,
-        ...(role === 'APPLICANT' ? { Applicant: { create: {} } } : {}),
-        ...(role === 'COMPANY' ? { Company: { create: {} } } : {}),
+        ...(role === 'APPLICANT'
+          ? {
+              Applicant: {
+                create: {
+                  address: '',
+                  firstName: '',
+                  lastName: '',
+                },
+              },
+            }
+          : {}),
+        ...(role === 'COMPANY'
+          ? {
+              Company: {
+                create: {
+                  name: '',
+                },
+              },
+            }
+          : {}),
       },
     });
     return user;
