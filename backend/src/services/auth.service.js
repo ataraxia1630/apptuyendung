@@ -14,7 +14,6 @@ const AuthService = {
       role,
       prisma.user
     );
-    // Validate input
     if (!username || !password || !email || !role || !phoneNumber) {
       throw new Error('All fields are required');
     }
@@ -23,7 +22,6 @@ const AuthService = {
       throw new Error('Invalid role');
     }
 
-    // Check if username already exists
     const existingUser = await prisma.user.findUnique({
       where: { username },
     });
@@ -31,7 +29,6 @@ const AuthService = {
       throw new Error('Username already exists');
     }
 
-    // Check if email already exists
     const existingEmail = await prisma.user.findUnique({
       where: { email },
     });
@@ -39,7 +36,6 @@ const AuthService = {
       throw new Error('Email already exists');
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
@@ -74,15 +70,23 @@ const AuthService = {
     return user;
   },
 
-  login: async (username, password) => {
-    if (!username || !password) {
+  login: async (username, email, password) => {
+    if (!username && !email) {
       throw new Error('Missing fields');
     }
-    const user = await prisma.user.findUnique({
-      where: { username },
-    });
+    let user;
+    if (username) {
+      user = await prisma.user.findUnique({
+        where: { username },
+      });
+    }
+    if (!user && email) {
+      user = await prisma.user.findUnique({
+        where: { email },
+      });
+    }
     if (!user) {
-      throw new Error('User not found');
+      throw new Error('Invalid credentials'); // Generic error message
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
