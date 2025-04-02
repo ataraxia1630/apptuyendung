@@ -1,6 +1,6 @@
 const { AuthService } = require('../services/auth.service');
 
-export const AuthController = {
+const AuthController = {
   register: async (req, res) => {
     try {
       const { username, password, role } = req.body;
@@ -40,3 +40,5 @@ export const AuthController = {
     }
   },
 };
+
+module.exports = { AuthController };

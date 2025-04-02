@@ -1,10 +1,10 @@
-const { prisma } = require('../prismaClient');
-const { bcrypt } = require('bcryptjs');
-const { jwt } = require('jsonwebtoken');
+const { prisma } = require('../config/db/prismaClient');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const SECRET_KEY = process.env.JWT_SECRET || 'secret';
 
-export const AuthService = {
+const AuthService = {
   register: async (username, password, role) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -39,3 +39,5 @@ export const AuthService = {
 
   logout: async (token) => {},
 };
+
+module.exports = { AuthService };
