@@ -8,6 +8,11 @@ datasource db {
 }
 
 // ------------ COMMON TYPES --------------
+enum Role {
+  APPLICANT
+  COMPANY
+  ADMIN
+}
 
 enum ExpertiseLevel {
   BEGINNER
@@ -46,8 +51,23 @@ enum AppliedStatus {
 
 /// ------------ MAIN MODEL ---------------
 
+model User {
+  id         String      @id @default(uuid())
+  username   String      @unique @db.VarChar(30)
+  password   String      @db.VarChar(25)
+  email      String      @db.VarChar(320)
+  avatar     String?
+  background String?
+  role       Role
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  Company    Company[]
+  Applicant  Applicant[]
+}
+
 model Applicant {
   id              String               @id @default(uuid())
+  userId          String
   phoneNumber     String               @unique
   address         String //ref
   firstName       String               @db.VarChar(50)
@@ -62,6 +82,7 @@ model Applicant {
   InterestedField InterestedField[]
   JobSaved        JobSaved[]
   JobApplied      JobApplied[]
+  User            User                 @relation(fields: [userId], references: [id])
 }
 
 model Skill {
@@ -229,4 +250,14 @@ model Application {
   created_at DateTime     @default(now())
   updated_at DateTime     @updatedAt
   appliedJob JobApplied[]
+}
+
+model Company {
+  id              String   @id @default(uuid())
+  userId          String
+  name            String   @db.VarChar(255)
+  description     String   @db.VarChar(1000)
+  taxcode         String
+  establishedYear DateTime
+  User            User     @relation(fields: [userId], references: [id])
 }
