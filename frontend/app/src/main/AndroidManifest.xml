@@ -13,6 +13,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Workleap">
         <activity
+            android:name=".ui.view.CompanyProfile"
+            android:exported="false" />
+        <activity
+            android:name=".ui.view.UserProfile"
+            android:exported="false" />
+        <activity
+            android:name=".ui.view.Signup"
+            android:exported="false" />
+        <activity
+            android:name=".ui.view.Login"
+            android:exported="false" />
+        <activity
             android:name=".ui.view.MainActivity"
             android:exported="true">
             <intent-filter>
