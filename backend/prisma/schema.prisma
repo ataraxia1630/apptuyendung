@@ -47,23 +47,51 @@ enum AppliedStatus {
   NOT_EXIST
 }
 
+enum ChangeTypes {
+  INSERT
+  UPDATE
+  DELETE
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+  DISMISSED
+}
+
+enum ReactionType {
+  LIKE
+  LOVE
+  HUHU
+  ANGRY
+  WOW
+}
+
 // ------------ COMMON TYPES --------------
 
 /// ------------ MAIN MODEL ---------------
 
 model User {
-  id          String      @id @default(uuid())
-  username    String      @unique @db.VarChar(30)
-  password    String      @db.VarChar(255)
-  email       String      @unique @db.VarChar(320)
-  phoneNumber String      @unique @db.VarChar(15)
-  avatar      String?
-  background  String?
-  role        Role
-  created_at  DateTime    @default(now())
-  updated_at  DateTime    @updatedAt
-  Company     Company[]
-  Applicant   Applicant[]
+  id              String         @id @default(uuid())
+  username        String         @unique @db.VarChar(30)
+  password        String         @db.VarChar(255)
+  email           String         @unique @db.VarChar(320)
+  phoneNumber     String         @unique @db.VarChar(15)
+  avatar          String?
+  background      String?
+  role            Role
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+  Company         Company[]
+  Applicant       Applicant[]
+  User_History    User_History[]
+  Notification    Notification[]
+  reviewsWritten  Review[]       @relation(name: "UserReviews")
+  reviewsReceived Review[]       @relation(name: "ReviewedUserReviews")
+  following       Follower[]     @relation(name: "UserFollow")
+  followers       Follower[]     @relation(name: "UserFollowed")
+  Comment         Comment[]
+  Reaction        Reaction[]
 }
 
 model Applicant {
@@ -200,6 +228,7 @@ model JobPost {
   JobCategory          JobCategory? @relation(fields: [jobCategoryId], references: [id])
   JobSaved             JobSaved[]
   JobApplied           JobApplied[]
+  Comment              Comment[]
 }
 
 model JobType {
@@ -260,4 +289,93 @@ model Company {
   taxcode         String?
   establishedYear DateTime?
   User            User      @relation(fields: [userId], references: [id])
+  Post            Post[]
+}
+
+model User_History {
+  id         String      @id @default(uuid())
+  userId     String
+  changeType ChangeTypes
+  oldValue   String?     @db.Text
+  newValue   String?     @db.Text
+  User       User        @relation(fields: [userId], references: [id])
+  changedAt  DateTime
+}
+
+model Notification {
+  id         String             @id @default(uuid())
+  title      String             @db.VarChar(255)
+  userId     String
+  message    String
+  status     NotificationStatus
+  created_at DateTime           @default(now())
+  User       User               @relation(fields: [userId], references: [id])
+}
+
+model Review {
+  id              String   @id @default(uuid())
+  userId          String
+  reviewed_userId String
+  detail          String   @db.Text
+  rating          Int      @default(1)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  User            User     @relation(fields: [userId], references: [id], name: "UserReviews")
+  reviewUser      User     @relation(fields: [reviewed_userId], references: [id], name: "ReviewedUserReviews")
+}
+
+model Follower {
+  followId     String
+  followedId   String
+  followUser   User   @relation(fields: [followId], references: [id], name: "UserFollow")
+  followedUser User   @relation(fields: [followedId], references: [id], name: "UserFollowed")
+
+  @@id([followId, followedId])
+}
+
+model Comment {
+  id            String    @id @default(uuid())
+  userId        String
+  postId        String
+  CommentId     String?
+  CommentDetail String
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  User          User      @relation(fields: [userId], references: [id])
+  Post          JobPost   @relation(fields: [postId], references: [id])
+  parentComment Comment?  @relation("ParentChild", fields: [CommentId], references: [id])
+  childComment  Comment[] @relation("ParentChild")
+}
+
+model Post {
+  id         String     @id @default(uuid())
+  companyId  String
+  title      String     @db.VarChar(255)
+  detail     String
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  Company    Company    @relation(fields: [companyId], references: [id])
+  Image      Image[]
+  Reaction   Reaction[]
+}
+
+model Image {
+  id     String @id @default(uuid())
+  postId String
+  url    String @db.VarChar(255)
+  type   String @db.VarChar(50)
+  size   Int
+  Post   Post   @relation(fields: [postId], references: [id])
+}
+
+model Reaction {
+  postId       String
+  userId       String
+  reactionType ReactionType
+  created_at   DateTime     @default(now())
+  updated_at   DateTime     @updatedAt
+  Post         Post         @relation(fields: [postId], references: [id])
+  User         User         @relation(fields: [userId], references: [id])
+
+  @@id([postId, userId])
 }
