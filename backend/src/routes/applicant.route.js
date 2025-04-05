@@ -13,7 +13,7 @@ route.get('/name/:name', verifyToken, ApplicantController.getApplicantsByName);
 
 // lấy 1 người dùng theo id / username
 route.get('/:id', verifyToken, ApplicantController.getApplicantById);
-route.put('/:id', verifyToken, ApplicantController.updateApplicantById);
-route.delete('/:id', verifyToken, ApplicantController.deleteApplicantById);
+route.put('/:id', verifyToken, ApplicantController.updateApplicant);
+route.delete('/:id', verifyToken, ApplicantController.deleteApplicant);
 
 module.exports = route;

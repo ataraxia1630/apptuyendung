@@ -1,6 +1,6 @@
 const prisma = require('../config/db/prismaClient');
 
-const ApplicationService = {
+const ApplicantService = {
   getAllApplicants: async () => {
     const applicants = await prisma.applicant.findMany({
       include: {
@@ -37,4 +37,27 @@ const ApplicationService = {
     });
     return applicant;
   },
+
+  updateApplicant: async (id, data) => {
+    const applicant = await prisma.applicant.update({
+      where: {
+        id,
+      },
+      data: {
+        ...data,
+      },
+    });
+    return applicant;
+  },
+
+  deleteApplicant: async (id) => {
+    const applicant = await prisma.applicant.delete({
+      where: { id },
+    });
+    const user = await prisma.user.delete({
+      where: { Applicant: { id } },
+    });
+  },
 };
+
+module.exports = { ApplicantService };
