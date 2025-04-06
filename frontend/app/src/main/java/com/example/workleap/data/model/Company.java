@@ -9,6 +9,8 @@ public class Company {
     private int establishedYear;
     private String taxcode;
 
+    public Company() {}
+
     public Company(int id, String email, String name, String description, String address, int establishedYear, String taxcode) {
         this.id = id;
         this.email = email;

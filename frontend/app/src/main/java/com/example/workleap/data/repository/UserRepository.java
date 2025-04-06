@@ -5,7 +5,12 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.workleap.data.api.RetrofitClient;
 
 import com.example.workleap.data.api.ApiService;
+import com.example.workleap.data.model.LoginRequest;
 import com.example.workleap.data.model.LoginResponse;
+import com.example.workleap.data.model.LogoutRequest;
+import com.example.workleap.data.model.MessageResponse;
+import com.example.workleap.data.model.RegisterRequest;
+import com.example.workleap.data.model.RegisterResponse;
 import com.example.workleap.data.model.User;
 
 import java.util.List;
@@ -21,30 +26,20 @@ public class UserRepository {
         apiService = RetrofitClient.getClient().create(ApiService.class);
     }
 
-    // Phương thức để đăng ký người dùng
-    public Call<Void> registerUser(User user) {
-        return apiService.registerUser(user);
+    //Đăng ký
+    public Call<RegisterResponse> registerUser(RegisterRequest request) {
+        return apiService.registerUser(request);
     }
 
-    // Phương thức để đăng nhập người dùng
-    public Call<LoginResponse> loginUser(User user) {
-        return apiService.loginUser(user);
+    //Đăng nhập
+    public Call<LoginResponse> loginUser(LoginRequest request) {
+        return apiService.loginUser(request);
     }
 
-    public LiveData<List<User>> getUsers() {
-        MutableLiveData<List<User>> users = new MutableLiveData<>();
-        apiService.getUsers().enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                users.setValue(response.body());
-            }
-
-            @Override
-           public void onFailure(Call<List<User>> call, Throwable t) {
-                users.setValue(null);
-            }
-        });
-        return users;
+    //Đăng xuất
+    public Call<MessageResponse> logoutUser(LogoutRequest request) {
+        return apiService.logoutUser(request);
     }
+
 }
 

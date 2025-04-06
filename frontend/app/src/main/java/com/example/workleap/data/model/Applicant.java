@@ -1,5 +1,9 @@
 package com.example.workleap.data.model;
 
+import com.example.workleap.App;
+
+import java.util.Date;
+
 public class Applicant {
     private String id;
     private String phoneNumber;
@@ -8,10 +12,12 @@ public class Applicant {
     private String lastName;
     private String profileSummary;
     private byte[] cvFile;
-    private String createdAt;
-    private String updatedAt;
+    private Date createdAt;
+    private Date updatedAt;
 
-    public Applicant(String id, String phoneNumber, String address, String firstName, String lastName, String profileSummary, byte[] cvFile, String createdAt, String updatedAt) {
+    public Applicant() {}
+
+    public Applicant(String id, String phoneNumber, String address, String firstName, String lastName, String profileSummary, byte[] cvFile, Date createdAt, Date updatedAt) {
         this.id = id;
         this.phoneNumber = phoneNumber;
         this.address = address;
@@ -37,10 +43,10 @@ public class Applicant {
     public void setProfileSummary(String profileSummary) { this.profileSummary = profileSummary; }
     public byte[] getCvFile() { return cvFile; }
     public void setCvFile(byte[] cvFile) { this.cvFile = cvFile; }
-    public String getCreatedAt() { return createdAt; }
-    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
-    public String getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
+    public Date getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+    public Date getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
 
     @Override
     public String toString() {

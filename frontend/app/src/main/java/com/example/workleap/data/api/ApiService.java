@@ -1,6 +1,11 @@
 package com.example.workleap.data.api;
 
+import com.example.workleap.data.model.LoginRequest;
 import com.example.workleap.data.model.LoginResponse;
+import com.example.workleap.data.model.LogoutRequest;
+import com.example.workleap.data.model.MessageResponse;
+import com.example.workleap.data.model.RegisterRequest;
+import com.example.workleap.data.model.RegisterResponse;
 import com.example.workleap.data.model.User;
 
 import java.util.List;
@@ -11,15 +16,15 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface ApiService {
-    // API để tạo tài khoản (Register)
+    //Đăng ký
     @POST("register")
-    Call<Void> registerUser(@Body User user);
+    Call<RegisterResponse> registerUser(@Body RegisterRequest request);
 
-    // API để đăng nhập (Login), tra ve token
+    //Đăng nhập
     @POST("login")
-    Call<LoginResponse> loginUser(@Body User user);
+    Call<LoginResponse> loginUser(@Body LoginRequest request);
 
-    // API lay danh sach user
-    @GET("api/users")
-    Call<List<User>> getUsers();
+    //Đăng xuất
+    @POST("logout")
+    Call<MessageResponse> logoutUser(@Body LogoutRequest request);
 }
