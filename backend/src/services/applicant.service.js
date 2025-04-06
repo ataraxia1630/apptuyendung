@@ -46,16 +46,19 @@ const ApplicantService = {
       data: {
         ...data,
       },
+      include: {
+        User: true,
+      },
     });
     return applicant;
   },
 
   deleteApplicant: async (id) => {
-    const applicant = await prisma.applicant.delete({
+    await prisma.applicant.delete({
       where: { id },
-    });
-    const user = await prisma.user.delete({
-      where: { Applicant: { id } },
+      include: {
+        User: true,
+      },
     });
   },
 };
