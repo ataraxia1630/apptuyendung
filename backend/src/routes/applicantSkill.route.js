@@ -6,7 +6,7 @@ const route = new Router();
 route.get('/:applicantId', verifyToken, SkillController.getAll);
 route.post('/:applicantId', verifyToken, SkillController.createNew);
 route.put('/:id', verifyToken, SkillController.updateSkill);
-route.delete('/id', verifyToken, SkillController.deleteSkill);
-route.delete('/:applicantId', verifyToken, SkillController.deleteAll);
+route.delete('/:id', verifyToken, SkillController.deleteSkill);
+route.delete('/all/:applicantId', verifyToken, SkillController.deleteAll);
 
 module.exports = route;
