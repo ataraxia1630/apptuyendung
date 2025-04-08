@@ -62,8 +62,8 @@ enum NotificationStatus {
 enum ReactionType {
   LIKE
   LOVE
-  HUHU
-  ANGRY
+  IDEA
+  SAD
   WOW
 }
 
@@ -228,7 +228,6 @@ model JobPost {
   JobCategory          JobCategory? @relation(fields: [jobCategoryId], references: [id])
   JobSaved             JobSaved[]
   JobApplied           JobApplied[]
-  Comment              Comment[]
 }
 
 model JobType {
@@ -342,7 +341,7 @@ model Comment {
   created_at    DateTime  @default(now())
   updated_at    DateTime  @updatedAt
   User          User      @relation(fields: [userId], references: [id])
-  Post          JobPost   @relation(fields: [postId], references: [id])
+  Post          Post      @relation(fields: [postId], references: [id])
   parentComment Comment?  @relation("ParentChild", fields: [CommentId], references: [id])
   childComment  Comment[] @relation("ParentChild")
 }
@@ -357,6 +356,7 @@ model Post {
   Company    Company    @relation(fields: [companyId], references: [id])
   Image      Image[]
   Reaction   Reaction[]
+  Comment    Comment[]
 }
 
 model Image {
