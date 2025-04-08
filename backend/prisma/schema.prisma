@@ -123,7 +123,7 @@ model Skill {
   expertiseLevel ExpertiseLevel?
   yearOfExp      Int?            @db.SmallInt
   monthOfExp     Int?            @db.SmallInt
-  applicant      Applicant       @relation(fields: [applicantId], references: [id])
+  applicant      Applicant       @relation(fields: [applicantId], references: [id], onDelete: Cascade)
   created_at     DateTime        @default(now())
   updated_at     DateTime        @updatedAt
 }
