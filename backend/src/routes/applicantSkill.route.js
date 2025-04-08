@@ -1,7 +1,7 @@
-const { Route } = require('express');
+const { Router } = require('express');
 const { SkillController } = require('../controllers/applicantSkill.controller');
 const { verifyToken } = require('../middlewares/auth.middleware');
-const route = new Route();
+const route = new Router();
 
 route.get('/:applicantId', verifyToken, SkillController.getAll);
 route.post('/:applicantId', verifyToken, SkillController.createNew);
