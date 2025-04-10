@@ -53,14 +53,22 @@ public class Login extends AppCompatActivity {
             startActivity(intent);
         });
 
+        //ket qua dang nhap
         authViewModel.getLoginResult().observe(this, result -> {
             Toast.makeText(this, result, Toast.LENGTH_LONG).show();
-
-            if (result.equalsIgnoreCase("Login successful")) {
-                // Chuyển sang màn hình UserProfile
+        });
+        authViewModel.getLoginUser().observe(this, user -> {
+            if(user.getRole().equalsIgnoreCase("user"))
+            {
                 Intent intent = new Intent(Login.this, UserProfile.class);
                 startActivity(intent);
                 finish(); // Kết thúc LoginActivity
+            }
+            else if(user.getRole().equalsIgnoreCase("company"))
+            {
+                Intent intent = new Intent(Login.this, CompanyProfile.class);
+                startActivity(intent);
+                finish();
             }
         });
     }

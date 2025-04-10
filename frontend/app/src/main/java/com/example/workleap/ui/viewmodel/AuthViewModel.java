@@ -36,7 +36,7 @@ public class AuthViewModel extends ViewModel {
     public LiveData<String> getLoginResult() {
         return loginResult;
     }
-
+    public LiveData<User> getLoginUser() { return loginUser; }
     public LiveData<String> getLogoutResult() {
         return logoutResult;
     }
