@@ -9,6 +9,7 @@ import com.example.workleap.data.model.LogoutRequest;
 import com.example.workleap.data.model.MessageResponse;
 import com.example.workleap.data.model.RegisterRequest;
 import com.example.workleap.data.model.RegisterResponse;
+import com.example.workleap.data.model.User;
 import com.example.workleap.data.repository.UserRepository;
 import com.google.gson.Gson;
 
@@ -20,6 +21,7 @@ public class AuthViewModel extends ViewModel {
     private UserRepository userRepository;
     private MutableLiveData<String> registerResult = new MutableLiveData<>();
     private MutableLiveData<String> loginResult = new MutableLiveData<>();
+    private MutableLiveData<User> loginUser = new MutableLiveData<>();
     private MutableLiveData<String> logoutResult = new MutableLiveData<>();
 
     public AuthViewModel() {
@@ -76,7 +78,9 @@ public class AuthViewModel extends ViewModel {
                 if (response.isSuccessful()) {
                     LoginResponse loginResponse = response.body();
                     loginResult.setValue(loginResponse.getMessage() + " - Token: " + loginResponse.getToken());
+                    loginUser.setValue(loginResponse.getUser());
                 } else {
+                    loginUser.setValue(null);
                     try {
                         MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
                         loginResult.setValue("Lỗi: " + error.getMessage());

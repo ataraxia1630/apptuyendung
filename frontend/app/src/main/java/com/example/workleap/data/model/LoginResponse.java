@@ -3,6 +3,7 @@ package com.example.workleap.data.model;
 public class LoginResponse {
     private String message;
     private String token;
+    private User user;
 
     public LoginResponse() {}
 
@@ -18,4 +19,6 @@ public class LoginResponse {
     public String getMessage() {
         return message;
     }
+
+    public User getUser() {return user;}
 }
