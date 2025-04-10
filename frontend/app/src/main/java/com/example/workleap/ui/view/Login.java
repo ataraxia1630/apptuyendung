@@ -1,9 +1,11 @@
 package com.example.workleap.ui.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -11,14 +13,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.LoginResponse;
+import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
 
+import retrofit2.Call;
+
 public class Login extends AppCompatActivity {
+    private AuthViewModel authViewModel;
     private EditText etEmail, etPassword;
     private Button btnLogin;
-    private UserViewModel userViewModel;
+    private TextView tvSignup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,12 +39,30 @@ public class Login extends AppCompatActivity {
             return insets;
         });
 
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+
         etEmail = findViewById(R.id.email_edittext);
         etPassword = findViewById(R.id.password_edittext);
         btnLogin = findViewById(R.id.login_button);
+        tvSignup = findViewById(R.id.signup_textview);
 
         btnLogin.setOnClickListener(v -> loginWithEmail());
 
+        tvSignup.setOnClickListener(v -> {
+            Intent intent = new Intent(this, RoleSelection.class);
+            startActivity(intent);
+        });
+
+        authViewModel.getLoginResult().observe(this, result -> {
+            Toast.makeText(this, result, Toast.LENGTH_LONG).show();
+
+            if (result.equalsIgnoreCase("Login successful")) {
+                // Chuyển sang màn hình UserProfile
+                Intent intent = new Intent(Login.this, UserProfile.class);
+                startActivity(intent);
+                finish(); // Kết thúc LoginActivity
+            }
+        });
     }
     private void loginWithEmail() {
         String email = etEmail.getText().toString().trim();
@@ -46,6 +73,6 @@ public class Login extends AppCompatActivity {
             return;
         }
 
-        //userViewModel.login(new User(email, password, null));
+        authViewModel.login(email, email, password); //tam thoi lay email lam name
     }
 }
