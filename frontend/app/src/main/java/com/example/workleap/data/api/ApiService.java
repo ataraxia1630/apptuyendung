@@ -17,14 +17,14 @@ import retrofit2.http.POST;
 
 public interface ApiService {
     //Đăng ký
-    @POST("register")
+    @POST("api/auth/register")
     Call<RegisterResponse> registerUser(@Body RegisterRequest request);
 
     //Đăng nhập
-    @POST("login")
+    @POST("api/auth/login")
     Call<LoginResponse> loginUser(@Body LoginRequest request);
 
     //Đăng xuất
-    @POST("logout")
+    @POST("api/auth/logout")
     Call<MessageResponse> logoutUser(@Body LogoutRequest request);
 }
