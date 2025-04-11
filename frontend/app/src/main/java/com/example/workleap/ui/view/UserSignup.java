@@ -73,7 +73,7 @@ public class UserSignup extends AppCompatActivity {
             return;
         }
 
-        authViewModel.register(fullName, password, email, "", "APPLICANT");
+        authViewModel.register(fullName, password, email, "9999999", "APPLICANT");
     }
     private void navigateToLogin(){
         Intent intent = new Intent(UserSignup.this, Login.class);

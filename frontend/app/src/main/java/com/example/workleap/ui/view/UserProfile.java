@@ -16,7 +16,7 @@ import com.example.workleap.ui.viewmodel.AuthViewModel;
 public class UserProfile extends AppCompatActivity {
 
     private AuthViewModel authViewModel;
-    private TextView tvUserName;
+    private TextView tvUserName, tvEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,10 +30,12 @@ public class UserProfile extends AppCompatActivity {
 
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         tvUserName = findViewById(R.id.usernameText);
+        tvEmail = findViewById(R.id.emailText);
 
         authViewModel.getLoginUser().observe(this, user -> {
             if (user != null) {
                 tvUserName.setText(user.getUsername());
+                tvEmail.setText(user.getEmail());
             }
         });
     }
