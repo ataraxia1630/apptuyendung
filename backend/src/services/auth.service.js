@@ -1,19 +1,12 @@
 const prisma = require('../config/db/prismaClient');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { isValidEmail, isValidPhoneNumber } = require('../utils/validators');
 
 const SECRET_KEY = process.env.JWT_SECRET || 'secret';
 
 const AuthService = {
   register: async (username, password, email, phoneNumber, role) => {
-    console.log(
-      'Registering user:',
-      username,
-      email,
-      phoneNumber,
-      role,
-      prisma.user
-    );
     if (!username || !password || !email || !role || !phoneNumber) {
       throw new Error('All fields are required');
     }
@@ -22,9 +15,18 @@ const AuthService = {
       throw new Error('Invalid role');
     }
 
+    if (!isValidEmail(email)) {
+      throw new Error('Invalid email format');
+    }
+
+    if (!isValidPhoneNumber(phoneNumber)) {
+      throw new Error('Invalid phone number format');
+    }
+
     const existingUser = await prisma.user.findUnique({
       where: { username },
     });
+
     if (existingUser) {
       throw new Error('Username already exists');
     }
@@ -34,6 +36,13 @@ const AuthService = {
     });
     if (existingEmail) {
       throw new Error('Email already exists');
+    }
+
+    const existingPhoneNumber = await prisma.user.findUnique({
+      where: { phoneNumber },
+    });
+    if (existingPhoneNumber) {
+      throw new Error('Phone number already exists');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
