@@ -1,8 +1,29 @@
 const { prisma } = require('../prismaClient');
-const ApplicantEduService = {
+const { get } = require('../routes/education.route');
+const EducationService = {
+  getAllEdu: async () => {
+    try {
+      const educations = await prisma.education.findMany();
+      return educations;
+    } catch (error) {
+      throw new Error('Error fetching education records');
+    }
+  },
+
+  createNewEdu: async (data) => {
+    try {
+      const newEdu = await prisma.education.create({
+        data,
+      });
+      return newEdu;
+    } catch (error) {
+      throw new Error('Error creating education record');
+    }
+  },
+
   getAll: async (applicantId) => {
     try {
-      const applicantEdu = await prisma.applicantEdu.findMany({
+      const applicantEdu = await prisma.applicantEducation.findMany({
         where: { applicantId },
         order: [['startDate', 'DESC']],
         include: { achievements: true },
@@ -15,7 +36,7 @@ const ApplicantEduService = {
 
   createNew: async (applicantId, data) => {
     try {
-      const newEdu = await prisma.applicantEdu.create({
+      const newEdu = await prisma.applicantEducation.create({
         data: { ...data, applicantId },
       });
       return newEdu;
@@ -26,7 +47,7 @@ const ApplicantEduService = {
 
   updateEdu: async (id, data) => {
     try {
-      const updatedEdu = await prisma.applicantEdu.update({
+      const updatedEdu = await prisma.applicantEducation.update({
         where: { id },
         data,
       });
@@ -38,7 +59,7 @@ const ApplicantEduService = {
 
   deleteEdu: async (id) => {
     try {
-      await prisma.applicantEdu.delete({
+      await prisma.applicantEducation.delete({
         where: { id },
       });
     } catch (error) {
@@ -48,7 +69,7 @@ const ApplicantEduService = {
 
   deleteAll: async (applicantId) => {
     try {
-      await prisma.applicantEdu.deleteMany({
+      await prisma.applicantEducation.deleteMany({
         where: { applicantId },
       });
     } catch (error) {
@@ -57,4 +78,4 @@ const ApplicantEduService = {
   },
 };
 
-module.exports = { ApplicantEduService };
+module.exports = { EducationService };

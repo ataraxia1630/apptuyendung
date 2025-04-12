@@ -1,10 +1,28 @@
-const { ApplicantEduService } = require('../services/applicantEdu.service');
+const { EducationService } = require('../services/education.service');
 
-const ApplicantEduController = {
+const EducationController = {
+  getAllEdu: async (req, res) => {
+    try {
+      const educations = await EducationService.getAll();
+      res.status(200).json(educations);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  createNewEdu: async (req, res) => {
+    try {
+      const newEdu = await EducationService.createNewEdu(req.body);
+      res.status(201).json(newEdu);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
   getAll: async (req, res) => {
     try {
       const { applicantId } = req.params;
-      const applicantEdu = await ApplicantEduService.getAll(applicantId);
+      const applicantEdu = await EducationService.getAll(applicantId);
       res.status(200).json(applicantEdu);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -14,7 +32,7 @@ const ApplicantEduController = {
   createNew: async (req, res) => {
     try {
       const { applicantId } = req.params;
-      const newEdu = await ApplicantEduService.createNew(applicantId, req.body);
+      const newEdu = await EducationService.createNew(applicantId, req.body);
       res.status(201).json(newEdu);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -24,7 +42,7 @@ const ApplicantEduController = {
   updateEdu: async (req, res) => {
     try {
       const { id } = req.params;
-      const updatedEdu = await ApplicantEduService.updateEdu(id, req.body);
+      const updatedEdu = await EducationService.updateEdu(id, req.body);
       res.status(200).json(updatedEdu);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -34,7 +52,7 @@ const ApplicantEduController = {
   deleteEdu: async (req, res) => {
     try {
       const { id } = req.params;
-      await ApplicantEduService.deleteEdu(id);
+      await EducationService.deleteEdu(id);
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -44,7 +62,7 @@ const ApplicantEduController = {
   deleteAll: async (req, res) => {
     try {
       const { applicantId } = req.params;
-      await ApplicantEduService.deleteAll(applicantId);
+      await EducationService.deleteAll(applicantId);
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -52,4 +70,4 @@ const ApplicantEduController = {
   },
 };
 
-module.exports = { ApplicantEduController };
+module.exports = { EducationController };
