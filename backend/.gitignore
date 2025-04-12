@@ -7,7 +7,7 @@ Thêm các thư mục cần bỏ qua khi đẩy lên GitHub:
 ```sh
 # Node.js
 node_modules/
-.env
+*.env
 
 # Android
 *.iml
