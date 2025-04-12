@@ -1,5 +1,4 @@
-const { prisma } = require('../prismaClient');
-const { get } = require('../routes/education.route');
+const prisma = require('../config/db/prismaClient');
 const EducationService = {
   getAllEdu: async () => {
     try {

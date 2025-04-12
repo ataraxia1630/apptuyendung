@@ -2,7 +2,7 @@ const authRoutes = require('./auth.route');
 const applicantRoutes = require('./applicant.route');
 
 const applicantSkillRoutes = require('./applicantSkill.route');
-const eduRoutes = require('./applicantEdu.route');
+const eduRoutes = require('./education.route');
 
 const fieldRoutes = require('./field.route');
 

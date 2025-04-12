@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { FieldController } = require('../controllers/field.controller');
 
-const { verifyToken } = require('../middleware/auth.middleware');
+const { verifyToken } = require('../middlewares/auth.middleware');
 
 const route = new Router();
 route.get('/', verifyToken, FieldController.getAllFields);
