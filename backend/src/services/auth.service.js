@@ -7,22 +7,6 @@ const SECRET_KEY = process.env.JWT_SECRET || 'secret';
 
 const AuthService = {
   register: async (username, password, email, phoneNumber, role) => {
-    if (!username || !password || !email || !role || !phoneNumber) {
-      throw new Error('All fields are required');
-    }
-
-    if (!['APPLICANT', 'COMPANY'].includes(role)) {
-      throw new Error('Invalid role');
-    }
-
-    if (!isValidEmail(email)) {
-      throw new Error('Invalid email format');
-    }
-
-    if (!isValidPhoneNumber(phoneNumber)) {
-      throw new Error('Invalid phone number format');
-    }
-
     const existingUser = await prisma.user.findUnique({
       where: { username },
     });
