@@ -55,7 +55,7 @@ public class ApplicantSignup extends AppCompatActivity {
             Toast.makeText(this, result, Toast.LENGTH_LONG).show();
 
             if (result.contains("successfully")) {
-                Log.e("usersignup", "hi");
+                Log.e("ApplicantSignupActivity", "register successfully");
                 navigateToLogin();
             }
         });

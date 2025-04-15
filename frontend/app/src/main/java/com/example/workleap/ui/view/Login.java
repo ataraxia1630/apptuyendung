@@ -61,7 +61,7 @@ public class Login extends AppCompatActivity {
         authViewModel.getLoginUser().observe(this, user -> {
             if(user == null)
             {
-                Log.e("userLogin", "user null");
+                Log.e("LoginActivity", "user null");
             }
             else if(user.getRole().equalsIgnoreCase("applicant"))
             {

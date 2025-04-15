@@ -6,7 +6,7 @@
     app:startDestination="@id/menu_home">
 
     <fragment
-        android:id="@+id/menu_cv_jobpost"
+        android:id="@+id/cvFragment"
         android:name="com.example.workleap.ui.view.CVFragment"
         android:label="fragment_c_v_jobpost"
         tools:layout="@layout/fragment_cv" />
@@ -21,7 +21,7 @@
         android:label="fragment_notification"
         tools:layout="@layout/fragment_notification" />
     <fragment
-        android:id="@+id/menu_profile"
+        android:id="@+id/applicantProfileFragment"
         android:name="com.example.workleap.ui.view.ApplicantProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_applicant_profile" />
