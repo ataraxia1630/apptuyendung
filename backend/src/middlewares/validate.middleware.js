@@ -1,18 +1,24 @@
+// validateMiddleware.js
 const Joi = require('joi');
 
-function validate(schema) {
+const validate = (schema, options = {}) => {
   return (req, res, next) => {
-    const { error } = schema.validate(req.body, { abortEarly: false });
+    const validationOptions = {
+      abortEarly: false,
+      stripUnknown: true,
+      ...options,
+    };
 
-    // Nếu có lỗi, trả về danh sách lỗi
+    const { error, value } = schema.validate(req.body, validationOptions);
+
     if (error) {
-      const errorMessages = error.details.map((err) => err.message);
-      return res.status(400).json({ errors: errorMessages });
+      const messages = error.details.map((err) => err.message);
+      return res.status(400).json({ errors: messages });
     }
 
-    // Nếu không có lỗi, tiếp tục request
+    req.body = value; // Dữ liệu đã được validate + clean
     next();
   };
-}
+};
 
 module.exports = { validate };

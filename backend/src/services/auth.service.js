@@ -1,43 +1,39 @@
 const prisma = require('../config/db/prismaClient');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { isValidEmail, isValidPhoneNumber } = require('../utils/validators');
 
 const SECRET_KEY = process.env.JWT_SECRET || 'secret';
 
 const AuthService = {
-  register: async (username, password, email, phoneNumber, role) => {
-    const existingUser = await prisma.user.findUnique({
-      where: { username },
+  register: async (data) => {
+    const { username, email, password, phoneNumber, role } = data;
+
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { username },
+          { email },
+          ...(phoneNumber ? [{ phoneNumber }] : []),
+        ],
+      },
     });
 
     if (existingUser) {
-      throw new Error('Username already exists');
-    }
-
-    const existingEmail = await prisma.user.findUnique({
-      where: { email },
-    });
-    if (existingEmail) {
-      throw new Error('Email already exists');
-    }
-
-    const existingPhoneNumber = await prisma.user.findUnique({
-      where: { phoneNumber },
-    });
-    if (existingPhoneNumber) {
-      throw new Error('Phone number already exists');
+      if (existingUser.username === username)
+        throw new Error('Username already exists');
+      if (existingUser.email === email) throw new Error('Email already exists');
+      if (existingUser.phoneNumber === phoneNumber)
+        throw new Error('Phone number already exists');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const { confirmPassword, ...userData } = data;
+
     const user = await prisma.user.create({
       data: {
-        username,
+        ...userData,
         password: hashedPassword,
-        email,
-        phoneNumber,
-        role,
         ...(role === 'APPLICANT'
           ? {
               Applicant: {
