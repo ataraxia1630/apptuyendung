@@ -58,7 +58,7 @@ public class Login extends AppCompatActivity {
             Toast.makeText(this, result, Toast.LENGTH_LONG).show();
         });
         authViewModel.getLoginUser().observe(this, user -> {
-            if(user.getRole().equalsIgnoreCase("user"))
+            if(user.getRole().equalsIgnoreCase("applicant"))
             {
                 Intent intent = new Intent(Login.this, UserProfile.class);
                 startActivity(intent);
