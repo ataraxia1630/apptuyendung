@@ -19,7 +19,7 @@ import com.example.workleap.R;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 
 
-public class UserSignup extends AppCompatActivity {
+public class ApplicantSignup extends AppCompatActivity {
 
     private AuthViewModel authViewModel;
 
@@ -30,7 +30,7 @@ public class UserSignup extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_user_signup);
+        setContentView(R.layout.activity_applicant_signup);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.user_signup), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -78,7 +78,7 @@ public class UserSignup extends AppCompatActivity {
         authViewModel.register(fullName, password, email, "0000000", "APPLICANT");
     }
     private void navigateToLogin(){
-        Intent intent = new Intent(UserSignup.this, Login.class);
+        Intent intent = new Intent(ApplicantSignup.this, Login.class);
         startActivity(intent);
         finish();  // Đảm bảo không quay lại màn hình đăng ký khi nhấn nút quay lại
     }

@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/menu_cv_jobpost"
-        android:name="com.example.workleap.ui.view.CVJobpostFragment"
+        android:name="com.example.workleap.ui.view.CVFragment"
         android:label="fragment_c_v_jobpost"
-        tools:layout="@layout/fragment_c_v_jobpost" />
+        tools:layout="@layout/fragment_cv" />
     <fragment
         android:id="@+id/menu_home"
         android:name="com.example.workleap.ui.view.HomeFragment"
@@ -22,12 +22,22 @@
         tools:layout="@layout/fragment_notification" />
     <fragment
         android:id="@+id/menu_profile"
-        android:name="com.example.workleap.ui.view.UserProfileFragment"
+        android:name="com.example.workleap.ui.view.ApplicantProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_user_profile" />
+        tools:layout="@layout/fragment_applicant_profile" />
     <fragment
         android:id="@+id/menu_statistics"
         android:name="com.example.workleap.ui.view.StatisticsFragment"
         android:label="fragment_statistics"
         tools:layout="@layout/fragment_statistics" />
+    <fragment
+        android:id="@+id/companyProfileFragment"
+        android:name="com.example.workleap.ui.view.CompanyProfileFragment"
+        android:label="fragment_company_profile"
+        tools:layout="@layout/fragment_company_profile" />
+    <fragment
+        android:id="@+id/jobpostFragment"
+        android:name="com.example.workleap.ui.view.JobpostFragment"
+        android:label="fragment_jobpost"
+        tools:layout="@layout/fragment_jobpost" />
 </navigation>

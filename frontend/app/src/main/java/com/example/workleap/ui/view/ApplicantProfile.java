@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.workleap.R;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 
-public class UserProfile extends AppCompatActivity {
+public class ApplicantProfile extends AppCompatActivity {
 
     private AuthViewModel authViewModel;
     private TextView tvUserName, tvEmail;
@@ -21,7 +21,7 @@ public class UserProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_user_profile);
+        setContentView(R.layout.activity_applicant_profile);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.user_profile), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

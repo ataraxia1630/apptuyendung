@@ -12,10 +12,10 @@ import com.example.workleap.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CVJobpostFragment#newInstance} factory method to
+ * Use the {@link JobpostFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CVJobpostFragment extends Fragment {
+public class JobpostFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class CVJobpostFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public CVJobpostFragment() {
+    public JobpostFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class CVJobpostFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment CVJobpostFragment.
+     * @return A new instance of fragment JobpostFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CVJobpostFragment newInstance(String param1, String param2) {
-        CVJobpostFragment fragment = new CVJobpostFragment();
+    public static JobpostFragment newInstance(String param1, String param2) {
+        JobpostFragment fragment = new JobpostFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class CVJobpostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_c_v_jobpost, container, false);
+        return inflater.inflate(R.layout.fragment_jobpost, container, false);
     }
 }
