@@ -2,6 +2,7 @@ package com.example.workleap.ui.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -58,15 +59,19 @@ public class Login extends AppCompatActivity {
             Toast.makeText(this, result, Toast.LENGTH_LONG).show();
         });
         authViewModel.getLoginUser().observe(this, user -> {
-            if(user.getRole().equalsIgnoreCase("user"))
+            if(user == null)
             {
-                Intent intent = new Intent(Login.this, UserProfile.class);
+                Log.e("userLogin", "user null");
+            }
+            else if(user.getRole().equalsIgnoreCase("applicant"))
+            {
+                Intent intent = new Intent(Login.this, NavigationActivity.class);
                 startActivity(intent);
                 finish(); // Kết thúc LoginActivity
             }
             else if(user.getRole().equalsIgnoreCase("company"))
             {
-                Intent intent = new Intent(Login.this, CompanyProfile.class);
+                Intent intent = new Intent(Login.this, NavigationActivity.class);
                 startActivity(intent);
                 finish();
             }

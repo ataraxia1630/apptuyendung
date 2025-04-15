@@ -2,6 +2,7 @@ package com.example.workleap.ui.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -53,7 +54,8 @@ public class UserSignup extends AppCompatActivity {
         authViewModel.getRegisterResult().observe(this, result -> {
             Toast.makeText(this, result, Toast.LENGTH_LONG).show();
 
-            if (result.contains("success")) {
+            if (result.contains("successfully")) {
+                Log.e("usersignup", "hi");
                 navigateToLogin();
             }
         });
@@ -73,7 +75,7 @@ public class UserSignup extends AppCompatActivity {
             return;
         }
 
-        authViewModel.register(fullName, password, email, "9999999", "APPLICANT");
+        authViewModel.register(fullName, password, email, "0000000", "APPLICANT");
     }
     private void navigateToLogin(){
         Intent intent = new Intent(UserSignup.this, Login.class);
