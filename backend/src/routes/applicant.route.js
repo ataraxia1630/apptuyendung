@@ -8,8 +8,12 @@ const route = Router();
 // lấy tất cả người dùng
 route.get('/all', verifyToken, ApplicantController.getAllApplicants);
 
-// lấy người dùng theo tên
-route.get('/name/:name', verifyToken, ApplicantController.getApplicantsByName);
+// search người dùng theo tên
+route.get(
+  '/search/:name',
+  verifyToken,
+  ApplicantController.searchApplicantsByName
+);
 
 // lấy 1 người dùng theo id / username
 route.get('/:id', verifyToken, ApplicantController.getApplicantById);

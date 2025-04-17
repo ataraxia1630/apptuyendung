@@ -13,10 +13,10 @@ const ApplicantController = {
     }
   },
 
-  getApplicantsByName: async (req, res) => {
+  searchApplicantsByName: async (req, res) => {
     const { name } = req.params;
     try {
-      const applicants = await ApplicantService.getApplicantsByName(name);
+      const applicants = await ApplicantService.searchApplicantsByName(name);
       return res.status(200).json(applicants);
     } catch (error) {
       return res

@@ -9,7 +9,8 @@ const ApplicantService = {
     });
     return applicants;
   },
-  getApplicantsByName: async (fullName) => {
+
+  searchApplicantsByName: async (fullName) => {
     const name = fullName.toLowerCase().trim();
 
     const applicants = await prisma.applicant.findMany({
