@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#35504E"
-    tools:context=".ui.view.ApplicantProfileFragment">
+    tools:context=".ui.view.ApplicantProfileFragment"
+    android:clipToPadding="false"
+    android:paddingBottom="100dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,7 +36,7 @@
                     android:layout_height="100dp"
                     android:layout_gravity="left"
                     android:src="@drawable/sample_avatar"
-                    app:shapeAppearanceOverlay="@style/CircleImageView"/>
+                    app:shapeAppearanceOverlay="@style/CircleImageView" />
 
                 <TextView
                     android:id="@+id/textView2"
@@ -42,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_toEndOf="@+id/shapeableImageView"
-                    android:text="Oliver James"
+                    android:text="user name"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="20sp"
@@ -56,8 +58,8 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="3dp"
                     android:layout_toEndOf="@+id/shapeableImageView"
-                    android:text="Programmer, Product Manager"
-                    android:textAlignment="center"
+                    android:text="--------"
+                    android:textAlignment="viewStart"
                     android:textColor="@color/design_default_color_secondary_variant"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -97,7 +99,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_marginTop="30dp"
-                        android:text="I have a passion..."
+                        android:text="--------"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
                 </RelativeLayout>
@@ -150,10 +152,11 @@
                         android:textSize="15sp" />
 
                     <TextView
+                        android:id="@+id/companynameInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="Oliver James"
+                        android:text="--------"
                         android:textColor="#6E6C6C"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -178,7 +181,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="male"
+                        android:text="--------"
                         android:textColor="#6E6C6C"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -203,7 +206,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="21"
+                        android:text="--------"
                         android:textColor="#6E6C6C"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -228,7 +231,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="07_02_2003"
+                        android:text="--------"
                         android:textColor="#6E6C6C"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -250,10 +253,11 @@
                         android:textSize="15sp" />
 
                     <TextView
+                        android:id="@+id/phoneInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="9000000009"
+                        android:text="--------"
                         android:textColor="#6E6C6C"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -275,10 +279,11 @@
                         android:textSize="15sp" />
 
                     <TextView
+                        android:id="@+id/emailInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="oliver@gmail.com"
+                        android:text="--------"
                         android:textColor="#6E6C6C"
                         android:textSize="15sp"
                         android:textStyle="bold" />

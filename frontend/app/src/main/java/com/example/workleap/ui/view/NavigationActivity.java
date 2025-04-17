@@ -20,6 +20,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.User;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -28,7 +29,7 @@ public class NavigationActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
     private AuthViewModel authViewModel;
-    private String userRole="";
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,17 +44,13 @@ public class NavigationActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_nav);
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
+
         NavController navController = Navigation.findNavController(NavigationActivity.this, R.id.fragment_container);
 
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
-        authViewModel.getLoginUser().observe(this, user->
-        {
-            if(user!=null)
-            {
-                userRole = user.getRole();
-            }
-        });
+        //lay user tu login activity
+        user = (User) getIntent().getSerializableExtra("user");
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -63,12 +60,12 @@ public class NavigationActivity extends AppCompatActivity {
                 return true;
 
             } else if (itemId == R.id.menu_cv_jobpost) {
-                if ("applicant".equalsIgnoreCase(userRole)) { //dat userRole sau tranh loi null
+                if ("applicant".equalsIgnoreCase( user.getRole())) { //dat userRole sau tranh loi null
                     navController.navigate(R.id.cvFragment);
-                } else if ("company".equalsIgnoreCase(userRole)) {
+                } else if ("company".equalsIgnoreCase(user.getRole())) {
                     navController.navigate(R.id.jobpostFragment);
                 } else {
-                    Log.e("NavActivity", "role: "+userRole );
+                    Log.e("NavActivity", "role: "+ user.getRole() );
                     Toast.makeText(this, "Vai trò không hợp lệ!", Toast.LENGTH_SHORT).show();
                 }
                 return true;
@@ -82,20 +79,21 @@ public class NavigationActivity extends AppCompatActivity {
                 return true;
 
             } else if (itemId == R.id.menu_profile) {
-                if ("applicant".equalsIgnoreCase(userRole)) {
-                    navController.navigate(R.id.applicantProfileFragment);
-                } else if ("company".equalsIgnoreCase(userRole)) {
-                    navController.navigate(R.id.companyProfileFragment);
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("user", user);
+
+                if ("applicant".equalsIgnoreCase( user.getRole())) {
+                    navController.navigate(R.id.applicantProfileFragment, bundle);
+                } else if ("company".equalsIgnoreCase( user.getRole())) {
+                    navController.navigate(R.id.companyProfileFragment, bundle);
                 } else {
                     Toast.makeText(this, "Vai trò không hợp lệ!", Toast.LENGTH_SHORT).show();
                 }
                 return true;
 
-            } else
-            {
-                return false;
             }
-
+            return false;
         });
     }
 }

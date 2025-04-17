@@ -80,7 +80,7 @@ public class AuthViewModel extends ViewModel {
                 if (response.isSuccessful()) {
                     LoginResponse loginResponse = response.body();
 
-                    if(loginResponse.getUser()!=null) Log.e("authviewmodel", "user null");
+                    if(loginResponse.getUser()==null) Log.e("authviewmodel", "user null");
 
                     loginResult.setValue(loginResponse.getMessage() + " - Token: " + loginResponse.getToken());
                     loginUser.setValue(loginResponse.getUser());

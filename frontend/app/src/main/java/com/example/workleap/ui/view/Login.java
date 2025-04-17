@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.LoginResponse;
+import com.example.workleap.data.model.User;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
 
@@ -63,17 +64,12 @@ public class Login extends AppCompatActivity {
             {
                 Log.e("LoginActivity", "user null");
             }
-            else if(user.getRole().equalsIgnoreCase("applicant"))
+            else
             {
                 Intent intent = new Intent(Login.this, NavigationActivity.class);
+                intent.putExtra("user", user);
                 startActivity(intent);
                 finish(); // Kết thúc LoginActivity
-            }
-            else if(user.getRole().equalsIgnoreCase("company"))
-            {
-                Intent intent = new Intent(Login.this, NavigationActivity.class);
-                startActivity(intent);
-                finish();
             }
         });
     }

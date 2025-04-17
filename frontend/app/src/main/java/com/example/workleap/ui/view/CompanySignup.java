@@ -77,7 +77,7 @@ public class CompanySignup extends AppCompatActivity {
             return;
         }
 
-        authViewModel.register(name, password, email, "", "COMPANY");
+        authViewModel.register(name, password, email, "09892892828", "COMPANY");
     }
     private void navigateToLogin(){
         Intent intent = new Intent(CompanySignup.this, Login.class);
