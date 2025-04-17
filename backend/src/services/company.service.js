@@ -2,11 +2,7 @@ const { prisma } = require('../config/db/prismaClient');
 
 const CompanyService = {
   getAllCompanies: async () => {
-    return await prisma.company.findMany({
-      include: {
-        users: true,
-      },
-    });
+    return await prisma.company.findMany();
   },
 
   searchCompaniesByName: async (name) => {
@@ -18,7 +14,7 @@ const CompanyService = {
         },
       },
       include: {
-        users: true,
+        User: true,
       },
     });
   },
@@ -27,7 +23,7 @@ const CompanyService = {
     return await prisma.company.findUnique({
       where: { id },
       include: {
-        users: true,
+        User: true,
       },
     });
   },
@@ -36,12 +32,18 @@ const CompanyService = {
     return await prisma.company.update({
       where: { id },
       data,
+      include: {
+        User: true,
+      },
     });
   },
 
   deleteCompany: async (id) => {
     return await prisma.company.delete({
       where: { id },
+      include: {
+        User: true,
+      },
     });
   },
 };
