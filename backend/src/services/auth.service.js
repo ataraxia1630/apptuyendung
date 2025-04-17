@@ -60,9 +60,6 @@ const AuthService = {
   },
 
   login: async (username, email, password) => {
-    if (!username && !email) {
-      throw new Error('Missing fields');
-    }
     let user;
     if (username) {
       user = await prisma.user.findUnique({
@@ -75,7 +72,7 @@ const AuthService = {
       });
     }
     if (!user) {
-      throw new Error('Invalid credentials'); // Generic error message
+      throw new Error('Invalid credentials');
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {

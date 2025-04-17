@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const UserSchema = Joi.object({
+const RegisterSchema = Joi.object({
   username: Joi.string().min(6).max(30).required().messages({
     'string.base': 'Username must be a string',
     'any.required': 'Username is required',
@@ -44,4 +44,4 @@ const UserSchema = Joi.object({
   }),
 });
 
-module.exports = { UserSchema };
+module.exports = { RegisterSchema };
