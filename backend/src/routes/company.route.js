@@ -2,7 +2,9 @@ const { Router } = require('express');
 const { CompanyController } = require('../controllers/company.controller');
 const { verifyToken } = require('../middlewares/auth.middleware');
 const { validate } = require('../middlewares/validate.middleware');
-const { companySchema } = require('../validations/company.validation');
+const {
+  CompanySchema,
+} = require('../validators/Company/updateCompany.validator');
 const route = Router();
 
 // lấy tất cả công ty
@@ -20,7 +22,7 @@ route.get('/:id', verifyToken, CompanyController.getCompanyById);
 route.put(
   '/:id',
   verifyToken,
-  validate(companySchema),
+  validate(CompanySchema),
   CompanyController.updateCompany
 );
 // xóa công ty
