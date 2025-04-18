@@ -2,14 +2,15 @@ const prisma = require('../config/db/prismaClient');
 
 const ApplicantService = {
   getAllApplicants: async () => {
-    console.log('Fetching all applicants...');
-    const applicants = await prisma.applicant.findMany({
-      include: {
-        User: true,
-      },
-    });
-    console.log('Applicants:', applicants);
-    return applicants;
+    try {
+      return await prisma.applicant.findMany({
+        include: {
+          User: true,
+        },
+      });
+    } catch (error) {
+      throw new Error('Error fetching applicants (service): ' + error.message);
+    }
   },
 
   searchApplicantsByName: async (fullName) => {
@@ -19,7 +20,7 @@ const ApplicantService = {
     const name = fullName.toLowerCase().trim();
 
     try {
-      const applicants = await prisma.applicant.findMany({
+      return await prisma.applicant.findMany({
         where: {
           AND: name.split(' ').map((part) => ({
             OR: [
@@ -33,44 +34,53 @@ const ApplicantService = {
         },
       });
     } catch (error) {
-      throw new Error('Error searching applicants: ' + error.message);
+      throw new Error('Error searching applicants (service): ' + error.message);
     }
-
-    return applicants;
   },
 
   getApplicantById: async (id) => {
-    const applicant = await prisma.applicant.findFirst({
-      where: { id },
-      include: {
-        User: true,
-      },
-    });
-    return applicant;
+    try {
+      return await prisma.applicant.findFirst({
+        where: { id },
+        include: {
+          User: true,
+        },
+      });
+    } catch (error) {
+      throw new Error(
+        'Error fetching applicant by ID (service): ' + error.message
+      );
+    }
   },
 
   updateApplicant: async (id, data) => {
-    const applicant = await prisma.applicant.update({
-      where: {
-        id,
-      },
-      data: {
-        ...data,
-      },
-      include: {
-        User: true,
-      },
-    });
-    return applicant;
+    try {
+      return await prisma.applicant.update({
+        where: {
+          id,
+        },
+        data: {
+          ...data,
+        },
+        include: {
+          User: true,
+        },
+      });
+    } catch (error) {
+      throw new Error('Error updating applicant (service): ' + error.message);
+    }
   },
 
   deleteApplicant: async (id) => {
-    await prisma.applicant.delete({
-      where: { id },
-      include: {
-        User: true,
-      },
-    });
+    try {
+      return await prisma.applicant.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      throw new Error('Error deleting applicant (service): ' + error.message);
+    }
   },
 };
 

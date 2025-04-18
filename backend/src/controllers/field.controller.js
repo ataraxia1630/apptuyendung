@@ -14,11 +14,13 @@ const FieldController = {
 
   getFieldByName: async (req, res) => {
     const { fieldName } = req.params;
+    if (!fieldName) {
+      return res.status(400).json({
+        message: 'Field name is required',
+      });
+    }
     try {
       const field = await FieldService.getFieldByName(fieldName);
-      if (!field) {
-        return res.status(404).json({ message: 'Field not found' });
-      }
       return res.status(200).json(field);
     } catch (error) {
       return res.status(500).json({
@@ -43,12 +45,14 @@ const FieldController = {
 
   updateField: async (req, res) => {
     const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        message: 'Field ID is required',
+      });
+    }
     const { fieldName } = req.body;
     try {
       const field = await FieldService.updateField(id, fieldName);
-      if (!field) {
-        return res.status(404).json({ message: 'Field not found' });
-      }
       return res.status(200).json(field);
     } catch (error) {
       return res.status(500).json({
@@ -60,6 +64,11 @@ const FieldController = {
 
   getAllInterestedFields: async (req, res) => {
     const { applicantId } = req.params;
+    if (!applicantId) {
+      return res.status(400).json({
+        message: 'Applicant ID is required',
+      });
+    }
     try {
       const fields = await FieldService.getAllInterestedFields(applicantId);
       return res.status(200).json(fields);
@@ -73,13 +82,18 @@ const FieldController = {
 
   addInterestedFields: async (req, res) => {
     const { applicantId } = req.params;
+    if (!applicantId) {
+      return res.status(400).json({
+        message: 'Applicant ID is required',
+      });
+    }
     const { fieldIds } = req.body;
     try {
       const fields = await FieldService.addInterestedFields(
         applicantId,
         fieldIds
       );
-      return res.status(200).json(fields);
+      return res.status(201).json(fields);
     } catch (error) {
       return res.status(500).json({
         message: 'Error adding interested fields',
@@ -90,9 +104,14 @@ const FieldController = {
 
   removeAllInterestedFields: async (req, res) => {
     const { applicantId } = req.params;
+    if (!applicantId) {
+      return res.status(400).json({
+        message: 'Applicant ID is required',
+      });
+    }
     try {
       await FieldService.removeAllInterestedFields(applicantId);
-      return res.status(200).json({ message: 'All interested fields removed' });
+      return res.status(204).send();
     } catch (error) {
       return res.status(500).json({
         message: 'Error removing interested fields',
@@ -103,9 +122,14 @@ const FieldController = {
 
   removeInterestedField: async (req, res) => {
     const { applicantId, fieldId } = req.params;
+    if (!applicantId || !fieldId) {
+      return res.status(400).json({
+        message: 'Applicant ID and Field ID are required',
+      });
+    }
     try {
       await FieldService.removeInterestedField(applicantId, fieldId);
-      return res.status(200).json({ message: 'Interested field removed' });
+      return res.status(204).send();
     } catch (error) {
       return res.status(500).json({
         message: 'Error removing interested field',

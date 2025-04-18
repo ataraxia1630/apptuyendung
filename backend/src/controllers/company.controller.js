@@ -65,7 +65,7 @@ const CompanyController = {
       if (!company) {
         return res.status(404).json({ message: 'Company not found' });
       }
-      return res.status(200).json({ message: 'Company deleted successfully' });
+      return res.status(204).send();
     } catch (error) {
       return res.status(500).json({
         message: 'Error deleting company',

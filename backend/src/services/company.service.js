@@ -2,49 +2,71 @@ const prisma = require('../config/db/prismaClient');
 
 const CompanyService = {
   getAllCompanies: async () => {
-    return await prisma.company.findMany();
+    try {
+      return await prisma.company.findMany();
+    } catch (error) {
+      throw new Error('Error fetching companies (service): ' + error.message);
+    }
   },
 
   searchCompaniesByName: async (name) => {
-    return await prisma.company.findMany({
-      where: {
-        name: {
-          contains: name,
-          mode: 'insensitive',
+    try {
+      return await prisma.company.findMany({
+        where: {
+          name: {
+            contains: name,
+            mode: 'insensitive',
+          },
         },
-      },
-      include: {
-        User: true,
-      },
-    });
+        include: {
+          User: true,
+        },
+      });
+    } catch (error) {
+      throw new Error('Error searching companies (service): ' + error.message);
+    }
   },
 
   getCompanyById: async (id) => {
-    return await prisma.company.findUnique({
-      where: { id },
-      include: {
-        User: true,
-      },
-    });
+    try {
+      return await prisma.company.findUnique({
+        where: { id },
+        include: {
+          User: true,
+        },
+      });
+    } catch (error) {
+      throw new Error(
+        'Error fetching company by ID (service): ' + error.message
+      );
+    }
   },
 
   updateCompany: async (id, data) => {
-    return await prisma.company.update({
-      where: { id },
-      data,
-      include: {
-        User: true,
-      },
-    });
+    try {
+      return await prisma.company.update({
+        where: { id },
+        data,
+        include: {
+          User: true,
+        },
+      });
+    } catch (error) {
+      throw new Error('Error updating company (service): ' + error.message);
+    }
   },
 
   deleteCompany: async (id) => {
-    return await prisma.company.delete({
-      where: { id },
-      include: {
-        User: true,
-      },
-    });
+    try {
+      return await prisma.company.delete({
+        where: { id },
+        include: {
+          User: true,
+        },
+      });
+    } catch (error) {
+      throw new Error('Error deleting company (service): ' + error.message);
+    }
   },
 };
 

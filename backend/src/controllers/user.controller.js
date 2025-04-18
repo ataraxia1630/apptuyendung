@@ -16,6 +16,11 @@ const UserController = {
   searchUsersByName: async (req, res) => {
     try {
       const { name } = req.params;
+      if (!name) {
+        return res.status(400).json({
+          message: 'Name parameter is required',
+        });
+      }
       const users = await UserService.searchUsersByName(name);
       return res.status(200).json(users);
     } catch (error) {
@@ -29,6 +34,11 @@ const UserController = {
   getUserById: async (req, res) => {
     try {
       const { id } = req.params;
+      if (!id) {
+        return res.status(400).json({
+          message: 'User ID is required',
+        });
+      }
       const user = await UserService.getUserById(id);
       return res.status(200).json(user);
     } catch (error) {
@@ -42,6 +52,11 @@ const UserController = {
   updateUser: async (req, res) => {
     try {
       const { id } = req.params;
+      if (!id) {
+        return res.status(400).json({
+          message: 'User ID is required',
+        });
+      }
       const user = await UserService.updateUser(id, req.body);
       return res.status(200).json(user);
     } catch (error) {
@@ -55,8 +70,13 @@ const UserController = {
   deleteUser: async (req, res) => {
     try {
       const { id } = req.params;
-      const user = await UserService.deleteUser(id);
-      return res.status(200).json({ message: 'User deleted successfully' });
+      if (!id) {
+        return res.status(400).json({
+          message: 'User ID is required',
+        });
+      }
+      await UserService.deleteUser(id);
+      return res.status(204).json(user);
     } catch (error) {
       return res.status(500).json({
         message: 'Error deleting educations',
@@ -68,6 +88,11 @@ const UserController = {
   changePassword: async (req, res) => {
     try {
       const { id } = req.params;
+      if (!id) {
+        return res.status(400).json({
+          message: 'User ID is required',
+        });
+      }
       const { newPassword } = req.body;
       const user = await UserService.changePassword(id, newPassword);
       return res.status(200).json({ message: 'Password changed successfully' });

@@ -4,9 +4,9 @@ const EducationController = {
   getAllEdu: async (req, res) => {
     try {
       const educations = await EducationService.getAll();
-      res.status(200).json(educations);
+      return res.status(200).json(educations);
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Error fetching educations',
         error: error.message || error,
       });
@@ -16,9 +16,9 @@ const EducationController = {
   createNewEdu: async (req, res) => {
     try {
       const newEdu = await EducationService.createNewEdu(req.body);
-      res.status(201).json(newEdu);
+      return res.status(201).json(newEdu);
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Error creating education',
         error: error.message || error,
       });
@@ -28,10 +28,15 @@ const EducationController = {
   getAll: async (req, res) => {
     try {
       const { applicantId } = req.params;
+      if (!applicantId) {
+        return res.status(400).json({
+          message: 'Applicant ID is required',
+        });
+      }
       const applicantEdu = await EducationService.getAll(applicantId);
-      res.status(200).json(applicantEdu);
+      return res.status(200).json(applicantEdu);
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Error fetching educations for applicant',
         error: error.message || error,
       });
@@ -41,10 +46,15 @@ const EducationController = {
   createNew: async (req, res) => {
     try {
       const { applicantId } = req.params;
+      if (!applicantId) {
+        return res.status(400).json({
+          message: 'Applicant ID is required',
+        });
+      }
       const newEdu = await EducationService.createNew(applicantId, req.body);
-      res.status(201).json(newEdu);
+      return res.status(201).json(newEdu);
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Error creating new edu for applicant',
         error: error.message || error,
       });
@@ -54,10 +64,15 @@ const EducationController = {
   updateEdu: async (req, res) => {
     try {
       const { id } = req.params;
+      if (!id) {
+        return res.status(400).json({
+          message: 'Education ID is required',
+        });
+      }
       const updatedEdu = await EducationService.updateEdu(id, req.body);
-      res.status(200).json(updatedEdu);
+      return res.status(200).json(updatedEdu);
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Error updating education',
         error: error.message || error,
       });
@@ -67,10 +82,15 @@ const EducationController = {
   deleteEdu: async (req, res) => {
     try {
       const { id } = req.params;
+      if (!id) {
+        return res.status(400).json({
+          message: 'Education ID is required',
+        });
+      }
       await EducationService.deleteEdu(id);
-      res.status(204).send();
+      return res.status(204).send();
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Error deleting education',
         error: error.message || error,
       });
@@ -80,10 +100,15 @@ const EducationController = {
   deleteAll: async (req, res) => {
     try {
       const { applicantId } = req.params;
+      if (!applicantId) {
+        return res.status(400).json({
+          message: 'Applicant ID is required',
+        });
+      }
       await EducationService.deleteAll(applicantId);
-      res.status(204).send();
+      return res.status(204).send();
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         message: 'Error deleting all educations',
         error: error.message || error,
       });

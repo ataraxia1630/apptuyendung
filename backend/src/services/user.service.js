@@ -4,60 +4,84 @@ const { CompanyService } = require('./company.service');
 
 const UserService = {
   getAllUsers: async () => {
-    return await prisma.user.findMany({
-      include: {
-        OR: [
-          {
-            Company: true,
-          },
-          {
-            Applicant: true,
-          },
-        ],
-      },
-    });
+    try {
+      return await prisma.user.findMany({
+        include: {
+          OR: [
+            {
+              Company: true,
+            },
+            {
+              Applicant: true,
+            },
+          ],
+        },
+      });
+    } catch (error) {
+      throw new Error('Error fetching all users (service): ' + error.message);
+    }
   },
 
   searchUsersByName: async (name) => {
-    const applicants = await ApplicantService.searchApplicantsByName(name);
-    const companies = await CompanyService.searchCompaniesByName(name);
+    try {
+      const applicants = await ApplicantService.searchApplicantsByName(name);
+      const companies = await CompanyService.searchCompaniesByName(name);
 
-    return [...applicants, ...companies];
+      return [...applicants, ...companies];
+    } catch (error) {
+      throw new Error('Error searching users (service): ' + error.message);
+    }
   },
 
   getUserById: async (id) => {
-    return await prisma.user.findUnique({
-      where: { id },
-      include: {
-        OR: [
-          {
-            Company: true,
-          },
-          {
-            Applicant: true,
-          },
-        ],
-      },
-    });
+    try {
+      return await prisma.user.findUnique({
+        where: { id },
+        include: {
+          OR: [
+            {
+              Company: true,
+            },
+            {
+              Applicant: true,
+            },
+          ],
+        },
+      });
+    } catch (error) {
+      throw new Error('Error fetching user (service): ' + error.message);
+    }
   },
 
   updateUser: async (id, data) => {
-    return await prisma.user.update({
-      where: { id },
-      data,
-    });
+    try {
+      return await prisma.user.update({
+        where: { id },
+        data,
+      });
+    } catch (error) {
+      throw new Error('Error updating user (service): ' + error.message);
+    }
   },
 
   deleteUser: async (id) => {
-    return await prisma.user.delete({
-      where: { id },
-    });
+    try {
+      return await prisma.user.delete({
+        where: { id },
+      });
+    } catch (error) {
+      throw new Error('Error deleting user (service): ' + error.message);
+    }
   },
 
   changePassword: async (id, password) => {
-    return await prisma.user.update({
-      where: { id },
-      data: { password },
-    });
+    try {
+      return await prisma.user.update({
+        where: { id },
+        data: { password },
+      });
+    } catch (error) {
+      throw new Error('Error changing password (service): ' + error.message);
+    }
   },
 };

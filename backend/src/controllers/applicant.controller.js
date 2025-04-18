@@ -57,7 +57,7 @@ const ApplicantController = {
     const { id } = req.params;
     try {
       await ApplicantService.deleteApplicant(id);
-      return res.status(200).json({ message: 'Delete successfully' });
+      return res.status(204).send();
     } catch (error) {
       return res.status(500).json({
         message: 'Error deleting applicant',
