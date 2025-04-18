@@ -9,7 +9,10 @@ const ApplicantController = {
     } catch (error) {
       return res
         .status(500)
-        .json({ message: 'Error fetching applicants', error });
+        .json({
+          message: 'Error fetching applicants',
+          error: error.message || error,
+        });
     }
   },
 
