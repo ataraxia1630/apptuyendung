@@ -4,7 +4,7 @@ const { verifyToken } = require('../middlewares/auth.middleware');
 const { validate } = require('../middlewares/validate.middleware');
 const { userSchema } = require('../validators/User/updateUser.validator');
 const {
-  ChangePasswordSchema,
+  SettingSchema,
 } = require('../validators/User/changePassword.validator');
 
 const route = Router();
@@ -24,10 +24,10 @@ route.put('/:id', verifyToken, validate(userSchema), UserController.updateUser);
 route.delete('/:id', verifyToken, UserController.deleteUser);
 // đổi mật khẩu người dùng
 route.put(
-  '/change-password/:id',
+  '/setting/:id',
   verifyToken,
-  validate(ChangePasswordSchema),
-  UserController.changePassword
+  validate(SettingSchema),
+  UserController.changeSetting
 );
 
 module.exports = route;

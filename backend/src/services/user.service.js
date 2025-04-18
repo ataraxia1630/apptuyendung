@@ -1,4 +1,5 @@
 const prisma = require('../config/db/prismaClient');
+const bcrypt = require('bcryptjs');
 const { ApplicantService } = require('./applicant.service');
 const { CompanyService } = require('./company.service');
 
@@ -74,14 +75,43 @@ const UserService = {
     }
   },
 
-  changePassword: async (id, password) => {
+  changeSetting: async (id, data) => {
+    const { oldPassword, newPassword, confirmPassword, ...updateData } = data;
+
+    if (oldPassword) {
+      try {
+        const user = await prisma.user.findUnique({
+          where: { id },
+        });
+        if (!user) {
+          throw new Error('User not found');
+        }
+
+        const isPasswordValid = await bcrypt.compare(
+          oldPassword,
+          user.password
+        );
+        if (!isPasswordValid) {
+          throw new Error('Old password is incorrect');
+        }
+      } catch (error) {
+        throw new Error('Error fetching user (service): ' + error.message);
+      }
+    }
+
     try {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
       return await prisma.user.update({
         where: { id },
-        data: { password },
+        data: {
+          password: hashedPassword,
+          ...updateData,
+        },
       });
     } catch (error) {
-      throw new Error('Error changing password (service): ' + error.message);
+      throw new Error('Error changing setting (service): ' + error.message);
     }
   },
 };
+
+module.exports = { UserService };

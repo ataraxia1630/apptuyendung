@@ -85,7 +85,7 @@ const UserController = {
     }
   },
 
-  changePassword: async (req, res) => {
+  changeSetting: async (req, res) => {
     try {
       const { id } = req.params;
       if (!id) {
@@ -93,12 +93,11 @@ const UserController = {
           message: 'User ID is required',
         });
       }
-      const { newPassword } = req.body;
-      const user = await UserService.changePassword(id, newPassword);
-      return res.status(200).json({ message: 'Password changed successfully' });
+      const user = await UserService.changeSetting(id, req.body);
+      return res.status(200).json({ message: 'Setting changed successfully' });
     } catch (error) {
       return res.status(500).json({
-        message: 'Error changing password',
+        message: 'Error changing setting',
         error: error.message || error,
       });
     }
