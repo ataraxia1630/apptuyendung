@@ -23,7 +23,7 @@ public class ApplicantSignup extends AppCompatActivity {
 
     private AuthViewModel authViewModel;
 
-    private EditText etFullName, etEmail, etPassword;
+    private EditText etFullName, etEmail, etPassword, etPhoneNumber;
     private Button btnSignUp;
     private TextView tvLogIn;
     @Override
@@ -43,6 +43,7 @@ public class ApplicantSignup extends AppCompatActivity {
         etFullName = findViewById(R.id.editTextFullName);
         etEmail = findViewById(R.id.editTextEmail);
         etPassword = findViewById(R.id.editTextPassword);
+        etPhoneNumber = findViewById(R.id.editTextPhone);
         btnSignUp = findViewById(R.id.buttonSignUp);
         tvLogIn = findViewById(R.id.textViewLogIn);
 
@@ -69,13 +70,14 @@ public class ApplicantSignup extends AppCompatActivity {
         String fullName = etFullName.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+        String phone = etPhoneNumber.getText().toString().trim();
 
         if (fullName.isEmpty() || email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        authViewModel.register(fullName, password, email, "0000000", "APPLICANT");
+        authViewModel.register(fullName, password, email, phone, "APPLICANT");
     }
     private void navigateToLogin(){
         Intent intent = new Intent(ApplicantSignup.this, Login.class);

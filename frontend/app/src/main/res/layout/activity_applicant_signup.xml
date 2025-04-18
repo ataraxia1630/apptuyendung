@@ -35,6 +35,14 @@
         android:inputType="textEmailAddress" />
 
     <EditText
+        android:id="@+id/editTextPhone"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginBottom="16dp"
+        android:hint="Phone"
+        android:inputType="phone" />
+
+    <EditText
         android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
         android:layout_height="64dp"

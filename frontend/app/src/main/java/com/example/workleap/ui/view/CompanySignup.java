@@ -21,7 +21,7 @@ import com.example.workleap.ui.viewmodel.AuthViewModel;
 public class CompanySignup extends AppCompatActivity {
 
     private AuthViewModel authViewModel;
-    private EditText etEmail, etPassword, etCompanyName, etAddress, etEstablishedYear, etTaxCode;
+    private EditText etEmail, etPassword, etCompanyName, etAddress, etEstablishedYear, etTaxCode, etPhoneNumber;
     private Button btnRegister;
     private TextView tvLoginRedirect;
     @Override
@@ -43,6 +43,7 @@ public class CompanySignup extends AppCompatActivity {
         etAddress = findViewById(R.id.etAddress);
         etEstablishedYear = findViewById(R.id.etEstablishedYear);
         etTaxCode = findViewById(R.id.etTaxCode);
+        etPhoneNumber = findViewById(R.id.etPhone);
         btnRegister = findViewById(R.id.btnRegister);
         tvLoginRedirect = findViewById(R.id.tvLoginRedirect);
 
@@ -71,13 +72,14 @@ public class CompanySignup extends AppCompatActivity {
         String address = etAddress.getText().toString().trim();
         String year = etEstablishedYear.getText().toString().trim();
         String tax = etTaxCode.getText().toString().trim();
+        String phone = etPhoneNumber.getText().toString().trim();
 
         if (email.isEmpty() || password.isEmpty() || name.isEmpty() || address.isEmpty() || year.isEmpty() || tax.isEmpty()) {
             Toast.makeText(CompanySignup.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        authViewModel.register(name, password, email, "09892892828", "COMPANY");
+        authViewModel.register(name, password, email, phone, "COMPANY");
     }
     private void navigateToLogin(){
         Intent intent = new Intent(CompanySignup.this, Login.class);
