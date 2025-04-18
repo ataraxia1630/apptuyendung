@@ -1,4 +1,4 @@
-const { prisma, user } = require('../config/db/prismaClient');
+const prisma = require('../config/db/prismaClient');
 const { ApplicantService } = require('./applicant.service');
 const { CompanyService } = require('./company.service');
 

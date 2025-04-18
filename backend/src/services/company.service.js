@@ -1,4 +1,4 @@
-const { prisma } = require('../config/db/prismaClient');
+const prisma = require('../config/db/prismaClient');
 
 const CompanyService = {
   getAllCompanies: async () => {

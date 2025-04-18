@@ -6,7 +6,10 @@ const EducationController = {
       const educations = await EducationService.getAll();
       res.status(200).json(educations);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({
+        message: 'Error fetching educations',
+        error: error.message || error,
+      });
     }
   },
 
@@ -15,7 +18,10 @@ const EducationController = {
       const newEdu = await EducationService.createNewEdu(req.body);
       res.status(201).json(newEdu);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({
+        message: 'Error creating education',
+        error: error.message || error,
+      });
     }
   },
 
@@ -25,7 +31,10 @@ const EducationController = {
       const applicantEdu = await EducationService.getAll(applicantId);
       res.status(200).json(applicantEdu);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({
+        message: 'Error fetching educations for applicant',
+        error: error.message || error,
+      });
     }
   },
 
@@ -35,7 +44,10 @@ const EducationController = {
       const newEdu = await EducationService.createNew(applicantId, req.body);
       res.status(201).json(newEdu);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({
+        message: 'Error creating new edu for applicant',
+        error: error.message || error,
+      });
     }
   },
 
@@ -45,7 +57,10 @@ const EducationController = {
       const updatedEdu = await EducationService.updateEdu(id, req.body);
       res.status(200).json(updatedEdu);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({
+        message: 'Error updating education',
+        error: error.message || error,
+      });
     }
   },
 
@@ -55,7 +70,10 @@ const EducationController = {
       await EducationService.deleteEdu(id);
       res.status(204).send();
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({
+        message: 'Error deleting education',
+        error: error.message || error,
+      });
     }
   },
 
@@ -65,7 +83,10 @@ const EducationController = {
       await EducationService.deleteAll(applicantId);
       res.status(204).send();
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({
+        message: 'Error deleting all educations',
+        error: error.message || error,
+      });
     }
   },
 };

@@ -6,7 +6,10 @@ const CompanyController = {
       const companies = await CompanyService.getAllCompanies();
       return res.status(200).json(companies);
     } catch (error) {
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({
+        message: 'Error fetching companies',
+        error: error.message || error,
+      });
     }
   },
 
@@ -16,7 +19,10 @@ const CompanyController = {
       const companies = await CompanyService.searchCompaniesByName(name);
       return res.status(200).json(companies);
     } catch (error) {
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({
+        message: 'Error searching companies',
+        error: error.message || error,
+      });
     }
   },
 
@@ -29,7 +35,10 @@ const CompanyController = {
       }
       return res.status(200).json(company);
     } catch (error) {
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({
+        message: 'Error fetching company',
+        error: error.message || error,
+      });
     }
   },
 
@@ -42,7 +51,10 @@ const CompanyController = {
       }
       return res.status(200).json(company);
     } catch (error) {
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({
+        message: 'Error updating company',
+        error: error.message || error,
+      });
     }
   },
 
@@ -55,7 +67,10 @@ const CompanyController = {
       }
       return res.status(200).json({ message: 'Company deleted successfully' });
     } catch (error) {
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({
+        message: 'Error deleting company',
+        error: error.message || error,
+      });
     }
   },
 };

@@ -6,7 +6,10 @@ const UserController = {
       const users = await UserService.getAllUsers();
       return res.status(200).json(users);
     } catch (error) {
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({
+        message: 'Error fetching all users',
+        error: error.message || error,
+      });
     }
   },
 
@@ -14,12 +17,12 @@ const UserController = {
     try {
       const { name } = req.params;
       const users = await UserService.searchUsersByName(name);
-      if (!user) {
-        return res.status(404).json({ message: 'No results' });
-      }
       return res.status(200).json(users);
     } catch (error) {
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({
+        message: 'Error searching users',
+        error: error.message || error,
+      });
     }
   },
 
@@ -27,12 +30,12 @@ const UserController = {
     try {
       const { id } = req.params;
       const user = await UserService.getUserById(id);
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
       return res.status(200).json(user);
     } catch (error) {
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({
+        message: 'Error fetching user',
+        error: error.message || error,
+      });
     }
   },
 
@@ -40,12 +43,12 @@ const UserController = {
     try {
       const { id } = req.params;
       const user = await UserService.updateUser(id, req.body);
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
       return res.status(200).json(user);
     } catch (error) {
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({
+        message: 'Error updating educations',
+        error: error.message || error,
+      });
     }
   },
 
@@ -53,12 +56,12 @@ const UserController = {
     try {
       const { id } = req.params;
       const user = await UserService.deleteUser(id);
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
       return res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({
+        message: 'Error deleting educations',
+        error: error.message || error,
+      });
     }
   },
 
@@ -67,12 +70,12 @@ const UserController = {
       const { id } = req.params;
       const { newPassword } = req.body;
       const user = await UserService.changePassword(id, newPassword);
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
       return res.status(200).json({ message: 'Password changed successfully' });
     } catch (error) {
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({
+        message: 'Error changing password',
+        error: error.message || error,
+      });
     }
   },
 };
