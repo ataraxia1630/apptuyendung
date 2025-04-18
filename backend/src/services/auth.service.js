@@ -7,9 +7,9 @@ const SECRET_KEY = process.env.JWT_SECRET || 'secret';
 const AuthService = {
   register: async (data) => {
     const { username, email, password, phoneNumber, role } = data;
-
+    let existingUser;
     try {
-      const existingUser = await prisma.user.findFirst({
+      existingUser = await prisma.user.findFirst({
         where: {
           OR: [
             { username },
