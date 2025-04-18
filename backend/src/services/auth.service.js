@@ -5,46 +5,35 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.JWT_SECRET || 'secret';
 
 const AuthService = {
-  register: async (username, password, email, phoneNumber, role) => {
-    console.log(
-      'Registering user:',
-      username,
-      email,
-      phoneNumber,
-      role,
-      prisma.user
-    );
-    if (!username || !password || !email || !role || !phoneNumber) {
-      throw new Error('All fields are required');
-    }
+  register: async (data) => {
+    const { username, email, password, phoneNumber, role } = data;
 
-    if (!['APPLICANT', 'COMPANY'].includes(role)) {
-      throw new Error('Invalid role');
-    }
-
-    const existingUser = await prisma.user.findUnique({
-      where: { username },
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { username },
+          { email },
+          ...(phoneNumber ? [{ phoneNumber }] : []),
+        ],
+      },
     });
+
     if (existingUser) {
-      throw new Error('Username already exists');
-    }
-
-    const existingEmail = await prisma.user.findUnique({
-      where: { email },
-    });
-    if (existingEmail) {
-      throw new Error('Email already exists');
+      if (existingUser.username === username)
+        throw new Error('Username already exists');
+      if (existingUser.email === email) throw new Error('Email already exists');
+      if (existingUser.phoneNumber === phoneNumber)
+        throw new Error('Phone number already exists');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const { confirmPassword, ...userData } = data;
+
     const user = await prisma.user.create({
       data: {
-        username,
+        ...userData,
         password: hashedPassword,
-        email,
-        phoneNumber,
-        role,
         ...(role === 'APPLICANT'
           ? {
               Applicant: {
@@ -71,9 +60,6 @@ const AuthService = {
   },
 
   login: async (username, email, password) => {
-    if (!username && !email) {
-      throw new Error('Missing fields');
-    }
     let user;
     if (username) {
       user = await prisma.user.findUnique({
@@ -86,7 +72,7 @@ const AuthService = {
       });
     }
     if (!user) {
-      throw new Error('Invalid credentials'); // Generic error message
+      throw new Error('Invalid credentials');
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {

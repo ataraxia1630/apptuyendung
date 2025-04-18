@@ -78,7 +78,7 @@ model User {
   username        String         @unique @db.VarChar(30)
   password        String         @db.VarChar(255)
   email           String         @unique @db.VarChar(320)
-  phoneNumber     String         @unique @db.VarChar(15)
+  phoneNumber     String?        @unique @db.VarChar(15)
   avatar          String?
   background      String?
   role            Role
