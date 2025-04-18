@@ -11,6 +11,7 @@ import com.example.workleap.data.model.LogoutRequest;
 import com.example.workleap.data.model.MessageResponse;
 import com.example.workleap.data.model.RegisterRequest;
 import com.example.workleap.data.model.RegisterResponse;
+import com.example.workleap.data.model.UpdateUserRequest;
 import com.example.workleap.data.model.User;
 
 import java.util.List;
@@ -41,5 +42,9 @@ public class UserRepository {
         return apiService.logoutUser(request);
     }
 
+    //Update
+    public Call<MessageResponse> updateUser(String id, UpdateUserRequest request) {
+        return apiService.updateUser(id, request);
+    }
 }
 
