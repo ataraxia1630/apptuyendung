@@ -75,6 +75,14 @@
             android:hint="Tax Code"
             android:inputType="text" />
 
+        <EditText
+            android:id="@+id/etPhone"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="24dp"
+            android:hint="Phone number"
+            android:inputType="phone" />
+
         <!-- Button Đăng ký -->
         <Button
             android:id="@+id/btnRegister"
