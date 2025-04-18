@@ -10,9 +10,10 @@ const fieldRoutes = require('./field.route');
 
 function route(app) {
   app.use('/api/auth', authRoutes);
-  app.use('/api/users', userRoutes);
   app.use('/api/users/applicant', applicantRoutes);
   app.use('/api/users/company', companyRoutes);
+
+  app.use('/api/users', userRoutes);
 
   app.use('/api/skill', applicantSkillRoutes);
   app.use('/api/education', eduRoutes);
