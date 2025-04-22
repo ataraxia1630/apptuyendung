@@ -5,6 +5,7 @@ const companyRoutes = require('./company.route');
 
 const applicantSkillRoutes = require('./applicantSkill.route');
 const eduRoutes = require('./education.route');
+const expRoutes = require('./exp.route');
 
 const fieldRoutes = require('./field.route');
 
@@ -17,6 +18,7 @@ function route(app) {
 
   app.use('/api/skill', applicantSkillRoutes);
   app.use('/api/education', eduRoutes);
+  app.use('/api/experience', expRoutes);
 
   app.use('/api/field', fieldRoutes);
 }
