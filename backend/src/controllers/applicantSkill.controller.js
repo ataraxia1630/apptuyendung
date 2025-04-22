@@ -6,8 +6,11 @@ const SkillController = {
     try {
       const applicantSkills = await ApplicantSkillService.getAll(applicantId);
       return res.status(200).json(applicantSkills);
-    } catch {
-      return res.status(500).json('Error fetching applicant skills');
+    } catch (error) {
+      return res.status(500).json({
+        message: 'Error fetching applicant skills',
+        error: error.message || error,
+      });
     }
   },
 
@@ -17,8 +20,11 @@ const SkillController = {
     try {
       const newSkill = await ApplicantSkillService.createNew(applicantId, data);
       return res.status(201).json(newSkill);
-    } catch {
-      return res.status(500).json('Error creating new skill');
+    } catch (error) {
+      return res.status(500).json({
+        message: 'Error creating new skill',
+        error: error.message || error,
+      });
     }
   },
 
@@ -28,8 +34,11 @@ const SkillController = {
     try {
       const updatedSkill = await ApplicantSkillService.updateSkill(id, data);
       return res.status(200).json(updatedSkill);
-    } catch {
-      return res.status(500).json('Error updating skill');
+    } catch (error) {
+      return res.status(500).json({
+        message: 'Error updating skill',
+        error: error.message || error,
+      });
     }
   },
 
@@ -38,8 +47,11 @@ const SkillController = {
     try {
       await ApplicantSkillService.deleteSkill(id);
       return res.status(204).send();
-    } catch {
-      return res.status(500).json('Error deleting skill');
+    } catch (error) {
+      return res.status(500).json({
+        message: 'Error deleting skill',
+        error: error.message || error,
+      });
     }
   },
 
@@ -48,8 +60,11 @@ const SkillController = {
     try {
       await ApplicantSkillService.deleteAll(applicantId);
       return res.status(204).send();
-    } catch {
-      return res.status(500).json('Error deleting applicant skills');
+    } catch (error) {
+      return res.status(500).json({
+        message: 'Error deleting all skills',
+        error: error.message || error,
+      });
     }
   },
 };
