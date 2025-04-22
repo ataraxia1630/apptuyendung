@@ -130,7 +130,7 @@ model Skill {
 
 model Education {
   id                 String               @id @default(uuid())
-  uniName            String               @db.VarChar(255)
+  uniName            String               @unique @db.VarChar(255)
   description        String?              @db.VarChar(1000)
   uniLink            String?
   address            String //ref
