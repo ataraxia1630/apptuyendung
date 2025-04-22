@@ -97,6 +97,24 @@ const AuthService = {
       if (!user && email) {
         user = await prisma.user.findUnique({
           where: { email },
+          include: {
+            Applicant: {
+              include: {
+                Skill: true,
+                Edu: true,
+                Exp: true,
+                InterestedField: true,
+                JobSaved: true,
+                JobApplied: true,
+              },
+            },
+            Company: {
+              include: {
+                Post: true,
+                JobPost: true,
+              },
+            },
+          },
         });
       }
     } catch (error) {
