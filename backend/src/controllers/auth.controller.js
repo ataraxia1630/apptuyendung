@@ -13,14 +13,14 @@ const AuthController = {
   login: async (req, res) => {
     try {
       const { username, email, password } = req.body;
-      const { token, role } = await AuthService.login(
+      const { token, user } = await AuthService.login(
         username,
         email,
         password
       );
-      return res.status(200).json({ message: 'Login successful', token, role });
+      res.status(200).json({ message: 'Login successful', token, user });
     } catch (error) {
-      return res.status(401).json({ error: error.message });
+      res.status(401).json({ error: error.message });
     }
   },
 

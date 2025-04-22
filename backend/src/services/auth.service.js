@@ -74,6 +74,24 @@ const AuthService = {
       if (username) {
         user = await prisma.user.findUnique({
           where: { username },
+          include: {
+            Applicant: {
+              include: {
+                Skill: true,
+                Edu: true,
+                Exp: true,
+                InterestedField: true,
+                JobSaved: true,
+                JobApplied: true,
+              },
+            },
+            Company: {
+              include: {
+                Post: true,
+                JobPost: true,
+              },
+            },
+          },
         });
       }
       if (!user && email) {
@@ -95,7 +113,7 @@ const AuthService = {
     const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
       expiresIn: '24h',
     });
-    return { token, role: user.role };
+    return { token, user };
   },
 
   logout: async (token) => {
