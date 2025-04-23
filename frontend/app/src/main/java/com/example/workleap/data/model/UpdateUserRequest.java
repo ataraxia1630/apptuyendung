@@ -12,7 +12,7 @@ public class UpdateUserRequest {
     private String background; // Có thể null
 
     public UpdateUserRequest() {};
-    public UpdateUserRequest(String id, String username, String password, String email, String phoneNumber, String avatar, String background)
+    public UpdateUserRequest(String username, String password, String email, String phoneNumber, String avatar, String background)
     {
         this.username = username;
         this.password = password;

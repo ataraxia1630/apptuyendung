@@ -9,8 +9,11 @@ import com.example.workleap.data.model.MessageResponse;
 import com.example.workleap.data.model.RegisterRequest;
 import com.example.workleap.data.model.RegisterResponse;
 import com.example.workleap.data.model.UpdateApplicantRequest;
+import com.example.workleap.data.model.UpdateApplicantResponse;
 import com.example.workleap.data.model.UpdateCompanyRequest;
+import com.example.workleap.data.model.UpdateCompanyResponse;
 import com.example.workleap.data.model.UpdateUserRequest;
+import com.example.workleap.data.model.UpdateUserResponse;
 import com.example.workleap.data.model.User;
 
 import java.util.List;
@@ -39,17 +42,17 @@ public interface ApiService {
 
     //User
     @PUT("api/user/{id}")
-    Call<MessageResponse> updateUser(@Path("id") String id, @Body UpdateUserRequest request);
+    Call<UpdateUserResponse> updateUser(@Path("id") String id, @Body UpdateUserRequest request);
 
     //Applicant
     @GET("api/applicant/{id}")
     Call<GetApplicantResponse> getApplicant(@Path("id") String id);
     @PUT("api/applicant/{id}")
-    Call<MessageResponse> updateApplicant(@Path("id") String id, @Body UpdateApplicantRequest request);
+    Call<UpdateApplicantResponse> updateApplicant(@Path("id") String id, @Body UpdateApplicantRequest request);
 
     //Company
     @GET("api/company/{id}")
     Call<GetCompanyResponse> getCompany(@Path("id") String id);
     @PUT("api/company/{id}")
-    Call<MessageResponse> updateCompany(@Path("id") String id, @Body UpdateCompanyRequest request);
+    Call<UpdateCompanyResponse> updateCompany(@Path("id") String id, @Body UpdateCompanyRequest request);
 }

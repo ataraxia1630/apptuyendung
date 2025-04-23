@@ -1,13 +1,11 @@
 package com.example.workleap.data.repository;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import com.example.workleap.data.api.RetrofitClient;
 
 import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.model.GetApplicantResponse;
-import com.example.workleap.data.model.MessageResponse;
 import com.example.workleap.data.model.UpdateApplicantRequest;
+import com.example.workleap.data.model.UpdateApplicantResponse;
 
 import java.util.List;
 
@@ -27,7 +25,7 @@ public class ApplicantRepository {
     }
 
     //Update
-    public Call<MessageResponse> updateApplicant(String id, UpdateApplicantRequest request) {
+    public Call<UpdateApplicantResponse> updateApplicant(String id, UpdateApplicantRequest request) {
         return apiService.updateApplicant(id, request);
     }
 }
