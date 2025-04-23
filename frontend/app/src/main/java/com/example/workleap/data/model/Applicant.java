@@ -6,7 +6,6 @@ import java.util.Date;
 
 public class Applicant {
     private String id;
-    private String phoneNumber;
     private String address;
     private String firstName;
     private String lastName;
@@ -15,11 +14,18 @@ public class Applicant {
     private Date createdAt;
     private Date updatedAt;
 
+    /*Skill           Skill[]
+    Edu             ApplicantEducation[]
+    Exp             Experience[]
+    InterestedField InterestedField[]
+    JobSaved        JobSaved[]
+    JobApplied      JobApplied[]
+    User            User[]*/
+
     public Applicant() {}
 
-    public Applicant(String id, String phoneNumber, String address, String firstName, String lastName, String profileSummary, byte[] cvFile, Date createdAt, Date updatedAt) {
+    public Applicant(String id, String address, String firstName, String lastName, String profileSummary, byte[] cvFile, Date createdAt, Date updatedAt) {
         this.id = id;
-        this.phoneNumber = phoneNumber;
         this.address = address;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -31,8 +37,6 @@ public class Applicant {
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
-    public String getPhoneNumber() { return phoneNumber; }
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
     public String getFirstName() { return firstName; }
@@ -52,7 +56,6 @@ public class Applicant {
     public String toString() {
         return "Applicant{" +
                 "id='" + id + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
                 ", address='" + address + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
