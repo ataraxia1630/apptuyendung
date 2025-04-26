@@ -63,4 +63,5 @@ public interface ApiService {
     route.delete('/all/:applicantId', verifyToken, SkillController.deleteAll);*/
 
     //Education
+
 }
