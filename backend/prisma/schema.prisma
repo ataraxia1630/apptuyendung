@@ -229,6 +229,7 @@ model JobPost {
   JobCategory          JobCategory? @relation(fields: [jobCategoryId], references: [id])
   JobSaved             JobSaved[]
   JobApplied           JobApplied[]
+  Company              Company?     @relation(fields: [companyId], references: [id])
 }
 
 model JobType {
@@ -285,10 +286,11 @@ model Company {
   id              String    @id @default(uuid())
   name            String    @db.VarChar(255)
   description     String?   @db.VarChar(1000)
-  taxcode         String?
+  taxcode         String?   @unique
   establishedYear DateTime?
   Post            Post[]
   User            User[]
+  JobPost         JobPost[]
 }
 
 model User_History {

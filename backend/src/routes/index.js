@@ -7,6 +7,7 @@ const applicantSkillRoutes = require('./applicantSkill.route');
 const eduRoutes = require('./education.route');
 
 const fieldRoutes = require('./field.route');
+const jobPostRoutes = require('./jobPost.route');
 
 function route(app) {
   app.use('/api/auth', authRoutes);
@@ -19,6 +20,7 @@ function route(app) {
   app.use('/api/education', eduRoutes);
 
   app.use('/api/field', fieldRoutes);
+  app.use('/api/job-posts', jobPostRoutes);
 }
 
 module.exports = route;
