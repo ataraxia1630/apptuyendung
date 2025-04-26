@@ -1,6 +1,9 @@
 package com.example.workleap.data.api;
 
+import com.example.workleap.data.model.CreateApplicantSkillRequest;
+import com.example.workleap.data.model.CreateApplicantSkillResponse;
 import com.example.workleap.data.model.GetApplicantResponse;
+import com.example.workleap.data.model.GetApplicantSkillResponse;
 import com.example.workleap.data.model.GetCompanyResponse;
 import com.example.workleap.data.model.LoginRequest;
 import com.example.workleap.data.model.LoginResponse;
@@ -10,13 +13,12 @@ import com.example.workleap.data.model.RegisterRequest;
 import com.example.workleap.data.model.RegisterResponse;
 import com.example.workleap.data.model.UpdateApplicantRequest;
 import com.example.workleap.data.model.UpdateApplicantResponse;
+import com.example.workleap.data.model.UpdateApplicantSkillRequest;
+import com.example.workleap.data.model.UpdateApplicantSkillResponse;
 import com.example.workleap.data.model.UpdateCompanyRequest;
 import com.example.workleap.data.model.UpdateCompanyResponse;
 import com.example.workleap.data.model.UpdateUserRequest;
 import com.example.workleap.data.model.UpdateUserResponse;
-import com.example.workleap.data.model.User;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -56,12 +58,19 @@ public interface ApiService {
     Call<UpdateCompanyResponse> updateCompany(@Path("id") String id, @Body UpdateCompanyRequest request);
 
     //Skill
-    /*route.get('/:applicantId', verifyToken, SkillController.getAll);
-    route.post('/:applicantId', verifyToken, SkillController.createNew);
-    route.put('/:id', verifyToken, SkillController.updateSkill);
-    route.delete('/:id', verifyToken, SkillController.deleteSkill);
-    route.delete('/all/:applicantId', verifyToken, SkillController.deleteAll);*/
+    @GET("api/applicantskill/{skillId}")
+    Call<GetApplicantSkillResponse> getApplicantSkill(@Path("applicantId") String applicantId);
 
-    //Education
+    @POST("api/applicantskill/{skillId}")
+    Call<CreateApplicantSkillResponse> createApplicantSkill(@Path("skillId") String skillId, @Body CreateApplicantSkillRequest request);
+
+    @PUT("api/applicantskill/{skillid}")
+    Call<UpdateApplicantSkillResponse> updateApplicantSkill(@Path("skillId") String skillId, @Body UpdateApplicantSkillRequest request);
+
+    @DELETE("api/applicantskill/{skillid}")
+    Call<MessageResponse> deleteApplicantSkill(@Path("id") String id);
+
+    @DELETE("api/applicantskill/all/{skillid}")
+    Call<MessageResponse> deleteAllApplicantSkill(@Path("id") String id);
 
 }
