@@ -68,14 +68,14 @@
                     android:id="@+id/btnEditUserName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="8dp"
+
+                    android:layout_marginBottom="8dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Edit user name"
-                    android:src="@drawable/ic_edit_pen"
-
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"/>
+                    android:src="@drawable/ic_edit_pen" />
 
 
             </RelativeLayout>
@@ -165,7 +165,7 @@
                         android:textStyle="bold" />
 
                     <ImageButton
-                        android:id="@+id/btnEditInfo"
+                        android:id="@+id/btnApplicantInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="?attr/selectableItemBackgroundBorderless"

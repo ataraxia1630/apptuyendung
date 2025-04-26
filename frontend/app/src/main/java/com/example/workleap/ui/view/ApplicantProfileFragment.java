@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.workleap.R;
@@ -22,6 +23,10 @@ public class ApplicantProfileFragment extends Fragment {
     View view;
     TextView tvUserName, tvUserNameInfo, tvMailInfo, tvPhoneInfo;
     User user;
+
+    ImageButton btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
+
+    EditProfileDialogFragment dialog;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,8 +66,6 @@ public class ApplicantProfileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
     }
 
     @Override
@@ -78,10 +81,27 @@ public class ApplicantProfileFragment extends Fragment {
         tvMailInfo = (TextView) view.findViewById(R.id.emailInfo);
         tvPhoneInfo= (TextView) view.findViewById(R.id.phoneInfo);
 
+        btnEditApplicantName = view.findViewById(R.id.btnEditUserName);
+        btnEditAboutMe = view.findViewById(R.id.btnEditAboutMe);
+        btnEditApplicantInfo = view.findViewById(R.id.btnApplicantInfo);
+
         tvUserName.setText(user.getUsername());
         tvUserNameInfo.setText(user.getUsername());
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
+
+        btnEditApplicantName.setOnClickListener(v -> {
+            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantName");
+            dialog.show(getChildFragmentManager(), "EditApplicantNameDialog");
+        });
+        btnEditAboutMe.setOnClickListener(v -> {
+            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("AboutMe");
+            dialog.show(getChildFragmentManager(), "EditApplicantNameDialog");
+        });
+        btnEditApplicantInfo.setOnClickListener(v -> {
+            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantInfo");
+            dialog.show(getChildFragmentManager(), "EditApplicantNameDialog");
+        });
 
         return view;
     }
