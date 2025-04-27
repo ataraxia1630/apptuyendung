@@ -9,6 +9,7 @@ const CVController = {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
+    console.log('File:', req.file);
     try {
       const cv = await CVService.uploadCV(applicantId, req.file, req.body);
       return res.status(201).json({ message: 'CV uploaded successfully', cv });

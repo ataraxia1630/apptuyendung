@@ -1,18 +1,13 @@
 const prisma = require('../config/db/prismaClient');
 const { CVHelper } = require('../helpers/cv.helper');
-const { get } = require('../routes/auth.route');
 
 const CVService = {
   uploadCV: async (applicantId, file, data) => {
     try {
       const filePath = await CVHelper.uploadCV(file, applicantId);
-      const cv = await prisma.cv.create({
-        data: {
-          applicantId,
-          filePath,
-          ...data,
-          viewCount: 0,
-        },
+      console.log('File uploaded to Supabase:', filePath);
+      const cv = await prisma.cV.create({
+        data: { ...data, filePath, applicantId, viewCount: 0 },
       });
       return cv;
     } catch (error) {
@@ -23,7 +18,7 @@ const CVService = {
 
   getCV: async (id) => {
     try {
-      const cv = await prisma.cv.findUnique({
+      const cv = await prisma.cV.findUnique({
         where: { id },
       });
       if (!cv) {
@@ -38,7 +33,12 @@ const CVService = {
 
   downloadCV: async (id) => {
     try {
-      const cv = await getCV(id);
+      const cv = await prisma.cV.findUnique({
+        where: { id },
+      });
+      if (!cv) {
+        throw new Error('CV not found');
+      }
       const signedUrl = await CVHelper.getCVSignedUrl(cv.filePath);
       return signedUrl;
     } catch (error) {
@@ -49,7 +49,7 @@ const CVService = {
 
   getAllCV: async (applicantId) => {
     try {
-      const cvs = await prisma.cv.findMany({
+      const cvs = await prisma.cV.findMany({
         where: { applicantId },
       });
       return cvs;
@@ -61,7 +61,7 @@ const CVService = {
 
   deleteAllCV: async (applicantId) => {
     try {
-      await prisma.cv.deleteMany({
+      await prisma.cV.deleteMany({
         where: { applicantId },
       });
     } catch (error) {
@@ -72,7 +72,7 @@ const CVService = {
 
   updateCV: async (id, data) => {
     try {
-      const cv = await prisma.cv.update({
+      const cv = await prisma.cV.update({
         where: { id },
         data,
       });
@@ -85,7 +85,7 @@ const CVService = {
 
   deleteCV: async (id) => {
     try {
-      await prisma.cv.delete({
+      await prisma.cV.delete({
         where: { id },
       });
     } catch (error) {

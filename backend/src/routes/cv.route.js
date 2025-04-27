@@ -1,11 +1,17 @@
 const { Router } = require('express');
-const { verifyToken } = require('../middleware/auth.middleware');
+const { verifyToken } = require('../middlewares/auth.middleware');
+const { uploadFile } = require('../middlewares/uploadFile.middleware');
 const { CVController } = require('../controllers/cv.controller');
 
 const route = new Router();
 
 // upload cv
-route.post('/upload/:applicantId', verifyToken, CVController.uploadCV);
+route.post(
+  '/upload/:applicantId',
+  verifyToken,
+  uploadFile,
+  CVController.uploadCV
+);
 
 // download cv
 route.get('/download/:id', verifyToken, CVController.downloadCV);
