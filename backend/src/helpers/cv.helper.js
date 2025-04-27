@@ -38,6 +38,20 @@ const CVHelper = {
       throw new Error('Generate signed URL failed: ' + error.message);
     }
   },
+
+  deleteCV: async (filePath) => {
+    try {
+      const { error } = await supabase.storage
+        .from('cv-storage')
+        .remove([filePath]);
+      if (error) {
+        throw new Error('Delete file failed: ' + error.message);
+      }
+      return true;
+    } catch (error) {
+      throw new Error('Delete file failed: ' + error.message);
+    }
+  },
 };
 
 module.exports = { CVHelper };

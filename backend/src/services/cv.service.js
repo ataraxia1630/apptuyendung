@@ -61,6 +61,15 @@ const CVService = {
 
   deleteAllCV: async (applicantId) => {
     try {
+      const files = await prisma.cV.findMany({
+        where: { applicantId },
+        select: { filePath: true },
+      });
+
+      for (const file of files) {
+        await CVHelper.deleteCV(file.filePath);
+      }
+
       await prisma.cV.deleteMany({
         where: { applicantId },
       });

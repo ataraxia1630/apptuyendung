@@ -1,0 +1,10 @@
+CREATE POLICY "Allow uploads to cv-storage"
+ON storage.objects
+FOR INSERT
+WITH CHECK (bucket_id = 'cv-storage');
+
+CREATE POLICY "Allow delete from cv-storage"
+ON storage.objects
+FOR DELETE
+USING (bucket_id = 'cv-storage' AND auth.role() = 'authenticated');
+
