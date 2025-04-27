@@ -130,7 +130,7 @@ model Skill {
 
 model Education {
   id                 String               @id @default(uuid())
-  uniName            String               @db.VarChar(255)
+  uniName            String               @unique @db.VarChar(255)
   description        String?              @db.VarChar(1000)
   uniLink            String?
   address            String //ref
@@ -158,12 +158,12 @@ model ApplicantEducation {
 model Experience {
   id                String        @id @default(uuid())
   applicantId       String
-  companyId         String // ref: company
+  companyName       String
   companyLink       String?
   position          String        @db.VarChar(255)
-  work_start        DateTime
-  work_end          DateTime
-  jobResponsibility String?
+  work_start        DateTime?
+  work_end          DateTime?
+  jobResponsibility String        @db.VarChar(1000)
   moreInfo          String?       @db.VarChar(1000)
   achievement       Achievement[]
   created_at        DateTime      @default(now())
