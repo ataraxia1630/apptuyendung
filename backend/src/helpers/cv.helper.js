@@ -7,10 +7,16 @@ const CVHelper = {
     const filePath = `applicant-cv/${fileName}`;
 
     try {
-      await supabase.storage.from('cv-storage').upload(filePath, file.buffer, {
-        contentType: file.mimetype,
-        upsert: true,
-      });
+      const { data, error } = await supabase.storage
+        .from('cv-storage')
+        .upload(filePath, file.buffer, {
+          contentType: file.mimetype,
+          upsert: true,
+        });
+
+      if (error) {
+        throw new Error('Upload failed: ' + error.message);
+      }
       return filePath;
     } catch (error) {
       throw new Error('Upload failed (supabase): ' + error.message);
