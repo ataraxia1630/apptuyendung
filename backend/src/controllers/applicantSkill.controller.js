@@ -5,9 +5,12 @@ const SkillController = {
     const { applicantId } = req.params;
     try {
       const applicantSkills = await ApplicantSkillService.getAll(applicantId);
-      res.status(200).json(applicantSkills);
-    } catch {
-      res.status(501).json('Error fetching applicant skills');
+      return res.status(200).json(applicantSkills);
+    } catch (error) {
+      return res.status(500).json({
+        message: 'Error fetching applicant skills',
+        error: error.message || error,
+      });
     }
   },
 
@@ -16,9 +19,12 @@ const SkillController = {
     const data = req.body;
     try {
       const newSkill = await ApplicantSkillService.createNew(applicantId, data);
-      res.status(200).json(newSkill);
-    } catch {
-      res.status(501).json('Error creating new skill');
+      return res.status(201).json(newSkill);
+    } catch (error) {
+      return res.status(500).json({
+        message: 'Error creating new skill',
+        error: error.message || error,
+      });
     }
   },
 
@@ -27,29 +33,38 @@ const SkillController = {
     const data = req.body;
     try {
       const updatedSkill = await ApplicantSkillService.updateSkill(id, data);
-      res.status(200).json(updatedSkill);
-    } catch {
-      res.status(501).json('Error updating skill');
+      return res.status(200).json(updatedSkill);
+    } catch (error) {
+      return res.status(500).json({
+        message: 'Error updating skill',
+        error: error.message || error,
+      });
     }
   },
 
   deleteSkill: async (req, res) => {
     const { id } = req.params;
     try {
-      const deletedSkill = await ApplicantSkillService.deleteSkill(id);
-      res.status(200).json(deletedSkill);
-    } catch {
-      res.status(501).json('Error deleting skill');
+      await ApplicantSkillService.deleteSkill(id);
+      return res.status(204).send();
+    } catch (error) {
+      return res.status(500).json({
+        message: 'Error deleting skill',
+        error: error.message || error,
+      });
     }
   },
 
   deleteAll: async (req, res) => {
     const { applicantId } = req.params;
     try {
-      const deletedSkills = await ApplicantSkillService.deleteAll(applicantId);
-      res.status(200).json(deletedSkills);
-    } catch {
-      res.status(501).json('Error deleting applicant skills');
+      await ApplicantSkillService.deleteAll(applicantId);
+      return res.status(204).send();
+    } catch (error) {
+      return res.status(500).json({
+        message: 'Error deleting all skills',
+        error: error.message || error,
+      });
     }
   },
 };
