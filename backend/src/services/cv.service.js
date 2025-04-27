@@ -94,6 +94,16 @@ const CVService = {
 
   deleteCV: async (id) => {
     try {
+      const cv = await prisma.cV.findUnique({
+        where: { id },
+      });
+
+      if (!cv) {
+        throw new Error('CV not found');
+      }
+
+      await CVHelper.deleteCV(cv.filePath);
+
       await prisma.cV.delete({
         where: { id },
       });

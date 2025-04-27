@@ -8,3 +8,7 @@ ON storage.objects
 FOR DELETE
 USING (bucket_id = 'cv-storage' AND auth.role() = 'authenticated');
 
+CREATE POLICY "Allow download from cv-storage"
+ON storage.objects
+FOR SELECT
+USING (bucket_id = 'cv-storage' AND auth.role() = 'authenticated');
