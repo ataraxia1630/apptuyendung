@@ -11,6 +11,8 @@ const fieldRoutes = require('./field.route');
 const jobTypeRoutes = require('./jobType.route');
 const jobCategoryRoutes = require('./jobCategory.route');
 
+const cvRoutes = require('./cv.route');
+
 function route(app) {
   app.use('/api/auth', authRoutes);
   app.use('/api/users/applicant', applicantRoutes);
@@ -25,6 +27,8 @@ function route(app) {
   app.use('/api/field', fieldRoutes);
   app.use('/api/type', jobTypeRoutes);
   app.use('/api/category', jobCategoryRoutes);
+
+  app.use('/api/cv', cvRoutes);
 }
 
 module.exports = route;
