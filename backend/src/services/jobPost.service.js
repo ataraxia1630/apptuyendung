@@ -6,11 +6,10 @@ const JobPostService = {
         try {
             const jobPosts = await prisma.jobPost.findMany({
                 include: {
-                    Company: true, // Đảm bảo rằng 'Company' là tên đúng của quan hệ
+                    Company: true,
                     JobType: true,
                     JobCategory: true,
                     JobSaved: true,
-                    JobApplied: true,
                 },
             });
             console.log('JobPosts fetched:', jobPosts.length);
