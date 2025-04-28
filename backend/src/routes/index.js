@@ -8,6 +8,8 @@ const eduRoutes = require('./education.route');
 
 const fieldRoutes = require('./field.route');
 const jobPostRoutes = require('./jobPost.route');
+const jobTypeRoutes = require('./jobType.route');
+const jobCategoryRoutes = require('./jobCategory.route');
 
 function route(app) {
   app.use('/api/auth', authRoutes);
@@ -21,6 +23,8 @@ function route(app) {
 
   app.use('/api/field', fieldRoutes);
   app.use('/api/job-posts', jobPostRoutes);
+  app.use('/api/type', jobTypeRoutes);
+  app.use('/api/category', jobCategoryRoutes);
 }
 
 module.exports = route;

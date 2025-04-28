@@ -6,7 +6,7 @@ const FieldService = {
       const fields = await prisma.field.findMany();
       return fields;
     } catch (error) {
-      throw new Error('Error retrieving fields: ' + error.message);
+      throw new Error('Error retrieving fields (service): ' + error.message);
     }
   },
 
@@ -17,7 +17,7 @@ const FieldService = {
       });
       return field;
     } catch (error) {
-      throw new Error('Error retrieving field: ' + error.message);
+      throw new Error('Error retrieving field (service): ' + error.message);
     }
   },
 
@@ -28,7 +28,7 @@ const FieldService = {
       });
       return field;
     } catch (error) {
-      throw new Error('Error creating field: ' + error.message);
+      throw new Error('Error creating field (service): ' + error.message);
     }
   },
 
@@ -40,7 +40,7 @@ const FieldService = {
       });
       return field;
     } catch (error) {
-      throw new Error('Error updating field: ' + error.message);
+      throw new Error('Error updating field (service): ' + error.message);
     }
   },
 
@@ -52,7 +52,9 @@ const FieldService = {
       });
       return fields.map((item) => item.field);
     } catch (error) {
-      throw new Error('Error retrieving interested fields: ' + error.message);
+      throw new Error(
+        'Error retrieving interested fields (service): ' + error.message
+      );
     }
   },
 
@@ -64,7 +66,9 @@ const FieldService = {
       });
       return interestedFields;
     } catch (error) {
-      throw new Error('Error adding interested fields: ' + error.message);
+      throw new Error(
+        'Error adding interested fields (service): ' + error.message
+      );
     }
   },
 
@@ -74,7 +78,9 @@ const FieldService = {
         where: { applicantId },
       });
     } catch (error) {
-      throw new Error('Error removing all interested fields: ' + error.message);
+      throw new Error(
+        'Error removing all interested fields (service): ' + error.message
+      );
     }
   },
 
@@ -84,7 +90,9 @@ const FieldService = {
         where: { applicantId, fieldId },
       });
     } catch (error) {
-      throw new Error('Error removing interested field: ' + error.message);
+      throw new Error(
+        'Error removing interested field (service): ' + error.message
+      );
     }
   },
 };

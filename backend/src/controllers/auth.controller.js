@@ -4,9 +4,9 @@ const AuthController = {
   register: async (req, res) => {
     try {
       const user = await AuthService.register(req.body);
-      res.status(201).json({ message: 'Registered successfully', user });
+      return res.status(201).json({ message: 'Registered successfully', user });
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: error.message });
     }
   },
 
@@ -28,9 +28,9 @@ const AuthController = {
     try {
       const { token } = req.body;
       await AuthService.logout(token);
-      res.status(200).json({ message: 'Logout successful' });
+      return res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
-      res.status(401).json({ error: error.message });
+      return res.status(401).json({ error: error.message });
     }
   },
 };

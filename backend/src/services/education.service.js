@@ -2,77 +2,78 @@ const prisma = require('../config/db/prismaClient');
 const EducationService = {
   getAllEdu: async () => {
     try {
-      const educations = await prisma.education.findMany();
-      return educations;
+      return await prisma.education.findMany();
     } catch (error) {
-      throw new Error('Error fetching education records');
+      throw new Error(
+        'Error fetching all educations (service): ' + error.message
+      );
     }
   },
 
   createNewEdu: async (data) => {
     try {
-      const newEdu = await prisma.education.create({
+      return await prisma.education.create({
         data,
       });
-      return newEdu;
     } catch (error) {
-      throw new Error('Error creating education record');
+      throw new Error('Error creating education (service): ' + error.message);
     }
   },
 
   getAll: async (applicantId) => {
     try {
-      const applicantEdu = await prisma.applicantEducation.findMany({
+      return await prisma.applicantEducation.findMany({
         where: { applicantId },
         order: [['startDate', 'DESC']],
         include: { achievements: true },
       });
-      return applicantEdu;
     } catch (error) {
-      throw new Error('Error fetching education records');
+      throw new Error(
+        'Error fetching all education of applicant (service): ' + error.message
+      );
     }
   },
 
   createNew: async (applicantId, data) => {
     try {
-      const newEdu = await prisma.applicantEducation.create({
+      return await prisma.applicantEducation.create({
         data: { ...data, applicantId },
       });
-      return newEdu;
     } catch (error) {
-      throw new Error('Error creating education record');
+      throw new Error('Error creating education (service): ' + error.message);
     }
   },
 
   updateEdu: async (id, data) => {
     try {
-      const updatedEdu = await prisma.applicantEducation.update({
+      return await prisma.applicantEducation.update({
         where: { id },
         data,
       });
-      return updatedEdu;
     } catch (error) {
-      throw new Error('Error updating education record');
+      throw new Error('Error updating education (service): ' + error.message);
     }
   },
 
   deleteEdu: async (id) => {
     try {
-      await prisma.applicantEducation.delete({
+      return await prisma.applicantEducation.delete({
         where: { id },
       });
     } catch (error) {
-      throw new Error('Error deleting education record');
+      throw new Error('Error deleting education (service): ' + error.message);
     }
   },
 
   deleteAll: async (applicantId) => {
     try {
-      await prisma.applicantEducation.deleteMany({
+      return await prisma.applicantEducation.deleteMany({
         where: { applicantId },
       });
     } catch (error) {
-      throw new Error('Error deleting all education records');
+      throw new Error(
+        'Error deleting all educations (service): ' + error.message
+      );
     }
   },
 };
