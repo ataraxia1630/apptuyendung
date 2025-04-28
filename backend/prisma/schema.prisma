@@ -208,7 +208,7 @@ model InterestedField {
 // ? 1 jobpost co nen co nhieu jobtype va category
 model JobPost {
   id                   String       @id @default(uuid())
-  companyId            String
+  companyId            String //ref
   jobCategoryId        String?
   jobTypeId            String
   title                String       @db.VarChar(255)
@@ -221,15 +221,15 @@ model JobPost {
   salary_start         Decimal      @db.Decimal(10, 2)
   salary_end           Decimal      @db.Decimal(10, 2)
   currency             String       @db.VarChar(10)
-  status               PostStatus   @default(OPENING)
+  status               PostStatus?  @default(OPENING)
   apply_until          DateTime
+  JobApplied           JobApplied[]
   created_at           DateTime     @default(now())
   updated_at           DateTime     @updatedAt
   Company              Company      @relation(fields: [companyId], references: [id])
   JobType              JobType      @relation(fields: [jobTypeId], references: [id])
   JobCategory          JobCategory? @relation(fields: [jobCategoryId], references: [id])
   JobSaved             JobSaved[]
-  JobApplied           JobApplied[]
 }
 
 model JobType {
@@ -291,7 +291,7 @@ model Company {
   id              String    @id @default(uuid())
   name            String    @db.VarChar(255)
   description     String?   @db.VarChar(1000)
-  taxcode         String?
+  taxcode         String?   @unique
   establishedYear DateTime?
   Post            Post[]
   User            User[]
