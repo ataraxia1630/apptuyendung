@@ -25,7 +25,7 @@ function route(app) {
   app.use('/api/experience', expRoutes);
 
   app.use('/api/fields', fieldRoutes);
-  app.use('/api/type', jobTypeRoutes);
+  app.use('/api/types', jobTypeRoutes);
   app.use('/api/category', jobCategoryRoutes);
 
   app.use('/api/cv', cvRoutes);
