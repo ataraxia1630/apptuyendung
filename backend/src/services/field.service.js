@@ -80,9 +80,17 @@ const FieldService = {
 
   addInterestedFields: async (applicantId, fieldIds) => {
     try {
-      const interestedFields = await prisma.interestedField.createMany({
+      await prisma.interestedField.deleteMany({
+        where: { applicantId, fieldId: { notIn: fieldIds } },
+      });
+
+      await prisma.interestedField.createMany({
         data: fieldIds.map((fieldId) => ({ applicantId, fieldId })),
         skipDuplicates: true,
+      });
+
+      const interestedFields = await prisma.interestedField.findMany({
+        where: { applicantId },
       });
       return interestedFields;
     } catch (error) {
