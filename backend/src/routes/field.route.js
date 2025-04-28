@@ -4,8 +4,10 @@ const { FieldController } = require('../controllers/field.controller');
 const { verifyToken } = require('../middlewares/auth.middleware');
 
 const route = new Router();
-route.get('/', verifyToken, FieldController.getAllFields);
-route.get('/:fieldName', verifyToken, FieldController.getFieldByName);
+route.get('/all', verifyToken, FieldController.getAllFields);
+
+// get by name or id
+route.get('/:name', verifyToken, FieldController.getField);
 
 // ADMIN only??
 route.post('/', verifyToken, FieldController.createField);

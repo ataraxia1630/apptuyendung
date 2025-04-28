@@ -14,11 +14,6 @@ const ApplicantSkillService = {
 
   createNew: async (applicantId, data) => {
     if (!applicantId) throw new Error('applicantId is required');
-    if (!data) throw new Error('data is required');
-    const { skillName, certificate } = data;
-    if (!skillName || !certificate)
-      throw new Error('skillName and certificate is requireds');
-
     try {
       return await prisma.skill.create({
         data: { ...data, applicantId },
@@ -29,7 +24,6 @@ const ApplicantSkillService = {
   },
 
   updateSkill: async (id, data) => {
-    if (!data) throw new Error('data is required');
     if (!id) throw new Error('id is required');
     try {
       return await prisma.skill.update({
@@ -43,7 +37,6 @@ const ApplicantSkillService = {
 
   deleteSkill: async (id) => {
     if (!id) throw new Error('id is required');
-
     try {
       return await prisma.skill.delete({
         where: { id },

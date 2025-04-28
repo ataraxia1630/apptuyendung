@@ -83,6 +83,7 @@ const AuthService = {
                 InterestedField: true,
                 JobSaved: true,
                 JobApplied: true,
+                CV: true,
               },
             },
             Company: {
@@ -106,6 +107,7 @@ const AuthService = {
                 InterestedField: true,
                 JobSaved: true,
                 JobApplied: true,
+                CV: true,
               },
             },
             Company: {

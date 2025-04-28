@@ -12,15 +12,15 @@ const FieldController = {
     }
   },
 
-  getFieldByName: async (req, res) => {
-    const { fieldName } = req.params;
-    if (!fieldName) {
+  getField: async (req, res) => {
+    const { name } = req.params;
+    if (!name) {
       return res.status(400).json({
         message: 'Field name is required',
       });
     }
     try {
-      const field = await FieldService.getFieldByName(fieldName);
+      const field = await FieldService.getField(name);
       return res.status(200).json(field);
     } catch (error) {
       return res.status(500).json({
@@ -31,9 +31,14 @@ const FieldController = {
   },
 
   createField: async (req, res) => {
-    const { fieldName } = req.body;
+    const { name } = req.body;
+    if (!name) {
+      return res.status(400).json({
+        message: 'Field name is required',
+      });
+    }
     try {
-      const field = await FieldService.createField(fieldName);
+      const field = await FieldService.createField(name);
       return res.status(201).json(field);
     } catch (error) {
       return res.status(500).json({
@@ -50,9 +55,9 @@ const FieldController = {
         message: 'Field ID is required',
       });
     }
-    const { fieldName } = req.body;
+    const { name } = req.body;
     try {
-      const field = await FieldService.updateField(id, fieldName);
+      const field = await FieldService.updateField(id, name);
       return res.status(200).json(field);
     } catch (error) {
       return res.status(500).json({

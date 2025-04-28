@@ -3,7 +3,7 @@ const { EducationService } = require('../services/education.service');
 const EducationController = {
   getAllEdu: async (req, res) => {
     try {
-      const educations = await EducationService.getAll();
+      const educations = await EducationService.getAllEdu();
       return res.status(200).json(educations);
     } catch (error) {
       return res.status(500).json({

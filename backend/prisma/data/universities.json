@@ -1,0 +1,32 @@
+[
+  {
+    "uniName": "Đại học Bách Khoa Hà Nội",
+    "description": "Trường kỹ thuật hàng đầu Việt Nam",
+    "uniLink": "https://hust.edu.vn",
+    "address": "Hà Nội"
+  },
+  {
+    "uniName": "Đại học Công nghệ Thông tin - ĐHQG TPHCM",
+    "description": "Chuyên ngành Công nghệ Thông tin",
+    "uniLink": "https://www.uit.edu.vn",
+    "address": "TP. Hồ Chí Minh"
+  },
+  {
+    "uniName": "Đại học Khoa học Tự nhiên - ĐHQG TP.HCM",
+    "description": "Trường chuyên sâu về khoa học tự nhiên",
+    "uniLink": "https://hcmus.edu.vn",
+    "address": "TP. Hồ Chí Minh"
+  },
+  {
+    "uniName": "Đại học Kinh tế Quốc dân",
+    "description": "Trường kinh tế hàng đầu tại Việt Nam",
+    "uniLink": "https://neu.edu.vn",
+    "address": "Hà Nội"
+  },
+  {
+    "uniName": "Đại học Cần Thơ",
+    "description": "Trường đại học trọng điểm khu vực Tây Nam Bộ",
+    "uniLink": "https://www.ctu.edu.vn",
+    "address": "Cần Thơ"
+  }
+]
