@@ -3,7 +3,7 @@ const prisma = require('../config/db/prismaClient');
 const JobCategoryService = {
   getAll: async () => {
     try {
-      return await new prisma.jobCategory.findMany();
+      return await prisma.jobCategory.findMany();
     } catch (error) {
       throw new Error(
         'Error fetching job categories (service): ' + error.message
@@ -13,8 +13,11 @@ const JobCategoryService = {
 
   createMany: async (jobCategories) => {
     try {
-      const categories = await new prisma.jobCategory.createMany({
-        data: jobCategories,
+      const categories = await prisma.jobCategory.createManyAndReturn({
+        data: jobCategories.map((category) => ({
+          name: category.name,
+          fieldId: category.fieldId,
+        })),
         skipDuplicates: true,
       });
       return categories;
