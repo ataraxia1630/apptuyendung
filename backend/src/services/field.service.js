@@ -10,21 +10,35 @@ const FieldService = {
     }
   },
 
-  getFieldByName: async (fieldName) => {
+  getField: async (name) => {
     try {
-      const field = await prisma.field.findUnique({
-        where: { fieldName },
+      let field = await prisma.field.findFirst({
+        where: { name },
       });
+      if (!field) {
+        field = await prisma.field.findFirst({
+          where: { id: name },
+        });
+      }
+      if (!field) {
+        throw new Error('Field not found');
+      }
       return field;
     } catch (error) {
       throw new Error('Error retrieving field (service): ' + error.message);
     }
   },
 
-  createField: async (fieldName) => {
+  createField: async (name) => {
     try {
+      const existingField = await prisma.field.findFirst({
+        where: { name },
+      });
+      if (existingField) {
+        throw new Error('Field already exists');
+      }
       const field = await prisma.field.create({
-        data: { fieldName },
+        data: { name },
       });
       return field;
     } catch (error) {
@@ -32,11 +46,17 @@ const FieldService = {
     }
   },
 
-  updateField: async (id, fieldName) => {
+  updateField: async (id, name) => {
     try {
+      const existingField = await prisma.field.findFirst({
+        where: { id },
+      });
+      if (!existingField) {
+        throw new Error('Field not found');
+      }
       const field = await prisma.field.update({
         where: { id },
-        data: { fieldName },
+        data: { name },
       });
       return field;
     } catch (error) {
