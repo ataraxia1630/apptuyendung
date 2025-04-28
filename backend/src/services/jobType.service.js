@@ -3,7 +3,7 @@ const prisma = require('../config/db/prismaClient');
 const JobTypeService = {
   getAll: async () => {
     try {
-      return await new prisma.jobType.findMany();
+      return await prisma.jobType.findMany();
     } catch (error) {
       throw new Error('Error fetching job types (service): ' + error.message);
     }
@@ -11,8 +11,8 @@ const JobTypeService = {
 
   createMany: async (jobTypes) => {
     try {
-      const types = await new prisma.jobType.createMany({
-        data: jobTypes,
+      const types = await prisma.jobType.createManyAndReturn({
+        data: jobTypes.map((type) => ({ name: type })),
         skipDuplicates: true,
       });
       return types;

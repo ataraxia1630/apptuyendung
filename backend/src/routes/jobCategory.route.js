@@ -6,7 +6,7 @@ const { verifyToken } = require('../middlewares/auth.middleware');
 
 const route = new Router();
 
-route.get('/', verifyToken, JobCategoryController.getAll);
+route.get('/all', verifyToken, JobCategoryController.getAll);
 
 route.post('/', verifyToken, JobCategoryController.createMany);
 
