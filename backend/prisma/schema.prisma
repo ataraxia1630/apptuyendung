@@ -347,7 +347,7 @@ model Comment {
   CommentId     String?
   CommentDetail String
   created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
+  updated_at    TimeStamp @updatedAt
   User          User      @relation(fields: [userId], references: [id])
   Post          Post      @relation(fields: [postId], references: [id])
   parentComment Comment?  @relation("ParentChild", fields: [CommentId], references: [id])
