@@ -3,10 +3,14 @@ package com.example.workleap.ui.viewmodel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.workleap.data.api.UpdateApplicantEducationRequest;
+import com.example.workleap.data.model.CreateApplicantEducationRequest;
+import com.example.workleap.data.model.CreateApplicantEducationResponse;
 import com.example.workleap.data.model.CreateApplicantSkillRequest;
 import com.example.workleap.data.model.CreateApplicantSkillResponse;
 import com.example.workleap.data.model.GetApplicantSkillResponse;
 import com.example.workleap.data.model.MessageResponse;
+import com.example.workleap.data.model.UpdateApplicantEducationResponse;
 import com.example.workleap.data.model.UpdateApplicantRequest;
 import com.example.workleap.data.model.UpdateApplicantResponse;
 import com.example.workleap.data.model.GetApplicantResponse;
@@ -15,19 +19,28 @@ import com.example.workleap.data.model.UpdateApplicantSkillResponse;
 import com.example.workleap.data.repository.ApplicantRepository;
 import com.google.gson.Gson;
 
+import java.util.Date;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ApplicantViewModel {
     private ApplicantRepository applicantRepository;
+
     private MutableLiveData<String> updateApplicantResult = new MutableLiveData<>();
     private MutableLiveData<String> getApplicantResult = new MutableLiveData<>();
-    private MutableLiveData<String> getApplicantSkillResult = new MutableLiveData<>();
+
     private MutableLiveData<String> createApplicantSkillResult = new MutableLiveData<>();
     private MutableLiveData<String> updateApplicantSkillResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteApplicantSkillResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteAllApplicantSkillResult = new MutableLiveData<>();
+
+    private MutableLiveData<String> createApplicantEducationResult = new MutableLiveData<>();
+    private MutableLiveData<String> updateApplicantEducationResult = new MutableLiveData<>();
+    private MutableLiveData<String> deleteApplicantEducationResult = new MutableLiveData<>();
+    private MutableLiveData<String> deleteAllApplicantEducationResult = new MutableLiveData<>();
 
     public ApplicantViewModel() {
         applicantRepository = new ApplicantRepository();
@@ -36,10 +49,16 @@ public class ApplicantViewModel {
     // Getter cho LiveData
     public LiveData<String> getUpdateApplicantResult() { return updateApplicantResult; }
     public LiveData<String> getGetApplicantResult() { return getApplicantResult; }
-    public LiveData<String> getGetApplicantSkillResult() { return getApplicantSkillResult; }
+
     public LiveData<String> getCreateApplicantSkillResult() { return createApplicantSkillResult; }
     public LiveData<String> getUpdateApplicantSkillResult() { return updateApplicantSkillResult; }
     public LiveData<String> getDeleteApplicantSkillResult() { return deleteApplicantSkillResult; }
+    public LiveData<String> getDeleteAllApplicantSkillResult() { return deleteAllApplicantSkillResult; }
+
+    public LiveData<String> getCreateApplicantEducationResult() { return createApplicantSkillResult; }
+    public LiveData<String> getUpdateApplicantEducationResult() { return updateApplicantSkillResult; }
+    public LiveData<String> getDeleteApplicantEducationResult() { return deleteApplicantSkillResult; }
+    public LiveData<String> getDeleteAllApplicantEducationResult() { return deleteAllApplicantSkillResult; }
 
     // Get applicant
     public void getApplicant(String id) {
@@ -94,35 +113,10 @@ public class ApplicantViewModel {
         });
     }
 
-    //Get Skill
-    public void getApplicantSkill(String applicantId) {
-        Call<GetApplicantSkillResponse> call = applicantRepository.getApplicantSkill(applicantId);
-        call.enqueue(new Callback<GetApplicantSkillResponse>() {
-            @Override
-            public void onResponse(Call<GetApplicantSkillResponse> call, Response<GetApplicantSkillResponse> response) {
-                if (response.isSuccessful()) {
-                    GetApplicantSkillResponse getResponse = response.body();
-                    getApplicantSkillResult.setValue(getResponse.getMessage());
-                } else {
-                    try {
-                        GetApplicantSkillResponse error = new Gson().fromJson(response.errorBody().string(), GetApplicantSkillResponse.class);
-                        getApplicantSkillResult.setValue("Lỗi: " + error.getMessage());
-                    } catch (Exception e) {
-                        getApplicantSkillResult.setValue("Lỗi không xác định: " + response.code());
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<GetApplicantSkillResponse> call, Throwable t) {
-                getApplicantSkillResult.setValue("Lỗi kết nối: " + t.getMessage());
-            }
-        });
-    }
-
     //Create Skill
-    public void createApplicantSkill(String skillId, String skillName, String description, String certificate, String expertiseLevel, Integer yearOfExp, Integer monthOfExp) {
+    public void createApplicantSkill(String applicantId, String skillName, String description, String certificate, String expertiseLevel, Integer yearOfExp, Integer monthOfExp) {
         CreateApplicantSkillRequest request = new CreateApplicantSkillRequest(skillName, description, certificate, expertiseLevel, yearOfExp, monthOfExp);
-        Call<CreateApplicantSkillResponse> call = applicantRepository.createApplicantSkill(skillId, request);
+        Call<CreateApplicantSkillResponse> call = applicantRepository.createApplicantSkill(applicantId, request);
         call.enqueue(new Callback<CreateApplicantSkillResponse>() {
             @Override
             public void onResponse(Call<CreateApplicantSkillResponse> call, Response<CreateApplicantSkillResponse> response) {
@@ -147,9 +141,9 @@ public class ApplicantViewModel {
     }
 
     //Update Skill
-    public void updateApplicantSkill(String applicantId, String skillName, String description, String certificate, String expertiseLevel, Integer yearOfExp, Integer monthOfExp) {
+    public void updateApplicantSkill(String skillId, String skillName, String description, String certificate, String expertiseLevel, Integer yearOfExp, Integer monthOfExp) {
         UpdateApplicantSkillRequest request = new UpdateApplicantSkillRequest(skillName, description, certificate, expertiseLevel, yearOfExp, monthOfExp);
-        Call<UpdateApplicantSkillResponse> call = applicantRepository.updateApplicantSkill(applicantId, request);
+        Call<UpdateApplicantSkillResponse> call = applicantRepository.updateApplicantSkill(skillId, request);
         call.enqueue(new Callback<UpdateApplicantSkillResponse>() {
             @Override
             public void onResponse(Call<UpdateApplicantSkillResponse> call, Response<UpdateApplicantSkillResponse> response) {
@@ -202,8 +196,8 @@ public class ApplicantViewModel {
     }
 
     //Delete All Skill
-    public void deleteAllApplicantSkill(String skillId) {
-        Call<MessageResponse> call = applicantRepository.deleteAllApplicantSkill(skillId);
+    public void deleteAllApplicantSkill(String applicantId) {
+        Call<MessageResponse> call = applicantRepository.deleteAllApplicantSkill(applicantId);
         call.enqueue(new Callback<MessageResponse>() {
             @Override
             public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
@@ -225,6 +219,116 @@ public class ApplicantViewModel {
             @Override
             public void onFailure(Call<MessageResponse> call, Throwable t) {
                 deleteAllApplicantSkillResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Create Education
+    public void createApplicantEducation(String applicantId, Date eduStart, Date eduEnd, String major, String eduLevel, String moreInfo, List<String> achievement) {
+        CreateApplicantEducationRequest request = new CreateApplicantEducationRequest(eduStart, eduEnd, major, eduLevel, moreInfo, achievement);
+        Call<CreateApplicantEducationResponse> call = applicantRepository.createApplicantEducation(applicantId, request);
+        call.enqueue(new Callback<CreateApplicantEducationResponse>() {
+            @Override
+            public void onResponse(Call<CreateApplicantEducationResponse> call, Response<CreateApplicantEducationResponse> response) {
+                if (response.isSuccessful()) {
+                    CreateApplicantEducationResponse createResponse = response.body();
+                    createApplicantEducationResult.setValue(createResponse.getMessage());
+                } else {
+                    try {
+                        CreateApplicantEducationResponse error = new Gson().fromJson(response.errorBody().string(), CreateApplicantEducationResponse.class);
+                        createApplicantEducationResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        createApplicantEducationResult.setValue
+                                ("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<CreateApplicantEducationResponse> call, Throwable t) {
+                createApplicantEducationResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Update Education
+    public void updateApplicantEducation(String educationId, Date eduStart, Date eduEnd, String major, String eduLevel, String moreInfo, List<String> achievement) {
+        UpdateApplicantEducationRequest request = new UpdateApplicantEducationRequest(eduStart, eduEnd, major, eduLevel, moreInfo, achievement);
+        Call<UpdateApplicantEducationResponse> call = applicantRepository.updateApplicantEducation(educationId, request);
+        call.enqueue(new Callback<UpdateApplicantEducationResponse>() {
+            @Override
+            public void onResponse(Call<UpdateApplicantEducationResponse> call, Response<UpdateApplicantEducationResponse> response) {
+                if (response.isSuccessful()) {
+                    UpdateApplicantEducationResponse updateResponse = response.body();
+                    updateApplicantEducationResult.setValue(updateResponse.getMessage());
+                } else {
+                    try {
+                        UpdateApplicantEducationResponse error = new Gson().fromJson(response.errorBody().string(), UpdateApplicantEducationResponse.class);
+                        updateApplicantEducationResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        updateApplicantEducationResult.setValue
+                                ("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<UpdateApplicantEducationResponse> call, Throwable t) {
+                updateApplicantEducationResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Delete Education
+    public void deleteApplicantEducation(String educationId) {
+        Call<MessageResponse> call = applicantRepository.deleteApplicantEducation(educationId);
+        call.enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (response.isSuccessful())
+                {
+                    MessageResponse deleteResponse = response.body();
+                    deleteApplicantEducationResult.setValue(deleteResponse.getMessage());
+                } else {
+                    try {
+                        MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
+                        deleteApplicantEducationResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        deleteApplicantEducationResult.setValue
+                                ("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
+                deleteApplicantEducationResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Delete All Education
+    public void deleteAllApplicantEducation(String applicantId) {
+        Call<MessageResponse> call = applicantRepository.deleteAllApplicantEducation(applicantId);
+        call.enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (response.isSuccessful())
+                {
+                    MessageResponse deleteResponse = response.body();
+                    deleteAllApplicantEducationResult.setValue(deleteResponse.getMessage());
+                } else {
+                    try {
+                        MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
+                        deleteAllApplicantEducationResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        deleteAllApplicantEducationResult.setValue
+                                ("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
+                deleteAllApplicantEducationResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }

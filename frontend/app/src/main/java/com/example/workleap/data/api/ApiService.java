@@ -1,9 +1,10 @@
 package com.example.workleap.data.api;
 
+import com.example.workleap.data.model.CreateApplicantEducationRequest;
+import com.example.workleap.data.model.CreateApplicantEducationResponse;
 import com.example.workleap.data.model.CreateApplicantSkillRequest;
 import com.example.workleap.data.model.CreateApplicantSkillResponse;
 import com.example.workleap.data.model.GetApplicantResponse;
-import com.example.workleap.data.model.GetApplicantSkillResponse;
 import com.example.workleap.data.model.GetCompanyResponse;
 import com.example.workleap.data.model.LoginRequest;
 import com.example.workleap.data.model.LoginResponse;
@@ -11,6 +12,7 @@ import com.example.workleap.data.model.LogoutRequest;
 import com.example.workleap.data.model.MessageResponse;
 import com.example.workleap.data.model.RegisterRequest;
 import com.example.workleap.data.model.RegisterResponse;
+import com.example.workleap.data.model.UpdateApplicantEducationResponse;
 import com.example.workleap.data.model.UpdateApplicantRequest;
 import com.example.workleap.data.model.UpdateApplicantResponse;
 import com.example.workleap.data.model.UpdateApplicantSkillRequest;
@@ -57,20 +59,30 @@ public interface ApiService {
     @PUT("api/company/{id}")
     Call<UpdateCompanyResponse> updateCompany(@Path("id") String id, @Body UpdateCompanyRequest request);
 
-    //Skill
-    @GET("api/applicantskill/{skillId}")
-    Call<GetApplicantSkillResponse> getApplicantSkill(@Path("applicantId") String applicantId);
+    //Applicant Skill
+    @POST("api/applicantSkill/{applicantId}")
+    Call<CreateApplicantSkillResponse> createApplicantSkill(@Path("applicantId") String applicantId, @Body CreateApplicantSkillRequest request);
 
-    @POST("api/applicantskill/{skillId}")
-    Call<CreateApplicantSkillResponse> createApplicantSkill(@Path("skillId") String skillId, @Body CreateApplicantSkillRequest request);
+    @PUT("api/applicantSkill/{id}")
+    Call<UpdateApplicantSkillResponse> updateApplicantSkill(@Path("id") String id, @Body UpdateApplicantSkillRequest request);
 
-    @PUT("api/applicantskill/{skillid}")
-    Call<UpdateApplicantSkillResponse> updateApplicantSkill(@Path("skillId") String skillId, @Body UpdateApplicantSkillRequest request);
-
-    @DELETE("api/applicantskill/{skillid}")
+    @DELETE("api/applicantSkill/{id}")
     Call<MessageResponse> deleteApplicantSkill(@Path("id") String id);
 
-    @DELETE("api/applicantskill/all/{skillid}")
-    Call<MessageResponse> deleteAllApplicantSkill(@Path("id") String id);
+    @DELETE("api/applicantSkill/all/{applicantId}")
+    Call<MessageResponse> deleteAllApplicantSkill(@Path("applicantId") String id);
 
+
+    //Applicant Education
+    @POST("api/applicanteducation/{applicantId}")
+    Call<CreateApplicantEducationResponse> createApplicantEducation(@Path("applicantId") String applicantId, @Body CreateApplicantEducationRequest request);
+
+    @PUT("api/applicantEducation/{id}")
+    Call<UpdateApplicantEducationResponse> updateApplicantEducation(@Path("id") String id, @Body UpdateApplicantEducationRequest request);
+
+    @DELETE("api/applicantEducation/{id}")
+    Call<MessageResponse> deleteApplicantEducation(@Path("id") String id);
+
+    @DELETE("api/applicantEducation/all/{applicantId}")
+    Call<MessageResponse> deleteAllApplicantEducation(@Path("applicantId") String id);
 }
