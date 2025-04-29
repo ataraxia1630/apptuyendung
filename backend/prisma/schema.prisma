@@ -253,13 +253,14 @@ model JobCategory {
 }
 
 model JobSaved {
-  id          String    @id @default(uuid())
   jobpostId   String
   applicantId String
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
   JobPost     JobPost   @relation(fields: [jobpostId], references: [id])
   applicant   Applicant @relation(fields: [applicantId], references: [id])
+
+  @@id([jobpostId, applicantId])
 }
 
 model JobApplied {
