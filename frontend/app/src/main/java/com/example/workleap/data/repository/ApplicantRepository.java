@@ -1,9 +1,13 @@
 package com.example.workleap.data.repository;
 
+import com.example.workleap.data.api.CreateApplicantExperienceRequest;
+import com.example.workleap.data.api.CreateApplicantExperienceResponse;
 import com.example.workleap.data.api.RetrofitClient;
 
 import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.api.UpdateApplicantEducationRequest;
+import com.example.workleap.data.api.UpdateApplicantExperienceRequest;
+import com.example.workleap.data.api.UpdateApplicantExperienceResponse;
 import com.example.workleap.data.model.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.CreateApplicantEducationResponse;
 import com.example.workleap.data.model.CreateApplicantSkillRequest;
@@ -78,4 +82,20 @@ public class ApplicantRepository {
     public Call<MessageResponse> deleteAllApplicantEducation(String id) {
         return apiService.deleteAllApplicantEducation(id);
     }
+
+    //Create experience
+    public Call<CreateApplicantExperienceResponse> createApplicantExperience(String applicantId, CreateApplicantExperienceRequest request) {
+        return apiService.createApplicantExperience(applicantId, request);
+    }
+
+    //Update experience
+    public Call<UpdateApplicantExperienceResponse> updateApplicantExperience(String experienceId, UpdateApplicantExperienceRequest request) {
+        return apiService.updateApplicantExperience(experienceId, request);
+    }
+
+    //Delete experience
+    public Call<MessageResponse> deleteApplicantExperience(String id) {
+        return apiService.deleteApplicantExperience(id);
+    }
+
 }

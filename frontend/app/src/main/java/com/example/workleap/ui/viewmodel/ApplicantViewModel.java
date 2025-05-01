@@ -3,7 +3,11 @@ package com.example.workleap.ui.viewmodel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.workleap.data.api.CreateApplicantExperienceRequest;
+import com.example.workleap.data.api.CreateApplicantExperienceResponse;
 import com.example.workleap.data.api.UpdateApplicantEducationRequest;
+import com.example.workleap.data.api.UpdateApplicantExperienceRequest;
+import com.example.workleap.data.api.UpdateApplicantExperienceResponse;
 import com.example.workleap.data.model.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.CreateApplicantEducationResponse;
 import com.example.workleap.data.model.CreateApplicantSkillRequest;
@@ -42,6 +46,10 @@ public class ApplicantViewModel {
     private MutableLiveData<String> deleteApplicantEducationResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteAllApplicantEducationResult = new MutableLiveData<>();
 
+    private MutableLiveData<String> createApplicantExperienceResult = new MutableLiveData<>();
+    private MutableLiveData<String> updateApplicantExperienceResult = new MutableLiveData<>();
+    private MutableLiveData<String> deleteApplicantExperienceResult = new MutableLiveData<>();
+
     public ApplicantViewModel() {
         applicantRepository = new ApplicantRepository();
     }
@@ -59,6 +67,10 @@ public class ApplicantViewModel {
     public LiveData<String> getUpdateApplicantEducationResult() { return updateApplicantSkillResult; }
     public LiveData<String> getDeleteApplicantEducationResult() { return deleteApplicantSkillResult; }
     public LiveData<String> getDeleteAllApplicantEducationResult() { return deleteAllApplicantSkillResult; }
+
+    public LiveData<String> getCreateApplicantExperienceResult() { return createApplicantSkillResult; }
+    public LiveData<String> getUpdateApplicantExperienceResult() { return updateApplicantSkillResult; }
+    public LiveData<String> getDeleteApplicantExperienceResult() { return deleteApplicantSkillResult; }
 
     // Get applicant
     public void getApplicant(String id) {
@@ -329,6 +341,88 @@ public class ApplicantViewModel {
             @Override
             public void onFailure(Call<MessageResponse> call, Throwable t) {
                 deleteAllApplicantEducationResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Create Experience
+    public void createApplicantExperience(String applicantId, String companyName, String companyLink, String position, Date workStart, Date workEnd, String jobResponsibility, String moreInfo, List<String> achievement) {
+        CreateApplicantExperienceRequest request = new CreateApplicantExperienceRequest(companyName, companyLink, position, workStart, workEnd, jobResponsibility, moreInfo, achievement);
+        Call<CreateApplicantExperienceResponse> call = applicantRepository.createApplicantExperience(applicantId, request);
+        call.enqueue(new Callback<CreateApplicantExperienceResponse>() {
+            @Override
+            public void onResponse(Call<CreateApplicantExperienceResponse> call, Response<CreateApplicantExperienceResponse> response) {
+                if (response.isSuccessful()) {
+                    CreateApplicantExperienceResponse createResponse = response.body();
+                    createApplicantExperienceResult.setValue(createResponse.getMessage());
+                } else {
+                    try {
+                        CreateApplicantExperienceResponse error = new Gson().fromJson(response.errorBody().string(), CreateApplicantExperienceResponse.class);
+                        createApplicantExperienceResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        createApplicantExperienceResult.setValue
+                                ("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<CreateApplicantExperienceResponse> call, Throwable t) {
+                createApplicantExperienceResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Update Experience
+    public void updateApplicantExperience(String experienceId, String companyName, String companyLink, String position, Date workStart, Date workEnd, String jobResponsibility, String moreInfo, List<String> achievement) {
+        UpdateApplicantExperienceRequest request = new UpdateApplicantExperienceRequest(companyName, companyLink, position, workStart, workEnd, jobResponsibility, moreInfo, achievement);
+        Call<UpdateApplicantExperienceResponse> call = applicantRepository.updateApplicantExperience(experienceId, request);
+        call.enqueue(new Callback<UpdateApplicantExperienceResponse>() {
+            @Override
+            public void onResponse(Call<UpdateApplicantExperienceResponse> call, Response<UpdateApplicantExperienceResponse> response) {
+                if (response.isSuccessful()) {
+                    UpdateApplicantExperienceResponse updateResponse = response.body();
+                    updateApplicantExperienceResult.setValue(updateResponse.getMessage());
+                } else {
+                    try {
+                        UpdateApplicantExperienceResponse error = new Gson().fromJson(response.errorBody().string(), UpdateApplicantExperienceResponse.class);
+                        updateApplicantExperienceResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        updateApplicantExperienceResult.setValue
+                                ("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<UpdateApplicantExperienceResponse> call, Throwable t) {
+                updateApplicantExperienceResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Delete Experience
+    public void deleteApplicantExperience(String experienceId) {
+        Call<MessageResponse> call = applicantRepository.deleteApplicantExperience(experienceId);
+        call.enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (response.isSuccessful())
+                {
+                    MessageResponse deleteResponse = response.body();
+                    deleteApplicantExperienceResult.setValue(deleteResponse.getMessage());
+                } else {
+                    try {
+                        MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
+                        deleteApplicantExperienceResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        deleteApplicantExperienceResult.setValue
+                                ("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
+                deleteApplicantExperienceResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }

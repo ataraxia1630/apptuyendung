@@ -74,7 +74,7 @@ public interface ApiService {
 
 
     //Applicant Education
-    @POST("api/applicanteducation/{applicantId}")
+    @POST("api/applicantEducation/{applicantId}")
     Call<CreateApplicantEducationResponse> createApplicantEducation(@Path("applicantId") String applicantId, @Body CreateApplicantEducationRequest request);
 
     @PUT("api/applicantEducation/{id}")
@@ -85,4 +85,14 @@ public interface ApiService {
 
     @DELETE("api/applicantEducation/all/{applicantId}")
     Call<MessageResponse> deleteAllApplicantEducation(@Path("applicantId") String id);
+
+    //Experience
+    @POST("api/exp/{applicantId}")
+    Call<CreateApplicantExperienceResponse> createApplicantExperience(@Path("applicantId") String applicantId, @Body CreateApplicantExperienceRequest request);
+
+    @PUT("api/exp/{id}")
+    Call<UpdateApplicantExperienceResponse> updateApplicantExperience(@Path("id") String id, @Body UpdateApplicantExperienceRequest request);
+
+    @DELETE("api/exp/{id}")
+    Call<MessageResponse> deleteApplicantExperience(@Path("id") String id);
 }
