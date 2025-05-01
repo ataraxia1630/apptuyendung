@@ -2,6 +2,7 @@ package com.example.workleap.data.repository;
 
 import com.example.workleap.data.api.CreateApplicantExperienceRequest;
 import com.example.workleap.data.api.CreateApplicantExperienceResponse;
+import com.example.workleap.data.api.CreateInterestedFieldResponse;
 import com.example.workleap.data.api.RetrofitClient;
 
 import com.example.workleap.data.api.ApiService;
@@ -98,4 +99,18 @@ public class ApplicantRepository {
         return apiService.deleteApplicantExperience(id);
     }
 
+    //Create interested field
+    public Call<CreateInterestedFieldResponse> createInterestedField(String applicantId) {
+        return apiService.createInterestedField(applicantId);
+    }
+
+    //Delete interested field
+    public Call<MessageResponse> deleteInterestedField(String id) {
+        return apiService.deleteInterestedField(id);
+    }
+
+    //Delete all interested field
+    public Call<MessageResponse> deleteAllInterestedField(String id) {
+        return apiService.deleteAllInterestedField(id);
+    }
 }

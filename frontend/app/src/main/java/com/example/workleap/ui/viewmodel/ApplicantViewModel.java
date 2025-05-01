@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.workleap.data.api.CreateApplicantExperienceRequest;
 import com.example.workleap.data.api.CreateApplicantExperienceResponse;
+import com.example.workleap.data.api.CreateInterestedFieldResponse;
 import com.example.workleap.data.api.UpdateApplicantEducationRequest;
 import com.example.workleap.data.api.UpdateApplicantExperienceRequest;
 import com.example.workleap.data.api.UpdateApplicantExperienceResponse;
@@ -50,6 +51,10 @@ public class ApplicantViewModel {
     private MutableLiveData<String> updateApplicantExperienceResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteApplicantExperienceResult = new MutableLiveData<>();
 
+    private MutableLiveData<String> createInterestedFieldResult = new MutableLiveData<>();
+    private MutableLiveData<String> deleteInterestedFieldResult = new MutableLiveData<>();
+    private MutableLiveData<String> deleteAllInterestedFieldResult = new MutableLiveData<>();
+
     public ApplicantViewModel() {
         applicantRepository = new ApplicantRepository();
     }
@@ -71,6 +76,10 @@ public class ApplicantViewModel {
     public LiveData<String> getCreateApplicantExperienceResult() { return createApplicantSkillResult; }
     public LiveData<String> getUpdateApplicantExperienceResult() { return updateApplicantSkillResult; }
     public LiveData<String> getDeleteApplicantExperienceResult() { return deleteApplicantSkillResult; }
+
+    public LiveData<String> getCreateInterestedFieldResult() { return createApplicantSkillResult; }
+    public LiveData<String> getDeleteInterestedFieldResult() { return deleteApplicantSkillResult; }
+    public LiveData<String> getDeleteAllInterestedFieldResult() { return deleteAllApplicantSkillResult; }
 
     // Get applicant
     public void getApplicant(String id) {
@@ -423,6 +432,88 @@ public class ApplicantViewModel {
             @Override
             public void onFailure(Call<MessageResponse> call, Throwable t) {
                 deleteApplicantExperienceResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Create InterestedField
+    public void createInterestedField(String applicantId) {
+        Call<CreateInterestedFieldResponse> call = applicantRepository.createInterestedField(applicantId);
+        call.enqueue(new Callback<CreateInterestedFieldResponse>() {
+            @Override
+            public void onResponse(Call<CreateInterestedFieldResponse> call, Response<CreateInterestedFieldResponse> response) {
+                if (response.isSuccessful()) {
+                    CreateInterestedFieldResponse createResponse = response.body();
+                    createInterestedFieldResult.setValue(createResponse.getMessage());
+                } else {
+                    try {
+                        CreateInterestedFieldResponse error = new Gson().fromJson(response.errorBody().string(), CreateInterestedFieldResponse.class);
+                        createInterestedFieldResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        createInterestedFieldResult.setValue
+                                ("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<CreateInterestedFieldResponse> call, Throwable t) {
+                createInterestedFieldResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Delete InterestedField
+    public void deleteInterestedField(String fieldId) {
+        Call<MessageResponse> call = applicantRepository.deleteInterestedField(fieldId);
+        call.enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (response.isSuccessful())
+                {
+                    MessageResponse deleteResponse = response.body();
+                    deleteInterestedFieldResult.setValue(deleteResponse.getMessage());
+                } else {
+                    try {
+                        MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
+                        deleteInterestedFieldResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        deleteInterestedFieldResult.setValue
+                                ("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
+                deleteInterestedFieldResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Delete All InterestedField
+    public void deleteAllInterestedField(String applicantId) {
+        Call<MessageResponse> call = applicantRepository.deleteAllInterestedField(applicantId);
+        call.enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (response.isSuccessful())
+                {
+                    MessageResponse deleteResponse = response.body();
+                    deleteAllInterestedFieldResult.setValue(deleteResponse.getMessage());
+                } else {
+                    try {
+                        MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
+                        deleteAllInterestedFieldResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        deleteAllInterestedFieldResult.setValue
+                                ("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
+                deleteAllInterestedFieldResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }

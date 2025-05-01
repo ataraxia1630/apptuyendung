@@ -95,4 +95,14 @@ public interface ApiService {
 
     @DELETE("api/exp/{id}")
     Call<MessageResponse> deleteApplicantExperience(@Path("id") String id);
+
+    //InterestedField
+    @POST("api/interestedField/{applicantId}")
+    Call<CreateInterestedFieldResponse> createInterestedField(@Path("fieldId") String applicantId);
+
+    @DELETE("api/interestedField/{id}")
+    Call<MessageResponse> deleteInterestedField(@Path("id") String id);
+
+    @DELETE("api/interestedField/all/{applicantId}")
+    Call<MessageResponse> deleteAllInterestedField(@Path("fieldId") String id);
 }
