@@ -2,6 +2,7 @@ package com.example.workleap.ui.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
@@ -9,11 +10,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.workleap.R;
 
 public class MainActivity extends AppCompatActivity {
-    private Button btnSignup, btnLogin;
+    private NavController navController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,18 +29,9 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        btnSignup = findViewById(R.id.buttonSignup);
-        btnLogin = findViewById(R.id.buttonLogin);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        navController = navHostFragment.getNavController();
 
-        btnSignup.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, RoleSelection.class);
-            startActivity(intent);
-        });
-
-        btnLogin.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, Login.class);
-            startActivity(intent);
-        });
     }
 
 }

@@ -1,0 +1,21 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/auth_nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/loginSignupFragment">
+
+    <fragment
+        android:id="@+id/loginSignupFragment"
+        android:name="com.example.workleap.ui.view.LoginSignupFragment"/>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.workleap.ui.view.LoginFragment"/>
+    <fragment
+        android:id="@+id/roleSelectionFragment"
+        android:name="com.example.workleap.ui.view.RoleSelectionFragment"/>
+    <fragment
+        android:id="@+id/applicantSignupFragment"
+        android:name="com.example.workleap.ui.view.ApplicantSignupFragment"/>
+    <fragment
+        android:id="@+id/companySignupFragment"
+        android:name="com.example.workleap.ui.view.CompanySignupFragment"/>
+</navigation>
