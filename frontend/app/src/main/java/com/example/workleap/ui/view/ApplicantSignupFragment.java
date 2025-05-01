@@ -2,65 +2,80 @@ package com.example.workleap.ui.view;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.workleap.R;
+import com.example.workleap.ui.viewmodel.AuthViewModel;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ApplicantSignupFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ApplicantSignupFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private AuthViewModel authViewModel;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private EditText etFullName, etEmail, etPassword, etPhoneNumber;
+    private Button btnSignUp;
+    private TextView tvLogIn;
 
-    public ApplicantSignupFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ApplicantSignupFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ApplicantSignupFragment newInstance(String param1, String param2) {
-        ApplicantSignupFragment fragment = new ApplicantSignupFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public ApplicantSignupFragment() {}
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_applicant_signup, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+
+        etFullName = view.findViewById(R.id.editTextFullName);
+        etEmail = view.findViewById(R.id.editTextEmail);
+        etPassword = view.findViewById(R.id.editTextPassword);
+        etPhoneNumber = view.findViewById(R.id.editTextPhone);
+        btnSignUp = view.findViewById(R.id.buttonSignUp);
+        tvLogIn = view.findViewById(R.id.textViewLogIn);
+
+        btnSignUp.setOnClickListener(v -> signup());
+
+        tvLogIn.setOnClickListener(v -> {
+            Navigation.findNavController(view).navigate(R.id.loginFragment);
+        });
+
+        authViewModel.getRegisterResult().observe(getViewLifecycleOwner(), result -> {
+            Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
+
+            if (result.contains("successfully")) {
+                Log.d("ApplicantSignupFragment", "Register success");
+                Navigation.findNavController(view).navigate(R.id.loginFragment);
+            }
+        });
+    }
+
+    private void signup() {
+        String fullName = etFullName.getText().toString().trim();
+        String email = etEmail.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
+        String phone = etPhoneNumber.getText().toString().trim();
+
+        if (fullName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        authViewModel.register(fullName, password, email, phone, "APPLICANT");
     }
 }
