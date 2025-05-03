@@ -27,7 +27,6 @@ function route(app) {
   app.use('/api/education', eduRoutes);
   app.use('/api/experience', expRoutes);
 
-  app.use('/api/field', fieldRoutes);
   app.use('/api/job-posts', jobPostRoutes);
   app.use('/api/fields', fieldRoutes);
   app.use('/api/types', jobTypeRoutes);
