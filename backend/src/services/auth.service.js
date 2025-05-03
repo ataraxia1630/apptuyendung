@@ -43,23 +43,23 @@ const AuthService = {
           password: hashedPassword,
           ...(role === 'APPLICANT'
             ? {
-                Applicant: {
-                  create: {
-                    address: '',
-                    firstName: '',
-                    lastName: '',
-                  },
+              Applicant: {
+                create: {
+                  address: '',
+                  firstName: '',
+                  lastName: '',
                 },
-              }
+              },
+            }
             : {}),
           ...(role === 'COMPANY'
             ? {
-                Company: {
-                  create: {
-                    name: '',
-                  },
+              Company: {
+                create: {
+                  name: '',
                 },
-              }
+              },
+            }
             : {}),
         },
       });
@@ -81,7 +81,6 @@ const AuthService = {
                 Edu: true,
                 Exp: true,
                 InterestedField: true,
-                JobSaved: true,
                 JobApplied: true,
                 CV: true,
               },
@@ -130,7 +129,7 @@ const AuthService = {
     if (!isPasswordValid) {
       throw new Error('Invalid password');
     }
-    const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
+    const token = jwt.sign({ userId: user.id, role: user.role }, SECRET_KEY, {
       expiresIn: '24h',
     });
     return { token, user };
