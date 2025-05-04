@@ -1,35 +1,44 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const checkCompanyOwnsJobPost = async (req, res, next) => {
-    const jobPostId = req.params.id;
-    const userId = req.user?.userId;  // Lấy userId từ token
+/**
+ * @param {String} modelName - Tên model trong Prisma (JobPost, Post, v.v.)
+ * @param {String} companyField - Tên trường chứa companyId trong model đó
+ */
+const checkCompanyOwnership = (modelName, companyField = 'companyId') => {
+    return async (req, res, next) => {
+        const recordId = req.params.id;
+        const userId = req.user?.userId;
 
-    try {
-        const user = await prisma.user.findUnique({
-            where: {
-                id: userId,  // Tìm người dùng theo userId
-            },
-            select: {
-                companyId: true,  // Chỉ lấy companyId của người dùng
+        try {
+            const user = await prisma.user.findUnique({
+                where: { id: userId },
+                select: { companyId: true }
+            });
+
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
             }
-        });
 
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            const record = await prisma[modelName].findUnique({
+                where: { id: recordId },
+                select: { [companyField]: true }
+            });
+
+            if (!record) {
+                return res.status(404).json({ message: `${modelName} not found` });
+            }
+
+            if (record[companyField] !== user.companyId) {
+                return res.status(403).json({ message: 'Forbidden: You do not own this resource' });
+            }
+
+            next();
+        } catch (error) {
+            console.error(`Error in checkCompanyOwnership for ${modelName}:`, error.message);
+            return res.status(500).json({ message: 'Internal server error' });
         }
-
-        // Kiểm tra quyền sở hữu job post
-        if (user.companyId !== req.params.companyId) {
-            return res.status(403).json({ message: 'Forbidden: You do not own this job post' });
-        }
-
-        next();  // Nếu không có lỗi, tiếp tục với các middleware tiếp theo
-    } catch (error) {
-        console.error('Error in checkCompanyOwnsJobPost:', error.message);
-        return res.status(500).json({ message: 'Internal server error' });
-    }
+    };
 };
 
-
-module.exports = { checkCompanyOwnsJobPost };
+module.exports = { checkCompanyOwnership };
