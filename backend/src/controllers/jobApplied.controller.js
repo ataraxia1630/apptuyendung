@@ -7,7 +7,9 @@ const JobAppliedController = {
       return res.status(400).json({ message: 'jobpostId is required' });
 
     try {
-      const appliedCVs = JobAppliedService.getAllCvAppliedToJob(jobpostId);
+      const appliedCVs = await JobAppliedService.getAllCvAppliedToJob(
+        jobpostId
+      );
       return res.status(200).json(appliedCVs);
     } catch (error) {
       return res.status(500).json({ message: '', error: error.message });
@@ -21,7 +23,7 @@ const JobAppliedController = {
 
     try {
       const appliedApplicants =
-        JobAppliedService.getAllApplicantAppliedToJob(jobpostId);
+        await JobAppliedService.getAllApplicantAppliedToJob(jobpostId);
       return res.status(200).json(appliedApplicants);
     } catch (error) {
       return res.status(500).json({ message: '', error: error.message });
