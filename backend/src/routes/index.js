@@ -15,6 +15,7 @@ const jobCategoryRoutes = require('./jobCategory.route');
 const cvRoutes = require('./cv.route');
 
 const jobSavedRoutes = require('./jobSaved.route');
+const jobAppliedRoutes = require('./jobApplied.route');
 
 function route(app) {
   app.use('/api/auth', authRoutes);
@@ -36,6 +37,7 @@ function route(app) {
   app.use('/api/cv', cvRoutes);
 
   app.use('/api/save', jobSavedRoutes);
+  app.use('/api/apply', jobAppliedRoutes);
 }
 
 module.exports = route;
