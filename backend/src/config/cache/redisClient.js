@@ -1,11 +1,16 @@
-const redis = require('redis');
+const { createClient } = require('redis');
 
-const redisClient = redis.createClient(); // Mặc định localhost:6379
-
-redisClient.on('error', (err) => {
-  console.error('Redis Error:', err);
+const redisClient = createClient({
+  username: 'default',
+  password: process.env.REDIS_PW,
+  socket: {
+    host: process.env.REDIS_HOST_URL,
+    port: process.env.REDIS_PORT,
+  },
 });
 
-redisClient.connect();
+redisClient.on('error', (err) => {
+  console.error('Redis Client Error:', err);
+});
 
 module.exports = redisClient;
