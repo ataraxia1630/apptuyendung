@@ -5,7 +5,9 @@ const ApplicantController = {
   getAllApplicants: async (req, res) => {
     try {
       const applicants = await ApplicantService.getAllApplicants();
-      return res.status(200).json(applicants);
+      return res
+        .status(200)
+        .json({ applicants, timestamp: new Date().getTime() });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching applicants',
