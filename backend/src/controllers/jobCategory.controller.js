@@ -1,5 +1,4 @@
-const { JobCategoryService } = require('../services/jobType.service');
-
+const { JobCategoryService } = require('../services/jobCategory.service');
 const JobCategoryController = {
   getAll: async (req, res) => {
     try {
@@ -16,6 +15,11 @@ const JobCategoryController = {
   createMany: async (req, res) => {
     const { jobCategories } = req.body;
     try {
+      if (!jobCategories || jobCategories.length === 0) {
+        return res.status(400).json({
+          message: 'No job categories provided',
+        });
+      }
       const categories = await JobCategoryService.createMany(jobCategories);
       return res.status(201).json(categories);
     } catch (error) {

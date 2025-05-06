@@ -83,6 +83,7 @@ const AuthService = {
                 InterestedField: true,
                 JobSaved: true,
                 JobApplied: true,
+                CV: true,
               },
             },
             Company: {
@@ -106,6 +107,7 @@ const AuthService = {
                 InterestedField: true,
                 JobSaved: true,
                 JobApplied: true,
+                CV: true,
               },
             },
             Company: {
@@ -128,7 +130,7 @@ const AuthService = {
     if (!isPasswordValid) {
       throw new Error('Invalid password');
     }
-    const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
+    const token = jwt.sign({ userId: user.id, role: user.role }, SECRET_KEY, {
       expiresIn: '24h',
     });
     return { token, user };

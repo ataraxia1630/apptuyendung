@@ -8,8 +8,14 @@ const eduRoutes = require('./education.route');
 const expRoutes = require('./exp.route');
 
 const fieldRoutes = require('./field.route');
+const jobPostRoutes = require('./jobPost.route');
 const jobTypeRoutes = require('./jobType.route');
 const jobCategoryRoutes = require('./jobCategory.route');
+
+const cvRoutes = require('./cv.route');
+
+const jobSavedRoutes = require('./jobSaved.route');
+const jobAppliedRoutes = require('./jobApplied.route');
 
 function route(app) {
   app.use('/api/auth', authRoutes);
@@ -23,8 +29,15 @@ function route(app) {
   app.use('/api/experience', expRoutes);
 
   app.use('/api/field', fieldRoutes);
-  app.use('/api/type', jobTypeRoutes);
+  app.use('/api/job-posts', jobPostRoutes);
+  app.use('/api/fields', fieldRoutes);
+  app.use('/api/types', jobTypeRoutes);
   app.use('/api/category', jobCategoryRoutes);
+
+  app.use('/api/cv', cvRoutes);
+
+  app.use('/api/save', jobSavedRoutes);
+  app.use('/api/apply', jobAppliedRoutes);
 }
 
 module.exports = route;

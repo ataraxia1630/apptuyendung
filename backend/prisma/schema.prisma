@@ -102,7 +102,6 @@ model Applicant {
   firstName       String               @db.VarChar(50)
   lastName        String               @db.VarChar(50)
   profileSummary  String?              @db.VarChar(1000)
-  cv_file         Bytes?
   created_at      DateTime             @default(now())
   updated_at      DateTime             @updatedAt
   Skill           Skill[]
@@ -112,6 +111,7 @@ model Applicant {
   JobSaved        JobSaved[]
   JobApplied      JobApplied[]
   User            User[]
+  CV              CV[]
 }
 
 model Skill {
@@ -208,7 +208,7 @@ model InterestedField {
 // ? 1 jobpost co nen co nhieu jobtype va category
 model JobPost {
   id                   String       @id @default(uuid())
-  companyId            String
+  companyId            String //ref
   jobCategoryId        String?
   jobTypeId            String
   title                String       @db.VarChar(255)
@@ -221,20 +221,20 @@ model JobPost {
   salary_start         Decimal      @db.Decimal(10, 2)
   salary_end           Decimal      @db.Decimal(10, 2)
   currency             String       @db.VarChar(10)
-  status               PostStatus   @default(OPENING)
+  status               PostStatus?  @default(OPENING)
   apply_until          DateTime
+  JobApplied           JobApplied[]
   created_at           DateTime     @default(now())
   updated_at           DateTime     @updatedAt
   Company              Company      @relation(fields: [companyId], references: [id])
   JobType              JobType      @relation(fields: [jobTypeId], references: [id])
   JobCategory          JobCategory? @relation(fields: [jobCategoryId], references: [id])
   JobSaved             JobSaved[]
-  JobApplied           JobApplied[]
 }
 
 model JobType {
   id         String    @id @default(uuid())
-  name       String    @db.VarChar(20)
+  name       String    @unique @db.VarChar(20)
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   JobPost    JobPost[]
@@ -248,45 +248,51 @@ model JobCategory {
   updated_at DateTime  @updatedAt
   Field      Field?    @relation(fields: [fieldId], references: [id])
   JobPost    JobPost[]
+
+  @@unique([name, fieldId])
 }
 
 model JobSaved {
-  id          String    @id @default(uuid())
   jobpostId   String
   applicantId String
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
   JobPost     JobPost   @relation(fields: [jobpostId], references: [id])
   applicant   Applicant @relation(fields: [applicantId], references: [id])
+
+  @@id([jobpostId, applicantId])
 }
 
 model JobApplied {
-  id            String        @id @default(uuid())
-  jobpostId     String
-  applicantId   String
-  applicationId String?
-  status        AppliedStatus @default(PENDING)
-  created_at    DateTime      @default(now())
-  updated_at    DateTime      @updatedAt
-  JobPost       JobPost       @relation(fields: [jobpostId], references: [id])
-  applicant     Applicant     @relation(fields: [applicantId], references: [id])
-  Application   Application?  @relation(fields: [applicationId], references: [id])
+  id          String        @id @default(uuid())
+  jobpostId   String
+  applicantId String
+  cvId        String?
+  status      AppliedStatus @default(PENDING)
+  apply_at    DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  JobPost     JobPost       @relation(fields: [jobpostId], references: [id])
+  applicant   Applicant     @relation(fields: [applicantId], references: [id])
+  CV          CV?           @relation(fields: [cvId], references: [id])
 }
 
-model Application {
-  id         String       @id @default(uuid())
-  cv         String
-  viewCount  Int          @db.SmallInt
-  created_at DateTime     @default(now())
-  updated_at DateTime     @updatedAt
-  appliedJob JobApplied[]
+model CV {
+  id          String       @id @default(uuid())
+  applicantId String
+  Applicant   Applicant    @relation(fields: [applicantId], references: [id])
+  title       String
+  filePath    String
+  viewCount   Int          @db.SmallInt
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+  appliedJob  JobApplied[]
 }
 
 model Company {
   id              String    @id @default(uuid())
   name            String    @db.VarChar(255)
   description     String?   @db.VarChar(1000)
-  taxcode         String?
+  taxcode         String?   @unique
   establishedYear DateTime?
   Post            Post[]
   User            User[]
