@@ -80,6 +80,6 @@ public class ApplicantSignupFragment extends Fragment {
             return;
         }
 
-        authViewModel.register(fullName, password, email, phone, "APPLICANT");
+        authViewModel.register(fullName, password, confirmPassword, email, phone, "APPLICANT");
     }
 }

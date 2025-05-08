@@ -22,7 +22,9 @@ import java.util.ArrayList;
  */
 public class CompanyProfileFragment extends Fragment {
     View view;
-    TextView tvUserName, tvUserNameInfo, tvMailInfo, tvPhoneInfo;
+    TextView tvUserName;
+    TextView tvAboutCompany;
+    TextView tvUserNameInfo, tvEstablishedYear, tvMailInfo, tvPhoneInfo;
     User user;
 
     ImageButton btnEditCompanyName, btnEditAboutCompany, btnEditCompanyInfo;
@@ -76,12 +78,18 @@ public class CompanyProfileFragment extends Fragment {
         user = (User) getArguments().getSerializable("user");
 
         tvUserName = (TextView) view.findViewById(R.id.textView2);
+
+        tvAboutCompany = (TextView) view.findViewById(R.id.textViewAboutCompany);
+
         tvUserNameInfo = (TextView) view.findViewById(R.id.companynameInfo);
+        tvEstablishedYear = (TextView) view.findViewById(R.id.textViewEstablishedYear);
         tvMailInfo = (TextView) view.findViewById(R.id.emailInfo);
         tvPhoneInfo= (TextView) view.findViewById(R.id.phoneInfo);
 
         tvUserName.setText(user.getUsername());
+
         tvUserNameInfo.setText(user.getUsername());
+        //tvEstablishedYear.setText(user.get);
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
 

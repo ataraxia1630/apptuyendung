@@ -99,7 +99,7 @@ public class ApplicantProfileFragment extends Fragment {
                     ArrayList<String> values = bundle.getStringArrayList("values");
                     // TODO: xử lý cập nhật UI hoặc gọi ViewModel
                     if ("ApplicantInfo".equals(cardType) && values != null) {
-                        tvUserName.setText(values.get(0));
+                        tvUserNameInfo.setText(values.get(0));
                         // … tương ứng với thứ tự addField
                     }
                 }

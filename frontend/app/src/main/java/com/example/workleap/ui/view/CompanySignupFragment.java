@@ -25,7 +25,7 @@ public class CompanySignupFragment extends Fragment {
 
     private AuthViewModel authViewModel;
 
-    private EditText etEmail, etPassword, etCompanyName, etAddress, etEstablishedYear, etTaxCode, etPhoneNumber;
+    private EditText etEmail, etPassword, etConfirmPassword, etCompanyName, etAddress, etEstablishedYear, etTaxCode, etPhoneNumber;
     private Button btnRegister;
     private TextView tvLoginRedirect;
 
@@ -45,6 +45,7 @@ public class CompanySignupFragment extends Fragment {
 
         etEmail = view.findViewById(R.id.etEmail);
         etPassword = view.findViewById(R.id.etPassword);
+        etConfirmPassword = view.findViewById(R.id.etConfirmPassword);
         etCompanyName = view.findViewById(R.id.etCompanyName);
         etAddress = view.findViewById(R.id.etAddress);
         etEstablishedYear = view.findViewById(R.id.etEstablishedYear);
@@ -70,6 +71,7 @@ public class CompanySignupFragment extends Fragment {
     private void signup() {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+        String confirmPassword = etConfirmPassword.getText().toString().trim();
         String name = etCompanyName.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
         String year = etEstablishedYear.getText().toString().trim();
@@ -83,6 +85,6 @@ public class CompanySignupFragment extends Fragment {
             return;
         }
 
-        authViewModel.register(name, password, email, phone, "COMPANY");
+        authViewModel.register(name, password, confirmPassword, email, phone, "COMPANY");
     }
 }

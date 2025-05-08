@@ -107,6 +107,7 @@ android:paddingBottom="100dp">
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/textViewAboutCompany"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -215,6 +216,7 @@ android:paddingBottom="100dp">
                     android:textSize="15sp" />
 
                 <TextView
+                    android:id="@+id/textViewEstablishedYear"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
