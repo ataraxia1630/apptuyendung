@@ -1,5 +1,9 @@
 package com.example.workleap.data.repository;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+
+import com.example.workleap.data.PreferencesManager;
 import com.example.workleap.data.api.CreateApplicantExperienceRequest;
 import com.example.workleap.data.api.CreateApplicantExperienceResponse;
 import com.example.workleap.data.api.CreateInterestedFieldResponse;
@@ -21,7 +25,6 @@ import com.example.workleap.data.model.UpdateApplicantRequest;
 import com.example.workleap.data.model.UpdateApplicantResponse;
 import com.example.workleap.data.model.UpdateApplicantSkillRequest;
 import com.example.workleap.data.model.UpdateApplicantSkillResponse;
-
 import java.util.List;
 
 import retrofit2.Call;
@@ -30,8 +33,13 @@ import retrofit2.Response;
 
 public class ApplicantRepository {
     private ApiService apiService;
-    public ApplicantRepository() {
-        apiService = RetrofitClient.getClient().create(ApiService.class);
+
+    private PreferencesManager preferencesManager;
+
+    public ApplicantRepository(Context context) {
+        preferencesManager = new PreferencesManager(context);
+        String token = preferencesManager.getToken();
+        apiService = RetrofitClient.getClient(token).create(ApiService.class);
     }
 
     //Get

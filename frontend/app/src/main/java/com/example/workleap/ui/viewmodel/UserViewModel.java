@@ -1,5 +1,6 @@
 package com.example.workleap.ui.viewmodel;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -20,8 +21,8 @@ public class UserViewModel extends ViewModel {
     private UserRepository userRepository;
     private MutableLiveData<String> updateResult = new MutableLiveData<>();
 
-    public UserViewModel() {
-        userRepository = new UserRepository();
+    public UserViewModel(Context context) {
+        userRepository = new UserRepository(context);
     }
 
     // Getter cho LiveData

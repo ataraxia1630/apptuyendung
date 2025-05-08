@@ -1,5 +1,7 @@
 package com.example.workleap.ui.viewmodel;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -55,8 +57,8 @@ public class ApplicantViewModel {
     private MutableLiveData<String> deleteInterestedFieldResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteAllInterestedFieldResult = new MutableLiveData<>();
 
-    public ApplicantViewModel() {
-        applicantRepository = new ApplicantRepository();
+    public ApplicantViewModel(Context context) {
+        applicantRepository = new ApplicantRepository(context);
     }
 
     // Getter cho LiveData

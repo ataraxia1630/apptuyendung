@@ -1,7 +1,11 @@
 package com.example.workleap.data.repository;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.example.workleap.data.PreferencesManager;
 import com.example.workleap.data.api.RetrofitClient;
 
 import com.example.workleap.data.api.ApiService;
@@ -23,9 +27,12 @@ import retrofit2.Response;
 
 public class UserRepository {
     private ApiService apiService;
+    private PreferencesManager preferencesManager;
 
-    public UserRepository() {
-        apiService = RetrofitClient.getClient().create(ApiService.class);
+    public UserRepository(Context context) {
+        preferencesManager = new PreferencesManager(context);
+        String token = preferencesManager.getToken();
+        apiService = RetrofitClient.getClient(token).create(ApiService.class);
     }
 
     //Đăng ký

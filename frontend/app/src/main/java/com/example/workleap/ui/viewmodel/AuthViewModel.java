@@ -1,10 +1,12 @@
 package com.example.workleap.ui.viewmodel;
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.workleap.data.PreferencesManager;
 import com.example.workleap.data.model.LoginRequest;
 import com.example.workleap.data.model.LoginResponse;
 import com.example.workleap.data.model.LogoutRequest;
@@ -26,8 +28,8 @@ public class AuthViewModel extends ViewModel {
     private MutableLiveData<User> loginUser = new MutableLiveData<>();
     private MutableLiveData<String> logoutResult = new MutableLiveData<>();
 
-    public AuthViewModel() {
-        userRepository = new UserRepository();
+    public AuthViewModel(Context context) {
+        userRepository = new UserRepository(context);
     }
 
     // Getter cho LiveData
@@ -44,8 +46,8 @@ public class AuthViewModel extends ViewModel {
     }
 
     // Đăng ký người dùng
-    public void register(String username, String password, String email, String phoneNumber, String role) {
-        RegisterRequest request = new RegisterRequest(username, password, email, phoneNumber, role);
+    public void register(String username, String password, String confirmPassword, String email, String phoneNumber, String role) {
+        RegisterRequest request = new RegisterRequest(username, password, confirmPassword, email, phoneNumber, role);
         Call<RegisterResponse> call = userRepository.registerUser(request);
         call.enqueue(new Callback<RegisterResponse>() {
             @Override
