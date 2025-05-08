@@ -40,10 +40,33 @@ public class UserRepository {
         return apiService.registerUser(request);
     }
 
-    //Đăng nhập
-    public Call<LoginResponse> loginUser(LoginRequest request) {
-        return apiService.loginUser(request);
+    // Đăng nhập và lưu token
+    public void loginUser(LoginRequest request, Callback<LoginResponse> callback) {
+        Call<LoginResponse> call = apiService.loginUser(request);
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Lưu token
+                    preferencesManager.saveToken(response.body().getToken());
+
+                    // Cập nhật lại ApiService với token mới (nếu cần dùng ngay)
+                    apiService = RetrofitClient.getClient(response.body().getToken()).create(ApiService.class);
+
+                    // Gọi callback cho ViewModel/Activity
+                    callback.onResponse(call, response);
+                } else {
+                    callback.onFailure(call, new Throwable("Login failed: " + response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                callback.onFailure(call, t);
+            }
+        });
     }
+
 
     //Đăng xuất
     public Call<MessageResponse> logoutUser(LogoutRequest request) {

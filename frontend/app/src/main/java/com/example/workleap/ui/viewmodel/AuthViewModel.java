@@ -79,8 +79,7 @@ public class AuthViewModel extends ViewModel {
     // Đăng nhập người dùng
     public void login(String username, String email, String password) {
         LoginRequest request = new LoginRequest(username, email, password);
-        Call<LoginResponse> call = userRepository.loginUser(request);
-        call.enqueue(new Callback<LoginResponse>() {
+       userRepository.loginUser(request, new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful()) {
