@@ -175,12 +175,14 @@ const AuthService = {
         return { token, user: existingUser };
       }
 
+      const hashedPassword = bcrypt.hashSync(id, 10);
+
       const newUser = await prisma.user.create({
         data: {
           email,
           phoneNumber,
           username: email,
-          password: id,
+          password: hashedPassword,
           avatar,
           role,
           ...(role === 'APPLICANT'
