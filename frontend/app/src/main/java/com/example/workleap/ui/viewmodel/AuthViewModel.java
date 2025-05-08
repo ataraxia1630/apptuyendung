@@ -55,6 +55,7 @@ public class AuthViewModel extends ViewModel {
                     registerResult.setValue(registerResponse.getMessage() + " - Username: " + registerResponse.getUser().getUsername());
                 } else {
                     try {
+                        registerResult.setValue(response.errorBody().string());
                         MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
                         registerResult.setValue("Lỗi: " + error.getMessage());
                     } catch (Exception e) {
@@ -88,8 +89,10 @@ public class AuthViewModel extends ViewModel {
                 } else {
                     loginUser.setValue(null);
                     try {
+                        loginResult.setValue(response.errorBody().string());
                         MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
-                        loginResult.setValue("Lỗi: " + error.getMessage());
+                        //loginResult.setValue("Lỗi: " + error.getMessage());
+
                     } catch (Exception e) {
                         loginResult.setValue("Lỗi không xác định: " + response.code());
                     }

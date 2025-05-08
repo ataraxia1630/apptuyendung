@@ -9,12 +9,17 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentResultListener;
+
 
 import com.example.workleap.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EditProfileDialogFragment extends DialogFragment {
     private String cardType;
-
+    private final List<EditText> editTexts = new ArrayList<>();
     public static EditProfileDialogFragment newInstance(String cardType) {
         EditProfileDialogFragment fragment = new EditProfileDialogFragment();
         Bundle args = new Bundle();
@@ -49,9 +54,20 @@ public class EditProfileDialogFragment extends DialogFragment {
 
         builder.setView(view)
                 .setTitle("Edit")
+
                 .setPositiveButton("Save", (dialog, which) -> {
-                    // Gửi các field đã nhập về Fragment
+                    ArrayList<String> updated = new ArrayList<>();
+                    for (EditText et : editTexts) {
+                        updated.add(et.getText().toString());
+                    }
+                    // Tạo Bundle và đẩy kết quả
+                    Bundle result = new Bundle();
+                    result.putString("cardType", cardType);
+                    result.putStringArrayList("values", updated);
+                    getParentFragmentManager()
+                            .setFragmentResult("editProfile", result);
                 })
+
                 .setNegativeButton("Cancel", null);
 
         return builder.create();
@@ -61,5 +77,7 @@ public class EditProfileDialogFragment extends DialogFragment {
         EditText editText = new EditText(getContext());
         editText.setHint(hint);
         container.addView(editText);
+
+        editTexts.add(editText);
     }
 }

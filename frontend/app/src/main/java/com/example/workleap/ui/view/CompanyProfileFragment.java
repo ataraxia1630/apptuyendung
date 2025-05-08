@@ -7,10 +7,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.User;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +24,8 @@ public class CompanyProfileFragment extends Fragment {
     View view;
     TextView tvUserName, tvUserNameInfo, tvMailInfo, tvPhoneInfo;
     User user;
+
+    ImageButton btnEditCompanyName, btnEditAboutCompany, btnEditCompanyInfo;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -79,6 +84,37 @@ public class CompanyProfileFragment extends Fragment {
         tvUserNameInfo.setText(user.getUsername());
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
+
+        btnEditCompanyName = view.findViewById(R.id.btnEditCompanyName);
+        btnEditAboutCompany = view.findViewById(R.id.btnEditAboutCompany);
+        btnEditCompanyInfo = view.findViewById(R.id.btnEditCompanyInfo);
+
+        getParentFragmentManager().setFragmentResultListener(
+                "editProfile",
+                getViewLifecycleOwner(),
+                (requestKey, bundle) -> {
+                    String cardType = bundle.getString("cardType");
+                    ArrayList<String> values = bundle.getStringArrayList("values");
+                    // TODO: xử lý cập nhật UI hoặc gọi ViewModel
+                    if ("CompanyInfo".equals(cardType) && values != null) {
+                        tvUserNameInfo.setText(values.get(0));
+                        // … tương ứng với thứ tự addField
+                    }
+                }
+        );
+
+        btnEditCompanyName.setOnClickListener(v -> {
+            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantName");
+            dialog.show(getChildFragmentManager(), "EditApplicantNameDialog");
+        });
+        btnEditAboutCompany.setOnClickListener(v -> {
+            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("AboutMe");
+            dialog.show(getChildFragmentManager(), "EditApplicantNameDialog");
+        });
+        btnEditCompanyInfo.setOnClickListener(v -> {
+            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantInfo");
+            dialog.show(getChildFragmentManager(), "EditApplicantNameDialog");
+        });
 
         return view;
     }

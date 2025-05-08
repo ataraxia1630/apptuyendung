@@ -24,9 +24,11 @@ public class ApplicantSignupFragment extends Fragment {
 
     private AuthViewModel authViewModel;
 
-    private EditText etFullName, etEmail, etPassword, etPhoneNumber;
+    private EditText etFullName, etEmail, etPassword, etConfirmPassword, etPhoneNumber;
     private Button btnSignUp;
     private TextView tvLogIn;
+
+    EditProfileDialogFragment dialog;
 
     public ApplicantSignupFragment() {}
 
@@ -45,6 +47,7 @@ public class ApplicantSignupFragment extends Fragment {
         etFullName = view.findViewById(R.id.editTextFullName);
         etEmail = view.findViewById(R.id.editTextEmail);
         etPassword = view.findViewById(R.id.editTextPassword);
+        etConfirmPassword = view.findViewById(R.id.editTextConfirmPassword);
         etPhoneNumber = view.findViewById(R.id.editTextPhone);
         btnSignUp = view.findViewById(R.id.buttonSignUp);
         tvLogIn = view.findViewById(R.id.textViewLogIn);
@@ -69,6 +72,7 @@ public class ApplicantSignupFragment extends Fragment {
         String fullName = etFullName.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+        String confirmPassword = etConfirmPassword.getText().toString().trim();
         String phone = etPhoneNumber.getText().toString().trim();
 
         if (fullName.isEmpty() || email.isEmpty() || password.isEmpty()) {

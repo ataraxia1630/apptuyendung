@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.example.workleap.R;
 import com.example.workleap.data.model.User;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ApplicantProfileFragment#newInstance} factory method to
@@ -25,8 +27,6 @@ public class ApplicantProfileFragment extends Fragment {
     User user;
 
     ImageButton btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
-
-    EditProfileDialogFragment dialog;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -68,6 +68,7 @@ public class ApplicantProfileFragment extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -89,6 +90,20 @@ public class ApplicantProfileFragment extends Fragment {
         tvUserNameInfo.setText(user.getUsername());
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
+
+        getParentFragmentManager().setFragmentResultListener(
+                "editProfile",
+                getViewLifecycleOwner(),
+                (requestKey, bundle) -> {
+                    String cardType = bundle.getString("cardType");
+                    ArrayList<String> values = bundle.getStringArrayList("values");
+                    // TODO: xử lý cập nhật UI hoặc gọi ViewModel
+                    if ("ApplicantInfo".equals(cardType) && values != null) {
+                        tvUserName.setText(values.get(0));
+                        // … tương ứng với thứ tự addField
+                    }
+                }
+        );
 
         btnEditApplicantName.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantName");
