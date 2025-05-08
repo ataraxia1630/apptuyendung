@@ -1,6 +1,7 @@
 const prisma = require('../config/db/prismaClient');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const googleClient = require('../config/google/googleClient');
 
 const SECRET_KEY = process.env.JWT_SECRET || 'secret';
 
@@ -139,6 +140,82 @@ const AuthService = {
   logout: async (token) => {
     if (!token) {
       throw new Error('Missing token');
+    }
+  },
+
+  loginGoogle: async (idToken, role = 'APPLICANT') => {
+    try {
+      if (!['APPLICANT', 'COMPANY'].includes(role)) {
+        throw new Error('Invalid role');
+      }
+
+      const ticket = await googleClient.verifyIdToken({
+        idToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+
+      const id = payload.sub;
+      const email = payload.email;
+      const name = payload.name;
+      const phoneNumber = payload.phoneNumber || null;
+      const avatar = payload.picture;
+
+      const existingUser = await prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (existingUser) {
+        const token = jwt.sign(
+          { userId: existingUser.id, role: existingUser.role },
+          SECRET_KEY,
+          { expiresIn: '24h' }
+        );
+        return { token, user: existingUser };
+      }
+
+      const newUser = await prisma.user.create({
+        data: {
+          email,
+          phoneNumber,
+          username: email,
+          password: id,
+          avatar,
+          role,
+          ...(role === 'APPLICANT'
+            ? {
+                Applicant: {
+                  create: {
+                    address: '',
+                    firstName: name.split(' ')[0],
+                    lastName: name.split(' ')[1] || '',
+                  },
+                },
+              }
+            : {}),
+
+          ...(role === 'COMPANY'
+            ? {
+                Company: {
+                  create: {
+                    name: name,
+                  },
+                },
+              }
+            : {}),
+        },
+      });
+
+      const token = jwt.sign(
+        { userId: newUser.id, role: newUser.role },
+        SECRET_KEY,
+        { expiresIn: '24h' }
+      );
+
+      return { token, user: newUser };
+    } catch (error) {
+      throw new Error('Error logging into Google account: ' + error.message);
     }
   },
 };

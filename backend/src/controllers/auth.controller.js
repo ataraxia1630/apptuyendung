@@ -33,6 +33,16 @@ const AuthController = {
       return res.status(401).json({ error: error.message });
     }
   },
+
+  loginGoogle: async (req, res) => {
+    try {
+      const { idToken, role = 'APPLICANT' } = req.body;
+      const { token, user } = await AuthService.loginGoogle(idToken, role);
+      return res.status(200).json({ message: 'Login successful', token, user });
+    } catch (error) {
+      return res.status(401).json({ error: error.message });
+    }
+  },
 };
 
 module.exports = { AuthController };
