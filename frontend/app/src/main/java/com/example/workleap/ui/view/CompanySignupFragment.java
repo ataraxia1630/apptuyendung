@@ -42,6 +42,7 @@ public class CompanySignupFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+        authViewModel.InitiateRepository(getContext());
 
         etEmail = view.findViewById(R.id.etEmail);
         etPassword = view.findViewById(R.id.etPassword);

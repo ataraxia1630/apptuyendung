@@ -34,7 +34,7 @@ const AuthService = {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const { confirmPassword, ...userData } = data;
+    const { ...userData } = data;
 
     try {
       return await prisma.user.create({

@@ -1,5 +1,7 @@
 package com.example.workleap.ui.view;
 
+import static java.sql.Types.NULL;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -24,7 +26,7 @@ import com.example.workleap.ui.viewmodel.AuthViewModel;
 public class LoginFragment extends Fragment {
 
     private AuthViewModel authViewModel;
-    private EditText etEmail, etPassword;
+    private EditText etUsername, etEmail, etPassword;
     private Button btnLogin;
     private TextView tvSignup;
 
@@ -43,7 +45,9 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+        authViewModel.InitiateRepository(getContext());
 
+        etUsername = view.findViewById(R.id.username_edittext);
         etEmail = view.findViewById(R.id.email_edittext);
         etPassword = view.findViewById(R.id.password_edittext);
         btnLogin = view.findViewById(R.id.login_button);
@@ -72,14 +76,17 @@ public class LoginFragment extends Fragment {
     }
 
     private void loginWithEmail() {
+
+        String userName = etUsername.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+
 
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        authViewModel.login(email, email, password);
+        authViewModel.login( userName, null, password);
     }
 }

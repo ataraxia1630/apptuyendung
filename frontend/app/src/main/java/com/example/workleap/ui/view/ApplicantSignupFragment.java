@@ -43,6 +43,7 @@ public class ApplicantSignupFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+        authViewModel.InitiateRepository(getContext());
 
         etFullName = view.findViewById(R.id.editTextFullName);
         etEmail = view.findViewById(R.id.editTextEmail);
