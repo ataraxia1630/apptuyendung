@@ -28,8 +28,7 @@ public class AuthViewModel extends ViewModel {
     private MutableLiveData<User> loginUser = new MutableLiveData<>();
     private MutableLiveData<String> logoutResult = new MutableLiveData<>();
 
-    public AuthViewModel(Context context) {
-        userRepository = new UserRepository(context);
+    public AuthViewModel() {
     }
 
     // Getter cho LiveData
@@ -43,6 +42,10 @@ public class AuthViewModel extends ViewModel {
     public LiveData<User> getLoginUser() { return loginUser; }
     public LiveData<String> getLogoutResult() {
         return logoutResult;
+    }
+
+    public void InitiateRepository(Context context) {
+        userRepository = new UserRepository(context);
     }
 
     // Đăng ký người dùng
