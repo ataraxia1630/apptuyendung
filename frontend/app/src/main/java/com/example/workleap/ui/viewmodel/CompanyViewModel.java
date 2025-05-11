@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.workleap.data.model.GetCompanyResponse;
 import com.example.workleap.data.model.UpdateCompanyRequest;
@@ -15,7 +16,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CompanyViewModel {
+public class CompanyViewModel extends ViewModel {
     private CompanyRepository companyRepository;
     private MutableLiveData<String> updateCompanyResult = new MutableLiveData<>();
     private MutableLiveData<String> getCompanyResult = new MutableLiveData<>();

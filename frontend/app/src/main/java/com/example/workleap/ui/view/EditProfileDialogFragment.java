@@ -44,12 +44,12 @@ public class EditProfileDialogFragment extends DialogFragment {
             addField(container, "About me");
         } else if ("ApplicantInfo".equals(cardType)) {
             addField(container, "Name");
-            addField(container, "Gender");
-            addField(container, "Age");
-            addField(container, "Date of birth");
+            //addField(container, "Gender");
+            //addField(container, "Age");
+            //addField(container, "Date of birth");
             addField(container, "Mobile");
             addField(container, "Email");
-            addField(container, "Address");
+            //addField(container, "Address");
         }
 
         builder.setView(view)
@@ -76,6 +76,7 @@ public class EditProfileDialogFragment extends DialogFragment {
     private void addField(LinearLayout container, String hint) {
         EditText editText = new EditText(getContext());
         editText.setHint(hint);
+        editText.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
         container.addView(editText);
 
         editTexts.add(editText);

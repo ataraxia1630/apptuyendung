@@ -3,6 +3,7 @@ package com.example.workleap.ui.view;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,10 @@ import android.widget.TextView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.User;
+import com.example.workleap.ui.viewmodel.ApplicantViewModel;
+import com.example.workleap.ui.viewmodel.AuthViewModel;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -23,10 +28,13 @@ import java.util.ArrayList;
 public class ApplicantProfileFragment extends Fragment {
 
     View view;
-    TextView tvUserName, tvUserNameInfo, tvMailInfo, tvPhoneInfo;
+
+    TextView tvAboutMe;
+    TextView tvUserName, tvUserNameInfo, tvMailInfo, tvPhoneInfo, tvAddressInfo;
     User user;
 
     ImageButton btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -78,18 +86,24 @@ public class ApplicantProfileFragment extends Fragment {
         user = (User) getArguments().getSerializable("user");
 
         tvUserName = (TextView) view.findViewById(R.id.textView2);
+
+        tvAboutMe = (TextView) view.findViewById(R.id.textViewAboutMe);
         tvUserNameInfo = (TextView) view.findViewById(R.id.companynameInfo);
         tvMailInfo = (TextView) view.findViewById(R.id.emailInfo);
         tvPhoneInfo= (TextView) view.findViewById(R.id.phoneInfo);
+        tvAddressInfo= (TextView) view.findViewById(R.id.addressInfo);
 
         btnEditApplicantName = view.findViewById(R.id.btnEditUserName);
         btnEditAboutMe = view.findViewById(R.id.btnEditAboutMe);
         btnEditApplicantInfo = view.findViewById(R.id.btnApplicantInfo);
 
         tvUserName.setText(user.getUsername());
+        //tvAboutMe.setText(user., , );
         tvUserNameInfo.setText(user.getUsername());
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
+        //tvAddressInfo.setText(user.get);
+
 
         getParentFragmentManager().setFragmentResultListener(
                 "editProfile",
@@ -98,8 +112,11 @@ public class ApplicantProfileFragment extends Fragment {
                     String cardType = bundle.getString("cardType");
                     ArrayList<String> values = bundle.getStringArrayList("values");
                     // TODO: xử lý cập nhật UI hoặc gọi ViewModel
-                    if ("ApplicantInfo".equals(cardType) && values != null) {
-                        tvUserNameInfo.setText(values.get(0));
+                    if ("AboutMe".equals(cardType) && values != null) {
+                        tvAboutMe.setText(values.get(0));
+                        /*tvUserNameInfo.setText(values.get(0));
+                        tvPhoneInfo.setText(values.get(1));
+                        tvMailInfo.setText(values.get(2));*/
                         // … tương ứng với thứ tự addField
                     }
                 }
