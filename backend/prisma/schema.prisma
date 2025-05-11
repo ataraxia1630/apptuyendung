@@ -67,6 +67,11 @@ enum ReactionType {
   WOW
 }
 
+enum ContentType {
+  TEXT
+  IMAGE
+}
+
 // ------------ COMMON TYPES --------------
 
 /// ------------ MAIN MODEL ---------------
@@ -355,25 +360,24 @@ model Comment {
 }
 
 model Post {
-  id         String     @id @default(uuid())
+  id         String        @id @default(uuid())
   companyId  String
-  title      String     @db.VarChar(255)
-  detail     String
-  created_at DateTime   @default(now())
-  updated_at DateTime   @updatedAt
-  Company    Company    @relation(fields: [companyId], references: [id])
-  Image      Image[]
+  title      String
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
+  Company    Company       @relation(fields: [companyId], references: [id])
+  contents   PostContent[]
   Reaction   Reaction[]
   Comment    Comment[]
 }
 
-model Image {
-  id     String @id @default(uuid())
+model PostContent {
+  id     String      @id @default(uuid())
   postId String
-  url    String @db.VarChar(255)
-  type   String @db.VarChar(50)
-  size   Int
-  Post   Post   @relation(fields: [postId], references: [id])
+  type   ContentType
+  value  String
+  order  Int // tách theo đoạn
+  Post   Post        @relation(fields: [postId], references: [id])
 }
 
 model Reaction {

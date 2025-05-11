@@ -44,23 +44,23 @@ const AuthService = {
           password: hashedPassword,
           ...(role === 'APPLICANT'
             ? {
-                Applicant: {
-                  create: {
-                    address: '',
-                    firstName: '',
-                    lastName: '',
-                  },
+              Applicant: {
+                create: {
+                  address: '',
+                  firstName: '',
+                  lastName: '',
                 },
-              }
+              },
+            }
             : {}),
           ...(role === 'COMPANY'
             ? {
-                Company: {
-                  create: {
-                    name: '',
-                  },
+              Company: {
+                create: {
+                  name: '',
                 },
-              }
+              },
+            }
             : {}),
         },
       });
@@ -82,7 +82,6 @@ const AuthService = {
                 Edu: true,
                 Exp: true,
                 InterestedField: true,
-                JobSaved: true,
                 JobApplied: true,
                 CV: true,
               },
