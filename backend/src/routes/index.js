@@ -18,6 +18,7 @@ const jobSavedRoutes = require('./jobSaved.route');
 const PostRoutes = require('./post.route');
 const reactionRoutes = require('./reaction.route');
 const commentRoutes = require('./comment.route');
+const jobAppliedRoutes = require('./jobApplied.route');
 
 function route(app) {
   app.use('/api/auth', authRoutes);
@@ -41,6 +42,7 @@ function route(app) {
   app.use('/api/posts', PostRoutes);
   app.use('/api/reactions', reactionRoutes);
   app.use('/api/comments', commentRoutes);
+  app.use('/api/apply', jobAppliedRoutes);
 }
 
 module.exports = route;
