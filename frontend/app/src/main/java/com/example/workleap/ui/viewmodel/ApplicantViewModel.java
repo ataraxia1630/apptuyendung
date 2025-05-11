@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.workleap.data.api.CreateApplicantExperienceRequest;
 import com.example.workleap.data.api.CreateApplicantExperienceResponse;
@@ -34,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ApplicantViewModel {
+public class ApplicantViewModel extends ViewModel {
     private ApplicantRepository applicantRepository;
 
     private MutableLiveData<String> updateApplicantResult = new MutableLiveData<>();

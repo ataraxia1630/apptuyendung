@@ -20,7 +20,9 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.Applicant;
 import com.example.workleap.data.model.User;
+import com.example.workleap.ui.viewmodel.ApplicantViewModel;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -30,6 +32,7 @@ public class NavigationActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     private AuthViewModel authViewModel;
     private User user;
+    private Applicant applicant;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +45,9 @@ public class NavigationActivity extends AppCompatActivity {
         });
 
         bottomNavigationView = findViewById(R.id.bottom_nav);
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        
 
         NavController navController = Navigation.findNavController(NavigationActivity.this, R.id.fragment_container);
 
