@@ -11,6 +11,7 @@ import com.example.workleap.data.api.CreateInterestedFieldResponse;
 import com.example.workleap.data.api.UpdateApplicantEducationRequest;
 import com.example.workleap.data.api.UpdateApplicantExperienceRequest;
 import com.example.workleap.data.api.UpdateApplicantExperienceResponse;
+import com.example.workleap.data.model.Applicant;
 import com.example.workleap.data.model.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.CreateApplicantEducationResponse;
 import com.example.workleap.data.model.CreateApplicantSkillRequest;
@@ -38,7 +39,7 @@ public class ApplicantViewModel {
 
     private MutableLiveData<String> updateApplicantResult = new MutableLiveData<>();
     private MutableLiveData<String> getApplicantResult = new MutableLiveData<>();
-
+    private MutableLiveData<Applicant> getApplicantData = new MutableLiveData<>();
     private MutableLiveData<String> createApplicantSkillResult = new MutableLiveData<>();
     private MutableLiveData<String> updateApplicantSkillResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteApplicantSkillResult = new MutableLiveData<>();
@@ -64,6 +65,7 @@ public class ApplicantViewModel {
     // Getter cho LiveData
     public LiveData<String> getUpdateApplicantResult() { return updateApplicantResult; }
     public LiveData<String> getGetApplicantResult() { return getApplicantResult; }
+    public LiveData<Applicant> getGetApplicantData() { return getApplicantData; }
 
     public LiveData<String> getCreateApplicantSkillResult() { return createApplicantSkillResult; }
     public LiveData<String> getUpdateApplicantSkillResult() { return updateApplicantSkillResult; }
@@ -92,6 +94,7 @@ public class ApplicantViewModel {
                 if (response.isSuccessful()) {
                     GetApplicantResponse getResponse = response.body();
                     getApplicantResult.setValue(getResponse.getMessage());
+                    getApplicantData.setValue(getResponse.getApplicant());
                 } else {
                     try {
                         GetApplicantResponse error = new Gson().fromJson(response.errorBody().string(), GetApplicantResponse.class);

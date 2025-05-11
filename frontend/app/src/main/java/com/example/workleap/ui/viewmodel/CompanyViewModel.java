@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.workleap.data.model.Company;
 import com.example.workleap.data.model.GetCompanyResponse;
 import com.example.workleap.data.model.UpdateCompanyRequest;
 import com.example.workleap.data.model.UpdateCompanyResponse;
@@ -19,7 +20,7 @@ public class CompanyViewModel {
     private CompanyRepository companyRepository;
     private MutableLiveData<String> updateCompanyResult = new MutableLiveData<>();
     private MutableLiveData<String> getCompanyResult = new MutableLiveData<>();
-
+    private MutableLiveData<Company> getCompanyData = new MutableLiveData<>();
     public CompanyViewModel(Context context) {
         companyRepository = new CompanyRepository(context);
     }
@@ -27,7 +28,7 @@ public class CompanyViewModel {
     // Getter cho LiveData
     public LiveData<String> getUpdateCompanyResult() { return updateCompanyResult; }
     public LiveData<String> getGetCompanyResult() { return getCompanyResult; }
-
+    public LiveData<Company> getGetCompanyData() { return getCompanyData; }
 
     // Get company
     public void getCompany(String id) {
@@ -38,6 +39,7 @@ public class CompanyViewModel {
                 if (response.isSuccessful()) {
                     GetCompanyResponse getResponse = response.body();
                     getCompanyResult.setValue(getResponse.getMessage());
+                    getCompanyData.setValue(getResponse.getCompany());
                 } else {
                     try {
                         GetCompanyResponse error = new Gson().fromJson(response.errorBody().string(), GetCompanyResponse.class);
