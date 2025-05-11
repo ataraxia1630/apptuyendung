@@ -15,8 +15,8 @@ public class User implements Serializable {
     private String role; // Role là enum trong backend, ánh xạ thành String hoặc enum trong Java
     private Date createdAt;
     private Date updatedAt;
-    private List<Company> company; // Quan hệ 1-nhiều với Company
-    private List<Applicant> applicant; // Quan hệ 1-nhiều với Applicant
+    private String companyId; //Chỉ nhận id company hoặc id applicant
+    private String applicantId; //Chỉ nhận id company hoặc id applicant
 
     //Constructor rong cho Gson
     public User() {}
@@ -24,7 +24,7 @@ public class User implements Serializable {
     // Constructor đầy đủ
     public User(String id, String username, String password, String email, String phoneNumber,
                 String avatar, String background, String role, Date createdAt, Date updatedAt,
-                List<Company> company, List<Applicant> applicant) {
+                String company, String applicant) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -35,8 +35,8 @@ public class User implements Serializable {
         this.role = role;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.company = company;
-        this.applicant = applicant;
+        this.companyId = company;
+        this.applicantId = applicant;
     }
 
     // Getter và Setter
@@ -120,20 +120,20 @@ public class User implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public List<Company> getCompany() {
-        return company;
+    public String getCompanyId() {
+        return companyId;
     }
 
-    public void setCompany(List<Company> company) {
-        this.company = company;
+    public void setCompanyId(String company) {
+        this.companyId = company;
     }
 
-    public List<Applicant> getApplicant() {
-        return applicant;
+    public String getApplicantId() {
+        return applicantId;
     }
 
-    public void setApplicant(List<Applicant> applicant) {
-        this.applicant = applicant;
+    public void setApplicantId(String applicant) {
+        this.applicantId = applicant;
     }
 }
 
