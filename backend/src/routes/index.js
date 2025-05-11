@@ -16,6 +16,8 @@ const cvRoutes = require('./cv.route');
 
 const jobSavedRoutes = require('./jobSaved.route');
 const PostRoutes = require('./post.route');
+const reactionRoutes = require('./reaction.route');
+const commentRoutes = require('./comment.route');
 
 function route(app) {
   app.use('/api/auth', authRoutes);
@@ -37,6 +39,8 @@ function route(app) {
 
   app.use('/api/save', jobSavedRoutes);
   app.use('/api/posts', PostRoutes);
+  app.use('/api/reactions', reactionRoutes);
+  app.use('/api/comments', commentRoutes);
 }
 
 module.exports = route;

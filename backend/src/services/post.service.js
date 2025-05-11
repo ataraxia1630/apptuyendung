@@ -2,113 +2,134 @@ const prisma = require('../config/db/prismaClient');
 
 const PostService = {
     getAllPosts: async () => {
-        try {
-            const posts = await prisma.post.findMany({
-                include: {
-                    Company: true,
-                    Image: true,
-                    Reaction: true,
-                    Comment: {
-                        include: {
-                            User: true,
-                            childComment: {
-                                include: { User: true }
-                            }
+        return await prisma.post.findMany({
+            include: {
+                Company: true,
+                contents: true,
+                Reaction: true,
+                Comment: {
+                    include: {
+                        User: true,
+                        childComment: {
+                            include: { User: true }
                         }
                     }
                 }
-            });
-            return posts;
-        } catch (error) {
-            console.error('Error fetching posts:', error.message);
-            throw new Error('Error fetching posts: ' + error.message);
-        }
+            }
+        });
     },
 
     getPostById: async (id) => {
         if (!id) throw new Error('Post ID is required');
-        try {
-            const post = await prisma.post.findUnique({
-                where: { id },
-                include: {
-                    Company: true,
-                    Image: true,
-                    Reaction: true,
-                    Comment: {
-                        include: {
-                            User: true,
-                            childComment: {
-                                include: { User: true }
-                            }
+        const post = await prisma.post.findUnique({
+            where: { id },
+            include: {
+                Company: true,
+                contents: true,
+                Reaction: true,
+                Comment: {
+                    include: {
+                        User: true,
+                        childComment: {
+                            include: { User: true }
                         }
                     }
                 }
-            });
-            if (!post) throw new Error('Post not found');
-            return post;
-        } catch (error) {
-            console.error('Error fetching post:', error.message);
-            throw new Error('Error fetching post: ' + error.message);
-        }
+            }
+        });
+        if (!post) throw new Error('Post not found');
+        return post;
     },
 
-    createPost: async (data) => {
-        if (!data.title || !data.companyId || !data.detail) {
-            throw new Error('Missing required fields');
+    createPost: async ({ companyId, title, contents }) => {
+        if (!companyId || !title || !Array.isArray(contents) || contents.length === 0) {
+            throw new Error('Missing required fields or empty contents');
         }
-        try {
-            const post = await prisma.post.create({ data });
-            return post;
-        } catch (error) {
-            console.error('Error creating post:', error.message);
-            throw new Error('Error creating post: ' + error.message);
-        }
+
+        return await prisma.post.create({
+            data: {
+                companyId,
+                title,
+                contents: {
+                    createMany: {
+                        data: contents.map((block, index) => ({
+                            type: block.type,
+                            value: block.value,
+                            order: index + 1
+                        }))
+                    }
+                }
+            },
+            include: {
+                contents: true
+            }
+        });
     },
 
-    updatePost: async (id, data) => {
+    updatePost: async (id, { title, contents }) => {
         if (!id) throw new Error('Post ID is required');
-        try {
-            const post = await prisma.post.update({
-                where: { id },
-                data,
+
+        const updatedPost = await prisma.post.update({
+            where: { id },
+            data: { title },
+        });
+
+        if (contents && Array.isArray(contents)) {
+            // Xóa content cũ trước
+            await prisma.postContent.deleteMany({ where: { postId: id } });
+
+            // Tạo lại content mới
+            await prisma.postContent.createMany({
+                data: contents.map((block, index) => ({
+                    postId: id,
+                    type: block.type,
+                    value: block.value,
+                    order: index + 1
+                }))
             });
-            return post;
-        } catch (error) {
-            console.error('Error updating post:', error.message);
-            throw new Error('Error updating post: ' + error.message);
         }
+
+        return await prisma.post.findUnique({
+            where: { id },
+            include: { contents: true }
+        });
     },
 
     deletePost: async (id) => {
         if (!id) throw new Error('Post ID is required');
-        try {
-            await prisma.post.delete({ where: { id } });
-            return { message: 'Post deleted successfully' };
-        } catch (error) {
-            console.error('Error deleting post:', error.message);
-            throw new Error('Error deleting post: ' + error.message);
-        }
+        await prisma.postContent.deleteMany({ where: { postId: id } }); // xóa nội dung
+        await prisma.post.delete({ where: { id } });
+        return { message: 'Post deleted successfully' };
     },
 
-    searchPosts: async (query) => {
-        if (!query) throw new Error('Search query is required');
-        const keyword = query.trim().toLowerCase();
-        try {
-            const posts = await prisma.post.findMany({
-                where: {
-                    OR: [
-                        { title: { contains: keyword, mode: 'insensitive' } },
-                        { detail: { contains: keyword, mode: 'insensitive' } },
-                    ],
-                },
-                include: { Company: true },
-            });
-            return posts;
-        } catch (error) {
-            console.error('Error searching posts:', error.message);
-            throw new Error('Error searching posts: ' + error.message);
-        }
-    },
+    searchPosts: async (keyword) => {
+        if (!keyword) throw new Error('Search keyword is required');
+        const lowerKeyword = keyword.trim().toLowerCase();
+
+        const posts = await prisma.post.findMany({
+            where: {
+                OR: [
+                    { title: { contains: lowerKeyword, mode: 'insensitive' } },
+                    {
+                        contents: {
+                            some: {
+                                value: {
+                                    contains: lowerKeyword,
+                                    mode: 'insensitive'
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            include: {
+                contents: true,
+                Company: true
+            }
+        });
+
+        return posts;
+    }
 };
 
 module.exports = { PostService };

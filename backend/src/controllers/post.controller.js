@@ -25,7 +25,13 @@ const PostController = {
 
     createPost: async (req, res) => {
         try {
-            const newPost = await PostService.createPost(req.body);
+            const { companyId, title, contents } = req.body;
+
+            if (!contents || !Array.isArray(contents) || contents.length === 0) {
+                return res.status(400).json({ message: 'Post contents are required' });
+            }
+
+            const newPost = await PostService.createPost({ companyId, title, contents });
             return res.status(201).json(newPost);
         } catch (error) {
             return res.status(500).json({ message: 'Error creating post', error });
