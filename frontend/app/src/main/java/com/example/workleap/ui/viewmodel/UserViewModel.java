@@ -7,12 +7,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.workleap.data.model.GetApplicantResponse;
-import com.example.workleap.data.model.GetUserResponse;
-import com.example.workleap.data.model.MessageResponse;
-import com.example.workleap.data.model.UpdateUserRequest;
-import com.example.workleap.data.model.UpdateUserResponse;
-import com.example.workleap.data.model.User;
+import com.example.workleap.data.model.response.GetUserResponse;
+import com.example.workleap.data.model.request.UpdateUserRequest;
+import com.example.workleap.data.model.response.UpdateUserResponse;
+import com.example.workleap.data.model.entity.User;
 import com.example.workleap.data.repository.UserRepository;
 import com.google.gson.Gson;
 

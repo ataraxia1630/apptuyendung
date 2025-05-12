@@ -6,14 +6,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.workleap.data.PreferencesManager;
-import com.example.workleap.data.model.LoginRequest;
-import com.example.workleap.data.model.LoginResponse;
-import com.example.workleap.data.model.LogoutRequest;
-import com.example.workleap.data.model.MessageResponse;
-import com.example.workleap.data.model.RegisterRequest;
-import com.example.workleap.data.model.RegisterResponse;
-import com.example.workleap.data.model.User;
+import com.example.workleap.data.model.request.LoginRequest;
+import com.example.workleap.data.model.response.LoginResponse;
+import com.example.workleap.data.model.request.LogoutRequest;
+import com.example.workleap.data.model.response.MessageResponse;
+import com.example.workleap.data.model.request.RegisterRequest;
+import com.example.workleap.data.model.response.RegisterResponse;
+import com.example.workleap.data.model.entity.User;
 import com.example.workleap.data.repository.UserRepository;
 import com.google.gson.Gson;
 

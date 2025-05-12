@@ -2,30 +2,23 @@ package com.example.workleap.ui.view;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-import android.widget.AdapterView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.workleap.R;
-import com.example.workleap.data.model.Applicant;
-import com.example.workleap.data.model.User;
-import com.example.workleap.ui.viewmodel.ApplicantViewModel;
+import com.example.workleap.data.model.entity.Applicant;
+import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 public class NavigationActivity extends AppCompatActivity {
 

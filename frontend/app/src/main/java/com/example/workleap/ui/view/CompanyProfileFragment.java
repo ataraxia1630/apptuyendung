@@ -11,7 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.workleap.R;
-import com.example.workleap.data.model.User;
+import com.example.workleap.data.model.entity.User;
 
 import java.util.ArrayList;
 

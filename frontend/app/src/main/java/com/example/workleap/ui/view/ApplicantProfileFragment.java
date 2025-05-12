@@ -3,7 +3,6 @@ package com.example.workleap.ui.view;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.workleap.R;
-import com.example.workleap.data.model.User;
-import com.example.workleap.ui.viewmodel.ApplicantViewModel;
-import com.example.workleap.ui.viewmodel.AuthViewModel;
-
-import org.w3c.dom.Text;
+import com.example.workleap.data.model.entity.User;
 
 import java.util.ArrayList;
 

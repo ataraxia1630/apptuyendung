@@ -1,35 +1,29 @@
 package com.example.workleap.data.repository;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
 
-import com.example.workleap.data.PreferencesManager;
-import com.example.workleap.data.api.CreateApplicantExperienceRequest;
-import com.example.workleap.data.api.CreateApplicantExperienceResponse;
-import com.example.workleap.data.api.CreateInterestedFieldResponse;
+import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
+import com.example.workleap.data.model.response.CreateApplicantExperienceResponse;
+import com.example.workleap.data.model.response.CreateInterestedFieldResponse;
 import com.example.workleap.data.api.RetrofitClient;
 
 import com.example.workleap.data.api.ApiService;
-import com.example.workleap.data.api.UpdateApplicantEducationRequest;
-import com.example.workleap.data.api.UpdateApplicantExperienceRequest;
-import com.example.workleap.data.api.UpdateApplicantExperienceResponse;
-import com.example.workleap.data.model.CreateApplicantEducationRequest;
-import com.example.workleap.data.model.CreateApplicantEducationResponse;
-import com.example.workleap.data.model.CreateApplicantSkillRequest;
-import com.example.workleap.data.model.CreateApplicantSkillResponse;
-import com.example.workleap.data.model.GetApplicantResponse;
-import com.example.workleap.data.model.GetApplicantSkillResponse;
-import com.example.workleap.data.model.MessageResponse;
-import com.example.workleap.data.model.UpdateApplicantEducationResponse;
-import com.example.workleap.data.model.UpdateApplicantRequest;
-import com.example.workleap.data.model.UpdateApplicantResponse;
-import com.example.workleap.data.model.UpdateApplicantSkillRequest;
-import com.example.workleap.data.model.UpdateApplicantSkillResponse;
-import java.util.List;
+import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
+import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
+import com.example.workleap.data.model.response.UpdateApplicantExperienceResponse;
+import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
+import com.example.workleap.data.model.response.CreateApplicantEducationResponse;
+import com.example.workleap.data.model.request.CreateApplicantSkillRequest;
+import com.example.workleap.data.model.response.CreateApplicantSkillResponse;
+import com.example.workleap.data.model.response.GetApplicantResponse;
+import com.example.workleap.data.model.response.MessageResponse;
+import com.example.workleap.data.model.response.UpdateApplicantEducationResponse;
+import com.example.workleap.data.model.request.UpdateApplicantRequest;
+import com.example.workleap.data.model.response.UpdateApplicantResponse;
+import com.example.workleap.data.model.request.UpdateApplicantSkillRequest;
+import com.example.workleap.data.model.response.UpdateApplicantSkillResponse;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ApplicantRepository {
     private ApiService apiService;

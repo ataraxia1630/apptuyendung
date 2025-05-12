@@ -3,8 +3,6 @@ package com.example.workleap.ui.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,8 +14,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.workleap.R;
-import com.example.workleap.data.PreferencesManager;
-import com.example.workleap.ui.viewmodel.ApplicantViewModel;
+import com.example.workleap.data.repository.PreferencesManager;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
 

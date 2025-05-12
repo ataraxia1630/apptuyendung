@@ -6,10 +6,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.workleap.data.model.Company;
-import com.example.workleap.data.model.GetCompanyResponse;
-import com.example.workleap.data.model.UpdateCompanyRequest;
-import com.example.workleap.data.model.UpdateCompanyResponse;
+import com.example.workleap.data.model.entity.Company;
+import com.example.workleap.data.model.response.GetCompanyResponse;
+import com.example.workleap.data.model.request.UpdateCompanyRequest;
+import com.example.workleap.data.model.response.UpdateCompanyResponse;
 import com.example.workleap.data.repository.CompanyRepository;
 import com.google.gson.Gson;
 

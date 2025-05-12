@@ -1,7 +1,5 @@
 package com.example.workleap.ui.view;
 
-import static java.sql.Types.NULL;
-
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -21,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workleap.R;
-import com.example.workleap.data.model.Applicant;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 
