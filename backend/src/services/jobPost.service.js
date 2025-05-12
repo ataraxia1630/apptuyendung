@@ -9,7 +9,6 @@ const JobPostService = {
                     Company: true,
                     JobType: true,
                     JobCategory: true,
-                    JobSaved: true,
                 },
             });
             console.log('JobPosts fetched:', jobPosts.length);
