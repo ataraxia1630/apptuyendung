@@ -2,6 +2,7 @@ package com.example.workleap.ui.view;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -49,7 +50,7 @@ public class EditProfileDialogFragment extends DialogFragment {
             //addField(container, "Date of birth");
             addField(container, "Mobile");
             addField(container, "Email");
-            //addField(container, "Address");
+            addField(container, "Address");
         }
 
         builder.setView(view)

@@ -22,7 +22,9 @@ public class CompanyViewModel extends ViewModel {
     private MutableLiveData<String> updateCompanyResult = new MutableLiveData<>();
     private MutableLiveData<String> getCompanyResult = new MutableLiveData<>();
     private MutableLiveData<Company> getCompanyData = new MutableLiveData<>();
-    public CompanyViewModel(Context context) {
+
+    public CompanyViewModel(){}
+    public void InitiateRepository(Context context) {
         companyRepository = new CompanyRepository(context);
     }
 

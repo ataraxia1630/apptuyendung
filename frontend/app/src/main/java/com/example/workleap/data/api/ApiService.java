@@ -64,9 +64,9 @@ public interface ApiService {
 
 
     //Applicant
-    @GET("api/applicant/{id}")
+    @GET("api/users/applicant/{id}")
     Call<GetApplicantResponse> getApplicant(@Path("id") String id);
-    @PUT("api/applicant/{id}")
+    @PUT("api/users/applicant/{id}")
     Call<UpdateApplicantResponse> updateApplicant(@Path("id") String id, @Body UpdateApplicantRequest request);
 
 

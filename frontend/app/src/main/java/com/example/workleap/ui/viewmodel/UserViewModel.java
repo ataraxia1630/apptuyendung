@@ -94,6 +94,7 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onFailure(Call<UpdateUserResponse> call, Throwable t) {
                 updateUserResult.setValue("Lỗi kết nối: " + t.getMessage());
+
             }
         });
     }

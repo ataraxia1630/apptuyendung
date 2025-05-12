@@ -31,7 +31,7 @@ const ApplicantController = {
     const { id } = req.params;
     try {
       const applicant = await ApplicantService.getApplicantById(id);
-      return res.status(200).json(applicant);
+      return res.status(200).json({applicant: applicant});
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching applicant',

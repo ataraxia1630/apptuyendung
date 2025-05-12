@@ -1,6 +1,7 @@
 package com.example.workleap.ui.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -58,7 +59,8 @@ public class ApplicantViewModel extends ViewModel {
     private MutableLiveData<String> deleteInterestedFieldResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteAllInterestedFieldResult = new MutableLiveData<>();
 
-    public ApplicantViewModel(Context context) {
+    public ApplicantViewModel() {}
+    public void InitiateRepository(Context context) {
         applicantRepository = new ApplicantRepository(context);
     }
 
@@ -95,11 +97,20 @@ public class ApplicantViewModel extends ViewModel {
                     GetApplicantResponse getResponse = response.body();
                     getApplicantResult.setValue(getResponse.getMessage());
                     getApplicantData.setValue(getResponse.getApplicant());
+                    Log.e("applicantviewmodel","successful");
+                    //Log.e("applicantviewmodel",getResponse.getApplicant().getProfileSummary());
+                    if(getResponse.getApplicant()==null) Log.e("applicantviewmodel", "applicant null");
+
                 } else {
                     try {
+                        String errorJson = response.errorBody().string();
+                        Log.e("applicantviewmodel, try", errorJson);
                         GetApplicantResponse error = new Gson().fromJson(response.errorBody().string(), GetApplicantResponse.class);
                         getApplicantResult.setValue("Lỗi: " + error.getMessage());
+                        getApplicantResult.setValue("Lỗi không xác định: " + response.code());
+
                     } catch (Exception e) {
+
                         getApplicantResult.setValue("Lỗi không xác định: " + response.code());
                     }
                 }
@@ -120,8 +131,10 @@ public class ApplicantViewModel extends ViewModel {
             @Override
             public void onResponse(Call<UpdateApplicantResponse> call, Response<UpdateApplicantResponse> response) {
                 if (response.isSuccessful()) {
+                    Log.e("applicantviewmodel", updateApplicantResult.toString());
                     UpdateApplicantResponse updateResponse = response.body();
                     updateApplicantResult.setValue(updateResponse.getMessage());
+
                 } else {
                     try {
                         UpdateApplicantResponse error = new Gson().fromJson(response.errorBody().string(), UpdateApplicantResponse.class);

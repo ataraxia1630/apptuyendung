@@ -1,17 +1,29 @@
 package com.example.workleap.ui.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.User;
+import com.example.workleap.data.model.Applicant;
+import com.example.workleap.data.model.User;
+import com.example.workleap.ui.viewmodel.ApplicantViewModel;
+import com.example.workleap.ui.viewmodel.AuthViewModel;
+import com.example.workleap.ui.viewmodel.UserViewModel;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -30,6 +42,8 @@ public class ApplicantProfileFragment extends Fragment {
 
     ImageButton btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
 
+    ApplicantViewModel applicantViewModel;
+    UserViewModel userViewModel;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -71,14 +85,22 @@ public class ApplicantProfileFragment extends Fragment {
         }
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_applicant_profile, container, false);
+        return view;
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         user = (User) getArguments().getSerializable("user");
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        userViewModel.InitiateRepository(getContext());
+        applicantViewModel = new ViewModelProvider(requireActivity()).get(ApplicantViewModel.class);
+        applicantViewModel.InitiateRepository(getContext());
 
         tvUserName = (TextView) view.findViewById(R.id.textView2);
 
@@ -93,12 +115,29 @@ public class ApplicantProfileFragment extends Fragment {
         btnEditApplicantInfo = view.findViewById(R.id.btnApplicantInfo);
 
         tvUserName.setText(user.getUsername());
-        //tvAboutMe.setText(user., , );
+
+
         tvUserNameInfo.setText(user.getUsername());
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
-        //tvAddressInfo.setText(user.get);
 
+        applicantViewModel.getApplicant(user.getApplicantId());
+        Log.e("applicant profile", user.getApplicantId());
+        applicantViewModel.getGetApplicantData().observe(getViewLifecycleOwner(), applicant -> {
+            if (applicant == null) {
+                Log.e("ApplicantProfile", "applicant null");
+            } else {
+                Log.e("ApplicantProfile", "applicant setText");
+                tvAboutMe.setText(applicant.getProfileSummary());
+                tvAddressInfo.setText(applicant.getAddress());
+            }
+        });
+
+        applicantViewModel.getUpdateApplicantResult().observe(getViewLifecycleOwner(), result -> {
+
+                    Log.e("applicantprofile", result);
+                }
+        );
 
         getParentFragmentManager().setFragmentResultListener(
                 "editProfile",
@@ -107,29 +146,36 @@ public class ApplicantProfileFragment extends Fragment {
                     String cardType = bundle.getString("cardType");
                     ArrayList<String> values = bundle.getStringArrayList("values");
                     // TODO: xử lý cập nhật UI hoặc gọi ViewModel
-                    if ("AboutMe".equals(cardType) && values != null) {
+                    if ("AboutMe".equalsIgnoreCase(cardType) && values != null) {
                         tvAboutMe.setText(values.get(0));
-                        /*tvUserNameInfo.setText(values.get(0));
+                        applicantViewModel.updateApplicant(user.getApplicantId(), tvAddressInfo.getText().toString(), "null", "null", values.get(0), null);
+                    }
+                    else if("ApplicantInfo".equalsIgnoreCase(cardType) && values != null)
+                    {
+                        tvUserNameInfo.setText(values.get(0));
                         tvPhoneInfo.setText(values.get(1));
-                        tvMailInfo.setText(values.get(2));*/
-                        // … tương ứng với thứ tự addField
+                        tvMailInfo.setText(values.get(2));
+                        tvAddressInfo.setText(values.get(3));
+                        applicantViewModel.updateApplicant(user.getApplicantId(), "tvAddressInfo.getText().toString()", "null", "null", values.get(0), null);
+                        //applicantViewModel.updateApplicant(user.getApplicantId(), values.get(3), "null", "null", "tvAboutMe.getText().toString()", null);
+                        userViewModel.updateUser(user.getId(), values.get(0), user.getPassword(), values.get(2), values.get(1),"null", "null");
                     }
                 }
         );
 
         btnEditApplicantName.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantName");
-            dialog.show(getChildFragmentManager(), "EditApplicantNameDialog");
+            dialog.show(getParentFragmentManager(), "EditApplicantNameDialog");
         });
         btnEditAboutMe.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("AboutMe");
-            dialog.show(getChildFragmentManager(), "EditApplicantNameDialog");
+            dialog.show(getParentFragmentManager(), "EditApplicantNameDialog");
         });
         btnEditApplicantInfo.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantInfo");
-            dialog.show(getChildFragmentManager(), "EditApplicantNameDialog");
+            dialog.show(getParentFragmentManager(), "EditApplicantNameDialog");
         });
 
-        return view;
+
     }
 }

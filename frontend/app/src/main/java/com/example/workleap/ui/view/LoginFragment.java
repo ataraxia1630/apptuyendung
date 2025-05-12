@@ -21,11 +21,11 @@ import android.widget.Toast;
 import com.example.workleap.R;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
+import com.example.workleap.ui.viewmodel.CompanyViewModel;
 
 public class LoginFragment extends Fragment {
 
     private AuthViewModel authViewModel;
-    private ApplicantViewModel applicantViewModel;
     private EditText etUsername, etEmail, etPassword;
     private Button btnLogin;
     private TextView tvSignup;
@@ -69,11 +69,6 @@ public class LoginFragment extends Fragment {
             } else {
                 Intent intent = new Intent(requireActivity(), NavigationActivity.class);
                 intent.putExtra("user", user);
-
-                if ("company".equalsIgnoreCase(user.getRole())) {
-                    applicantViewModel = new ViewModelProvider(requireActivity()).get(ApplicantViewModel.class);
-                    //Applicant applicant = applicantViewModel.getApplicant(user.getId());
-                }
                 startActivity(intent);
                 requireActivity().finish();
             }
