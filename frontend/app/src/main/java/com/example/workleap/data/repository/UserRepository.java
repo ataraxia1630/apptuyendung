@@ -9,6 +9,7 @@ import com.example.workleap.data.PreferencesManager;
 import com.example.workleap.data.api.RetrofitClient;
 
 import com.example.workleap.data.api.ApiService;
+import com.example.workleap.data.model.GetUserResponse;
 import com.example.workleap.data.model.LoginRequest;
 import com.example.workleap.data.model.LoginResponse;
 import com.example.workleap.data.model.LogoutRequest;
@@ -49,6 +50,8 @@ public class UserRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     // Lưu token
                     preferencesManager.saveToken(response.body().getToken());
+                    //Luu user id
+                    preferencesManager.saveUserId(response.body().getUser().getId());
 
                     // Cập nhật lại ApiService với token mới (nếu cần dùng ngay)
                     apiService = RetrofitClient.getClient(response.body().getToken()).create(ApiService.class);
@@ -70,7 +73,13 @@ public class UserRepository {
 
     //Đăng xuất
     public Call<MessageResponse> logoutUser(LogoutRequest request) {
+        preferencesManager.clearSession();
         return apiService.logoutUser(request);
+    }
+
+    //Get
+    public Call<GetUserResponse> getUser(String id) {
+        return apiService.getUser(id);
     }
 
     //Update

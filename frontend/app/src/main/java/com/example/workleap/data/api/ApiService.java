@@ -6,6 +6,7 @@ import com.example.workleap.data.model.CreateApplicantSkillRequest;
 import com.example.workleap.data.model.CreateApplicantSkillResponse;
 import com.example.workleap.data.model.GetApplicantResponse;
 import com.example.workleap.data.model.GetCompanyResponse;
+import com.example.workleap.data.model.GetUserResponse;
 import com.example.workleap.data.model.LoginRequest;
 import com.example.workleap.data.model.LoginResponse;
 import com.example.workleap.data.model.LogoutRequest;
@@ -44,7 +45,9 @@ public interface ApiService {
     Call<MessageResponse> logoutUser(@Body LogoutRequest request);
 
     //User
-    @PUT("api/user/{id}")
+    @GET("api/users/{id}")
+    Call<GetUserResponse> getUser(@Path("id") String id);
+    @PUT("api/users/{id}")
     Call<UpdateUserResponse> updateUser(@Path("id") String id, @Body UpdateUserRequest request);
 
     //Applicant

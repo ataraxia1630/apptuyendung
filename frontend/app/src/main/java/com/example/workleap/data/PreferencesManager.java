@@ -24,15 +24,6 @@ public class PreferencesManager {
         return prefs.getString("auth_token", null);
     }
 
-    // Xóa phiên đăng nhập
-    public void clearSession(String applicantId) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.remove("auth_token");
-        editor.remove("token_timestamp");
-        editor.remove("skills_cache_" + applicantId);
-        editor.apply();
-    }
-
     // Kiểm tra token có tồn tại
     public boolean isTokenValid() {
         String token = getToken();
@@ -44,5 +35,26 @@ public class PreferencesManager {
         long maxAge = 7 * 24 * 60 * 60 * 1000; // 7 ngày
 
         return tokenAge <= maxAge;
+    }
+
+    // Lưu userId
+    public void saveUserId(String userId) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("user_id", userId);
+        editor.apply();
+    }
+
+    // Lấy userId
+    public String getUserId() {
+        return prefs.getString("user_id", null);
+    }
+
+    // Xóa phiên đăng nhập
+    public void clearSession() {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove("auth_token");
+        editor.remove("token_timestamp");
+        editor.remove("user_id");
+        editor.apply();
     }
 }

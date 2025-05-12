@@ -16,6 +16,7 @@ public class RetrofitClient {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
+                    .client(client)
                     .addConverterFactory(GsonConverterFactory.create()) // Chuyển JSON thành đối tượng Java
                     .build();
         }
