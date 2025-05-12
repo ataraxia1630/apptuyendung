@@ -3,9 +3,7 @@ const { UserController } = require('../controllers/user.controller');
 const { verifyToken } = require('../middlewares/auth.middleware');
 const { validate } = require('../middlewares/validate.middleware');
 const { userSchema } = require('../validators/User/updateUser.validator');
-const {
-  SettingSchema,
-} = require('../validators/User/changePassword.validator');
+const { SettingSchema } = require('../validators/User/changeSetting.validator');
 
 const route = Router();
 
