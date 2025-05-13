@@ -4,7 +4,7 @@ const UserController = {
   getAllUsers: async (req, res) => {
     try {
       const users = await UserService.getAllUsers();
-      return res.status(200).json(users);
+      return res.status(200).json({ users: users });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching all users',
@@ -22,7 +22,7 @@ const UserController = {
         });
       }
       const users = await UserService.searchUsersByName(name);
-      return res.status(200).json(users);
+      return res.status(200).json({ users: users });
     } catch (error) {
       return res.status(500).json({
         message: 'Error searching users',
@@ -40,7 +40,7 @@ const UserController = {
         });
       }
       const user = await UserService.getUserById(id);
-      return res.status(200).json(user);
+      return res.status(200).json({ user: user });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching user',
@@ -58,7 +58,7 @@ const UserController = {
         });
       }
       const user = await UserService.updateUser(id, req.body);
-      return res.status(200).json(user);
+      return res.status(200).json({ user: user });
     } catch (error) {
       return res.status(500).json({
         message: 'Error updating educations',

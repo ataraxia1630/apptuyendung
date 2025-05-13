@@ -3,7 +3,7 @@ const JobCategoryController = {
   getAll: async (req, res) => {
     try {
       const categories = await JobCategoryService.getAll();
-      return res.status(200).json(categories);
+      return res.status(200).json({ categories: categories });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching categories',
@@ -21,7 +21,7 @@ const JobCategoryController = {
         });
       }
       const categories = await JobCategoryService.createMany(jobCategories);
-      return res.status(201).json(categories);
+      return res.status(201).json({ categories: categories });
     } catch (error) {
       return res.status(500).json({
         message: 'Error creating categories',

@@ -4,7 +4,7 @@ const CompanyController = {
   getAllCompanies: async (req, res) => {
     try {
       const companies = await CompanyService.getAllCompanies();
-      return res.status(200).json(companies);
+      return res.status(200).json({ companies: companies });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching companies',
@@ -17,7 +17,7 @@ const CompanyController = {
     try {
       const { name } = req.params;
       const companies = await CompanyService.searchCompaniesByName(name);
-      return res.status(200).json(companies);
+      return res.status(200).json({ companies: companies });
     } catch (error) {
       return res.status(500).json({
         message: 'Error searching companies',
@@ -33,7 +33,7 @@ const CompanyController = {
       if (!company) {
         return res.status(404).json({ message: 'Company not found' });
       }
-      return res.status(200).json(company);
+      return res.status(200).json({ company: company });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching company',
@@ -49,7 +49,7 @@ const CompanyController = {
       if (!company) {
         return res.status(404).json({ message: 'Company not found' });
       }
-      return res.status(200).json(company);
+      return res.status(200).json({ company: company });
     } catch (error) {
       return res.status(500).json({
         message: 'Error updating company',

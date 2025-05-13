@@ -5,7 +5,7 @@ const SkillController = {
     const { applicantId } = req.params;
     try {
       const applicantSkills = await ApplicantSkillService.getAll(applicantId);
-      return res.status(200).json(applicantSkills);
+      return res.status(200).json({ skills: applicantSkills });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching applicant skills',
@@ -19,7 +19,7 @@ const SkillController = {
     const data = req.body;
     try {
       const newSkill = await ApplicantSkillService.createNew(applicantId, data);
-      return res.status(201).json(newSkill);
+      return res.status(201).json({ skill: newSkill });
     } catch (error) {
       return res.status(500).json({
         message: 'Error creating new skill',
@@ -33,7 +33,7 @@ const SkillController = {
     const data = req.body;
     try {
       const updatedSkill = await ApplicantSkillService.updateSkill(id, data);
-      return res.status(200).json(updatedSkill);
+      return res.status(200).json({ skill: updatedSkill });
     } catch (error) {
       return res.status(500).json({
         message: 'Error updating skill',
