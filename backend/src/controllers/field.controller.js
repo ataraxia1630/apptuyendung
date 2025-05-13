@@ -3,7 +3,7 @@ const FieldController = {
   getAllFields: async (req, res) => {
     try {
       const fields = await FieldService.getAllFields();
-      return res.status(200).json(fields);
+      return res.status(200).json({ fields: fields });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching fields',
@@ -21,7 +21,7 @@ const FieldController = {
     }
     try {
       const field = await FieldService.getField(name);
-      return res.status(200).json(field);
+      return res.status(200).json({ field: field });
     } catch (error) {
       return res.status(500).json({
         message: 'Error retrieving field',
@@ -39,7 +39,7 @@ const FieldController = {
     }
     try {
       const field = await FieldService.createField(name);
-      return res.status(201).json(field);
+      return res.status(201).json({ field: field });
     } catch (error) {
       return res.status(500).json({
         message: 'Error creating new field',
@@ -58,7 +58,7 @@ const FieldController = {
     const { name } = req.body;
     try {
       const field = await FieldService.updateField(id, name);
-      return res.status(200).json(field);
+      return res.status(200).json({ field: field });
     } catch (error) {
       return res.status(500).json({
         message: 'Error updating field',
@@ -76,7 +76,7 @@ const FieldController = {
     }
     try {
       const fields = await FieldService.getAllInterestedFields(applicantId);
-      return res.status(200).json(fields);
+      return res.status(200).json({ fields: fields });
     } catch (error) {
       return res.status(500).json({
         message: 'Error retrieving interested fields',
@@ -98,7 +98,7 @@ const FieldController = {
         applicantId,
         fieldIds
       );
-      return res.status(201).json(fields);
+      return res.status(201).json({ fields: fields });
     } catch (error) {
       return res.status(500).json({
         message: 'Error adding interested fields',

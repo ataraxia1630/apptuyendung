@@ -12,7 +12,7 @@ const JobSavedController = {
         applicantId,
         sortOrder
       );
-      return res.status(200).json(jobPosts);
+      return res.status(200).json({ jobPosts: jobPosts });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching all job posts saved by an applicant: ',
@@ -33,7 +33,7 @@ const JobSavedController = {
         applicantId,
         jobpostId
       );
-      return res.status(201).json(jobSaved);
+      return res.status(201).json({ jobSaved: jobSaved });
     } catch (error) {
       return res.status(500).json({
         message: 'Error saving job post: ',
@@ -50,10 +50,7 @@ const JobSavedController = {
         .json({ message: 'applicantId and jobpostId are required' });
 
     try {
-      const jobSaved = await JobSavedService.deleteJobSaved(
-        applicantId,
-        jobpostId
-      );
+      await JobSavedService.deleteJobSaved(applicantId, jobpostId);
       return res.status(204).send();
     } catch (error) {
       return res.status(500).json({

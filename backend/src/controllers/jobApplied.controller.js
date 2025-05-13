@@ -10,7 +10,7 @@ const JobAppliedController = {
       const appliedCVs = await JobAppliedService.getAllCvAppliedToJob(
         jobpostId
       );
-      return res.status(200).json(appliedCVs);
+      return res.status(200).json({ appliedCVs: appliedCVs });
     } catch (error) {
       return res.status(500).json({ message: '', error: error.message });
     }
@@ -24,7 +24,7 @@ const JobAppliedController = {
     try {
       const appliedApplicants =
         await JobAppliedService.getAllApplicantAppliedToJob(jobpostId);
-      return res.status(200).json(appliedApplicants);
+      return res.status(200).json({ appliedApplicants: appliedApplicants });
     } catch (error) {
       return res.status(500).json({ message: '', error: error.message });
     }
@@ -37,7 +37,7 @@ const JobAppliedController = {
     try {
       const appliedJobposts =
         await JobAppliedService.getAllJobAppliedOfApplicant(applicantId);
-      return res.status(200).json(appliedJobposts);
+      return res.status(200).json({ appliedJobposts: appliedJobposts });
     } catch (error) {
       return res.status(500).json({ message: '', error: error.message });
     }
@@ -46,7 +46,7 @@ const JobAppliedController = {
   applyJob: async (req, res) => {
     try {
       const apply = await JobAppliedService.applyJob(req.body);
-      return res.status(201).json(apply);
+      return res.status(201).json({ apply: apply });
     } catch (error) {
       return res.status(500).json({ message: '', error: error.message });
     }
