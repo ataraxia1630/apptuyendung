@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+<LinearLayout
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgPost"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_edit_pen"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tên công việc, vị trí, mô tả sơ bộ thông tin kèm theo"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:singleLine="false" />
+
+        <TextView
+            android:id="@+id/txtContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tên công ty, tổ chức doanh nghiệp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:singleLine="false"/>
+
+        <TextView
+            android:id="@+id/txtLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Địa điểm"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:singleLine="false"/>
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/btnSave"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@null"
+        android:contentDescription="Save"
+        android:src="@drawable/ic_bookmark"/>
+
+
+    </LinearLayout>
+    <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtTab1"
+            android:layout_width="100dp"
+            android:layout_height="19dp"
+            android:background="@drawable/tag_textview"
+            android:gravity="center"
+            android:layout_marginStart="20dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_marginEnd="20dp"
+            android:text="Developer"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/txtTab2"
+            android:layout_width="100dp"
+            android:layout_height="19dp"
+            android:background="@drawable/tag_textview"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_marginEnd="20dp"
+            android:text="Junior"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/txtTab3"
+            android:layout_width="100dp"
+            android:layout_height="19dp"
+            android:background="@drawable/tag_textview"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_marginEnd="12dp"
+            android:text="WebApp"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtTime"
+            android:layout_width="100dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:paddingStart="0dp"
+            android:paddingEnd="8dp"
+            android:text="30m ago"
+            android:textColor="#808080"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/txtSalary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alignment="right"
+            android:gravity="center"
+            android:paddingStart="0dp"
+            android:paddingEnd="8dp"
+            android:text="3000$/Month"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+</LinearLayout>
