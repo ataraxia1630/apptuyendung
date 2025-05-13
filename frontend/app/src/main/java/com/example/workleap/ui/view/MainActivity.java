@@ -42,14 +42,14 @@ public class MainActivity extends AppCompatActivity {
             userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
             userViewModel.InitiateRepository(this);
             String token = preferencesManager.getToken();
-            Log.e("hi", token);
-            Log.e("userId", userId);
+            Log.e("hi", String.valueOf(token));
+            Log.e("userId", String.valueOf(userId));
 
             userViewModel.getGetUserResult().observe(this, res -> {
-                if(res != null)
+                /*if(res != null)
                 Log.e("getUserResult", res);
                 else
-                    Log.e("result", "no result");
+                    Log.e("result", "no result");*/
             });
 
             userViewModel.getGetUserData().observe(this, user -> {

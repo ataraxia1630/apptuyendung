@@ -16,10 +16,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Applicant;
+import com.example.workleap.data.model.entity.Company;
 import com.example.workleap.data.model.entity.User;
-import com.example.workleap.data.model.Applicant;
-import com.example.workleap.data.model.Company;
-import com.example.workleap.data.model.User;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.CompanyViewModel;
