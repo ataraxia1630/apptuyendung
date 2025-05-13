@@ -5,7 +5,7 @@ const ApplicantController = {
   getAllApplicants: async (req, res) => {
     try {
       const applicants = await ApplicantService.getAllApplicants();
-      return res.status(200).json(applicants);
+      return res.status(200).json({ applicants: applicants });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching applicants',
@@ -18,7 +18,7 @@ const ApplicantController = {
     const { name } = req.params;
     try {
       const applicants = await ApplicantService.searchApplicantsByName(name);
-      return res.status(200).json(applicants);
+      return res.status(200).json({ applicants: applicants });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching applicants',
@@ -31,7 +31,7 @@ const ApplicantController = {
     const { id } = req.params;
     try {
       const applicant = await ApplicantService.getApplicantById(id);
-      return res.status(200).json(applicant);
+      return res.status(200).json({ applicant: applicant });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching applicant',
@@ -44,7 +44,7 @@ const ApplicantController = {
     const { id } = req.params;
     try {
       const applicant = await ApplicantService.updateApplicant(id, req.body);
-      return res.status(200).json(applicant);
+      return res.status(200).json({ applicant: applicant });
     } catch (error) {
       return res.status(500).json({
         message: 'Error updating applicant',

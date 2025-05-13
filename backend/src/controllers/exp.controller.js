@@ -8,7 +8,7 @@ const ExpController = {
         return res.status(400).json({ message: 'Applicant ID is required' });
       }
       const exp = await ExpService.getAllExp(applicantId);
-      return res.status(200).json(exp);
+      return res.status(200).json({ experiences: exp });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
@@ -18,7 +18,7 @@ const ExpController = {
     try {
       const { applicantId } = req.params;
       const exp = await ExpService.createExp(applicantId, req.body);
-      return res.status(201).json(exp);
+      return res.status(201).json({ experience: exp });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
@@ -28,7 +28,7 @@ const ExpController = {
     try {
       const { id } = req.params;
       const exp = await ExpService.updateExp(id, req.body);
-      return res.status(200).json(exp);
+      return res.status(200).json({ experience: exp });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }

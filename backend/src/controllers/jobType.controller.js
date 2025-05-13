@@ -4,7 +4,7 @@ const JobTypeController = {
   getAll: async (req, res) => {
     try {
       const types = await JobTypeService.getAll();
-      return res.status(200).json(types);
+      return res.status(200).json({ types: types });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching types',
@@ -17,7 +17,7 @@ const JobTypeController = {
     const { jobTypes } = req.body;
     try {
       const types = await JobTypeService.createMany(jobTypes);
-      return res.status(201).json(types);
+      return res.status(201).json({ types: types });
     } catch (error) {
       return res.status(500).json({
         message: 'Error creating types',
