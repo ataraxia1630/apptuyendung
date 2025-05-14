@@ -110,9 +110,8 @@ public class AuthViewModel extends ViewModel {
     }
 
     // Đăng xuất người dùng
-    public void logout(String token) {
-        LogoutRequest request = new LogoutRequest(token);
-        Call<MessageResponse> call = userRepository.logoutUser(request);
+    public void logout() {
+        Call<MessageResponse> call = userRepository.logoutUser();
         call.enqueue(new Callback<MessageResponse>() {
             @Override
             public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {

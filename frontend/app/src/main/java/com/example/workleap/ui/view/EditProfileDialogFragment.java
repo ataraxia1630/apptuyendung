@@ -51,6 +51,12 @@ public class EditProfileDialogFragment extends DialogFragment {
             addField(container, "Mobile");
             addField(container, "Email");
             addField(container, "Address");
+        } else if ("CompanyInfo".equalsIgnoreCase(cardType))
+        {
+            addField(container, "Name");
+            addField(container, "Email");
+            addField(container, "EstablishedYear");
+            addField(container, "Phone");
         }
 
         builder.setView(view)

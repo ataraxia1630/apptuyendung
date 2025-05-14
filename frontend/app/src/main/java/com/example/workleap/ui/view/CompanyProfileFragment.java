@@ -1,9 +1,12 @@
 package com.example.workleap.ui.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,8 @@ import android.widget.TextView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.User;
+import com.example.workleap.ui.viewmodel.AuthViewModel;
+import com.example.workleap.ui.viewmodel.CompanyViewModel;
 
 import java.util.ArrayList;
 
@@ -24,10 +29,13 @@ public class CompanyProfileFragment extends Fragment {
     View view;
     TextView tvUserName;
     TextView tvAboutCompany;
-    TextView tvUserNameInfo, tvEstablishedYear, tvMailInfo, tvPhoneInfo;
+    TextView tvCompanyNameInfo, tvEstablishedYear, tvMailInfo, tvPhoneInfo, tvTaxCode;
     User user;
 
-    ImageButton btnEditCompanyName, btnEditAboutCompany, btnEditCompanyInfo;
+    AuthViewModel authViewModel;
+
+    CompanyViewModel companyViewModel;
+    ImageButton btnLogout, btnEditCompanyName, btnEditAboutCompany, btnEditCompanyInfo;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,27 +84,44 @@ public class CompanyProfileFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_company_profile, container, false);
 
         user = (User) getArguments().getSerializable("user");
+        authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+        authViewModel.InitiateRepository(getContext());
+        companyViewModel = new ViewModelProvider(requireActivity()).get(CompanyViewModel.class);
+        companyViewModel.InitiateRepository(getContext());
 
         tvUserName = (TextView) view.findViewById(R.id.textView2);
 
         tvAboutCompany = (TextView) view.findViewById(R.id.textViewAboutCompany);
 
-        tvUserNameInfo = (TextView) view.findViewById(R.id.companynameInfo);
+        tvCompanyNameInfo = (TextView) view.findViewById(R.id.companynameInfo);
         tvEstablishedYear = (TextView) view.findViewById(R.id.textViewEstablishedYear);
         tvMailInfo = (TextView) view.findViewById(R.id.emailInfo);
         tvPhoneInfo= (TextView) view.findViewById(R.id.phoneInfo);
+        tvTaxCode = (TextView) view.findViewById(R.id.taxCodeInfo);
 
         tvUserName.setText(user.getUsername());
 
-        tvUserNameInfo.setText(user.getUsername());
-        //tvEstablishedYear.setText(user.get);
+        tvCompanyNameInfo.setText(user.getUsername());
+        //tvEstablishedYear.setText();
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
+        //tvTaxCode.setText();
 
+        btnLogout = view.findViewById(R.id.btnLogout);
         btnEditCompanyName = view.findViewById(R.id.btnEditCompanyName);
         btnEditAboutCompany = view.findViewById(R.id.btnEditAboutCompany);
         btnEditCompanyInfo = view.findViewById(R.id.btnEditCompanyInfo);
 
+        companyViewModel.getCompany(user.getCompanyId());
+        companyViewModel.getGetCompanyData().observe(getViewLifecycleOwner(), company -> {
+            if (company == null) {
+                Log.e("ApplicantProfile", "applicant null");
+            } else {
+                Log.e("ApplicantProfile", "applicant setText");
+                tvAboutCompany.setText(company.getDescription());
+                tvEstablishedYear.setText(company.getEstablishedYear());
+            }
+        });
         getParentFragmentManager().setFragmentResultListener(
                 "editProfile",
                 getViewLifecycleOwner(),
@@ -104,13 +129,28 @@ public class CompanyProfileFragment extends Fragment {
                     String cardType = bundle.getString("cardType");
                     ArrayList<String> values = bundle.getStringArrayList("values");
                     // TODO: xử lý cập nhật UI hoặc gọi ViewModel
-                    if ("CompanyInfo".equals(cardType) && values != null) {
-                        tvUserNameInfo.setText(values.get(0));
-                        // … tương ứng với thứ tự addField
+                    if ("AboutCompany".equalsIgnoreCase(cardType) && values != null)
+                    {
+                        tvAboutCompany.setText(values.get(0));
+                        companyViewModel.updateCompany(user.getCompanyId(), tvCompanyNameInfo.getText().toString(), values.get(0), Integer.parseInt(tvEstablishedYear.getText().toString()), tvTaxCode.getText().toString());
+                    }
+                    if ("CompanyInfo".equalsIgnoreCase(cardType) && values != null) {
+                        tvCompanyNameInfo.setText(values.get(0));
+                        tvMailInfo.setText(values.get(1));
+                        tvEstablishedYear.setText(values.get(2));
+                        tvPhoneInfo.setText(values.get(3));
+                        companyViewModel.updateCompany(user.getCompanyId(), values.get(0), tvAboutCompany.getText().toString(), Integer.parseInt(values.get(2)), tvTaxCode.getText().toString() );
                     }
                 }
         );
 
+        btnLogout.setOnClickListener(v -> {
+            authViewModel.logout();
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            requireActivity().finish();
+        });
         btnEditCompanyName.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantName");
             dialog.show(getChildFragmentManager(), "EditApplicantNameDialog");

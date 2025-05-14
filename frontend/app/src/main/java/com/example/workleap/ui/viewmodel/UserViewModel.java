@@ -48,7 +48,7 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onResponse(Call<GetUserResponse> call, Response<GetUserResponse> response) {
                 if (response.isSuccessful()) {
-                    Log.e("success", "succes");
+                    Log.e("userviewmodel", "succes");
                     GetUserResponse getResponse = response.body();
                     getUserResult.setValue(getResponse.getMessage());
                     getUserData.setValue(getResponse.getUser());

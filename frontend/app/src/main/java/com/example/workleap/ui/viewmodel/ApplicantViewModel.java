@@ -127,16 +127,20 @@ public class ApplicantViewModel extends ViewModel {
     public void updateApplicant(String id,  String address, String firstName, String lastName, String profileSummary, byte[] cvFile) {
         UpdateApplicantRequest request = new UpdateApplicantRequest(address, firstName, lastName, profileSummary, cvFile);
         Call<UpdateApplicantResponse> call = applicantRepository.updateApplicant(id, request);
+        Log.e("appviewmdl", "updating");
         call.enqueue(new Callback<UpdateApplicantResponse>() {
             @Override
             public void onResponse(Call<UpdateApplicantResponse> call, Response<UpdateApplicantResponse> response) {
                 if (response.isSuccessful()) {
-                    Log.e("applicantviewmodel", updateApplicantResult.toString());
+                    Log.e("applicantviewmodel", String.valueOf(updateApplicantResult));
                     UpdateApplicantResponse updateResponse = response.body();
-                    updateApplicantResult.setValue(updateResponse.getMessage());
-
+                    if(updateResponse!=null)
+                        updateApplicantResult.setValue(updateResponse.getMessage());
+                    else Log.e("applicantviewmodel", "updateResponse null");
                 } else {
                     try {
+                        String errorJson = response.errorBody().string();
+                        Log.e("ErrorBody", errorJson);
                         UpdateApplicantResponse error = new Gson().fromJson(response.errorBody().string(), UpdateApplicantResponse.class);
                         updateApplicantResult.setValue("Lỗi: " + error.getMessage());
                     } catch (Exception e) {

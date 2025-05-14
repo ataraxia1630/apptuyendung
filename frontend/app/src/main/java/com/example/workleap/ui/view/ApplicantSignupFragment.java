@@ -60,6 +60,9 @@ public class ApplicantSignupFragment extends Fragment {
         });
 
         authViewModel.getRegisterResult().observe(getViewLifecycleOwner(), result -> {
+            //tranh loi khi observe ca khi dung fragment khac
+            if(!isAdded() || getView()==null) return;
+
             Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
 
             if (result.contains("successfully")) {

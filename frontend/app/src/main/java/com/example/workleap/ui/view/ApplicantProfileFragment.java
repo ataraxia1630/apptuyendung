@@ -39,10 +39,12 @@ public class ApplicantProfileFragment extends Fragment {
     TextView tvUserName, tvUserNameInfo, tvMailInfo, tvPhoneInfo, tvAddressInfo;
     User user;
 
-    ImageButton btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
+    ImageButton btnLogout, btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
 
     ApplicantViewModel applicantViewModel;
     UserViewModel userViewModel;
+
+    AuthViewModel authViewModel;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -100,6 +102,8 @@ public class ApplicantProfileFragment extends Fragment {
         userViewModel.InitiateRepository(getContext());
         applicantViewModel = new ViewModelProvider(requireActivity()).get(ApplicantViewModel.class);
         applicantViewModel.InitiateRepository(getContext());
+        authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+        authViewModel.InitiateRepository(getContext());
 
         tvUserName = (TextView) view.findViewById(R.id.textView2);
 
@@ -109,6 +113,7 @@ public class ApplicantProfileFragment extends Fragment {
         tvPhoneInfo= (TextView) view.findViewById(R.id.phoneInfo);
         tvAddressInfo= (TextView) view.findViewById(R.id.addressInfo);
 
+        btnLogout = view.findViewById(R.id.btnLogout);
         btnEditApplicantName = view.findViewById(R.id.btnEditUserName);
         btnEditAboutMe = view.findViewById(R.id.btnEditAboutMe);
         btnEditApplicantInfo = view.findViewById(R.id.btnApplicantInfo);
@@ -133,10 +138,19 @@ public class ApplicantProfileFragment extends Fragment {
         });
 
         applicantViewModel.getUpdateApplicantResult().observe(getViewLifecycleOwner(), result -> {
-
+                    if(result != null)
                     Log.e("applicantprofile", result);
+                    else
+                    Log.e("applicantprofile", "updateresult null");
+
                 }
         );
+        userViewModel.getUpdateUserResult().observe(getViewLifecycleOwner(), result -> {
+            if(result!=null)
+                Log.e("applicantprofile", result);
+            else
+                Log.e("applicantprofile", "update user result null" );
+        });
 
         getParentFragmentManager().setFragmentResultListener(
                 "editProfile",
@@ -155,13 +169,20 @@ public class ApplicantProfileFragment extends Fragment {
                         tvPhoneInfo.setText(values.get(1));
                         tvMailInfo.setText(values.get(2));
                         tvAddressInfo.setText(values.get(3));
-                        applicantViewModel.updateApplicant(user.getApplicantId(), "tvAddressInfo.getText().toString()", "null", "null", values.get(0), null);
-                        //applicantViewModel.updateApplicant(user.getApplicantId(), values.get(3), "null", "null", "tvAboutMe.getText().toString()", null);
+                        //applicantViewModel.updateApplicant(user.getApplicantId(), "tvAddressInfo.getText().toString()", "null", "null", values.get(0), null);
+                        applicantViewModel.updateApplicant(user.getApplicantId(), values.get(3), "null", "null", tvAboutMe.getText().toString(), null);
                         userViewModel.updateUser(user.getId(), values.get(0), user.getPassword(), values.get(2), values.get(1),"null", "null");
                     }
                 }
         );
 
+        btnLogout.setOnClickListener( v -> {
+            authViewModel.logout();
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            requireActivity().finish();
+        });
         btnEditApplicantName.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantName");
             dialog.show(getParentFragmentManager(), "EditApplicantNameDialog");

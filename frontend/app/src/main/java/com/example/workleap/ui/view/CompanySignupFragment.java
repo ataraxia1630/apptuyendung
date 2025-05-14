@@ -61,6 +61,9 @@ public class CompanySignupFragment extends Fragment {
                 Navigation.findNavController(view).navigate(R.id.loginFragment));
 
         authViewModel.getRegisterResult().observe(getViewLifecycleOwner(), result -> {
+            //tranh loi khi observe ca khi dung fragment khac
+            if(!isAdded() || getView()==null) return;
+
             Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
             if (result.contains("success")) {
                 Log.d("CompanySignupFragment", "Register success");
