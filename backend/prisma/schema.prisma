@@ -298,7 +298,7 @@ model Company {
   name            String    @db.VarChar(255)
   description     String?   @db.VarChar(1000)
   taxcode         String?   @unique
-  establishedYear DateTime?
+  establishedYear Int?
   Post            Post[]
   User            User[]
   JobPost         JobPost[]
