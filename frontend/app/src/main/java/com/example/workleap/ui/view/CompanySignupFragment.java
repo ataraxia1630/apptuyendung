@@ -20,10 +20,12 @@ import android.widget.Toast;
 
 import com.example.workleap.R;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
+import com.example.workleap.ui.viewmodel.CompanyViewModel;
 
 public class CompanySignupFragment extends Fragment {
 
     private AuthViewModel authViewModel;
+    private CompanyViewModel companyViewModel;
 
     private EditText etEmail, etPassword, etConfirmPassword, etCompanyName, etAddress, etEstablishedYear, etTaxCode, etPhoneNumber;
     private Button btnRegister;
@@ -42,6 +44,8 @@ public class CompanySignupFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+        authViewModel.InitiateRepository(getContext());
+        companyViewModel = new ViewModelProvider(requireActivity()).get(CompanyViewModel.class);
         authViewModel.InitiateRepository(getContext());
 
         etEmail = view.findViewById(R.id.etEmail);
@@ -83,7 +87,7 @@ public class CompanySignupFragment extends Fragment {
         String phone = etPhoneNumber.getText().toString().trim();
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) ||
-                TextUtils.isEmpty(name) || TextUtils.isEmpty(address) ||
+                TextUtils.isEmpty(name) || TextUtils.isEmpty(phone)|| TextUtils.isEmpty(address) ||
                 TextUtils.isEmpty(year) || TextUtils.isEmpty(tax)) {
             Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;

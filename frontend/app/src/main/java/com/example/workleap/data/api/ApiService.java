@@ -71,9 +71,9 @@ public interface ApiService {
 
 
     //Company
-    @GET("api/company/{id}")
+    @GET("api/users/company/{id}")
     Call<GetCompanyResponse> getCompany(@Path("id") String id);
-    @PUT("api/company/{id}")
+    @PUT("api/users/company/{id}")
     Call<UpdateCompanyResponse> updateCompany(@Path("id") String id, @Body UpdateCompanyRequest request);
 
 

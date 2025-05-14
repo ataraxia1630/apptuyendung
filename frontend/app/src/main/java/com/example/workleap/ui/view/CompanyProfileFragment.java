@@ -50,15 +50,6 @@ public class CompanyProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CompanyProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static CompanyProfileFragment newInstance(String param1, String param2) {
         CompanyProfileFragment fragment = new CompanyProfileFragment();
         Bundle args = new Bundle();
@@ -112,16 +103,25 @@ public class CompanyProfileFragment extends Fragment {
         btnEditAboutCompany = view.findViewById(R.id.btnEditAboutCompany);
         btnEditCompanyInfo = view.findViewById(R.id.btnEditCompanyInfo);
 
-        companyViewModel.getCompany(user.getCompanyId());
         companyViewModel.getGetCompanyData().observe(getViewLifecycleOwner(), company -> {
+            if(!isAdded() || getView()==null) return;
             if (company == null) {
                 Log.e("ApplicantProfile", "applicant null");
             } else {
                 Log.e("ApplicantProfile", "applicant setText");
                 tvAboutCompany.setText(company.getDescription());
-                tvEstablishedYear.setText(company.getEstablishedYear());
+                tvEstablishedYear.setText(String.valueOf(company.getEstablishedYear()));
+                tvTaxCode.setText(company.getTaxcode());
             }
         });
+        companyViewModel.getGetCompanyResult().observe(getViewLifecycleOwner(), result ->{
+            if(!isAdded() || getView()==null) return;
+            if(result!=null)
+                Log.e("company profile", result);
+            else
+                Log.e("company profile", "update company result null" );
+        });
+        companyViewModel.getCompany(user.getCompanyId());
         getParentFragmentManager().setFragmentResultListener(
                 "editProfile",
                 getViewLifecycleOwner(),
@@ -131,6 +131,7 @@ public class CompanyProfileFragment extends Fragment {
                     // TODO: xử lý cập nhật UI hoặc gọi ViewModel
                     if ("AboutCompany".equalsIgnoreCase(cardType) && values != null)
                     {
+                        Log.e("company profile", "about company update");
                         tvAboutCompany.setText(values.get(0));
                         companyViewModel.updateCompany(user.getCompanyId(), tvCompanyNameInfo.getText().toString(), values.get(0), Integer.parseInt(tvEstablishedYear.getText().toString()), tvTaxCode.getText().toString());
                     }
@@ -152,16 +153,16 @@ public class CompanyProfileFragment extends Fragment {
             requireActivity().finish();
         });
         btnEditCompanyName.setOnClickListener(v -> {
-            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantName");
-            dialog.show(getChildFragmentManager(), "EditApplicantNameDialog");
+            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("CompanyName");
+            dialog.show(getParentFragmentManager(), "EditCompanyNameDialog");
         });
         btnEditAboutCompany.setOnClickListener(v -> {
-            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("AboutMe");
-            dialog.show(getChildFragmentManager(), "EditApplicantNameDialog");
+            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("AboutCompany");
+            dialog.show(getParentFragmentManager(), "EditCompanyAboutCompanyDialog");
         });
         btnEditCompanyInfo.setOnClickListener(v -> {
-            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantInfo");
-            dialog.show(getChildFragmentManager(), "EditApplicantNameDialog");
+            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("CompanyInfo");
+            dialog.show(getParentFragmentManager(), "EditCompanyInfoDialog");
         });
 
         return view;

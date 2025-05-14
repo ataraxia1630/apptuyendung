@@ -128,6 +128,7 @@ public class ApplicantProfileFragment extends Fragment {
         applicantViewModel.getApplicant(user.getApplicantId());
         Log.e("applicant profile", user.getApplicantId());
         applicantViewModel.getGetApplicantData().observe(getViewLifecycleOwner(), applicant -> {
+            if(!isAdded() || getView()==null) return;
             if (applicant == null) {
                 Log.e("ApplicantProfile", "applicant null");
             } else {
@@ -138,14 +139,15 @@ public class ApplicantProfileFragment extends Fragment {
         });
 
         applicantViewModel.getUpdateApplicantResult().observe(getViewLifecycleOwner(), result -> {
-                    if(result != null)
-                    Log.e("applicantprofile", result);
-                    else
-                    Log.e("applicantprofile", "updateresult null");
+            if(!isAdded() || getView()==null) return;
+            if(result != null)
+                Log.e("applicantprofile", result);
+            else
+                Log.e("applicantprofile", "updateresult null");
 
-                }
-        );
+        });
         userViewModel.getUpdateUserResult().observe(getViewLifecycleOwner(), result -> {
+            if(!isAdded() || getView()==null) return;
             if(result!=null)
                 Log.e("applicantprofile", result);
             else
@@ -189,11 +191,11 @@ public class ApplicantProfileFragment extends Fragment {
         });
         btnEditAboutMe.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("AboutMe");
-            dialog.show(getParentFragmentManager(), "EditApplicantNameDialog");
+            dialog.show(getParentFragmentManager(), "EditApplicantAboutMeDialog");
         });
         btnEditApplicantInfo.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantInfo");
-            dialog.show(getParentFragmentManager(), "EditApplicantNameDialog");
+            dialog.show(getParentFragmentManager(), "EditApplicantInfoDialog");
         });
 
 

@@ -1,6 +1,7 @@
 package com.example.workleap.ui.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -68,6 +69,7 @@ public class CompanyViewModel extends ViewModel {
             @Override
             public void onResponse(Call<UpdateCompanyResponse> call, Response<UpdateCompanyResponse> response) {
                 if (response.isSuccessful()) {
+                    Log.e("company view model", "response successfull");
                     UpdateCompanyResponse updateResponse = response.body();
                     updateCompanyResult.setValue(updateResponse.getMessage());
                 } else {
