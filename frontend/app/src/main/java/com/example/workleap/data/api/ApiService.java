@@ -61,6 +61,8 @@ public interface ApiService {
     Call<GetUserResponse> getUser(@Path("id") String id);
     @PUT("api/users/{id}")
     Call<UpdateUserResponse> updateUser(@Path("id") String id, @Body UpdateUserRequest request);
+    @PUT("api/users/setting/{id}")
+    Call<UpdateUserResponse> updateUserSetting(@Path("id") String id, @Body UpdateUserRequest request);
 
 
     //Applicant

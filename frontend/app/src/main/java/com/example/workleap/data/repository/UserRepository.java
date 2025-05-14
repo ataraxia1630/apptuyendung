@@ -81,5 +81,10 @@ public class UserRepository {
     public Call<UpdateUserResponse> updateUser(String id, UpdateUserRequest request) {
         return apiService.updateUser(id, request);
     }
+
+    //Update Setting
+    public Call<UpdateUserResponse> updateUserSetting(String id, UpdateUserRequest request) {
+        return apiService.updateUserSetting(id, request);
+    }
 }
 
