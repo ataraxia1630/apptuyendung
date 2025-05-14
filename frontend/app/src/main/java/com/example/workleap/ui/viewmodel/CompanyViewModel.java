@@ -64,7 +64,9 @@ public class CompanyViewModel extends ViewModel {
     // Update company
     public void updateCompany(String id, String name, String description, int establishedYear, String taxcode) {
         UpdateCompanyRequest request = new UpdateCompanyRequest(name, description, establishedYear, taxcode);
+        Log.e("comvmd", "co update");
         Call<UpdateCompanyResponse> call = companyRepository.updateCompany(id, request);
+        Log.e("call", call.toString());
         call.enqueue(new Callback<UpdateCompanyResponse>() {
             @Override
             public void onResponse(Call<UpdateCompanyResponse> call, Response<UpdateCompanyResponse> response) {

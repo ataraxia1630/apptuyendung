@@ -129,18 +129,21 @@ public class CompanyProfileFragment extends Fragment {
                     String cardType = bundle.getString("cardType");
                     ArrayList<String> values = bundle.getStringArrayList("values");
                     // TODO: xử lý cập nhật UI hoặc gọi ViewModel
-                    if ("AboutCompany".equalsIgnoreCase(cardType) && values != null)
-                    {
+                    if ("CompanyInfo".equalsIgnoreCase(cardType) && values != null) {
+                        tvCompanyNameInfo.setText(values.get(0));
+                        tvEstablishedYear.setText(values.get(1));
+                        tvPhoneInfo.setText(values.get(2));
+                        tvMailInfo.setText(values.get(3));
+                        tvTaxCode.setText(values.get(4));
+                        Log.e("khoa", "khoa");
+                        companyViewModel.updateCompany(user.getCompanyId(), values.get(0), tvAboutCompany.getText().toString(), Integer.parseInt(values.get(1)), values.get(4) );
+
+                        //companyViewModel.updateCompany(user.getCompanyId(), tvCompanyNameInfo.getText().toString(), values.get(0), Integer.parseInt(tvEstablishedYear.getText().toString()), tvTaxCode.getText().toString());
+                    }
+                    else if ("AboutCompany".equalsIgnoreCase(cardType) && values != null) {
                         Log.e("company profile", "about company update");
                         tvAboutCompany.setText(values.get(0));
                         companyViewModel.updateCompany(user.getCompanyId(), tvCompanyNameInfo.getText().toString(), values.get(0), Integer.parseInt(tvEstablishedYear.getText().toString()), tvTaxCode.getText().toString());
-                    }
-                    if ("CompanyInfo".equalsIgnoreCase(cardType) && values != null) {
-                        tvCompanyNameInfo.setText(values.get(0));
-                        tvMailInfo.setText(values.get(1));
-                        tvEstablishedYear.setText(values.get(2));
-                        tvPhoneInfo.setText(values.get(3));
-                        companyViewModel.updateCompany(user.getCompanyId(), values.get(0), tvAboutCompany.getText().toString(), Integer.parseInt(values.get(2)), tvTaxCode.getText().toString() );
                     }
                 }
         );
