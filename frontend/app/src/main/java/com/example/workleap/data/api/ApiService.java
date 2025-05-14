@@ -78,56 +78,56 @@ public interface ApiService {
 
 
     //Applicant Skill
-    @POST("api/applicantSkill/{applicantId}")
+    @POST("api/skill/{applicantId}")
     Call<CreateApplicantSkillResponse> createApplicantSkill(@Path("applicantId") String applicantId, @Body CreateApplicantSkillRequest request);
-    @PUT("api/applicantSkill/{id}")
+    @PUT("api/skill/{id}")
     Call<UpdateApplicantSkillResponse> updateApplicantSkill(@Path("id") String id, @Body UpdateApplicantSkillRequest request);
-    @DELETE("api/applicantSkill/{id}")
+    @DELETE("api/skill/{id}")
     Call<MessageResponse> deleteApplicantSkill(@Path("id") String id);
-    @DELETE("api/applicantSkill/all/{applicantId}")
+    @DELETE("api/skill/all/{applicantId}")
     Call<MessageResponse> deleteAllApplicantSkill(@Path("applicantId") String id);
 
 
     //Applicant Education
-    @POST("api/applicantEducation/{applicantId}")
+    @POST("api/education/{applicantId}")
     Call<CreateApplicantEducationResponse> createApplicantEducation(@Path("applicantId") String applicantId, @Body CreateApplicantEducationRequest request);
-    @PUT("api/applicantEducation/{id}")
+    @PUT("api/education/{id}")
     Call<UpdateApplicantEducationResponse> updateApplicantEducation(@Path("id") String id, @Body UpdateApplicantEducationRequest request);
-    @DELETE("api/applicantEducation/{id}")
+    @DELETE("api/education/{id}")
     Call<MessageResponse> deleteApplicantEducation(@Path("id") String id);
-    @DELETE("api/applicantEducation/all/{applicantId}")
+    @DELETE("api/education/all/{applicantId}")
     Call<MessageResponse> deleteAllApplicantEducation(@Path("applicantId") String id);
 
 
     //Experience
-    @POST("api/exp/{applicantId}")
+    @POST("api/experience/{applicantId}")
     Call<CreateApplicantExperienceResponse> createApplicantExperience(@Path("applicantId") String applicantId, @Body CreateApplicantExperienceRequest request);
-    @PUT("api/exp/{id}")
+    @PUT("api/experience/{id}")
     Call<UpdateApplicantExperienceResponse> updateApplicantExperience(@Path("id") String id, @Body UpdateApplicantExperienceRequest request);
-    @DELETE("api/exp/{id}")
+    @DELETE("api/experience/{id}")
     Call<MessageResponse> deleteApplicantExperience(@Path("id") String id);
 
 
     //InterestedField
-    @POST("api/interestedField/{applicantId}")
+    @POST("api/fields/{applicantId}")
     Call<CreateInterestedFieldResponse> createInterestedField(@Path("fieldId") String applicantId);
-    @DELETE("api/interestedField/{id}")
+    @DELETE("api/fields/{id}")
     Call<MessageResponse> deleteInterestedField(@Path("id") String id);
-    @DELETE("api/interestedField/all/{applicantId}")
+    @DELETE("api/fields/all/{applicantId}")
     Call<MessageResponse> deleteAllInterestedField(@Path("fieldId") String id);
 
 
     //JobPost
     @GET("api/jobPost/all")
     Call<ListJobPostResponse> getAllJobPosts();
-    @GET("api/jobPost/{id}")
+    @GET("api/job-posts/{id}")
     Call<JobPostResponse> getJobPostById(@Path("id") String id);
-    @POST("api/jobPost")
+    @POST("api/job-posts")
     Call<JobPostResponse> createJobPost(@Body JobPost request);
-    @PUT("api/jobPost/{id}")
+    @PUT("api/job-posts/{id}")
     Call<JobPostResponse> updateJobPost(@Path("id") String id, @Body JobPost request);
-    @DELETE("api/jobPost/{id}")
+    @DELETE("api/job-posts/{id}")
     Call<MessageResponse> deleteJobPost(@Path("id") String id);
-    @GET("api/jobPost/search/query")
+    @GET("api/job-posts/search/query")
     Call<ListJobPostResponse> searchJobPosts();
 }
