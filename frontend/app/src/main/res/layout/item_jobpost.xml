@@ -38,7 +38,7 @@
             android:singleLine="false" />
 
         <TextView
-            android:id="@+id/txtContent"
+            android:id="@+id/txtCompany"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tên công ty, tổ chức doanh nghiệp"

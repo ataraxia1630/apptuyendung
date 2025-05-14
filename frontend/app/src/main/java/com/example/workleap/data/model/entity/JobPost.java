@@ -2,6 +2,10 @@ package com.example.workleap.data.model.entity;
 
 // JobPost.java
 
+import android.adservices.customaudience.TrustedBiddingData;
+
+import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 
@@ -17,8 +21,8 @@ public class JobPost {
     private String educationRequirement;
     private String skillRequirement;
     private String responsibility;
-    private double salaryStart;
-    private double salaryEnd;
+    private BigDecimal salaryStart;
+    private BigDecimal salaryEnd;
     private String currency;
     private String status;  // OPENING or other values
     private Date applyUntil;
@@ -30,6 +34,11 @@ public class JobPost {
     private JobCategory jobCategory; // Assuming you define the JobCategory model
     private List<JobSaved> jobSaved; // Assuming you define JobSaved model
 
+    //Constructor
+    public JobPost(String companyId, )
+    {
+
+    }
     // Getters and Setters
 
     public String getId() {
@@ -120,19 +129,19 @@ public class JobPost {
         this.responsibility = responsibility;
     }
 
-    public double getSalaryStart() {
+    public BigDecimal getSalaryStart() {
         return salaryStart;
     }
 
-    public void setSalaryStart(double salaryStart) {
+    public void setSalaryStart(BigDecimal salaryStart) {
         this.salaryStart = salaryStart;
     }
 
-    public double getSalaryEnd() {
+    public BigDecimal getSalaryEnd() {
         return salaryEnd;
     }
 
-    public void setSalaryEnd(double salaryEnd) {
+    public void setSalaryEnd(BigDecimal salaryEnd) {
         this.salaryEnd = salaryEnd;
     }
 
