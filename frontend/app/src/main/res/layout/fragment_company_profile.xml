@@ -225,7 +225,7 @@ android:paddingBottom="100dp">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:text="name"
+                    android:text="Name"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
 
@@ -251,7 +251,7 @@ android:paddingBottom="100dp">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:text="establishedYear"
+                    android:text="EstablishedYear"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
 

@@ -171,13 +171,16 @@ public class ApplicantProfileFragment extends Fragment {
                     }
                     else if("ApplicantInfo".equalsIgnoreCase(cardType) && values != null)
                     {
-                        tvApplicantNameInfo.setText(values.get(0));
-                        tvPhoneInfo.setText(values.get(1));
-                        tvMailInfo.setText(values.get(2));
-                        tvAddressInfo.setText(values.get(3));
+                        applicantFirstName = values.get(0);
+                        applicantLastName = values.get(1);
+                        tvApplicantNameInfo.setText( applicantFirstName + " " + applicantLastName);
+                        tvApplicantName.setText(applicantFirstName + " " + applicantLastName);
+                        tvAddressInfo.setText(values.get(2));
+                        //tvPhoneInfo.setText(values.get(1));
+                        //tvMailInfo.setText(values.get(2));
                         //applicantViewModel.updateApplicant(user.getApplicantId(), "tvAddressInfo.getText().toString()", "null", "null", values.get(0), null);
-                        applicantViewModel.updateApplicant(user.getApplicantId(), values.get(3), "null", "null", tvAboutMe.getText().toString(), null);
-                        userViewModel.updateUser(user.getId(), values.get(0), user.getPassword(), values.get(2), values.get(1),"null", "null");
+                        applicantViewModel.updateApplicant(user.getApplicantId(), values.get(2), applicantFirstName, applicantLastName, tvAboutMe.getText().toString(), null);
+                        //userViewModel.updateUser(user.getId(), values.get(0), user.getPassword(), values.get(2), values.get(1),"null", "null");
                     }
                 }
         );

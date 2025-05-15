@@ -44,12 +44,13 @@ public class EditProfileDialogFragment extends DialogFragment {
         } else if ("AboutMe".equals(cardType)) {
             addField(container, "About me");
         } else if ("ApplicantInfo".equals(cardType)) {
-            addField(container, "Name");
+            addField(container, "First Name");
+            addField(container, "Last Name");
             //addField(container, "Gender");
             //addField(container, "Age");
             //addField(container, "Date of birth");
-            addField(container, "Mobile");
-            addField(container, "Email");
+            //addField(container, "Mobile");
+            //addField(container, "Email");
             addField(container, "Address");
         } else if ("AboutCompany".equalsIgnoreCase(cardType))
         {
