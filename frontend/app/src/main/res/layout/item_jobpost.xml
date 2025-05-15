@@ -59,10 +59,11 @@
 
     <ImageButton
         android:id="@+id/btnOption"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:contentDescription="Option"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="@null"
-        android:src="@drawable/ic_option"/>
+        android:src="@drawable/ic_option" />
 
 
     </LinearLayout>
@@ -139,7 +140,7 @@
             android:id="@+id/txtSalary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:alignment="right"
+            android:layout_gravity="end"
             android:gravity="center"
             android:paddingStart="0dp"
             android:paddingEnd="8dp"

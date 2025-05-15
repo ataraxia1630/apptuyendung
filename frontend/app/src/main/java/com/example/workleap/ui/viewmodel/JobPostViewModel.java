@@ -1,9 +1,11 @@
 package com.example.workleap.ui.viewmodel;
 
 import android.content.Context;
+import android.view.View;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.response.JobPostResponse;
@@ -18,12 +20,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class JobPostViewModel {
+public class JobPostViewModel  extends ViewModel {
     private JobPostRepository jobPostRepository;
 
     public JobPostViewModel() { }
 
-    public void initiateRepository(Context context) {
+    public void InitiateRepository(Context context) {
         jobPostRepository = new JobPostRepository(context);
     }
 

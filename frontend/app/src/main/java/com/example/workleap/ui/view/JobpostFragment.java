@@ -2,16 +2,24 @@ package com.example.workleap.ui.view;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.ui.viewmodel.AuthViewModel;
+import com.example.workleap.ui.viewmodel.JobPostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +33,7 @@ public class JobpostFragment extends Fragment {
     private RecyclerView recyclerView;
     private JobPostAdapter adapter;
     private List<JobPost> allJobs;
+    private JobPostViewModel jobPostViewModel;
 
     public JobpostFragment() {
         // Required empty public constructor
@@ -47,26 +56,31 @@ public class JobpostFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.fragment_jobpost);
-        recyclerView = findViewById(R.id.recyclerViewJobs);
-
-        // Sample data
-        allJobs = new ArrayList<>();
-        allJobs.add(new JobPost(""));
-
-        // Setup RecyclerView
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new JobPostAdapter(allJobs); // mặc định show tất cả
-        recyclerView.setAdapter(adapter);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_jobpost, container, false);
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        recyclerView = view.findViewById(R.id.recyclerJobPosts); // ID trong layout
+        jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
+        jobPostViewModel.InitiateRepository(getContext());
+
+
+        allJobs = new ArrayList<>();
+
+        jobPostViewModel.getAllJobPosts();
+        jobPostViewModel.getAllJobPostData().observe(getViewLifecycleOwner(), jobPosts ->
+        {
+            allJobs = jobPosts;
+        });
+
+        // Setup RecyclerView
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new JobPostAdapter(allJobs); // mặc định show tất cả
+        recyclerView.setAdapter(adapter);
     }
 }

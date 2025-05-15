@@ -35,9 +35,36 @@ public class JobPost {
     private List<JobSaved> jobSaved; // Assuming you define JobSaved model
 
     //Constructor
-    public JobPost(String companyId, )
-    {
-
+    public JobPost(String companyId,
+                   String jobCategoryId,
+                   String jobTypeId,
+                   String title,
+                   String description,
+                   String position,
+                   String workingAddress,
+                   String educationRequirement,
+                   String skillRequirement,
+                   String responsibility,
+                   BigDecimal salaryStart,
+                   BigDecimal salaryEnd,
+                   String currency,
+                   String status,
+                   Date applyUntil) {
+        this.companyId = companyId;
+        this.jobCategoryId = jobCategoryId;
+        this.jobTypeId = jobTypeId;
+        this.title = title;
+        this.description = description;
+        this.position = position;
+        this.workingAddress = workingAddress;
+        this.educationRequirement = educationRequirement;
+        this.skillRequirement = skillRequirement;
+        this.responsibility = responsibility;
+        this.salaryStart = salaryStart;
+        this.salaryEnd = salaryEnd;
+        this.currency = currency;
+        this.status = status;
+        this.applyUntil = applyUntil;
     }
     // Getters and Setters
 
