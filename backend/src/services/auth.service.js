@@ -44,23 +44,23 @@ const AuthService = {
           password: hashedPassword,
           ...(role === 'APPLICANT'
             ? {
-              Applicant: {
-                create: {
-                  address: '',
-                  firstName: '',
-                  lastName: '',
+                Applicant: {
+                  create: {
+                    address: '',
+                    firstName: '',
+                    lastName: '',
+                  },
                 },
-              },
-            }
+              }
             : {}),
           ...(role === 'COMPANY'
             ? {
-              Company: {
-                create: {
-                  name: '',
+                Company: {
+                  create: {
+                    name: '',
+                  },
                 },
-              },
-            }
+              }
             : {}),
         },
       });
@@ -69,35 +69,34 @@ const AuthService = {
     }
   },
 
-  login: async (username, email, password) => {
+  login: async (username, password) => {
     let user;
     try {
-      if (username) {
-        user = await prisma.user.findUnique({
-          where: { username },
-          include: {
-            Applicant: {
-              include: {
-                Skill: true,
-                Edu: true,
-                Exp: true,
-                InterestedField: true,
-                JobApplied: true,
-                CV: true,
-              },
-            },
-            Company: {
-              include: {
-                Post: true,
-                JobPost: true,
-              },
+      user = await prisma.user.findUnique({
+        where: { username },
+        include: {
+          Applicant: {
+            include: {
+              Skill: true,
+              Edu: true,
+              Exp: true,
+              InterestedField: true,
+              JobApplied: true,
+              CV: true,
             },
           },
-        });
-      }
-      if (!user && email) {
+          Company: {
+            include: {
+              Post: true,
+              JobPost: true,
+            },
+          },
+        },
+      });
+
+      if (!user) {
         user = await prisma.user.findUnique({
-          where: { email },
+          where: { email: username },
           include: {
             Applicant: {
               include: {
