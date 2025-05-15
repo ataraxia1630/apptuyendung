@@ -92,7 +92,7 @@ public class CompanyProfileFragment extends Fragment {
 
         tvUserName.setText(user.getUsername());
 
-        tvCompanyNameInfo.setText(user.getUsername());
+
         //tvEstablishedYear.setText();
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
@@ -112,6 +112,7 @@ public class CompanyProfileFragment extends Fragment {
                 tvAboutCompany.setText(company.getDescription());
                 tvEstablishedYear.setText(String.valueOf(company.getEstablishedYear()));
                 tvTaxCode.setText(company.getTaxcode());
+                tvCompanyNameInfo.setText(company.getName());
             }
         });
         companyViewModel.getGetCompanyResult().observe(getViewLifecycleOwner(), result ->{
@@ -136,6 +137,7 @@ public class CompanyProfileFragment extends Fragment {
                         tvMailInfo.setText(values.get(3));
                         tvTaxCode.setText(values.get(4));
                         Log.e("khoa", "khoa");
+
                         companyViewModel.updateCompany(user.getCompanyId(), values.get(0), tvAboutCompany.getText().toString(), Integer.parseInt(values.get(1)), values.get(4) );
 
                         //companyViewModel.updateCompany(user.getCompanyId(), tvCompanyNameInfo.getText().toString(), values.get(0), Integer.parseInt(tvEstablishedYear.getText().toString()), tvTaxCode.getText().toString());
@@ -143,6 +145,7 @@ public class CompanyProfileFragment extends Fragment {
                     else if ("AboutCompany".equalsIgnoreCase(cardType) && values != null) {
                         Log.e("company profile", "about company update");
                         tvAboutCompany.setText(values.get(0));
+
                         companyViewModel.updateCompany(user.getCompanyId(), tvCompanyNameInfo.getText().toString(), values.get(0), Integer.parseInt(tvEstablishedYear.getText().toString()), tvTaxCode.getText().toString());
                     }
                 }
