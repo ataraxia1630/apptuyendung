@@ -50,7 +50,7 @@ android:paddingBottom="100dp">
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <!--<TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,10 +58,36 @@ android:paddingBottom="100dp">
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="3dp"
                 android:layout_toEndOf="@+id/shapeableImageView"
-                android:text="--------"
+                android:text="&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"
                 android:textAlignment="center"
                 android:textColor="@color/design_default_color_secondary_variant"
                 android:textSize="14sp"
+                android:textStyle="bold" />-->
+
+            <TextView
+                android:id="@+id/emailInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView2"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="3dp"
+                android:layout_toEndOf="@+id/shapeableImageView"
+                android:text="user email"
+                android:textColor="#6E6C6C"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/phoneInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/emailInfo"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="3dp"
+                android:layout_toEndOf="@+id/shapeableImageView"
+                android:text="phone"
+                android:textColor="#6E6C6C"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <ImageButton
@@ -77,7 +103,7 @@ android:paddingBottom="100dp">
                 android:layout_marginEnd="8dp"/>
 
             <ImageButton
-                android:id="@+id/btnLogout"
+                android:id="@+id/btnOptions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -86,8 +112,8 @@ android:paddingBottom="100dp">
 
                 android:layout_marginBottom="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Log out"
-                android:src="@drawable/ic_logout" />
+                android:contentDescription="Option"
+                android:src="@drawable/ic_options" />
 
         </RelativeLayout>
 
@@ -240,7 +266,7 @@ android:paddingBottom="100dp">
                     android:textStyle="bold" />
             </RelativeLayout>
 
-            <RelativeLayout
+            <!--<RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -260,13 +286,13 @@ android:paddingBottom="100dp">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:text="--------"
+                    android:text="&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"
                     android:textColor="#6E6C6C"
                     android:textSize="15sp"
                     android:textStyle="bold" />
-            </RelativeLayout>
+            </RelativeLayout>-->
 
-            <RelativeLayout
+            <!--<RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -286,11 +312,11 @@ android:paddingBottom="100dp">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:text="--------"
+                    android:text="&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"
                     android:textColor="#6E6C6C"
                     android:textSize="15sp"
                     android:textStyle="bold" />
-            </RelativeLayout>
+            </RelativeLayout>-->
 
             <RelativeLayout
                 android:layout_width="match_parent"

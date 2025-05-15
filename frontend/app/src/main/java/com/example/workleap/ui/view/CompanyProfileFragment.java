@@ -3,6 +3,7 @@ package com.example.workleap.ui.view;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -27,7 +28,7 @@ import java.util.ArrayList;
  */
 public class CompanyProfileFragment extends Fragment {
     View view;
-    TextView tvUserName;
+    TextView tvCompanyName;
     TextView tvAboutCompany;
     TextView tvCompanyNameInfo, tvEstablishedYear, tvMailInfo, tvPhoneInfo, tvTaxCode;
     User user;
@@ -35,7 +36,7 @@ public class CompanyProfileFragment extends Fragment {
     AuthViewModel authViewModel;
 
     CompanyViewModel companyViewModel;
-    ImageButton btnLogout, btnEditCompanyName, btnEditAboutCompany, btnEditCompanyInfo;
+    ImageButton btnOptions, btnEditCompanyName, btnEditAboutCompany, btnEditCompanyInfo;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -80,7 +81,7 @@ public class CompanyProfileFragment extends Fragment {
         companyViewModel = new ViewModelProvider(requireActivity()).get(CompanyViewModel.class);
         companyViewModel.InitiateRepository(getContext());
 
-        tvUserName = (TextView) view.findViewById(R.id.textView2);
+        tvCompanyName = (TextView) view.findViewById(R.id.textView2);
 
         tvAboutCompany = (TextView) view.findViewById(R.id.textViewAboutCompany);
 
@@ -90,15 +91,13 @@ public class CompanyProfileFragment extends Fragment {
         tvPhoneInfo= (TextView) view.findViewById(R.id.phoneInfo);
         tvTaxCode = (TextView) view.findViewById(R.id.taxCodeInfo);
 
-        tvUserName.setText(user.getUsername());
-
 
         //tvEstablishedYear.setText();
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
         //tvTaxCode.setText();
 
-        btnLogout = view.findViewById(R.id.btnLogout);
+        btnOptions = view.findViewById(R.id.btnOptions);
         btnEditCompanyName = view.findViewById(R.id.btnEditCompanyName);
         btnEditAboutCompany = view.findViewById(R.id.btnEditAboutCompany);
         btnEditCompanyInfo = view.findViewById(R.id.btnEditCompanyInfo);
@@ -109,6 +108,8 @@ public class CompanyProfileFragment extends Fragment {
                 Log.e("ApplicantProfile", "applicant null");
             } else {
                 Log.e("ApplicantProfile", "applicant setText");
+
+                tvCompanyName.setText(company.getName());
                 tvAboutCompany.setText(company.getDescription());
                 tvEstablishedYear.setText(String.valueOf(company.getEstablishedYear()));
                 tvTaxCode.setText(company.getTaxcode());
@@ -151,12 +152,27 @@ public class CompanyProfileFragment extends Fragment {
                 }
         );
 
-        btnLogout.setOnClickListener(v -> {
-            authViewModel.logout();
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            requireActivity().finish();
+        btnOptions.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(getContext(), btnOptions);
+            popupMenu.getMenuInflater().inflate(R.menu.menu_options, popupMenu.getMenu());
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.menu_setting) {
+                    return true;
+                } else if (itemId == R.id.menu_logout) {
+                    authViewModel.logout();
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    requireActivity().finish();
+                    return true;
+                }
+                return false;
+            });
+
+            popupMenu.show();
         });
         btnEditCompanyName.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("CompanyName");

@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -34,12 +35,14 @@ import java.util.ArrayList;
 public class ApplicantProfileFragment extends Fragment {
 
     View view;
+    String applicantFirstName = "first name";
+    String applicantLastName = "last name";
 
     TextView tvAboutMe;
-    TextView tvUserName, tvUserNameInfo, tvMailInfo, tvPhoneInfo, tvAddressInfo;
+    TextView tvApplicantName, tvApplicantNameInfo, tvMailInfo, tvPhoneInfo, tvAddressInfo;
     User user;
 
-    ImageButton btnLogout, btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
+    ImageButton btnOptions, btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
 
     ApplicantViewModel applicantViewModel;
     UserViewModel userViewModel;
@@ -105,23 +108,19 @@ public class ApplicantProfileFragment extends Fragment {
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
         authViewModel.InitiateRepository(getContext());
 
-        tvUserName = (TextView) view.findViewById(R.id.textView2);
+        tvApplicantName = (TextView) view.findViewById(R.id.tvApplicantName);
 
         tvAboutMe = (TextView) view.findViewById(R.id.textViewAboutMe);
-        tvUserNameInfo = (TextView) view.findViewById(R.id.companynameInfo);
+        tvApplicantNameInfo = (TextView) view.findViewById(R.id.companynameInfo);
         tvMailInfo = (TextView) view.findViewById(R.id.emailInfo);
         tvPhoneInfo= (TextView) view.findViewById(R.id.phoneInfo);
         tvAddressInfo= (TextView) view.findViewById(R.id.addressInfo);
 
-        btnLogout = view.findViewById(R.id.btnLogout);
+        btnOptions = view.findViewById(R.id.btnOptions);
         btnEditApplicantName = view.findViewById(R.id.btnEditUserName);
         btnEditAboutMe = view.findViewById(R.id.btnEditAboutMe);
         btnEditApplicantInfo = view.findViewById(R.id.btnApplicantInfo);
 
-        tvUserName.setText(user.getUsername());
-
-
-        tvUserNameInfo.setText(user.getUsername());
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
 
@@ -133,8 +132,12 @@ public class ApplicantProfileFragment extends Fragment {
                 Log.e("ApplicantProfile", "applicant null");
             } else {
                 Log.e("ApplicantProfile", "applicant setText");
+                applicantFirstName = applicant.getFirstName();
+                applicantLastName = applicant.getLastName();
+                tvApplicantName.setText(applicant.getFirstName() + " " + applicant.getLastName());
                 tvAboutMe.setText(applicant.getProfileSummary());
                 tvAddressInfo.setText(applicant.getAddress());
+                tvApplicantNameInfo.setText(applicant.getFirstName() + " " + applicant.getLastName());
             }
         });
 
@@ -163,11 +166,12 @@ public class ApplicantProfileFragment extends Fragment {
                     // TODO: xử lý cập nhật UI hoặc gọi ViewModel
                     if ("AboutMe".equalsIgnoreCase(cardType) && values != null) {
                         tvAboutMe.setText(values.get(0));
-                        applicantViewModel.updateApplicant(user.getApplicantId(), tvAddressInfo.getText().toString(), "null", "null", values.get(0), null);
+                        //first name last name khong dc null
+                        applicantViewModel.updateApplicant(user.getApplicantId(), tvAddressInfo.getText().toString(), applicantFirstName, applicantLastName, values.get(0), null);
                     }
                     else if("ApplicantInfo".equalsIgnoreCase(cardType) && values != null)
                     {
-                        tvUserNameInfo.setText(values.get(0));
+                        tvApplicantNameInfo.setText(values.get(0));
                         tvPhoneInfo.setText(values.get(1));
                         tvMailInfo.setText(values.get(2));
                         tvAddressInfo.setText(values.get(3));
@@ -178,12 +182,27 @@ public class ApplicantProfileFragment extends Fragment {
                 }
         );
 
-        btnLogout.setOnClickListener( v -> {
-            authViewModel.logout();
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            requireActivity().finish();
+        btnOptions.setOnClickListener( v -> {
+            PopupMenu popupMenu = new PopupMenu(getContext(), btnOptions);
+            popupMenu.getMenuInflater().inflate(R.menu.menu_options, popupMenu.getMenu());
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.menu_setting) {
+                    return true;
+                } else if (itemId == R.id.menu_logout) {
+                    authViewModel.logout();
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    requireActivity().finish();
+                    return true;
+                }
+                return false;
+            });
+
+            popupMenu.show();
         });
         btnEditApplicantName.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantName");
@@ -197,7 +216,5 @@ public class ApplicantProfileFragment extends Fragment {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantInfo");
             dialog.show(getParentFragmentManager(), "EditApplicantInfoDialog");
         });
-
-
     }
 }
