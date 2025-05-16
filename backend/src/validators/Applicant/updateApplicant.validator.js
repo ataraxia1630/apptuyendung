@@ -18,6 +18,16 @@ const ApplicantSchema = Joi.object({
     'string.empty': 'Profile Summary cannot be empty',
     'string.max': 'Profile Summary must be at most 500 characters long',
   }),
+  address: Joi.string().max(100).messages({
+    'string.base': 'Address must be a string',
+    'string.empty': 'Address cannot be empty',
+    'string.max': 'Address must be at most 100 characters long',
+  }),
+  gender: Joi.string().valid('MALE', 'FEMALE').messages({
+    'string.base': 'Address must be a string',
+    'string.empty': 'Address cannot be empty',
+    'any.only': 'gender must be either MALE or FEMALE',
+  }),
 });
 
 module.exports = {

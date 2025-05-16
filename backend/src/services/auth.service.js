@@ -2,6 +2,7 @@ const prisma = require('../config/db/prismaClient');
 const redisClient = require('../config/cache/redisClient');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const googleClient = require('../config/google/googleClient');
 
 const { sendOTPEmail } = require('../config/cache/mailer');
 
@@ -116,36 +117,34 @@ const AuthService = {
     }
   },
 
-  login: async (username, email, password) => {
+  login: async (username, password) => {
     let user;
     try {
-      if (username) {
-        user = await prisma.user.findUnique({
-          where: { username },
-          include: {
-            Applicant: {
-              include: {
-                Skill: true,
-                Edu: true,
-                Exp: true,
-                InterestedField: true,
-                JobSaved: true,
-                JobApplied: true,
-                CV: true,
-              },
-            },
-            Company: {
-              include: {
-                Post: true,
-                JobPost: true,
-              },
+      user = await prisma.user.findUnique({
+        where: { username },
+        include: {
+          Applicant: {
+            include: {
+              Skill: true,
+              Edu: true,
+              Exp: true,
+              InterestedField: true,
+              JobApplied: true,
+              CV: true,
             },
           },
-        });
-      }
-      if (!user && email) {
+          Company: {
+            include: {
+              Post: true,
+              JobPost: true,
+            },
+          },
+        },
+      });
+
+      if (!user) {
         user = await prisma.user.findUnique({
-          where: { email },
+          where: { email: username },
           include: {
             Applicant: {
               include: {
@@ -198,6 +197,84 @@ const AuthService = {
       }
     } catch (error) {
       throw new Error('Invalid token or already expired');
+    }
+  },
+
+  loginGoogle: async (idToken, role = 'APPLICANT') => {
+    try {
+      if (!['APPLICANT', 'COMPANY'].includes(role)) {
+        throw new Error('Invalid role');
+      }
+
+      const ticket = await googleClient.verifyIdToken({
+        idToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+
+      const id = payload.sub;
+      const email = payload.email;
+      const name = payload.name;
+      const phoneNumber = payload.phoneNumber || null;
+      const avatar = payload.picture;
+
+      const existingUser = await prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (existingUser) {
+        const token = jwt.sign(
+          { userId: existingUser.id, role: existingUser.role },
+          SECRET_KEY,
+          { expiresIn: '24h' }
+        );
+        return { token, user: existingUser };
+      }
+
+      const hashedPassword = bcrypt.hashSync(id, 10);
+
+      const newUser = await prisma.user.create({
+        data: {
+          email,
+          phoneNumber,
+          username: email,
+          password: hashedPassword,
+          avatar,
+          role,
+          ...(role === 'APPLICANT'
+            ? {
+                Applicant: {
+                  create: {
+                    address: '',
+                    firstName: name.split(' ')[0],
+                    lastName: name.split(' ')[1] || '',
+                  },
+                },
+              }
+            : {}),
+
+          ...(role === 'COMPANY'
+            ? {
+                Company: {
+                  create: {
+                    name: name,
+                  },
+                },
+              }
+            : {}),
+        },
+      });
+
+      const token = jwt.sign(
+        { userId: newUser.id, role: newUser.role },
+        SECRET_KEY,
+        { expiresIn: '24h' }
+      );
+
+      return { token, user: newUser };
+    } catch (error) {
+      throw new Error('Error logging into Google account: ' + error.message);
     }
   },
 };

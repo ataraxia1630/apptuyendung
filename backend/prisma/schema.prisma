@@ -67,6 +67,16 @@ enum ReactionType {
   WOW
 }
 
+enum ContentType {
+  TEXT
+  IMAGE
+}
+
+enum GenderType {
+  MALE
+  FEMALE
+}
+
 // ------------ COMMON TYPES --------------
 
 /// ------------ MAIN MODEL ---------------
@@ -102,6 +112,8 @@ model Applicant {
   firstName       String               @db.VarChar(50)
   lastName        String               @db.VarChar(50)
   profileSummary  String?              @db.VarChar(1000)
+  gender          GenderType?
+  trustScore      Float                @default(0)
   created_at      DateTime             @default(now())
   updated_at      DateTime             @updatedAt
   Skill           Skill[]
@@ -293,7 +305,7 @@ model Company {
   name            String    @db.VarChar(255)
   description     String?   @db.VarChar(1000)
   taxcode         String?   @unique
-  establishedYear DateTime?
+  establishedYear Int?
   Post            Post[]
   User            User[]
   JobPost         JobPost[]
@@ -355,25 +367,24 @@ model Comment {
 }
 
 model Post {
-  id         String     @id @default(uuid())
+  id         String        @id @default(uuid())
   companyId  String
-  title      String     @db.VarChar(255)
-  detail     String
-  created_at DateTime   @default(now())
-  updated_at DateTime   @updatedAt
-  Company    Company    @relation(fields: [companyId], references: [id])
-  Image      Image[]
+  title      String
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
+  Company    Company       @relation(fields: [companyId], references: [id])
+  contents   PostContent[]
   Reaction   Reaction[]
   Comment    Comment[]
 }
 
-model Image {
-  id     String @id @default(uuid())
+model PostContent {
+  id     String      @id @default(uuid())
   postId String
-  url    String @db.VarChar(255)
-  type   String @db.VarChar(50)
-  size   Int
-  Post   Post   @relation(fields: [postId], references: [id])
+  type   ContentType
+  value  String
+  order  Int // tách theo đoạn
+  Post   Post        @relation(fields: [postId], references: [id])
 }
 
 model Reaction {

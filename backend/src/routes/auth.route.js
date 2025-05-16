@@ -25,5 +25,6 @@ route.post('/login', validate(LoginSchema), AuthController.login);
 
 // B5: logout
 route.post('/logout', AuthController.logout);
+route.post('/google', AuthController.loginGoogle);
 
 module.exports = route;

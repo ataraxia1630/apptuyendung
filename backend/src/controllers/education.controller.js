@@ -4,7 +4,7 @@ const EducationController = {
   getAllEdu: async (req, res) => {
     try {
       const educations = await EducationService.getAllEdu();
-      return res.status(200).json(educations);
+      return res.status(200).json({ educations: educations });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching educations',
@@ -16,7 +16,7 @@ const EducationController = {
   createNewEdu: async (req, res) => {
     try {
       const newEdu = await EducationService.createNewEdu(req.body);
-      return res.status(201).json(newEdu);
+      return res.status(201).json({ education: newEdu });
     } catch (error) {
       return res.status(500).json({
         message: 'Error creating education',
@@ -34,7 +34,7 @@ const EducationController = {
         });
       }
       const applicantEdu = await EducationService.getAll(applicantId);
-      return res.status(200).json(applicantEdu);
+      return res.status(200).json({ educations: applicantEdu });
     } catch (error) {
       return res.status(500).json({
         message: 'Error fetching educations for applicant',
@@ -52,7 +52,7 @@ const EducationController = {
         });
       }
       const newEdu = await EducationService.createNew(applicantId, req.body);
-      return res.status(201).json(newEdu);
+      return res.status(201).json({ education: newEdu });
     } catch (error) {
       return res.status(500).json({
         message: 'Error creating new edu for applicant',
@@ -70,7 +70,7 @@ const EducationController = {
         });
       }
       const updatedEdu = await EducationService.updateEdu(id, req.body);
-      return res.status(200).json(updatedEdu);
+      return res.status(200).json({ education: updatedEdu });
     } catch (error) {
       return res.status(500).json({
         message: 'Error updating education',

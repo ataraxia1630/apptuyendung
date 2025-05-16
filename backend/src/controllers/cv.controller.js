@@ -12,7 +12,9 @@ const CVController = {
     console.log('File:', req.file);
     try {
       const cv = await CVService.uploadCV(applicantId, req.file, req.body);
-      return res.status(201).json({ message: 'CV uploaded successfully', cv });
+      return res
+        .status(201)
+        .json({ message: 'CV uploaded successfully', cv: cv });
     } catch (error) {
       console.error('Error uploading CV:', error);
       return res
@@ -48,7 +50,9 @@ const CVController = {
 
     try {
       const cvs = await CVService.getAllCV(applicantId);
-      return res.status(200).json({ message: 'CVs fetched successfully', cvs });
+      return res
+        .status(200)
+        .json({ message: 'CVs fetched successfully', cvs: cvs });
     } catch (error) {
       console.error('Error fetching CVs:', error);
       return res
@@ -85,7 +89,9 @@ const CVController = {
       if (!cv) {
         return res.status(404).json({ message: 'CV not found' });
       }
-      return res.status(200).json({ message: 'CV fetched successfully', cv });
+      return res
+        .status(200)
+        .json({ message: 'CV fetched successfully', cv: cv });
     } catch (error) {
       console.error('Error fetching CV:', error);
       return res
@@ -105,7 +111,9 @@ const CVController = {
       if (!cv) {
         return res.status(404).json({ message: 'CV not found' });
       }
-      return res.status(200).json({ message: 'CV updated successfully', cv });
+      return res
+        .status(200)
+        .json({ message: 'CV updated successfully', cv: cv });
     } catch (error) {
       console.error('Error updating CV:', error);
       return res

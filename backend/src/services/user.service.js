@@ -8,14 +8,8 @@ const UserService = {
     try {
       return await prisma.user.findMany({
         include: {
-          OR: [
-            {
-              Company: true,
-            },
-            {
-              Applicant: true,
-            },
-          ],
+          Company: true,
+          Applicant: true,
         },
       });
     } catch (error) {
@@ -39,14 +33,8 @@ const UserService = {
       return await prisma.user.findUnique({
         where: { id },
         include: {
-          OR: [
-            {
-              Company: true,
-            },
-            {
-              Applicant: true,
-            },
-          ],
+          Company: true,
+          Applicant: true,
         },
       });
     } catch (error) {
