@@ -64,6 +64,10 @@ public class EditProfileDialogFragment extends DialogFragment {
             addField(container, "Email");
             addField(container, "Tax code");
         }
+        else if("ApplicantSkill".equalsIgnoreCase(cardType))
+        {
+            addField(container, "Skill");
+        }
 
         builder.setView(view)
                 .setTitle("Edit")

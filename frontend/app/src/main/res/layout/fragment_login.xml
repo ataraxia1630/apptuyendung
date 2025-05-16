@@ -23,16 +23,16 @@
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_marginBottom="8dp"
-        android:hint="User name"
+        android:hint="Email/User name"
         android:inputType="text" />
 
-    <EditText
+    <!--<EditText
         android:id="@+id/email_edittext"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_marginBottom="8dp"
         android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:inputType="textEmailAddress" />-->
 
     <EditText
         android:id="@+id/password_edittext"

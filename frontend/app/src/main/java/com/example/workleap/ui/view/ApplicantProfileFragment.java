@@ -22,6 +22,8 @@ import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
+import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.chip.Chip;
 
 import org.w3c.dom.Text;
 
@@ -42,12 +44,13 @@ public class ApplicantProfileFragment extends Fragment {
     TextView tvApplicantName, tvApplicantNameInfo, tvMailInfo, tvPhoneInfo, tvAddressInfo;
     User user;
 
-    ImageButton btnOptions, btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
+    ImageButton btnAddSkill, btnOptions, btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
 
     ApplicantViewModel applicantViewModel;
     UserViewModel userViewModel;
 
     AuthViewModel authViewModel;
+    FlexboxLayout skillContainer ;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -120,6 +123,10 @@ public class ApplicantProfileFragment extends Fragment {
         btnEditApplicantName = view.findViewById(R.id.btnEditUserName);
         btnEditAboutMe = view.findViewById(R.id.btnEditAboutMe);
         btnEditApplicantInfo = view.findViewById(R.id.btnApplicantInfo);
+        btnAddSkill = view.findViewById(R.id.btnEditSkill);
+
+        skillContainer = view.findViewById(R.id.skillContainer);
+
 
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
@@ -182,6 +189,12 @@ public class ApplicantProfileFragment extends Fragment {
                         applicantViewModel.updateApplicant(user.getApplicantId(), values.get(2), applicantFirstName, applicantLastName, tvAboutMe.getText().toString(), null);
                         //userViewModel.updateUser(user.getId(), values.get(0), user.getPassword(), values.get(2), values.get(1),"null", "null");
                     }
+                    else if ("ApplicantSkill".equalsIgnoreCase(cardType) && values != null)
+                    {
+                        if (!values.get(0).isEmpty()) {
+                            addSkillChip(values.get(0));
+                        }
+                    }
                 }
         );
 
@@ -219,5 +232,18 @@ public class ApplicantProfileFragment extends Fragment {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantInfo");
             dialog.show(getParentFragmentManager(), "EditApplicantInfoDialog");
         });
+
+        btnAddSkill.setOnClickListener(v -> {
+            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantSkill");
+            dialog.show(getParentFragmentManager(), "EditApplicantSkillDialog");
+        });
+    }
+
+    private void addSkillChip(String skillName) {
+        Chip chip = new Chip(requireContext());
+        chip.setText(skillName);
+        chip.setCloseIconVisible(true);
+        chip.setOnCloseIconClickListener(v -> skillContainer.removeView(chip));
+        skillContainer.addView(chip);
     }
 }
