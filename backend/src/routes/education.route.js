@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { EducationController } = require('../controllers/education.controller');
 const { verifyToken } = require('../middlewares/auth.middleware');
+const { cache } = require('../middlewares/cache.middleware');
 const { validate } = require('../middlewares/validate.middleware');
 const { EduSchema } = require('../validators/Education/edu.validator');
 const {
@@ -8,7 +9,7 @@ const {
 } = require('../validators/Education/applicantEdu.validator');
 const route = Router();
 
-route.get('/', verifyToken, EducationController.getAllEdu);
+route.get('/', verifyToken, cache, EducationController.getAllEdu);
 route.post(
   '/',
   verifyToken,
@@ -17,7 +18,7 @@ route.post(
 );
 
 // thao tac tren applicantEdu
-route.get('/:applicantId', verifyToken, EducationController.getAll);
+route.get('/:applicantId', verifyToken, cache, EducationController.getAll);
 route.post(
   '/:applicantId',
   verifyToken,

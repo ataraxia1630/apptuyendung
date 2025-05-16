@@ -5,6 +5,7 @@ const {
 const { ApplySchema } = require('../validators/JobApplied/apply.validator');
 const { verifyToken } = require('../middlewares/auth.middleware');
 const { requireRole } = require('../middlewares/role.middleware');
+const { cache } = require('../middlewares/cache.middleware');
 const { validate } = require('../middlewares/validate.middleware');
 const route = Router();
 
@@ -13,6 +14,7 @@ route.get(
   '/:jobpostId/cvs',
   verifyToken,
   requireRole('COMPANY'),
+  cache,
   JobAppliedController.getAllCvAppliedToJob
 );
 
@@ -21,6 +23,7 @@ route.get(
   '/:jobpostId/applicants',
   verifyToken,
   requireRole('COMPANY'),
+  cache,
   JobAppliedController.getAllApplicantAppliedToJob
 );
 
@@ -29,6 +32,7 @@ route.get(
   '/:applicantId',
   verifyToken,
   requireRole('APPLICANT'),
+  cache,
   JobAppliedController.getAllJobAppliedOfApplicant
 );
 

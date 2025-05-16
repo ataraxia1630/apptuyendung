@@ -1,11 +1,12 @@
 const { Router } = require('express');
 const { ExpController } = require('../controllers/exp.controller');
 const { verifyToken } = require('../middlewares/auth.middleware');
+const { cache } = require('../middlewares/cache.middleware');
 const { validate } = require('../middlewares/validate.middleware');
 const { ExpSchema } = require('../validators/Experience/exp.validator');
 
 const route = Router();
-route.get('/:applicantId', verifyToken, ExpController.getAllExp);
+route.get('/:applicantId', verifyToken, cache, ExpController.getAllExp);
 route.post(
   '/:applicantId',
   verifyToken,

@@ -2,12 +2,13 @@ const { Router } = require('express');
 const { FieldController } = require('../controllers/field.controller');
 
 const { verifyToken } = require('../middlewares/auth.middleware');
+const { cache } = require('../middlewares/cache.middleware');
 
 const route = new Router();
-route.get('/all', verifyToken, FieldController.getAllFields);
+route.get('/all', verifyToken, cache, FieldController.getAllFields);
 
 // get by name or id
-route.get('/:name', verifyToken, FieldController.getField);
+route.get('/:name', verifyToken, cache, FieldController.getField);
 
 // ADMIN only??
 route.post('/', verifyToken, FieldController.createField);
@@ -17,6 +18,7 @@ route.put('/:id', verifyToken, FieldController.updateField);
 route.get(
   '/interested/:applicantId',
   verifyToken,
+  cache,
   FieldController.getAllInterestedFields
 );
 

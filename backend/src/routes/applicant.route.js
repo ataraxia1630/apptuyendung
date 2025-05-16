@@ -2,6 +2,7 @@ const { Router } = require('express');
 const { ApplicantController } = require('../controllers/applicant.controller');
 
 const { verifyToken } = require('../middlewares/auth.middleware');
+const { cache } = require('../middlewares/cache.middleware');
 const { validate } = require('../middlewares/validate.middleware');
 const {
   ApplicantSchema,
@@ -10,17 +11,18 @@ const {
 const route = Router();
 
 // lấy tất cả người dùng
-route.get('/all', verifyToken, ApplicantController.getAllApplicants);
+route.get('/all', verifyToken, cache, ApplicantController.getAllApplicants);
 
 // search người dùng theo tên
 route.get(
   '/search/:name',
   verifyToken,
+  cache,
   ApplicantController.searchApplicantsByName
 );
 
 // lấy 1 người dùng theo id / username
-route.get('/:id', verifyToken, ApplicantController.getApplicantById);
+route.get('/:id', verifyToken, cache, ApplicantController.getApplicantById);
 route.put(
   '/:id',
   verifyToken,
