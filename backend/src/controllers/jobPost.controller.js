@@ -1,11 +1,16 @@
 const { JobPostService } = require('../services/jobPost.service');
+const { getPagination, buildMeta } = require('../utils/paginate');
 
 const JobPostController = {
     // Lấy tất cả các bài đăng công việc
     getAllJobPosts: async (req, res) => {
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 10;
+        const { skip, take } = getPagination(page, pageSize);
         try {
-            const jobPosts = await JobPostService.getAllJobPosts();
-            return res.status(200).json(jobPosts);
+            const { jobPosts, total } = await JobPostService.getAllJobPosts(skip, take);
+            const meta = buildMeta(total, page, pageSize);
+            return res.status(200).json({ data: jobPosts, meta });
         } catch (error) {
             return res
                 .status(500)
@@ -21,7 +26,7 @@ const JobPostController = {
             if (!jobPost) {
                 return res.status(404).json({ message: 'Job post not found' });
             }
-            return res.status(200).json(jobPost);
+            return res.status(200).json({ jobPost: jobPost });
         } catch (error) {
             return res
                 .status(500)
@@ -33,7 +38,7 @@ const JobPostController = {
     createJobPost: async (req, res) => {
         try {
             const newJobPost = await JobPostService.createJobPost(req.body);
-            return res.status(201).json(newJobPost);
+            return res.status(201).json({ newJobPost: newJobPost });
         } catch (error) {
             return res
                 .status(500)
@@ -46,7 +51,7 @@ const JobPostController = {
         const { id } = req.params;
         try {
             const jobPost = await JobPostService.updateJobPost(id, req.body);
-            return res.status(200).json(jobPost);
+            return res.status(200).json({ jobPost: jobPost });
         } catch (error) {
             return res
                 .status(500)
@@ -69,14 +74,18 @@ const JobPostController = {
 
     // Tìm kiếm bài đăng công việc
     searchJobPosts: async (req, res) => {
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 10;
+        const { skip, take } = getPagination(page, pageSize);
         const { keyword } = req.query;
         if (!keyword) {
             return res.status(400).json({ message: 'Keyword is required' });
         }
 
         try {
-            const jobPosts = await JobPostService.searchJobPosts(keyword);
-            return res.status(200).json(jobPosts);
+            const { jobPosts, total } = await JobPostService.searchJobPosts(keyword, skip, take);
+            const meta = buildMeta(total, page, pageSize);
+            return res.status(200).json({ jobPosts, meta });
         } catch (error) {
             return res
                 .status(500)

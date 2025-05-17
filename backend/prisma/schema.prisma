@@ -225,6 +225,7 @@ model JobPost {
   jobTypeId            String
   title                String       @db.VarChar(255)
   description          String?      @db.VarChar(1000)
+  location             String       @default("Unknown") @db.VarChar(255)
   position             String       @db.VarChar(255)
   workingAddress       String //ref
   educationRequirement String       @db.VarChar(1000)
