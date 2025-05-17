@@ -1,6 +1,8 @@
 package com.example.workleap.data.api;
 
+import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.response.CreateApplicantEducationResponse;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
@@ -13,7 +15,9 @@ import com.example.workleap.data.model.response.GetCompanyResponse;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.JobPostResponse;
+import com.example.workleap.data.model.response.ListJobCategoryResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
+import com.example.workleap.data.model.response.ListJobTypeResponse;
 import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
 import com.example.workleap.data.model.response.MessageResponse;
@@ -133,4 +137,23 @@ public interface ApiService {
     @GET("api/job-posts/search/query")
     Call<ListJobPostResponse> searchJobPosts();
 
+    //JobType
+    @GET("api/types/all")
+    Call<ListJobTypeResponse> getAllJobTypes();
+    @POST("api/types/")
+    Call <ListJobTypeResponse> createJobType(@Body List<JobType> request);
+
+    //JobCategory
+    @GET("api/category")
+    Call<ListJobCategoryResponse> getAllJobCategories();
+    @POST("api/types/")
+    Call <ListJobCategoryResponse> createJobCategory(@Body List<JobCategory> request);
+
+    //JobSaved
+    @GET("api/save/{applicantId}")
+    Call<ListJobPostResponse> createJobSaved(@Path("applicantId") String applicantId);
+    @POST("api/save/")
+    Call <ListJobPostResponse> createJobSaved(@Body JobPost request);
+    @DELETE("api/save/{applicantId}/{jobpostId}")
+    Call <MessageResponse> deleteJobSaved(@Path("applicantId") String applicantId, @Path("jobpostId") String jobpostId);
 }

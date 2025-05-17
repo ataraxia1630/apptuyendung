@@ -4,9 +4,13 @@ import android.content.Context;
 
 import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.api.RetrofitClient;
+import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.response.JobPostResponse;
+import com.example.workleap.data.model.response.ListJobCategoryResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
+import com.example.workleap.data.model.response.ListJobTypeResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 
 import java.util.List;
@@ -46,4 +50,33 @@ public class JobPostRepository {
     public Call<ListJobPostResponse> searchJobPosts() {
         return apiService.searchJobPosts();
     }
+
+
+    //JobType
+    public Call<ListJobTypeResponse> getAllJobTypes() {
+        return apiService.getAllJobTypes();
+    }
+    public Call<ListJobTypeResponse> createJobType(List<JobType> request) {
+        return apiService.createJobType(request);
+    }
+
+    //Job Category
+    public Call<ListJobCategoryResponse> getAllJobCategories() {
+        return apiService.getAllJobCategories();
+    }
+    public Call<ListJobCategoryResponse> createJobCategory(List<JobCategory> request) {
+        return apiService.createJobCategory(request);
+    }
+
+    //Job saved
+    public Call<ListJobPostResponse> createJobSaved(String applicantId) {
+        return apiService.createJobSaved(applicantId);
+    }
+    public Call<ListJobPostResponse> createJobSaved(JobPost request) {
+        return apiService.createJobSaved(request);
+    }
+    public Call<MessageResponse> deleteJobSaved(String applicantId, String jobpostId) {
+        return apiService.deleteJobSaved(applicantId, jobpostId);
+    }
+
 }
