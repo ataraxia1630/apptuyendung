@@ -9,6 +9,8 @@ import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 
+import java.util.List;
+
 import retrofit2.Call;
 
 public class JobPostRepository {

@@ -1,6 +1,7 @@
 package com.example.workleap.ui.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 
 import androidx.lifecycle.LiveData;
@@ -13,6 +14,7 @@ import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.repository.JobPostRepository;
 import com.example.workleap.data.repository.UserRepository;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -65,6 +67,7 @@ public class JobPostViewModel  extends ViewModel {
                 if (response.isSuccessful() && response.body() != null) {
                     getAllJobPostData.postValue(response.body().getAllJobPost());
                     getAllJobPostResult.postValue("Success");
+                    Log.d("API_RESPONSE", new Gson().toJson(response.body()));
                 } else {
                     getAllJobPostResult.postValue("Failed: " + response.message());
                 }

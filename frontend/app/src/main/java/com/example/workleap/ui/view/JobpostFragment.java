@@ -32,7 +32,7 @@ import java.util.List;
 public class JobpostFragment extends Fragment {
     private RecyclerView recyclerView;
     private JobPostAdapter adapter;
-    private List<JobPost> allJobs;
+    private List<JobPost> allJobs = new ArrayList<>();
     private JobPostViewModel jobPostViewModel;
 
     public JobpostFragment() {
@@ -70,17 +70,21 @@ public class JobpostFragment extends Fragment {
         jobPostViewModel.InitiateRepository(getContext());
 
 
-        allJobs = new ArrayList<>();
-
-        jobPostViewModel.getAllJobPosts();
+        jobPostViewModel.getAllJobPostResult().observe(getViewLifecycleOwner(), result ->
+        {
+            String s = result.toString();
+            Log.e("JobpostFragment", "getAllJobPostData: " + s + "");
+        });
         jobPostViewModel.getAllJobPostData().observe(getViewLifecycleOwner(), jobPosts ->
         {
-            allJobs = jobPosts;
+            allJobs.addAll(jobPosts);
+            // Setup RecyclerView
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            adapter = new JobPostAdapter(allJobs); // mặc định show tất cả
+            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         });
+        jobPostViewModel.getAllJobPosts();
 
-        // Setup RecyclerView
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new JobPostAdapter(allJobs); // mặc định show tất cả
-        recyclerView.setAdapter(adapter);
     }
 }

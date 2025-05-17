@@ -32,6 +32,8 @@ import com.example.workleap.data.model.response.UpdateCompanyResponse;
 import com.example.workleap.data.model.request.UpdateUserRequest;
 import com.example.workleap.data.model.response.UpdateUserResponse;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -118,16 +120,17 @@ public interface ApiService {
 
 
     //JobPost
-    @GET("api/jobPost/all")
+    @GET("api/job-posts/all")
     Call<ListJobPostResponse> getAllJobPosts();
-    @GET("api/jobPost/{id}")
+    @GET("api/job-posts/{id}")
     Call<JobPostResponse> getJobPostById(@Path("id") String id);
-    @POST("api/jobPost")
+    @POST("api/job-posts")
     Call<JobPostResponse> createJobPost(@Body JobPost request);
-    @PUT("api/jobPost/{id}")
+    @PUT("api/job-posts/{id}")
     Call<JobPostResponse> updateJobPost(@Path("id") String id, @Body JobPost request);
-    @DELETE("api/jobPost/{id}")
+    @DELETE("api/job-posts/{id}")
     Call<MessageResponse> deleteJobPost(@Path("id") String id);
-    @GET("api/jobPost/search/query")
+    @GET("api/job-posts/search/query")
     Call<ListJobPostResponse> searchJobPosts();
+
 }

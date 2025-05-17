@@ -32,7 +32,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
     public void onBindViewHolder(@NonNull JobPostViewHolder holder, int position) {
         JobPost post = jobPostList.get(position);
         holder.txtTitle.setText(post.getTitle());
-        holder.txtCompany.setText(post.getCompany().getName());
+        //holder.txtCompany.setText(post.getCompany().getName());
         holder.txtSalary.setText(post.getSalaryStart() + " - " + post.getSalaryEnd() + " " + post.getCurrency());
         holder.txtTime.setText(post.getUpdatedAt().toString());
         holder.txtLocation.setText(post.getPosition());
