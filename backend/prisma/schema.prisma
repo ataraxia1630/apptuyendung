@@ -72,11 +72,6 @@ enum ContentType {
   IMAGE
 }
 
-enum GenderType {
-  MALE
-  FEMALE
-}
-
 // ------------ COMMON TYPES --------------
 
 /// ------------ MAIN MODEL ---------------
@@ -112,8 +107,6 @@ model Applicant {
   firstName       String               @db.VarChar(50)
   lastName        String               @db.VarChar(50)
   profileSummary  String?              @db.VarChar(1000)
-  gender          GenderType?
-  trustScore      Float                @default(0)
   created_at      DateTime             @default(now())
   updated_at      DateTime             @updatedAt
   Skill           Skill[]
@@ -225,13 +218,14 @@ model JobPost {
   jobTypeId            String
   title                String       @db.VarChar(255)
   description          String?      @db.VarChar(1000)
+  location             String       @default("Unknown") @db.VarChar(255) //google map
   position             String       @db.VarChar(255)
   workingAddress       String //ref
   educationRequirement String       @db.VarChar(1000)
   skillRequirement     String       @db.VarChar(1000)
   responsibility       String
-  salary_start         Decimal      @db.Decimal(10, 2)
-  salary_end           Decimal      @db.Decimal(10, 2)
+  salary_start         Decimal      @db.Decimal(12, 2)
+  salary_end           Decimal      @db.Decimal(12, 2)
   currency             String       @db.VarChar(10)
   status               PostStatus?  @default(OPENING)
   apply_until          DateTime
@@ -305,7 +299,7 @@ model Company {
   name            String    @db.VarChar(255)
   description     String?   @db.VarChar(1000)
   taxcode         String?   @unique
-  establishedYear Int?
+  establishedYear DateTime?
   Post            Post[]
   User            User[]
   JobPost         JobPost[]
