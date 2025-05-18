@@ -31,16 +31,16 @@
 
 
             <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/ic_profile"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/sample_logo"
                 android:layout_marginTop="8dp" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="JOB NAME"
+                android:text="THIS IS TITLE OF THE JOB"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="#000000"
@@ -142,8 +142,8 @@
                 android:layout_weight="1"
                 android:layout_height="48dp"
                 android:text="Description"
-                android:backgroundTint="#130160"
-                android:textColor="#FFFFFF"
+                android:backgroundTint="#EEEEEE"
+                android:textColor="#000000"
                 android:textAllCaps="false" />
 
             <Button
@@ -152,8 +152,8 @@
                 android:layout_weight="1"
                 android:layout_height="48dp"
                 android:text="Company"
-                android:backgroundTint="#EEEEEE"
-                android:textColor="#000000"
+                android:backgroundTint="#130160"
+                android:textColor="#FFFFFF"
                 android:textAllCaps="false" />
         </LinearLayout>
 
@@ -161,7 +161,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Job Description"
+            android:text="About us"
             android:textStyle="bold"
             android:textSize="20sp"
             android:layout_marginTop="16dp"
@@ -188,7 +188,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Responsibilites"
+            android:text="Contact Information"
             android:textStyle="bold"
             android:textSize="20sp"
             android:layout_marginTop="24dp"
@@ -202,135 +202,37 @@
             android:textColor="#444444"
             android:layout_marginTop="4dp" />
 
-        <!-- Informations -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Informations"
+            android:text="Related Jobs"
             android:textStyle="bold"
             android:textSize="20sp"
             android:layout_marginTop="24dp"
             android:textColor="#000000" />
 
-        <!-- Info rows -->
-        <LinearLayout
+        <!-- RecyclerView hiển thị danh sách -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerJobPosts"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Position"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginTop="10dp"
-                android:textColor="#000000" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Position"
-                android:textSize="16sp"
-                android:layout_marginTop="5dp"
-                android:textColor="#000000" />
-            <View
-                android:id="@+id/vector"
-                android:layout_width="wrap_content"
-                android:layout_height="2dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/horizontal_line" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Working Address"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginTop="10dp"
-                android:textColor="#000000" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Working Address"
-                android:textSize="16sp"
-                android:layout_marginTop="5dp"
-                android:textColor="#000000" />
-            <View
-                android:id="@+id/vector_2"
-                android:layout_width="wrap_content"
-                android:layout_height="2dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/horizontal_line" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Education Requirement"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginTop="10dp"
-                android:textColor="#000000" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Education Requirement"
-                android:textSize="16sp"
-                android:layout_marginTop="5dp"
-                android:textColor="#000000" />
-            <View
-                android:id="@+id/vector_3"
-                android:layout_width="wrap_content"
-                android:layout_height="2dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/horizontal_line" />
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Skill Requirement"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginTop="10dp"
-                android:textColor="#000000" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Skill Requirement"
-                android:textSize="16sp"
-                android:layout_marginTop="5dp"
-                android:textColor="#000000" />
-            <View
-                android:id="@+id/vector_4"
-                android:layout_width="wrap_content"
-                android:layout_height="2dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/horizontal_line" />
-           </LinearLayout>
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
 
     </LinearLayout>
+
 </ScrollView>
 
     <!-- Apply Button -->
     <Button
-        android:id="@+id/btnApply"
-        android:layout_width="500dp"
-        android:layout_height="56dp"
-        android:layout_alignParentBottom="true"
-        android:text="Apply Now"
-        android:textSize="25dp"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#0090FF"
-        android:drawableStart="@drawable/ic_bookmark"
-        android:drawablePadding="8dp" />
+    android:id="@+id/btnApply"
+    android:layout_width="500dp"
+    android:layout_height="56dp"
+    android:layout_alignParentBottom="true"
+    android:text="APPLY NOW"
+    android:textAllCaps="true"
+    android:textColor="#FFFFFF"
+    android:backgroundTint="#130160"
+    android:drawableStart="@drawable/ic_bookmark"
+    android:drawablePadding="8dp" />
 </RelativeLayout>
