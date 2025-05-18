@@ -21,7 +21,7 @@
             <!-- Title -->
             <TextView
                 android:id="@+id/txtTitle"
-                android:text="MY POST"
+                android:text="MY JOBPOST"
                 android:textSize="40sp"
                 android:textStyle="bold"
                 android:textColor="#004E8B"
