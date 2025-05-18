@@ -1,5 +1,6 @@
 package com.example.workleap.data.api;
 
+import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
@@ -15,6 +16,7 @@ import com.example.workleap.data.model.response.GetCompanyResponse;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.JobPostResponse;
+import com.example.workleap.data.model.response.ListJobAppliedResponse;
 import com.example.workleap.data.model.response.ListJobCategoryResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListJobTypeResponse;
@@ -156,4 +158,14 @@ public interface ApiService {
     Call <ListJobPostResponse> createJobSaved(@Body JobPost request);
     @DELETE("api/save/{applicantId}/{jobpostId}")
     Call <MessageResponse> deleteJobSaved(@Path("applicantId") String applicantId, @Path("jobpostId") String jobpostId);
+
+    //Job Appied
+    @GET("api/apply/{jobpostId}/cvs") //Get all cv in job applied
+    Call<ListJobAppliedResponse> getCvsJobApplied(@Path("jobpostId") String jobpostId);
+    @GET("api/apply/{jobpostId}/applicants") //Get all applicant in job applied
+    Call<ListJobAppliedResponse> getApplicantsJobApplied(@Path("jobpostId") String jobpostId);
+    @GET("api/apply/{applicantId}/cvs")
+    Call<ListJobAppliedResponse> getJobApplied(@Path("applicantId") String applicantId);
+    @POST("api/apply/")            //create a job applied
+    Call<MessageResponse> applyAJob(@Body JobApplied request);
 }

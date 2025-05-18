@@ -9,10 +9,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.response.JobPostResponse;
+import com.example.workleap.data.model.response.ListJobAppliedResponse;
 import com.example.workleap.data.model.response.ListJobCategoryResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListJobTypeResponse;
@@ -63,6 +65,15 @@ public class JobPostViewModel  extends ViewModel {
     private MutableLiveData<String> createJobSavedResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteJobSavedResult = new MutableLiveData<>();
 
+    //Job applied
+    private MutableLiveData<List<JobApplied>> getCvsJobAppliedData = new MutableLiveData<>();
+    private MutableLiveData<List<JobApplied>> getApplicantsJobAppliedData = new MutableLiveData<>();
+    private MutableLiveData<List<JobApplied>> getJobAppliedData = new MutableLiveData<>();
+    private MutableLiveData<String> getCvsJobAppliedResult = new MutableLiveData<>();
+    private MutableLiveData<String> getApplicantsJobAppliedResult = new MutableLiveData<>();
+    private MutableLiveData<String> getJobAppliedResult = new MutableLiveData<>();
+
+    private MutableLiveData<String> applyAJobResult = new MutableLiveData<>();
 
     //Getter live data
     public LiveData<List<JobPost>> getAllJobPostData() { return getAllJobPostData; }
@@ -78,6 +89,22 @@ public class JobPostViewModel  extends ViewModel {
     public LiveData<List<JobPost>> getSearchJobPostData() { return searchJobPostData; }
     public LiveData<JobPost> getCreateJobPostData() { return createJobPostData; }
     public LiveData<JobPost> getUpdateJobPostData() { return updateJobPostData; }
+
+    public LiveData<List<JobType>> getAllJobTypeData() { return getAllJobTypeData; }
+    public LiveData<List<JobCategory>> getAllJobCategoryData() { return getAllJobCategoryData; }
+    public LiveData<List<JobPost>> getAllJobSaved() { return getAllJobSaved; }
+    public LiveData<String> getAllJobTypeResult() { return getAllJobTypeResult; }
+    public LiveData<String> createJobTypeResult() { return createJobTypeResult; }
+    public LiveData<String> getAllJobCategoryResult() { return getAllJobCategoryResult; }
+    public LiveData<String> createJobCategoryResult() { return createJobCategoryResult; }
+    public LiveData<String> getAllJobSavedResult() { return getAllJobSavedResult; }
+    public LiveData<String> createJobSavedResult() { return createJobSavedResult; }
+    public LiveData<String> deleteJobSavedResult() { return deleteJobSavedResult; }
+
+    public LiveData<List<JobApplied>> getCvsJobApplied() { return getCvsJobAppliedData; }
+    public LiveData<List<JobApplied>> getApplicantsJobApplied() { return getApplicantsJobAppliedData; }
+    public LiveData<List<JobApplied>> getJobApplied() { return getJobAppliedData; }
+    public LiveData<String> getApplyAJobResult() { return applyAJobResult; }
 
     // API Calls
     public void getAllJobPosts() {
@@ -326,5 +353,74 @@ public class JobPostViewModel  extends ViewModel {
             }
         });
     }
+
+    //Job Applied
+    public void getCvsJobApplied(String jobpostId) {
+        jobPostRepository.getCvsJobApplied(jobpostId).enqueue(new Callback<ListJobAppliedResponse>() {
+            @Override
+            public void onResponse(Call<ListJobAppliedResponse> call, Response<ListJobAppliedResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    getCvsJobAppliedData.postValue(response.body().getAllJobApplies());
+                } else {
+                    getCvsJobAppliedResult.postValue("Failed: " + response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<ListJobAppliedResponse> call, Throwable t) {
+                Log.e("API_ERROR", t.getMessage());
+            }
+        });
+    }
+
+    public void getApplicantsJobApplied(String jobpostId) {
+        jobPostRepository.getApplicantsJobApplied(jobpostId).enqueue(new Callback<ListJobAppliedResponse>() {
+            @Override
+            public void onResponse(Call<ListJobAppliedResponse> call, Response<ListJobAppliedResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    getApplicantsJobAppliedData.postValue(response.body().getAllJobApplies());
+                } else {
+                    getApplicantsJobAppliedResult.postValue("Failed: " + response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<ListJobAppliedResponse> call, Throwable t) {
+                Log.e("API_ERROR", t.getMessage());
+            }
+        });
+    }
+
+    public void getJobApplied(String applicantId) { jobPostRepository.getJobApplied(applicantId).enqueue(new Callback<ListJobAppliedResponse>() {
+        @Override
+        public void onResponse(Call<ListJobAppliedResponse> call, Response<ListJobAppliedResponse> response) {
+            if (response.isSuccessful() && response.body() != null) {
+                getJobAppliedData.postValue(response.body().getAllJobApplies());
+            } else {
+                getJobAppliedResult.postValue("Failed: " + response.message());
+            }
+        }
+        @Override
+        public void onFailure(Call<ListJobAppliedResponse> call, Throwable t) {
+            Log.e("API_ERROR", t.getMessage());
+        }
+    });
+    }
+
+    public void applyAJob(JobApplied request) { jobPostRepository.applyAJob(request).enqueue(new Callback<MessageResponse>() {
+        @Override
+        public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+            if(response.isSuccessful() && response.body() != null) {
+                applyAJobResult.postValue("Success");
+            } else {
+                applyAJobResult.postValue("Failed: " + response.message());
+            }
+        }
+
+        @Override
+        public void onFailure(Call<MessageResponse> call, Throwable t) {
+            Log.e("API_ERROR", t.getMessage());
+        }
+    });
+    }
+
 
 }

@@ -4,10 +4,12 @@ import android.content.Context;
 
 import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.api.RetrofitClient;
+import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.response.JobPostResponse;
+import com.example.workleap.data.model.response.ListJobAppliedResponse;
 import com.example.workleap.data.model.response.ListJobCategoryResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListJobTypeResponse;
@@ -16,6 +18,10 @@ import com.example.workleap.data.model.response.MessageResponse;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public class JobPostRepository {
     private ApiService apiService;
@@ -79,4 +85,17 @@ public class JobPostRepository {
         return apiService.deleteJobSaved(applicantId, jobpostId);
     }
 
+    //Job Applied
+    public Call<ListJobAppliedResponse> getCvsJobApplied(String jobpostId) {
+        return apiService.getCvsJobApplied(jobpostId);
+    }
+    public Call<ListJobAppliedResponse> getApplicantsJobApplied(String jobpostId) {
+        return apiService.getApplicantsJobApplied(jobpostId);
+    }
+    public Call<ListJobAppliedResponse> getJobApplied(String applicantId) {
+        return apiService.getJobApplied(applicantId);
+    }
+    public Call<MessageResponse> applyAJob(JobApplied request) {
+        return apiService.applyAJob(request);
+    }
 }
