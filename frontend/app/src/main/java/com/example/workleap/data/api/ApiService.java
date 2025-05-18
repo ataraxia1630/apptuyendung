@@ -1,10 +1,12 @@
 package com.example.workleap.data.api;
 
+import com.example.workleap.data.model.entity.CV;
 import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
+import com.example.workleap.data.model.response.CVResponse;
 import com.example.workleap.data.model.response.CreateApplicantEducationResponse;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
 import com.example.workleap.data.model.request.CreateApplicantSkillRequest;
@@ -16,6 +18,7 @@ import com.example.workleap.data.model.response.GetCompanyResponse;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.JobPostResponse;
+import com.example.workleap.data.model.response.ListCVResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
 import com.example.workleap.data.model.response.ListJobCategoryResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
@@ -168,4 +171,19 @@ public interface ApiService {
     Call<ListJobAppliedResponse> getJobApplied(@Path("applicantId") String applicantId);
     @POST("api/apply/")            //create a job applied
     Call<MessageResponse> applyAJob(@Body JobApplied request);
+
+
+    //Cv
+    @POST("api/cv/upload/{applicantId}")
+    Call<MessageResponse> createCv(@Path("applicantId") String applicantId, @Body CV request);
+    @GET("api/cv/all/{applicantId}")
+    Call<ListCVResponse> getAllCv(@Path("applicantId") String applicantId);
+    @DELETE("api/cv/all/{applicantId}")
+    Call<MessageResponse> deleteAllCv(@Path("applicantId") String applicantId);
+    @GET("api/cv/{id}")
+    Call<CVResponse> getCvById(@Path("id") String id);
+    @PUT("api/cv/{id}")
+    Call<MessageResponse> updateCvById(@Path("id") String id);
+    @DELETE("api/cv/{id}")
+    Call<MessageResponse> deleteCvById(@Path("id") String id);
 }
