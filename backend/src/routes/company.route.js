@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { CompanyController } = require('../controllers/company.controller');
 const { verifyToken } = require('../middlewares/auth.middleware');
+const { cache } = require('../middlewares/cache.middleware');
 const { validate } = require('../middlewares/validate.middleware');
 const {
   CompanySchema,
@@ -8,16 +9,17 @@ const {
 const route = Router();
 
 // lấy tất cả công ty
-route.get('/all', verifyToken, CompanyController.getAllCompanies);
+route.get('/all', verifyToken, cache, CompanyController.getAllCompanies);
 
 // tìm kiếm công ty theo tên
 route.get(
   '/search/:name',
   verifyToken,
+  cache,
   CompanyController.searchCompaniesByName
 );
 // lấy 1 công ty theo id
-route.get('/:id', verifyToken, CompanyController.getCompanyById);
+route.get('/:id', verifyToken, cache, CompanyController.getCompanyById);
 // cập nhật công ty
 route.put(
   '/:id',
