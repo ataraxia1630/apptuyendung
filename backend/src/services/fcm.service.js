@@ -1,3 +1,6 @@
+const admin = require('../config/firebase/firebase');
+const { supabase } = require('../config/db/supabase');
+
 const FcmService = {
   sendFCM: async (userId, title, body) => {
     try {
