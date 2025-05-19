@@ -1,39 +1,21 @@
 const admin = require('../config/firebase/firebase');
 const { supabase } = require('../config/db/supabase');
+const { SocketService } = require('./socket.service');
+const { FcmService } = require('./fcm.service');
 
 const NotificationService = {
-  sendFCMNotification: async (userId, title, body) => {
-    try {
-      // Fetch the user's FCM token from the database
-      const { data, error } = await supabase
-        .from('users_token')
-        .select('fcm_token')
-        .eq('user_id', userId)
-        .single();
+  notify: async ({ userId, title, message, type }) => {
+    // 1. Lưu vào DB
+    await supabase
+      .from('Notification')
+      .insert([{ userId: userId, title, message }]);
 
-      if (error || !data) {
-        throw new Error(`Error fetching FCM token: ${error.message}`);
-      }
+    // 2. Emit socket để cập nhật UI
+    SocketService.emitToUser(userId, 'new-notification', { title, message });
 
-      const fcmToken = data.fcm_token;
-
-      if (!fcmToken) {
-        throw new Error('No FCM token found for the user');
-      }
-
-      // Send the notification using Firebase Cloud Messaging
-      const message = {
-        notification: {
-          title,
-          body,
-        },
-        token: fcmToken,
-      };
-
-      const response = await admin.messaging().send(message);
-      console.log('Notification sent successfully:', response);
-    } catch (error) {
-      console.error('Error sending notification:', error);
+    // 3. (Tuỳ chọn) Gửi FCM nếu là thông báo loại 'reminder'
+    if (type === 'reminder') {
+      await FcmService.sendFCM(userId, title, message);
     }
   },
 };
