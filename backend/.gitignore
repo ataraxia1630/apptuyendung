@@ -15,3 +15,6 @@ node_modules/
 .idea/
 build/
 app/build/
+
+# fcm
+firebase-service-account.json
