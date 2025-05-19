@@ -99,6 +99,8 @@ public interface ApiService {
     Call<ListEducationResponse> getAllEducation();
     @POST("api/education/")
     Call<MessageResponse> createEducation(@Body Education education);
+    @GET("api/education/{applicantId}")
+    Call<ListEducationResponse> getAllApplicantEducation(@Path("applicantId") String applicantId);
     @POST("api/education/{applicantId}")
     Call<CreateApplicantEducationResponse> createApplicantEducation(@Path("applicantId") String applicantId, @Body CreateApplicantEducationRequest request);
     @PUT("api/education/{id}")

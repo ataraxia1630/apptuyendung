@@ -80,6 +80,11 @@ public class ApplicantRepository {
         return apiService.createEducation(education);
     }
 
+    //Get all applicant education
+    public Call<ListEducationResponse> getAllApplicantEducation(String applicantId) {
+        return apiService.getAllApplicantEducation(applicantId);
+    }
+
     //Create applicant education
     public Call<CreateApplicantEducationResponse> createApplicantEducation(String applicantId, CreateApplicantEducationRequest request) {
         return apiService.createApplicantEducation(applicantId, request);

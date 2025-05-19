@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.workleap.data.model.entity.Education;
+import com.example.workleap.data.model.entity.Skill;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
 import com.example.workleap.data.model.response.CreateApplicantExperienceResponse;
 import com.example.workleap.data.model.response.CreateInterestedFieldResponse;
@@ -49,7 +50,9 @@ public class ApplicantViewModel extends ViewModel {
     private MutableLiveData<String> deleteAllApplicantSkillResult = new MutableLiveData<>();
 
     private MutableLiveData<List<Education>> getAllEducationData = new MutableLiveData<>();
+    private MutableLiveData<List<Education>> getAllApplicantEducationData = new MutableLiveData<>();
     private MutableLiveData<String> getAllEducationResult = new MutableLiveData<>();
+    private MutableLiveData<String> getAllApplicantEducationResult = new MutableLiveData<>();
     private MutableLiveData<String> createEducationResult = new MutableLiveData<>();
     private MutableLiveData<String> createApplicantEducationResult = new MutableLiveData<>();
     private MutableLiveData<String> updateApplicantEducationResult = new MutableLiveData<>();
@@ -80,7 +83,9 @@ public class ApplicantViewModel extends ViewModel {
     public LiveData<String> getDeleteAllApplicantSkillResult() { return deleteAllApplicantSkillResult; }
 
     public LiveData<List<Education>> getAllEducationData() { return getAllEducationData; }
+    public LiveData<List<Education>> getAllApplicantEducationData() { return getAllApplicantEducationData; }
     public LiveData<String> getAllEducationResult() { return getAllEducationResult; }
+    public LiveData<String> getAllApplicantEducationResult() { return getAllApplicantEducationResult; }
     public LiveData<String> createEducationResult() { return createEducationResult; }
     public LiveData<String> getCreateApplicantEducationResult() { return createApplicantSkillResult; }
     public LiveData<String> getUpdateApplicantEducationResult() { return updateApplicantSkillResult; }
@@ -321,6 +326,33 @@ public class ApplicantViewModel extends ViewModel {
             @Override
             public void onFailure(Call<MessageResponse> call, Throwable t) {
                 createEducationResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Get all applicant education
+    public void getAllApplicantEducation(String applicantId) {
+        Call<ListEducationResponse> call = applicantRepository.getAllApplicantEducation(applicantId);
+        call.enqueue(new Callback<ListEducationResponse>() {
+            @Override
+            public void onResponse(Call<ListEducationResponse> call, Response<ListEducationResponse> response) {
+                if (response.isSuccessful()) {
+                    ListEducationResponse getResponse = response.body();
+                    getAllApplicantEducationData.postValue(getResponse.getAllEducation());
+                    getAllApplicantEducationResult.setValue("Success");
+                } else {
+                    try {
+                        ListEducationResponse error = new Gson().fromJson(response.errorBody().string(), ListEducationResponse.class);
+                        getAllApplicantEducationResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getAllApplicantEducationResult.setValue
+                                ("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ListEducationResponse> call, Throwable t) {
+                getAllApplicantEducationResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }
