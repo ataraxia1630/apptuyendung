@@ -7,11 +7,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
 import com.example.workleap.data.model.response.CreateApplicantExperienceResponse;
 import com.example.workleap.data.model.response.CreateInterestedFieldResponse;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
+import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.UpdateApplicantExperienceResponse;
 import com.example.workleap.data.model.entity.Applicant;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
@@ -46,6 +48,9 @@ public class ApplicantViewModel extends ViewModel {
     private MutableLiveData<String> deleteApplicantSkillResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteAllApplicantSkillResult = new MutableLiveData<>();
 
+    private MutableLiveData<List<Education>> getAllEducationData = new MutableLiveData<>();
+    private MutableLiveData<String> getAllEducationResult = new MutableLiveData<>();
+    private MutableLiveData<String> createEducationResult = new MutableLiveData<>();
     private MutableLiveData<String> createApplicantEducationResult = new MutableLiveData<>();
     private MutableLiveData<String> updateApplicantEducationResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteApplicantEducationResult = new MutableLiveData<>();
@@ -74,6 +79,9 @@ public class ApplicantViewModel extends ViewModel {
     public LiveData<String> getDeleteApplicantSkillResult() { return deleteApplicantSkillResult; }
     public LiveData<String> getDeleteAllApplicantSkillResult() { return deleteAllApplicantSkillResult; }
 
+    public LiveData<List<Education>> getAllEducationData() { return getAllEducationData; }
+    public LiveData<String> getAllEducationResult() { return getAllEducationResult; }
+    public LiveData<String> createEducationResult() { return createEducationResult; }
     public LiveData<String> getCreateApplicantEducationResult() { return createApplicantSkillResult; }
     public LiveData<String> getUpdateApplicantEducationResult() { return updateApplicantSkillResult; }
     public LiveData<String> getDeleteApplicantEducationResult() { return deleteApplicantSkillResult; }
@@ -266,7 +274,58 @@ public class ApplicantViewModel extends ViewModel {
         });
     }
 
-    //Create Education
+    //Get all education
+    public void getAllEducation() {
+        Call<ListEducationResponse> call = applicantRepository.getAllEducation();
+        call.enqueue(new Callback<ListEducationResponse>() {
+            @Override
+            public void onResponse(Call<ListEducationResponse> call, Response<ListEducationResponse> response) {
+                if (response.isSuccessful()) {
+                    ListEducationResponse getResponse = response.body();
+                    getAllEducationData.postValue(getResponse.getAllEducation());
+                    getAllEducationResult.setValue("Success");
+                } else {
+                    try {
+                        ListEducationResponse error = new Gson().fromJson(response.errorBody().string(), ListEducationResponse.class);
+                        getAllEducationResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getAllEducationResult.setValue
+                                ("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ListEducationResponse> call, Throwable t) {
+                getAllEducationResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Create education
+    public void createEducation(Education education) {
+        Call<MessageResponse> call = applicantRepository.createEducation(education);
+        call.enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (response.isSuccessful()) {
+                    createEducationResult.postValue(response.message());
+                } else {
+                    try {
+                        MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
+                        createEducationResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        createEducationResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
+                createEducationResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Create Applicant Education
     public void createApplicantEducation(String applicantId, Date eduStart, Date eduEnd, String major, String eduLevel, String moreInfo, List<String> achievement) {
         CreateApplicantEducationRequest request = new CreateApplicantEducationRequest(eduStart, eduEnd, major, eduLevel, moreInfo, achievement);
         Call<CreateApplicantEducationResponse> call = applicantRepository.createApplicantEducation(applicantId, request);
@@ -293,7 +352,7 @@ public class ApplicantViewModel extends ViewModel {
         });
     }
 
-    //Update Education
+    //Update Applicant Education
     public void updateApplicantEducation(String educationId, Date eduStart, Date eduEnd, String major, String eduLevel, String moreInfo, List<String> achievement) {
         UpdateApplicantEducationRequest request = new UpdateApplicantEducationRequest(eduStart, eduEnd, major, eduLevel, moreInfo, achievement);
         Call<UpdateApplicantEducationResponse> call = applicantRepository.updateApplicantEducation(educationId, request);
@@ -320,7 +379,7 @@ public class ApplicantViewModel extends ViewModel {
         });
     }
 
-    //Delete Education
+    //Delete Applicant Education
     public void deleteApplicantEducation(String educationId) {
         Call<MessageResponse> call = applicantRepository.deleteApplicantEducation(educationId);
         call.enqueue(new Callback<MessageResponse>() {
@@ -348,7 +407,7 @@ public class ApplicantViewModel extends ViewModel {
         });
     }
 
-    //Delete All Education
+    //Delete All Applicant Education
     public void deleteAllApplicantEducation(String applicantId) {
         Call<MessageResponse> call = applicantRepository.deleteAllApplicantEducation(applicantId);
         call.enqueue(new Callback<MessageResponse>() {

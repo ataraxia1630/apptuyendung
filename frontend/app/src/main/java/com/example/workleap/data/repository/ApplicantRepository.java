@@ -2,6 +2,7 @@ package com.example.workleap.data.repository;
 
 import android.content.Context;
 
+import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
 import com.example.workleap.data.model.response.CreateApplicantExperienceResponse;
 import com.example.workleap.data.model.response.CreateInterestedFieldResponse;
@@ -10,6 +11,7 @@ import com.example.workleap.data.api.RetrofitClient;
 import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
+import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.UpdateApplicantExperienceResponse;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.response.CreateApplicantEducationResponse;
@@ -22,6 +24,8 @@ import com.example.workleap.data.model.request.UpdateApplicantRequest;
 import com.example.workleap.data.model.response.UpdateApplicantResponse;
 import com.example.workleap.data.model.request.UpdateApplicantSkillRequest;
 import com.example.workleap.data.model.response.UpdateApplicantSkillResponse;
+
+import java.util.List;
 
 import retrofit2.Call;
 
@@ -66,22 +70,32 @@ public class ApplicantRepository {
         return apiService.deleteAllApplicantSkill(id);
     }
 
+    //Get all education
+    public Call<ListEducationResponse> getAllEducation() {
+        return apiService.getAllEducation();
+    }
+
     //Create education
+    public Call<MessageResponse> createEducation(Education education) {
+        return apiService.createEducation(education);
+    }
+
+    //Create applicant education
     public Call<CreateApplicantEducationResponse> createApplicantEducation(String applicantId, CreateApplicantEducationRequest request) {
         return apiService.createApplicantEducation(applicantId, request);
     }
 
-    //Update education
+    //Update applicant education
     public Call<UpdateApplicantEducationResponse> updateApplicantEducation(String educationId, UpdateApplicantEducationRequest request) {
         return apiService.updateApplicantEducation(educationId, request);
     }
 
-    //Delete education
+    //Delete applicant education
     public Call<MessageResponse> deleteApplicantEducation(String id) {
         return apiService.deleteApplicantEducation(id);
     }
 
-    //Delete all education
+    //Delete all applicant education
     public Call<MessageResponse> deleteAllApplicantEducation(String id) {
         return apiService.deleteAllApplicantEducation(id);
     }

@@ -1,5 +1,6 @@
 package com.example.workleap.data.api;
 
+import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.response.CreateApplicantEducationResponse;
@@ -13,6 +14,7 @@ import com.example.workleap.data.model.response.GetCompanyResponse;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.JobPostResponse;
+import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
@@ -31,6 +33,8 @@ import com.example.workleap.data.model.request.UpdateCompanyRequest;
 import com.example.workleap.data.model.response.UpdateCompanyResponse;
 import com.example.workleap.data.model.request.UpdateUserRequest;
 import com.example.workleap.data.model.response.UpdateUserResponse;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -91,6 +95,10 @@ public interface ApiService {
 
 
     //Applicant Education
+    @GET("api/education/")
+    Call<ListEducationResponse> getAllEducation();
+    @POST("api/education/")
+    Call<MessageResponse> createEducation(@Body Education education);
     @POST("api/education/{applicantId}")
     Call<CreateApplicantEducationResponse> createApplicantEducation(@Path("applicantId") String applicantId, @Body CreateApplicantEducationRequest request);
     @PUT("api/education/{id}")
