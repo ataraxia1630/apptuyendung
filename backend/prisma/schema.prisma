@@ -82,29 +82,31 @@ enum GenderType {
 /// ------------ MAIN MODEL ---------------
 
 model User {
-  id              String         @id @default(uuid())
-  applicantId     String?
-  companyId       String?
-  username        String         @unique @db.VarChar(30)
-  password        String         @db.VarChar(255)
-  email           String         @unique @db.VarChar(320)
-  phoneNumber     String?        @unique @db.VarChar(15)
-  avatar          String?
-  background      String?
-  role            Role
-  created_at      DateTime       @default(now())
-  updated_at      DateTime       @updatedAt
-  Company         Company?       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  Applicant       Applicant?     @relation(fields: [applicantId], references: [id], onDelete: Cascade)
-  User_History    User_History[]
-  Notification    Notification[]
-  reviewsWritten  Review[]       @relation(name: "UserReviews")
-  reviewsReceived Review[]       @relation(name: "ReviewedUserReviews")
-  following       Follower[]     @relation(name: "UserFollow")
-  followers       Follower[]     @relation(name: "UserFollowed")
-  Comment         Comment[]
-  Reaction        Reaction[]
-  user_token      user_token[]
+  id               String             @id @default(uuid())
+  applicantId      String?
+  companyId        String?
+  username         String             @unique @db.VarChar(30)
+  password         String             @db.VarChar(255)
+  email            String             @unique @db.VarChar(320)
+  phoneNumber      String?            @unique @db.VarChar(15)
+  avatar           String?
+  background       String?
+  role             Role
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+  Company          Company?           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  Applicant        Applicant?         @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  User_History     User_History[]
+  Notification     Notification[]
+  reviewsWritten   Review[]           @relation(name: "UserReviews")
+  reviewsReceived  Review[]           @relation(name: "ReviewedUserReviews")
+  following        Follower[]         @relation(name: "UserFollow")
+  followers        Follower[]         @relation(name: "UserFollowed")
+  Comment          Comment[]
+  Reaction         Reaction[]
+  user_token       user_token[]
+  Message          Message[]
+  ConversationUser ConversationUser[]
 }
 
 model Applicant {
@@ -407,4 +409,42 @@ model Reaction {
   User         User         @relation(fields: [userId], references: [id])
 
   @@id([postId, userId])
+}
+
+model Conversation {
+  id               String             @id @default(uuid())
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+  Message          Message[]
+  ConversationUser ConversationUser[]
+}
+
+model ConversationUser {
+  conversationId String
+  userId         String
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
+  Conversation   Conversation @relation(fields: [conversationId], references: [id])
+  User           User         @relation(fields: [userId], references: [id])
+
+  @@unique([conversationId, userId])
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  senderId       String
+  content        String
+  sent_at        DateTime     @default(now())
+  Conversation   Conversation @relation(fields: [conversationId], references: [id])
+  Sender         User         @relation(fields: [senderId], references: [id])
+  Attachment     Attachment[]
+}
+
+model Attachment {
+  id          String   @id @default(uuid())
+  messageId   String
+  filePath    String
+  uploaded_at DateTime @default(now())
+  Message     Message  @relation(fields: [messageId], references: [id])
 }
