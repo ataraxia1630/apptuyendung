@@ -104,6 +104,7 @@ model User {
   followers       Follower[]     @relation(name: "UserFollowed")
   Comment         Comment[]
   Reaction        Reaction[]
+  user_token      user_token[]
 }
 
 model Applicant {
@@ -320,6 +321,14 @@ model User_History {
   newValue   String?     @db.Text
   User       User        @relation(fields: [userId], references: [id])
   changedAt  DateTime
+}
+
+model user_token {
+  id         String   @id @default(uuid())
+  user_id    String
+  fcm_token  String   @unique
+  updated_at DateTime @updatedAt
+  User       User     @relation(fields: [user_id], references: [id])
 }
 
 model Notification {
