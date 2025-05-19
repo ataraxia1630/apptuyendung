@@ -1,6 +1,7 @@
 package com.example.workleap.ui.view;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,10 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
@@ -27,6 +30,7 @@ import com.google.android.material.chip.Chip;
 
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -44,13 +48,14 @@ public class ApplicantProfileFragment extends Fragment {
     TextView tvApplicantName, tvApplicantNameInfo, tvMailInfo, tvPhoneInfo, tvAddressInfo;
     User user;
 
-    ImageButton btnAddSkill, btnOptions, btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
+    ImageButton btnAddEdu, btnAddSkill, btnOptions, btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
 
     ApplicantViewModel applicantViewModel;
     UserViewModel userViewModel;
 
     AuthViewModel authViewModel;
     FlexboxLayout skillContainer ;
+    LinearLayout educationListContainer;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -124,6 +129,7 @@ public class ApplicantProfileFragment extends Fragment {
         btnEditAboutMe = view.findViewById(R.id.btnEditAboutMe);
         btnEditApplicantInfo = view.findViewById(R.id.btnApplicantInfo);
         btnAddSkill = view.findViewById(R.id.btnEditSkill);
+        btnAddEdu = view.findViewById(R.id.btnEditEducation);
 
         skillContainer = view.findViewById(R.id.skillContainer);
 
@@ -192,8 +198,49 @@ public class ApplicantProfileFragment extends Fragment {
                     else if ("ApplicantSkill".equalsIgnoreCase(cardType) && values != null)
                     {
                         if (!values.get(0).isEmpty()) {
+                            applicantViewModel.createApplicantSkill(user.getApplicantId(), null, null, null, null,null,null);
                             addSkillChip(values.get(0));
                         }
+                    }
+                    else if ("ApplicantEdu".equalsIgnoreCase(cardType) && values != null)
+                    {
+                        educationListContainer = view.findViewById(R.id.educationListContainer);
+                        educationListContainer.removeAllViews();
+
+                        applicantViewModel.getAllEducationData();
+
+                        /*for (Education edu : ) {
+                            View eduItem = LayoutInflater.from(getContext()).inflate(R.layout.item_education, educationListContainer, false);
+
+                            TextView tvSchoolName   = eduItem.findViewById(R.id.tvSchoolName);
+                            TextView tvSchoolAddress= eduItem.findViewById(R.id.tvSchoolAddress);
+                            TextView tvMajorLevel   = eduItem.findViewById(R.id.tvMajorLevel);
+                            TextView tvTimeRange    = eduItem.findViewById(R.id.tvTimeRange);
+                            TextView tvAchievements = eduItem.findViewById(R.id.tvAchievements);
+                            TextView tvSchoolLink   = eduItem.findViewById(R.id.tvSchoolLink);
+                            ImageButton btnEdit     = eduItem.findViewById(R.id.btnEditEducation);
+
+                            tvSchoolName.setText(edu.values());
+                            tvSchoolAddress.setText(edu.getAddress());
+                            tvMajorLevel.setText(edu.getMajor() + " – " + edu.getEduLevel());
+                            String start = formatDate(edu.getEduStart());
+                            String end   = formatDate(edu.getEduEnd());
+                            tvTimeRange.setText(start + " – " + end);
+
+                            btnEdit.setOnClickListener(v -> {
+                                EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantSkill");
+                                dialog.show(getParentFragmentManager(), "EditApplicantSkillDialog");
+                            });
+
+
+                            //line
+                            View divider = new View(getContext());
+                            divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+                            divider.setBackgroundColor(Color.LTGRAY);
+                            divider.setPadding(0, 8, 0, 8);
+
+                            educationListContainer.addView(eduItem);
+                        }*/
                     }
                 }
         );
@@ -237,6 +284,26 @@ public class ApplicantProfileFragment extends Fragment {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantSkill");
             dialog.show(getParentFragmentManager(), "EditApplicantSkillDialog");
         });
+
+        btnAddEdu.setOnClickListener(v -> {
+            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantEdu");
+
+            Bundle args = new Bundle();
+            applicantViewModel.getAllEducation();
+            applicantViewModel.getAllEducationResult().observe(getViewLifecycleOwner(), result ->
+            {
+                if(result != null)
+                    Log.e("applicantprofileEdu", result);
+                else
+                    Log.e("applicantprofileEdu", "getAllEdu result null");
+
+            });
+            applicantViewModel.getAllEducationData().observe(getViewLifecycleOwner(), listEducation -> {
+                args.putSerializable("listEducation", (Serializable) listEducation);
+                dialog.show(getParentFragmentManager(), "AddApplicantEduDialog");
+            });
+        });
+
     }
 
     private void addSkillChip(String skillName) {

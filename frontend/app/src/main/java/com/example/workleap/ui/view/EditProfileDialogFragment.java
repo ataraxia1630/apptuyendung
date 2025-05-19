@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -14,12 +16,16 @@ import androidx.fragment.app.FragmentResultListener;
 
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.Education;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EditProfileDialogFragment extends DialogFragment {
     private String cardType;
+
+    private AutoCompleteTextView autoCompleteSchool;
+    private ArrayList<Education> listEducation;
     private final List<EditText> editTexts = new ArrayList<>();
     public static EditProfileDialogFragment newInstance(String cardType) {
         EditProfileDialogFragment fragment = new EditProfileDialogFragment();
@@ -38,6 +44,7 @@ public class EditProfileDialogFragment extends DialogFragment {
 
         LinearLayout container = view.findViewById(R.id.fieldsContainer);
 
+        //applicant
         if ("ApplicantName".equals(cardType)) {
             addField(container, "User Name");
             addField(container, "Status");
@@ -52,7 +59,43 @@ public class EditProfileDialogFragment extends DialogFragment {
             //addField(container, "Mobile");
             //addField(container, "Email");
             addField(container, "Address");
-        } else if ("AboutCompany".equalsIgnoreCase(cardType))
+        }
+        else if("ApplicantSkill".equalsIgnoreCase(cardType))
+        {
+            addField(container, "Skill");
+        }
+        else if("ApplicantEdu".equalsIgnoreCase(cardType))
+        {
+            //list school name
+            listEducation = (ArrayList<Education>) getArguments().getSerializable("listEducation");
+            ArrayList<String> schoolNames = new ArrayList<>();
+            if(listEducation != null)
+            {
+                for (Education edu : listEducation) {
+                    schoolNames.add(edu.getUniName());
+                }
+            }
+            else
+            {
+                Log.e("EditProfileDialog", "list Education null");
+            }
+
+            //add autocompletetextview to dialog
+            autoCompleteSchool = new AutoCompleteTextView(getContext());
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    getContext(), android.R.layout.simple_dropdown_item_1line, schoolNames
+            );
+            autoCompleteSchool.setAdapter(adapter);
+            editTexts.add(autoCompleteSchool);
+
+            //eduStart, eduEnd, major, eduLevel, achievement
+            addField(container, "Year Start");
+            addField(container, "Year End");
+            addField(container, "Edu level");
+            addField(container, "Achievement");
+        }
+        //company
+        else if ("AboutCompany".equalsIgnoreCase(cardType))
         {
             addField(container, "AboutCompany");
         }
@@ -64,10 +107,7 @@ public class EditProfileDialogFragment extends DialogFragment {
             addField(container, "Email");
             addField(container, "Tax code");
         }
-        else if("ApplicantSkill".equalsIgnoreCase(cardType))
-        {
-            addField(container, "Skill");
-        }
+
 
         builder.setView(view)
                 .setTitle("Edit")
@@ -77,6 +117,11 @@ public class EditProfileDialogFragment extends DialogFragment {
                     for (EditText et : editTexts) {
                         updated.add(et.getText().toString());
                     }
+
+                    //applicant edu
+                    if(autoCompleteSchool.getText()!=null)
+                        updated.add(autoCompleteSchool.getText().toString());
+
                     // Tạo Bundle và đẩy kết quả
                     Bundle result = new Bundle();
                     result.putString("cardType", cardType);

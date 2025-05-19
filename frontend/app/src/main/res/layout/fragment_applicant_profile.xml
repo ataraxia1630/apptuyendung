@@ -466,6 +466,7 @@
             app:cardCornerRadius="10dp">
 
             <LinearLayout
+                android:id="@+id/educationListContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -492,7 +493,7 @@
                         android:layout_height="wrap_content"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="Edit Education"
-                        android:src="@drawable/ic_edit_pen"
+                        android:src="@drawable/ic_plus"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="8dp"
