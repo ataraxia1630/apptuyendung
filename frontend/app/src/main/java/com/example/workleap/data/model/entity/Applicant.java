@@ -9,8 +9,8 @@ public class Applicant {
     private String lastName;
     private String profileSummary;
     private byte[] cvFile;
-    private Date createdAt;
-    private Date updatedAt;
+    private Date created_at;
+    private Date updated_at;
 
     /*Skill           Skill[]
     Edu             ApplicantEducation[]
@@ -22,15 +22,15 @@ public class Applicant {
 
     public Applicant() {}
 
-    public Applicant(String id, String address, String firstName, String lastName, String profileSummary, byte[] cvFile, Date createdAt, Date updatedAt) {
+    public Applicant(String id, String address, String firstName, String lastName, String profileSummary, byte[] cvFile, Date created_at, Date updated_at) {
         this.id = id;
         this.address = address;
         this.firstName = firstName;
         this.lastName = lastName;
         this.profileSummary = profileSummary;
         this.cvFile = cvFile;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
     }
 
     public String getId() { return id; }
@@ -45,10 +45,10 @@ public class Applicant {
     public void setProfileSummary(String profileSummary) { this.profileSummary = profileSummary; }
     public byte[] getCvFile() { return cvFile; }
     public void setCvFile(byte[] cvFile) { this.cvFile = cvFile; }
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
-    public Date getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
+    public Date getCreatedAt() { return created_at; }
+    public void setCreatedAt(Date created_at) { this.created_at = created_at; }
+    public Date getUpdatedAt() { return updated_at; }
+    public void setUpdatedAt(Date updated_at) { this.updated_at = updated_at; }
 
     @Override
     public String toString() {
@@ -58,8 +58,8 @@ public class Applicant {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", profileSummary='" + profileSummary + '\'' +
-                ", createdAt='" + createdAt + '\'' +
-                ", updatedAt='" + updatedAt + '\'' +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
                 '}';
     }
 }

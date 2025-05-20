@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,7 @@ public class JobpostFragment extends Fragment {
         jobPostViewModel.getAllJobPostResult().observe(getViewLifecycleOwner(), result ->
         {
             String s = result.toString();
-            Log.e("JobpostFragment", "getAllJobPostData: " + s + "");
+            Log.e("JobpostFragment", "getAllJobPostResult: " + s + "");
         });
         jobPostViewModel.getAllJobPostData().observe(getViewLifecycleOwner(), jobPosts ->
         {

@@ -13,12 +13,12 @@ public class ApplicantEducation {
     private String eduLevel; // Enum: HIGH_SCHOOL, BACHELOR, MASTER, DOCTORATE
     private String moreInfo;
     private List<String> achievement; // Giả định là danh sách String
-    private Date createdAt;
-    private Date updatedAt;
+    private Date created_at;
+    private Date updated_at;
 
     public ApplicantEducation() {}
 
-    public ApplicantEducation(String id, String eduId, String applicantId, Date eduStart, Date eduEnd, String major, String eduLevel, String moreInfo, List<String> achievement, Date createdAt, Date updatedAt) {
+    public ApplicantEducation(String id, String eduId, String applicantId, Date eduStart, Date eduEnd, String major, String eduLevel, String moreInfo, List<String> achievement, Date created_at, Date updated_at) {
         this.id = id;
         this.eduId = eduId;
         this.applicantId = applicantId;
@@ -28,8 +28,8 @@ public class ApplicantEducation {
         this.eduLevel = eduLevel;
         this.moreInfo = moreInfo;
         this.achievement = achievement;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
     }
 
     // Getter và Setter
@@ -51,9 +51,9 @@ public class ApplicantEducation {
     public void setMoreInfo(String moreInfo) { this.moreInfo = moreInfo; }
     public List<String> getAchievement() { return achievement; }
     public void setAchievement(List<String> achievement) { this.achievement = achievement; }
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
-    public Date getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
+    public Date getCreatedAt() { return created_at; }
+    public void setCreatedAt(Date created_at) { this.created_at = created_at; }
+    public Date getUpdatedAt() { return updated_at; }
+    public void setUpdatedAt(Date updated_at) { this.updated_at = updated_at; }
 }
 

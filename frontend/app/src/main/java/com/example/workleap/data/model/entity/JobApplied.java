@@ -11,7 +11,7 @@ public class JobApplied {
     private String cvId;
     private String status;  // PENDING or other status
     private Date applyAt;
-    private Date updatedAt;
+    private Date updated_at;
     private JobPost jobPost;
     private Applicant applicant;
     private CV cv;
@@ -67,11 +67,11 @@ public class JobApplied {
     }
 
     public Date getUpdatedAt() {
-        return updatedAt;
+        return updated_at;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdatedAt(Date updated_at) {
+        this.updated_at = updated_at;
     }
 
     public JobPost getJobPost() {

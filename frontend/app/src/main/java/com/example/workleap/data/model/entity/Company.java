@@ -1,7 +1,7 @@
 package com.example.workleap.data.model.entity;
 
 public class Company {
-    private int id;
+    private String id;
     private String name;
     private String description;
     private int establishedYear;
@@ -12,7 +12,7 @@ public class Company {
 
     public Company() {}
 
-    public Company(int id, String email, String name, String description, String address, int establishedYear, String taxcode) {
+    public Company(String id, String email, String name, String description, String address, int establishedYear, String taxcode) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -20,11 +20,11 @@ public class Company {
         this.taxcode = taxcode;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

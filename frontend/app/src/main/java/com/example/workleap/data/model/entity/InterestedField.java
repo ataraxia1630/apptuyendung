@@ -5,16 +5,16 @@ import java.util.Date;
 public class InterestedField {
     private String fieldId;
     private String applicantId;
-    private Date createdAt;
-    private Date updatedAt;
+    private Date created_at;
+    private Date updated_at;
 
     public InterestedField() {}
 
-    public InterestedField(String fieldId, String applicantId, Date createdAt, Date updatedAt) {
+    public InterestedField(String fieldId, String applicantId, Date created_at, Date updated_at) {
         this.fieldId = fieldId;
         this.applicantId = applicantId;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
     }
 
     // Getter và Setter
@@ -22,8 +22,8 @@ public class InterestedField {
     public void setFieldId(String fieldId) { this.fieldId = fieldId; }
     public String getApplicantId() { return applicantId; }
     public void setApplicantId(String applicantId) { this.applicantId = applicantId; }
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
-    public Date getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
+    public Date getCreatedAt() { return created_at; }
+    public void setCreatedAt(Date created_at) { this.created_at = created_at; }
+    public Date getUpdatedAt() { return updated_at; }
+    public void setUpdatedAt(Date updated_at) { this.updated_at = updated_at; }
 }
