@@ -12,6 +12,7 @@ import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
 import com.example.workleap.data.model.response.ListSkillResponse;
+import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.UpdateApplicantExperienceResponse;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
@@ -85,7 +86,7 @@ public class ApplicantRepository {
     }
 
     //Get all applicant education
-    public Call<ListEducationResponse> getAllApplicantEducation(String applicantId) {
+    public Call<ListApplicantEducationResponse> getAllApplicantEducation(String applicantId) {
         return apiService.getAllApplicantEducation(applicantId);
     }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.workleap.data.model.entity.ApplicantEducation;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.Skill;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
@@ -15,6 +16,7 @@ import com.example.workleap.data.model.response.CreateInterestedFieldResponse;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
 import com.example.workleap.data.model.response.ListSkillResponse;
+import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.UpdateApplicantExperienceResponse;
 import com.example.workleap.data.model.entity.Applicant;
@@ -55,7 +57,7 @@ public class ApplicantViewModel extends ViewModel {
     private MutableLiveData<String> deleteAllApplicantSkillResult = new MutableLiveData<>();
 
     private MutableLiveData<List<Education>> getAllEducationData = new MutableLiveData<>();
-    private MutableLiveData<List<Education>> getAllApplicantEducationData = new MutableLiveData<>();
+    private MutableLiveData<List<ApplicantEducation>> getAllApplicantEducationData = new MutableLiveData<>();
     private MutableLiveData<String> getAllEducationResult = new MutableLiveData<>();
     private MutableLiveData<String> getAllApplicantEducationResult = new MutableLiveData<>();
     private MutableLiveData<String> createEducationResult = new MutableLiveData<>();
@@ -90,7 +92,7 @@ public class ApplicantViewModel extends ViewModel {
     public LiveData<String> getDeleteAllApplicantSkillResult() { return deleteAllApplicantSkillResult; }
 
     public LiveData<List<Education>> getAllEducationData() { return getAllEducationData; }
-    public LiveData<List<Education>> getAllApplicantEducationData() { return getAllApplicantEducationData; }
+    public LiveData<List<ApplicantEducation>> getAllApplicantEducationData() { return getAllApplicantEducationData; }
     public LiveData<String> getAllEducationResult() { return getAllEducationResult; }
     public LiveData<String> getAllApplicantEducationResult() { return getAllApplicantEducationResult; }
     public LiveData<String> createEducationResult() { return createEducationResult; }
@@ -367,13 +369,13 @@ public class ApplicantViewModel extends ViewModel {
 
     //Get all applicant education
     public void getAllApplicantEducation(String applicantId) {
-        Call<ListEducationResponse> call = applicantRepository.getAllApplicantEducation(applicantId);
-        call.enqueue(new Callback<ListEducationResponse>() {
+        Call<ListApplicantEducationResponse> call = applicantRepository.getAllApplicantEducation(applicantId);
+        call.enqueue(new Callback<ListApplicantEducationResponse>() {
             @Override
-            public void onResponse(Call<ListEducationResponse> call, Response<ListEducationResponse> response) {
+            public void onResponse(Call<ListApplicantEducationResponse> call, Response<ListApplicantEducationResponse> response) {
                 if (response.isSuccessful()) {
-                    ListEducationResponse getResponse = response.body();
-                    getAllApplicantEducationData.postValue(getResponse.getAllEducation());
+                    ListApplicantEducationResponse getResponse = response.body();
+                    getAllApplicantEducationData.postValue(getResponse.getAllApplicantEducation());
                     getAllApplicantEducationResult.setValue("Success");
                 } else {
                     try {
@@ -386,7 +388,7 @@ public class ApplicantViewModel extends ViewModel {
                 }
             }
             @Override
-            public void onFailure(Call<ListEducationResponse> call, Throwable t) {
+            public void onFailure(Call<ListApplicantEducationResponse> call, Throwable t) {
                 getAllApplicantEducationResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });

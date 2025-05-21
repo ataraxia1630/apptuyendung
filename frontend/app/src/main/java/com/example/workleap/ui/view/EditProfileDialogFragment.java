@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -38,7 +39,7 @@ public class EditProfileDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         cardType = getArguments().getString("cardType");
-
+        Log.e("dialog", String.valueOf(cardType));
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_profile, null);
 
@@ -82,13 +83,21 @@ public class EditProfileDialogFragment extends DialogFragment {
 
             //add autocompletetextview to dialog
             autoCompleteSchool = new AutoCompleteTextView(getContext());
+            autoCompleteSchool.setHint("School name");
+            autoCompleteSchool.setThreshold(1); // Số ký tự gõ tối thiểu trước khi hiện dropdown
+            autoCompleteSchool.setLayoutParams(new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            ));
+
             ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     getContext(), android.R.layout.simple_dropdown_item_1line, schoolNames
             );
             autoCompleteSchool.setAdapter(adapter);
-            editTexts.add(autoCompleteSchool);
-
+            //editTexts.add(autoCompleteSchool);
+            container.addView(autoCompleteSchool);
             //eduStart, eduEnd, major, eduLevel, achievement
+
             addField(container, "Year Start");
             addField(container, "Year End");
             addField(container, "Edu level");
@@ -119,8 +128,9 @@ public class EditProfileDialogFragment extends DialogFragment {
                     }
 
                     //applicant edu
-                    if(autoCompleteSchool.getText()!=null)
-                        updated.add(autoCompleteSchool.getText().toString());
+                    if (autoCompleteSchool != null && autoCompleteSchool.getText() != null && !autoCompleteSchool.getText().toString().trim().isEmpty()) {
+                        updated.add(autoCompleteSchool.getText().toString().trim());
+                    }
 
                     // Tạo Bundle và đẩy kết quả
                     Bundle result = new Bundle();

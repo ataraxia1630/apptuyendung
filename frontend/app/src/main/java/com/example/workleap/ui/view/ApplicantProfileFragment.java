@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.ApplicantEducation;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
@@ -198,49 +199,29 @@ public class ApplicantProfileFragment extends Fragment {
                     else if ("ApplicantSkill".equalsIgnoreCase(cardType) && values != null)
                     {
                         if (!values.get(0).isEmpty()) {
-                            applicantViewModel.createApplicantSkill(user.getApplicantId(), null, null, null, null,null,null);
+                            applicantViewModel.createApplicantSkill(user.getApplicantId(), values.get(0), "null", "null", "null",0,0);
+                            applicantViewModel.getCreateApplicantSkillResult().observe(getViewLifecycleOwner(), result ->
+                            {
+                                if(result != null)
+                                    Log.e("AProfile creSkil result", result);
+                                else
+                                    Log.e("AProfile creSkil result", "update AEdu result null");
+
+                            });
                             addSkillChip(values.get(0));
                         }
                     }
                     else if ("ApplicantEdu".equalsIgnoreCase(cardType) && values != null)
                     {
-                        educationListContainer = view.findViewById(R.id.educationListContainer);
-                        educationListContainer.removeAllViews();
-
-                        applicantViewModel.getAllEducationData();
-
-                        /*for (Education edu : ) {
-                            View eduItem = LayoutInflater.from(getContext()).inflate(R.layout.item_education, educationListContainer, false);
-
-                            TextView tvSchoolName   = eduItem.findViewById(R.id.tvSchoolName);
-                            TextView tvSchoolAddress= eduItem.findViewById(R.id.tvSchoolAddress);
-                            TextView tvMajorLevel   = eduItem.findViewById(R.id.tvMajorLevel);
-                            TextView tvTimeRange    = eduItem.findViewById(R.id.tvTimeRange);
-                            TextView tvAchievements = eduItem.findViewById(R.id.tvAchievements);
-                            TextView tvSchoolLink   = eduItem.findViewById(R.id.tvSchoolLink);
-                            ImageButton btnEdit     = eduItem.findViewById(R.id.btnEditEducation);
-
-                            tvSchoolName.setText(edu.values());
-                            tvSchoolAddress.setText(edu.getAddress());
-                            tvMajorLevel.setText(edu.getMajor() + " – " + edu.getEduLevel());
-                            String start = formatDate(edu.getEduStart());
-                            String end   = formatDate(edu.getEduEnd());
-                            tvTimeRange.setText(start + " – " + end);
-
-                            btnEdit.setOnClickListener(v -> {
-                                EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantSkill");
-                                dialog.show(getParentFragmentManager(), "EditApplicantSkillDialog");
-                            });
-
-
-                            //line
-                            View divider = new View(getContext());
-                            divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
-                            divider.setBackgroundColor(Color.LTGRAY);
-                            divider.setPadding(0, 8, 0, 8);
-
-                            educationListContainer.addView(eduItem);
-                        }*/
+                        //applicantViewModel.updateApplicantEducation(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4), values.get(5), values.get(7));
+                        applicantViewModel.getUpdateApplicantEducationResult().observe(getViewLifecycleOwner(), result ->
+                        {
+                            if(result != null)
+                                Log.e("AProfile upAEdu result", result);
+                            else
+                                Log.e("AProfile upAEdu result", "update AEdu result null");
+                        });
+                        LoadEducation();
                     }
                 }
         );
@@ -288,20 +269,25 @@ public class ApplicantProfileFragment extends Fragment {
         btnAddEdu.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantEdu");
 
-            Bundle args = new Bundle();
             applicantViewModel.getAllEducation();
             applicantViewModel.getAllEducationResult().observe(getViewLifecycleOwner(), result ->
             {
                 if(result != null)
-                    Log.e("applicantprofileEdu", result);
+                    Log.e("ApplicantProfile result", result);
                 else
                     Log.e("applicantprofileEdu", "getAllEdu result null");
 
             });
             applicantViewModel.getAllEducationData().observe(getViewLifecycleOwner(), listEducation -> {
+                if(listEducation==null) Log.e("Appprofile", "listedu null");
+                else Log.e("Appprofile", "listedu NOT null");
+
+                Bundle args = dialog.getArguments();
                 args.putSerializable("listEducation", (Serializable) listEducation);
+                dialog.setArguments(args);
                 dialog.show(getParentFragmentManager(), "AddApplicantEduDialog");
             });
+
         });
 
     }
@@ -312,5 +298,55 @@ public class ApplicantProfileFragment extends Fragment {
         chip.setCloseIconVisible(true);
         chip.setOnCloseIconClickListener(v -> skillContainer.removeView(chip));
         skillContainer.addView(chip);
+    }
+    private void LoadEducation()
+    {
+        educationListContainer = view.findViewById(R.id.educationListContainer);
+        educationListContainer.removeAllViews();
+
+        applicantViewModel.getAllApplicantEducation(user.getApplicantId());
+        applicantViewModel.getAllApplicantEducationResult().observe(getViewLifecycleOwner(), result ->
+        {
+            if(result != null)
+                Log.e("AProfile LoadEdu result", result);
+            else
+                Log.e("AProfile LoadEdu", "getAllApplicantEdu result null");
+        });
+
+        applicantViewModel.getAllApplicantEducationData().observe(getViewLifecycleOwner(), listApplicantEdu ->
+        {
+            for (ApplicantEducation applicantEdu : listApplicantEdu) {
+                View eduItem = LayoutInflater.from(getContext()).inflate(R.layout.item_education, educationListContainer, false);
+
+                TextView tvSchoolName   = eduItem.findViewById(R.id.tvSchoolName);
+                TextView tvSchoolAddress= eduItem.findViewById(R.id.tvSchoolAddress);
+                TextView tvMajorLevel   = eduItem.findViewById(R.id.tvMajorLevel);
+                TextView tvTimeRange    = eduItem.findViewById(R.id.tvTimeRange);
+                TextView tvAchievements = eduItem.findViewById(R.id.tvAchievements);
+                TextView tvSchoolLink   = eduItem.findViewById(R.id.tvSchoolLink);
+                ImageButton btnEdit     = eduItem.findViewById(R.id.btnEditEducation);
+
+               /* tvSchoolName.setText(edu.get());
+                tvSchoolAddress.setText(edu.getAddress());
+                tvMajorLevel.setText(edu.getMajor() + " – " + edu.getEduLevel());
+                String start = formatDate(edu.getEduStart());
+                String end   = formatDate(edu.getEduEnd());
+                tvTimeRange.setText(start + " – " + end);*/
+
+                btnEdit.setOnClickListener(v -> {
+                    EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantSkill");
+                    dialog.show(getParentFragmentManager(), "EditApplicantSkillDialog");
+                });
+
+
+                //line
+                View divider = new View(getContext());
+                divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+                divider.setBackgroundColor(Color.LTGRAY);
+                divider.setPadding(0, 8, 0, 8);
+
+                educationListContainer.addView(eduItem);
+            };
+        });
     }
 }

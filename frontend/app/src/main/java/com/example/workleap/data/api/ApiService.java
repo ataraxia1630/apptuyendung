@@ -14,6 +14,7 @@ import com.example.workleap.data.model.response.GetCompanyResponse;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.JobPostResponse;
+import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
@@ -104,7 +105,7 @@ public interface ApiService {
     @POST("api/education/")
     Call<MessageResponse> createEducation(@Body Education education);
     @GET("api/education/{applicantId}")
-    Call<ListEducationResponse> getAllApplicantEducation(@Path("applicantId") String applicantId);
+    Call<ListApplicantEducationResponse> getAllApplicantEducation(@Path("applicantId") String applicantId);
     @POST("api/education/{applicantId}")
     Call<CreateApplicantEducationResponse> createApplicantEducation(@Path("applicantId") String applicantId, @Body CreateApplicantEducationRequest request);
     @PUT("api/education/{id}")
