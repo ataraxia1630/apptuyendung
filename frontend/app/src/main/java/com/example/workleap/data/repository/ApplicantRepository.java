@@ -11,6 +11,7 @@ import com.example.workleap.data.api.RetrofitClient;
 import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
+import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.UpdateApplicantExperienceResponse;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
@@ -24,8 +25,6 @@ import com.example.workleap.data.model.request.UpdateApplicantRequest;
 import com.example.workleap.data.model.response.UpdateApplicantResponse;
 import com.example.workleap.data.model.request.UpdateApplicantSkillRequest;
 import com.example.workleap.data.model.response.UpdateApplicantSkillResponse;
-
-import java.util.List;
 
 import retrofit2.Call;
 
@@ -48,6 +47,11 @@ public class ApplicantRepository {
     //Update
     public Call<UpdateApplicantResponse> updateApplicant(String id, UpdateApplicantRequest request) {
         return apiService.updateApplicant(id, request);
+    }
+
+    //Get skill
+    public Call<ListSkillResponse> getApplicantSkill(String applicantId) {
+        return apiService.getApplicantSkill(applicantId);
     }
 
     //Create skill

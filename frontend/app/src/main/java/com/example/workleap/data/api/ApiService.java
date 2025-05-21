@@ -16,6 +16,7 @@ import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
+import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
 import com.example.workleap.data.model.response.MessageResponse;
@@ -84,6 +85,9 @@ public interface ApiService {
 
 
     //Applicant Skill
+    @GET("api/skill/{applicantId}")
+    Call<ListSkillResponse> getApplicantSkill(@Path("applicantId") String applicantId);
+
     @POST("api/skill/{applicantId}")
     Call<CreateApplicantSkillResponse> createApplicantSkill(@Path("applicantId") String applicantId, @Body CreateApplicantSkillRequest request);
     @PUT("api/skill/{id}")

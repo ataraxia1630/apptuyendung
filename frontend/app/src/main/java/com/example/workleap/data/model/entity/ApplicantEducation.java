@@ -6,6 +6,7 @@ import java.util.List;
 public class ApplicantEducation {
     private String id;
     private String eduId;
+    private Education Education;
     private String applicantId;
     private Date eduStart;
     private Date eduEnd;
@@ -55,5 +56,8 @@ public class ApplicantEducation {
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
     public Date getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
+    public Education getEducation() {
+        return Education;
+    }
 }
 
