@@ -15,7 +15,8 @@ const cache = async (req, res, next) => {
 
   res.sendResponse = res.json;
   res.json = async (body) => {
-    await redisClient.set(key, JSON.stringify(body), { EX: 120 });
+    if (res.statusCode === 200)
+      await redisClient.set(key, JSON.stringify(body), { EX: 120 });
     res.sendResponse(body);
   };
 
