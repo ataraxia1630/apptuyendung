@@ -24,8 +24,8 @@ const EducationService = {
     try {
       return await prisma.applicantEducation.findMany({
         where: { applicantId },
-        order: [['startDate', 'DESC']],
-        include: { achievements: true },
+        orderBy: { edu_start: 'desc' },
+        include: { achievement: true },
       });
     } catch (error) {
       throw new Error(
