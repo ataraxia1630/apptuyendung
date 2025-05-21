@@ -7,8 +7,8 @@ public class JobCategory {
     private String id;
     private String fieldId;
     private String name;
-    private Date createdAt;
-    private Date updatedAt;
+    private Date created_at;
+    private Date updated_at;
     private Field field; // Assuming you define the Field model
     private List<JobPost> jobPosts;
 
@@ -21,19 +21,19 @@ public class JobCategory {
     void setName(String name) { this.name = name; }
 
     public Date getCreatedAt() {
-        return createdAt;
+        return created_at;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAt(Date created_at) {
+        this.created_at = created_at;
     }
 
     public Date getUpdatedAt() {
-        return updatedAt;
+        return updated_at;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdatedAt(Date updated_at) {
+        this.updated_at = updated_at;
     }
 
     public List<JobPost> getJobPosts() {

@@ -1,8 +1,13 @@
 package com.example.workleap.data.api;
 
+import com.example.workleap.data.model.entity.CV;
+import com.example.workleap.data.model.entity.JobApplied;
+import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
+import com.example.workleap.data.model.response.CVResponse;
 import com.example.workleap.data.model.response.CreateApplicantEducationResponse;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
 import com.example.workleap.data.model.request.CreateApplicantSkillRequest;
@@ -18,6 +23,10 @@ import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
+import com.example.workleap.data.model.response.ListCVResponse;
+import com.example.workleap.data.model.response.ListJobAppliedResponse;
+import com.example.workleap.data.model.response.ListJobCategoryResponse;
+import com.example.workleap.data.model.response.ListJobTypeResponse;
 import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
 import com.example.workleap.data.model.response.MessageResponse;
@@ -135,7 +144,7 @@ public interface ApiService {
 
 
     //JobPost
-    @GET("api/jobPost/all")
+    @GET("api/job-posts/all")
     Call<ListJobPostResponse> getAllJobPosts();
     @GET("api/job-posts/{id}")
     Call<JobPostResponse> getJobPostById(@Path("id") String id);
@@ -147,4 +156,49 @@ public interface ApiService {
     Call<MessageResponse> deleteJobPost(@Path("id") String id);
     @GET("api/job-posts/search/query")
     Call<ListJobPostResponse> searchJobPosts();
+
+    //JobType
+    @GET("api/types/all")
+    Call<ListJobTypeResponse> getAllJobTypes();
+    @POST("api/types/")
+    Call <ListJobTypeResponse> createJobType(@Body List<JobType> request);
+
+    //JobCategory
+    @GET("api/category")
+    Call<ListJobCategoryResponse> getAllJobCategories();
+    @POST("api/types/")
+    Call <ListJobCategoryResponse> createJobCategory(@Body List<JobCategory> request);
+
+    //JobSaved
+    @GET("api/save/{applicantId}")
+    Call<ListJobPostResponse> createJobSaved(@Path("applicantId") String applicantId);
+    @POST("api/save/")
+    Call <ListJobPostResponse> createJobSaved(@Body JobPost request);
+    @DELETE("api/save/{applicantId}/{jobpostId}")
+    Call <MessageResponse> deleteJobSaved(@Path("applicantId") String applicantId, @Path("jobpostId") String jobpostId);
+
+    //Job Appied
+    @GET("api/apply/{jobpostId}/cvs") //Get all cv in job applied
+    Call<ListJobAppliedResponse> getCvsJobApplied(@Path("jobpostId") String jobpostId);
+    @GET("api/apply/{jobpostId}/applicants") //Get all applicant in job applied
+    Call<ListJobAppliedResponse> getApplicantsJobApplied(@Path("jobpostId") String jobpostId);
+    @GET("api/apply/{applicantId}/cvs")
+    Call<ListJobAppliedResponse> getJobApplied(@Path("applicantId") String applicantId);
+    @POST("api/apply/")            //create a job applied
+    Call<MessageResponse> applyAJob(@Body JobApplied request);
+
+
+    //Cv
+    @POST("api/cv/upload/{applicantId}")
+    Call<MessageResponse> createCv(@Path("applicantId") String applicantId, @Body CV request);
+    @GET("api/cv/all/{applicantId}")
+    Call<ListCVResponse> getAllCv(@Path("applicantId") String applicantId);
+    @DELETE("api/cv/all/{applicantId}")
+    Call<MessageResponse> deleteAllCv(@Path("applicantId") String applicantId);
+    @GET("api/cv/{id}")
+    Call<CVResponse> getCvById(@Path("id") String id);
+    @PUT("api/cv/{id}")
+    Call<MessageResponse> updateCvById(@Path("id") String id);
+    @DELETE("api/cv/{id}")
+    Call<MessageResponse> deleteCvById(@Path("id") String id);
 }

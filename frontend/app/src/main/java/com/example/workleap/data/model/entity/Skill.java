@@ -11,12 +11,12 @@ public class Skill {
     private String expertiseLevel; // Enum: BEGINNER, INTERMEDIATE, ADVANCED
     private Integer yearOfExp;
     private Integer monthOfExp;
-    private Date createdAt;
-    private Date updatedAt;
+    private Date created_at;
+    private Date updated_at;
 
     public Skill() {}
 
-    public Skill(String id, String applicantId, String skillName, String description, String certificate, String expertiseLevel, Integer yearOfExp, Integer monthOfExp, Date createdAt, Date updatedAt) {
+    public Skill(String id, String applicantId, String skillName, String description, String certificate, String expertiseLevel, Integer yearOfExp, Integer monthOfExp, Date created_at, Date updated_at) {
         this.id = id;
         this.applicantId = applicantId;
         this.skillName = skillName;
@@ -25,8 +25,8 @@ public class Skill {
         this.expertiseLevel = expertiseLevel;
         this.yearOfExp = yearOfExp;
         this.monthOfExp = monthOfExp;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
     }
 
     // Getter và Setter
@@ -46,10 +46,10 @@ public class Skill {
     public void setYearOfExp(Integer yearOfExp) { this.yearOfExp = yearOfExp; }
     public Integer getMonthOfExp() { return monthOfExp; }
     public void setMonthOfExp(Integer monthOfExp) { this.monthOfExp = monthOfExp; }
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
-    public Date getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
+    public Date getCreatedAt() { return created_at; }
+    public void setCreatedAt(Date created_at) { this.created_at = created_at; }
+    public Date getUpdatedAt() { return updated_at; }
+    public void setUpdatedAt(Date updated_at) { this.updated_at = updated_at; }
 
     @Override
     public String toString() {
@@ -62,8 +62,8 @@ public class Skill {
                 ", expertiseLevel='" + expertiseLevel + '\'' +
                 ", yearOfExp=" + yearOfExp +
                 ", monthOfExp=" + monthOfExp +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
+                ", created_at=" + created_at +
+                ", updated_at=" + updated_at +
                 '}';
     }
 }

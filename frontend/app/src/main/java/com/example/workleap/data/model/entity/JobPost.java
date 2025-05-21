@@ -2,6 +2,7 @@ package com.example.workleap.data.model.entity;
 
 // JobPost.java
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -17,19 +18,51 @@ public class JobPost {
     private String educationRequirement;
     private String skillRequirement;
     private String responsibility;
-    private double salaryStart;
-    private double salaryEnd;
+    private BigDecimal salary_start;
+    private BigDecimal salary_end;
     private String currency;
     private String status;  // OPENING or other values
     private Date applyUntil;
     private List<JobApplied> jobApplied; // Assuming you use this in your API response
-    private Date createdAt;
-    private Date updatedAt;
-    private Company company; // Assuming you define the Company model
+    private Date created_at;
+    private Date updated_at;
+    private Company Company; // Assuming you define the Company model
     private JobType jobType; // Assuming you define the JobType model
     private JobCategory jobCategory; // Assuming you define the JobCategory model
     private List<JobSaved> jobSaved; // Assuming you define JobSaved model
 
+    //Constructor
+    public JobPost(String companyId,
+                   String jobCategoryId,
+                   String jobTypeId,
+                   String title,
+                   String description,
+                   String position,
+                   String workingAddress,
+                   String educationRequirement,
+                   String skillRequirement,
+                   String responsibility,
+                   BigDecimal salary_start,
+                   BigDecimal salary_end,
+                   String currency,
+                   String status,
+                   Date applyUntil) {
+        this.companyId = companyId;
+        this.jobCategoryId = jobCategoryId;
+        this.jobTypeId = jobTypeId;
+        this.title = title;
+        this.description = description;
+        this.position = position;
+        this.workingAddress = workingAddress;
+        this.educationRequirement = educationRequirement;
+        this.skillRequirement = skillRequirement;
+        this.responsibility = responsibility;
+        this.salary_start = salary_start;
+        this.salary_end = salary_end;
+        this.currency = currency;
+        this.status = status;
+        this.applyUntil = applyUntil;
+    }
     // Getters and Setters
 
     public String getId() {
@@ -120,20 +153,20 @@ public class JobPost {
         this.responsibility = responsibility;
     }
 
-    public double getSalaryStart() {
-        return salaryStart;
+    public BigDecimal getSalaryStart() {
+        return salary_start;
     }
 
-    public void setSalaryStart(double salaryStart) {
-        this.salaryStart = salaryStart;
+    public void setSalary_start(BigDecimal salary_start) {
+        this.salary_start = salary_start;
     }
 
-    public double getSalaryEnd() {
-        return salaryEnd;
+    public BigDecimal getSalaryEnd() {
+        return salary_end;
     }
 
-    public void setSalaryEnd(double salaryEnd) {
-        this.salaryEnd = salaryEnd;
+    public void setSalaryEnd(BigDecimal salary_end) {
+        this.salary_end = salary_end;
     }
 
     public String getCurrency() {
@@ -169,27 +202,27 @@ public class JobPost {
     }
 
     public Date getCreatedAt() {
-        return createdAt;
+        return created_at;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAt(Date created_at) {
+        this.created_at = created_at;
     }
 
     public Date getUpdatedAt() {
-        return updatedAt;
+        return updated_at;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdatedAt(Date updated_at) {
+        this.updated_at = updated_at;
     }
 
     public Company getCompany() {
-        return company;
+        return Company;
     }
 
     public void setCompany(Company company) {
-        this.company = company;
+        this.Company = company;
     }
 
     public JobType getJobType() {
