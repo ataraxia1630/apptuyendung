@@ -18,15 +18,15 @@ public class JobPost {
     private String educationRequirement;
     private String skillRequirement;
     private String responsibility;
-    private BigDecimal salaryStart;
-    private BigDecimal salaryEnd;
+    private BigDecimal salary_start;
+    private BigDecimal salary_end;
     private String currency;
     private String status;  // OPENING or other values
     private Date applyUntil;
     private List<JobApplied> jobApplied; // Assuming you use this in your API response
     private Date created_at;
     private Date updated_at;
-    private Company company; // Assuming you define the Company model
+    private Company Company; // Assuming you define the Company model
     private JobType jobType; // Assuming you define the JobType model
     private JobCategory jobCategory; // Assuming you define the JobCategory model
     private List<JobSaved> jobSaved; // Assuming you define JobSaved model
@@ -42,8 +42,8 @@ public class JobPost {
                    String educationRequirement,
                    String skillRequirement,
                    String responsibility,
-                   BigDecimal salaryStart,
-                   BigDecimal salaryEnd,
+                   BigDecimal salary_start,
+                   BigDecimal salary_end,
                    String currency,
                    String status,
                    Date applyUntil) {
@@ -57,8 +57,8 @@ public class JobPost {
         this.educationRequirement = educationRequirement;
         this.skillRequirement = skillRequirement;
         this.responsibility = responsibility;
-        this.salaryStart = salaryStart;
-        this.salaryEnd = salaryEnd;
+        this.salary_start = salary_start;
+        this.salary_end = salary_end;
         this.currency = currency;
         this.status = status;
         this.applyUntil = applyUntil;
@@ -154,19 +154,19 @@ public class JobPost {
     }
 
     public BigDecimal getSalaryStart() {
-        return salaryStart;
+        return salary_start;
     }
 
-    public void setSalaryStart(BigDecimal salaryStart) {
-        this.salaryStart = salaryStart;
+    public void setSalary_start(BigDecimal salary_start) {
+        this.salary_start = salary_start;
     }
 
     public BigDecimal getSalaryEnd() {
-        return salaryEnd;
+        return salary_end;
     }
 
-    public void setSalaryEnd(BigDecimal salaryEnd) {
-        this.salaryEnd = salaryEnd;
+    public void setSalaryEnd(BigDecimal salary_end) {
+        this.salary_end = salary_end;
     }
 
     public String getCurrency() {
@@ -218,11 +218,11 @@ public class JobPost {
     }
 
     public Company getCompany() {
-        return company;
+        return Company;
     }
 
     public void setCompany(Company company) {
-        this.company = company;
+        this.Company = company;
     }
 
     public JobType getJobType() {

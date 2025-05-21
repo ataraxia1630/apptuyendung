@@ -1,6 +1,5 @@
 package com.example.workleap.ui.view;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostViewHolder> {
@@ -35,7 +35,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
         holder.txtTitle.setText(post.getTitle());
         holder.txtCompany.setText(post.getCompany().getName());
         holder.txtSalary.setText(post.getSalaryStart() + " - " + post.getSalaryEnd() + " " + post.getCurrency());
-        holder.txtTime.setText(post.getUpdatedAt().toString());
+        holder.txtTime.setText(new SimpleDateFormat("dd/MM/yyyy").format(post.getUpdatedAt()));
         holder.txtLocation.setText(post.getPosition());
         //holder.imgPost.setImageResource(post.);
     }

@@ -22,6 +22,7 @@ import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.repository.JobPostRepository;
 import com.example.workleap.data.repository.UserRepository;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.List;
 

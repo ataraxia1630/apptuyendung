@@ -18,6 +18,7 @@ public class ApplicantEducation {
 
     public ApplicantEducation() {}
 
+
     public ApplicantEducation(String id, String eduId, String applicantId, Date eduStart, Date eduEnd, String major, String eduLevel, String moreInfo, List<String> achievement, Date created_at, Date updated_at) {
         this.id = id;
         this.eduId = eduId;
