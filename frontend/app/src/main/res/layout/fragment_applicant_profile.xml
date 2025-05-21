@@ -39,18 +39,18 @@
                     app:shapeAppearanceOverlay="@style/CircleImageView" />
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/tvApplicantName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_toEndOf="@+id/shapeableImageView"
-                    android:text="user name"
+                    android:text="applicant name"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <TextView
+                <!--<TextView
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -58,11 +58,37 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="3dp"
                     android:layout_toEndOf="@+id/shapeableImageView"
-                    android:text="--------"
+                    android:text="&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"
                     android:textAlignment="viewStart"
                     android:textColor="@color/design_default_color_secondary_variant"
                     android:textSize="14sp"
+                    android:textStyle="bold" />-->
+
+                <TextView
+                    android:id="@+id/emailInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvApplicantName"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_toEndOf="@+id/shapeableImageView"
+                    android:text="user email"
+                    android:textColor="#6E6C6C"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/phoneInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/emailInfo"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_toEndOf="@+id/shapeableImageView"
+                    android:text="mobile"
+                    android:textColor="#6E6C6C"
+                    android:textSize="15sp"
+                    android:textStyle="bold"/>
 
                 <ImageButton
                     android:id="@+id/btnEditUserName"
@@ -76,6 +102,19 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Edit user name"
                     android:src="@drawable/ic_edit_pen" />
+
+                <ImageButton
+                    android:id="@+id/btnOptions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginEnd="8dp"
+
+                    android:layout_marginBottom="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Log out"
+                    android:src="@drawable/ic_options" />
 
 
             </RelativeLayout>
@@ -190,7 +229,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:text="User name"
+                        android:text="Name"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
 
@@ -280,7 +319,7 @@
                         android:textStyle="bold" />
                 </RelativeLayout>
 
-                <RelativeLayout
+                <!--<RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -296,17 +335,28 @@
                         android:textSize="15sp" />
 
                     <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/emailInfo"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_toEndOf="@+id/shapeableImageView"
+                    android:text="mobile"
+                    android:textColor="#6E6C6C"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+                    <TextView
                         android:id="@+id/phoneInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="--------"
+                        android:text="&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"
                         android:textColor="#6E6C6C"
                         android:textSize="15sp"
                         android:textStyle="bold" />
-                </RelativeLayout>
+                </RelativeLayout>-->
 
-                <RelativeLayout
+                <!--<RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -321,17 +371,8 @@
                         android:textColor="@color/black"
                         android:textSize="15sp" />
 
-                    <TextView
-                        android:id="@+id/emailInfo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:text="--------"
-                        android:textColor="#6E6C6C"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
 
-                </RelativeLayout>
+                </RelativeLayout>-->
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -383,6 +424,7 @@
                     android:layout_marginEnd="10dp">
 
                     <TextView
+                        android:id="@+id/tvSkill"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
@@ -392,10 +434,11 @@
                         android:textStyle="bold" />
 
                     <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/flexBoxSkill"
+                        android:id="@+id/skillContainer"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation = "horizontal"
+                        android:layout_below="@id/btnEditSkill"
                         app:flexWrap="wrap"
                         />
 
@@ -423,6 +466,7 @@
             app:cardCornerRadius="10dp">
 
             <LinearLayout
+                android:id="@+id/educationListContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -449,7 +493,7 @@
                         android:layout_height="wrap_content"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="Edit Education"
-                        android:src="@drawable/ic_edit_pen"
+                        android:src="@drawable/ic_plus"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="8dp"

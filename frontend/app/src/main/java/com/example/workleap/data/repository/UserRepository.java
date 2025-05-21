@@ -23,9 +23,10 @@ public class UserRepository {
     private ApiService apiService;
     private PreferencesManager preferencesManager;
 
+    private String token;
     public UserRepository(Context context) {
         preferencesManager = new PreferencesManager(context);
-        String token = preferencesManager.getToken();
+        token = preferencesManager.getToken();
         apiService = RetrofitClient.getClient(token).create(ApiService.class);
     }
 
@@ -65,9 +66,10 @@ public class UserRepository {
 
 
     //Đăng xuất
-    public Call<MessageResponse> logoutUser(LogoutRequest request) {
+    public Call<MessageResponse> logoutUser() {
         preferencesManager.clearSession();
-        return apiService.logoutUser(request);
+        LogoutRequest logoutRequest = new LogoutRequest(token);
+        return apiService.logoutUser(logoutRequest);
     }
 
     //Get
@@ -78,6 +80,11 @@ public class UserRepository {
     //Update
     public Call<UpdateUserResponse> updateUser(String id, UpdateUserRequest request) {
         return apiService.updateUser(id, request);
+    }
+
+    //Update Setting
+    public Call<UpdateUserResponse> updateUserSetting(String id, UpdateUserRequest request) {
+        return apiService.updateUserSetting(id, request);
     }
 }
 

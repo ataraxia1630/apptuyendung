@@ -3,6 +3,7 @@ package com.example.workleap.data.api;
 import com.example.workleap.data.model.entity.CV;
 import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
+import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
@@ -21,6 +22,7 @@ import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
 import com.example.workleap.data.model.response.ListJobCategoryResponse;
+import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListJobTypeResponse;
 import com.example.workleap.data.model.response.LoginResponse;
@@ -72,6 +74,8 @@ public interface ApiService {
     Call<GetUserResponse> getUser(@Path("id") String id);
     @PUT("api/users/{id}")
     Call<UpdateUserResponse> updateUser(@Path("id") String id, @Body UpdateUserRequest request);
+    @PUT("api/users/setting/{id}")
+    Call<UpdateUserResponse> updateUserSetting(@Path("id") String id, @Body UpdateUserRequest request);
 
 
     //Applicant
@@ -82,49 +86,55 @@ public interface ApiService {
 
 
     //Company
-    @GET("api/company/{id}")
+    @GET("api/users/company/{id}")
     Call<GetCompanyResponse> getCompany(@Path("id") String id);
-    @PUT("api/company/{id}")
+    @PUT("api/users/company/{id}")
     Call<UpdateCompanyResponse> updateCompany(@Path("id") String id, @Body UpdateCompanyRequest request);
 
 
     //Applicant Skill
-    @POST("api/applicantSkill/{applicantId}")
+    @POST("api/skill/{applicantId}")
     Call<CreateApplicantSkillResponse> createApplicantSkill(@Path("applicantId") String applicantId, @Body CreateApplicantSkillRequest request);
-    @PUT("api/applicantSkill/{id}")
+    @PUT("api/skill/{id}")
     Call<UpdateApplicantSkillResponse> updateApplicantSkill(@Path("id") String id, @Body UpdateApplicantSkillRequest request);
-    @DELETE("api/applicantSkill/{id}")
+    @DELETE("api/skill/{id}")
     Call<MessageResponse> deleteApplicantSkill(@Path("id") String id);
-    @DELETE("api/applicantSkill/all/{applicantId}")
+    @DELETE("api/skill/all/{applicantId}")
     Call<MessageResponse> deleteAllApplicantSkill(@Path("applicantId") String id);
 
 
     //Applicant Education
-    @POST("api/applicantEducation/{applicantId}")
+    @GET("api/education/")
+    Call<ListEducationResponse> getAllEducation();
+    @POST("api/education/")
+    Call<MessageResponse> createEducation(@Body Education education);
+    @GET("api/education/{applicantId}")
+    Call<ListEducationResponse> getAllApplicantEducation(@Path("applicantId") String applicantId);
+    @POST("api/education/{applicantId}")
     Call<CreateApplicantEducationResponse> createApplicantEducation(@Path("applicantId") String applicantId, @Body CreateApplicantEducationRequest request);
-    @PUT("api/applicantEducation/{id}")
+    @PUT("api/education/{id}")
     Call<UpdateApplicantEducationResponse> updateApplicantEducation(@Path("id") String id, @Body UpdateApplicantEducationRequest request);
-    @DELETE("api/applicantEducation/{id}")
+    @DELETE("api/education/{id}")
     Call<MessageResponse> deleteApplicantEducation(@Path("id") String id);
-    @DELETE("api/applicantEducation/all/{applicantId}")
+    @DELETE("api/education/all/{applicantId}")
     Call<MessageResponse> deleteAllApplicantEducation(@Path("applicantId") String id);
 
 
     //Experience
-    @POST("api/exp/{applicantId}")
+    @POST("api/experience/{applicantId}")
     Call<CreateApplicantExperienceResponse> createApplicantExperience(@Path("applicantId") String applicantId, @Body CreateApplicantExperienceRequest request);
-    @PUT("api/exp/{id}")
+    @PUT("api/experience/{id}")
     Call<UpdateApplicantExperienceResponse> updateApplicantExperience(@Path("id") String id, @Body UpdateApplicantExperienceRequest request);
-    @DELETE("api/exp/{id}")
+    @DELETE("api/experience/{id}")
     Call<MessageResponse> deleteApplicantExperience(@Path("id") String id);
 
 
     //InterestedField
-    @POST("api/interestedField/{applicantId}")
+    @POST("api/fields/{applicantId}")
     Call<CreateInterestedFieldResponse> createInterestedField(@Path("fieldId") String applicantId);
-    @DELETE("api/interestedField/{id}")
+    @DELETE("api/fields/{id}")
     Call<MessageResponse> deleteInterestedField(@Path("id") String id);
-    @DELETE("api/interestedField/all/{applicantId}")
+    @DELETE("api/fields/all/{applicantId}")
     Call<MessageResponse> deleteAllInterestedField(@Path("fieldId") String id);
 
 

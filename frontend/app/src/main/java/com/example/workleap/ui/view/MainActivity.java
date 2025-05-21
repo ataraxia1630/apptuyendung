@@ -46,10 +46,10 @@ public class MainActivity extends AppCompatActivity {
             Log.e("userId", String.valueOf(userId));
 
             userViewModel.getGetUserResult().observe(this, res -> {
-                /*if(res != null)
+                if(res != null)
                 Log.e("getUserResult", res);
                 else
-                    Log.e("result", "no result");*/
+                    Log.e("result", "no result");
             });
 
             userViewModel.getGetUserData().observe(this, user -> {

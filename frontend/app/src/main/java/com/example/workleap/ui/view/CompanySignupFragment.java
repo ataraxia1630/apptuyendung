@@ -20,10 +20,12 @@ import android.widget.Toast;
 
 import com.example.workleap.R;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
+import com.example.workleap.ui.viewmodel.CompanyViewModel;
 
 public class CompanySignupFragment extends Fragment {
 
     private AuthViewModel authViewModel;
+    private CompanyViewModel companyViewModel;
 
     private EditText etEmail, etPassword, etConfirmPassword, etCompanyName, etAddress, etEstablishedYear, etTaxCode, etPhoneNumber;
     private Button btnRegister;
@@ -43,6 +45,8 @@ public class CompanySignupFragment extends Fragment {
 
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
         authViewModel.InitiateRepository(getContext());
+        companyViewModel = new ViewModelProvider(requireActivity()).get(CompanyViewModel.class);
+        authViewModel.InitiateRepository(getContext());
 
         etEmail = view.findViewById(R.id.etEmail);
         etPassword = view.findViewById(R.id.etPassword);
@@ -61,6 +65,9 @@ public class CompanySignupFragment extends Fragment {
                 Navigation.findNavController(view).navigate(R.id.loginFragment));
 
         authViewModel.getRegisterResult().observe(getViewLifecycleOwner(), result -> {
+            //tranh loi khi observe ca khi dung fragment khac
+            if(!isAdded() || getView()==null) return;
+
             Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
             if (result.contains("success")) {
                 Log.d("CompanySignupFragment", "Register success");
@@ -80,7 +87,7 @@ public class CompanySignupFragment extends Fragment {
         String phone = etPhoneNumber.getText().toString().trim();
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) ||
-                TextUtils.isEmpty(name) || TextUtils.isEmpty(address) ||
+                TextUtils.isEmpty(name) || TextUtils.isEmpty(phone)|| TextUtils.isEmpty(address) ||
                 TextUtils.isEmpty(year) || TextUtils.isEmpty(tax)) {
             Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;

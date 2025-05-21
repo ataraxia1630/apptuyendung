@@ -58,6 +58,7 @@ const UserController = {
         });
       }
       const user = await UserService.updateUser(id, req.body);
+      console.log("co update");
       return res.status(200).json({ user: user });
     } catch (error) {
       return res.status(500).json({

@@ -48,7 +48,7 @@ public class LoginFragment extends Fragment {
         authViewModel.InitiateRepository(getContext());
 
         etUsername = view.findViewById(R.id.username_edittext);
-        etEmail = view.findViewById(R.id.email_edittext);
+        //etEmail = view.findViewById(R.id.email_edittext);
         etPassword = view.findViewById(R.id.password_edittext);
         btnLogin = view.findViewById(R.id.login_button);
         tvSignup = view.findViewById(R.id.signup_textview);
@@ -78,11 +78,11 @@ public class LoginFragment extends Fragment {
     private void loginWithEmail() {
 
         String userName = etUsername.getText().toString().trim();
-        String email = etEmail.getText().toString().trim();
+        //String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
 
-        if (email.isEmpty() || password.isEmpty()) {
+        if (password.isEmpty()) {
             Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return;
         }

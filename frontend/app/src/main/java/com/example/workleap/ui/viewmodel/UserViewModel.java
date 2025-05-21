@@ -48,7 +48,7 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onResponse(Call<GetUserResponse> call, Response<GetUserResponse> response) {
                 if (response.isSuccessful()) {
-                    Log.e("success", "succes");
+                    Log.e("userviewmodel", "succes");
                     GetUserResponse getResponse = response.body();
                     getUserResult.setValue(getResponse.getMessage());
                     getUserData.setValue(getResponse.getUser());
@@ -95,6 +95,33 @@ public class UserViewModel extends ViewModel {
             public void onFailure(Call<UpdateUserResponse> call, Throwable t) {
                 updateUserResult.setValue("Lỗi kết nối: " + t.getMessage());
 
+            }
+        });
+    }
+
+    // Update Setting người dùng
+    public void updateUserSetting(String id, String username, String password, String email, String phoneNumber, String avatar, String background) {
+        UpdateUserRequest request = new UpdateUserRequest(username, password, email, phoneNumber, avatar, background);
+        Call<UpdateUserResponse> call = userRepository.updateUserSetting(id, request);
+        call.enqueue(new Callback<UpdateUserResponse>() {
+            @Override
+            public void onResponse(Call<UpdateUserResponse> call, Response<UpdateUserResponse> response) {
+                if (response.isSuccessful()) {
+                    UpdateUserResponse updateResponse = response.body();
+                    updateUserResult.setValue(updateResponse.getMessage());
+                } else {
+                    try {
+                        UpdateUserResponse error = new Gson().fromJson(response.errorBody().string(), UpdateUserResponse.class);
+                        updateUserResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        updateUserResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdateUserResponse> call, Throwable t) {
+                updateUserResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }
