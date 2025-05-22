@@ -708,8 +708,8 @@ public class ApplicantViewModel extends ViewModel {
     }
 
     //Delete InterestedField
-    public void deleteInterestedField(String fieldId) {
-        Call<MessageResponse> call = applicantRepository.deleteInterestedField(fieldId);
+    public void deleteInterestedField(String applicantId, String fieldId) {
+        Call<MessageResponse> call = applicantRepository.deleteInterestedField(applicantId, fieldId);
         call.enqueue(new Callback<MessageResponse>() {
             @Override
             public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
