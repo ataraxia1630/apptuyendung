@@ -9,12 +9,16 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.workleap.data.model.entity.ApplicantEducation;
 import com.example.workleap.data.model.entity.Education;
+import com.example.workleap.data.model.entity.Field;
+import com.example.workleap.data.model.entity.InterestedField;
 import com.example.workleap.data.model.entity.Skill;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
 import com.example.workleap.data.model.response.CreateApplicantExperienceResponse;
 import com.example.workleap.data.model.response.CreateInterestedFieldResponse;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
+import com.example.workleap.data.model.response.ListFieldResponse;
+import com.example.workleap.data.model.response.ListInterestedFieldResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
@@ -70,6 +74,12 @@ public class ApplicantViewModel extends ViewModel {
     private MutableLiveData<String> updateApplicantExperienceResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteApplicantExperienceResult = new MutableLiveData<>();
 
+    private MutableLiveData<List<Field>> getAllFieldData = new MutableLiveData<>();
+    private MutableLiveData<String> getAllFieldResult = new MutableLiveData<>();
+    private MutableLiveData<List<InterestedField>> getInterestedFieldData = new MutableLiveData<>();
+    private MutableLiveData<String> getInterestedFieldResult = new MutableLiveData<>();
+    private MutableLiveData<List<Field>> getFieldByName = new MutableLiveData<>();
+    private MutableLiveData<String> getFieldByNameResult = new MutableLiveData<>();
     private MutableLiveData<String> createInterestedFieldResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteInterestedFieldResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteAllInterestedFieldResult = new MutableLiveData<>();
@@ -105,6 +115,12 @@ public class ApplicantViewModel extends ViewModel {
     public LiveData<String> getUpdateApplicantExperienceResult() { return updateApplicantSkillResult; }
     public LiveData<String> getDeleteApplicantExperienceResult() { return deleteApplicantSkillResult; }
 
+    public LiveData<String> getGetAllFieldResult() { return getAllFieldResult; }
+    public LiveData<List<Field>> getGetAllFieldData() { return getAllFieldData; }
+    public LiveData<String> getGetInterestedFieldResult() { return getInterestedFieldResult; }
+    public LiveData<List<InterestedField>> getGetInterestedFieldData() { return getInterestedFieldData; }
+    public LiveData<String> getGetFieldByNameResult() { return getFieldByNameResult; }
+    public LiveData<List<Field>> getGetFieldByNameDdata() { return getFieldByName; }
     public LiveData<String> getCreateInterestedFieldResult() { return createApplicantSkillResult; }
     public LiveData<String> getDeleteInterestedFieldResult() { return deleteApplicantSkillResult; }
     public LiveData<String> getDeleteAllInterestedFieldResult() { return deleteAllApplicantSkillResult; }
@@ -582,6 +598,85 @@ public class ApplicantViewModel extends ViewModel {
             @Override
             public void onFailure(Call<MessageResponse> call, Throwable t) {
                 deleteApplicantExperienceResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Get All Field
+    public void getAllFields() {
+        Call<ListFieldResponse> call = applicantRepository.getAllFields();
+        call.enqueue(new Callback<ListFieldResponse>() {
+            @Override
+            public void onResponse(Call<ListFieldResponse> call, Response<ListFieldResponse> response) {
+
+                if (response.isSuccessful()) {
+                    ListFieldResponse getResponse = response.body();
+                    getAllFieldData.postValue(getResponse.getAllField());
+                    getAllFieldResult.setValue("Success");
+                } else {
+                    try {
+                        ListFieldResponse error = new Gson().fromJson(response.errorBody().string(), ListFieldResponse.class);
+                        getAllFieldResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getAllFieldResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ListFieldResponse> call, Throwable t) {
+                getAllFieldResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Get Applicant Field
+    public void getInterestedFields() {
+        Call<ListInterestedFieldResponse> call = applicantRepository.getInterestedField();
+        call.enqueue(new Callback<ListInterestedFieldResponse>() {
+            @Override
+            public void onResponse(Call<ListInterestedFieldResponse> call, Response<ListInterestedFieldResponse> response) {
+                if (response.isSuccessful()) {
+                    ListInterestedFieldResponse getResponse = response.body();
+                    getInterestedFieldData.postValue(getResponse.getAllApplicantFields());
+                    getInterestedFieldResult.setValue("Success");
+                } else {
+                    try {
+                        ListInterestedFieldResponse error = new Gson().fromJson(response.errorBody().string(), ListInterestedFieldResponse.class);
+                        getAllFieldResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getAllFieldResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ListInterestedFieldResponse> call, Throwable t) {
+                getAllFieldResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Get Field By Name of Id
+    public void setGetFieldByName() {
+        Call<ListInterestedFieldResponse> call = applicantRepository.getInterestedField();
+        call.enqueue(new Callback<ListInterestedFieldResponse>() {
+            @Override
+            public void onResponse(Call<ListInterestedFieldResponse> call, Response<ListInterestedFieldResponse> response) {
+                if (response.isSuccessful()) {
+                    ListInterestedFieldResponse getResponse = response.body();
+                    getInterestedFieldData.postValue(getResponse.getAllApplicantFields());
+                    getInterestedFieldResult.setValue("Success");
+                } else {
+                    try {
+                        ListInterestedFieldResponse error = new Gson().fromJson(response.errorBody().string(), ListInterestedFieldResponse.class);
+                        getAllFieldResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getAllFieldResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ListInterestedFieldResponse> call, Throwable t) {
+                getAllFieldResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }

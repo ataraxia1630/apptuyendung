@@ -21,6 +21,8 @@ import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
+import com.example.workleap.data.model.response.ListFieldResponse;
+import com.example.workleap.data.model.response.ListInterestedFieldResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
@@ -135,6 +137,12 @@ public interface ApiService {
 
 
     //InterestedField
+    @GET("api/fields/all")
+    Call<ListFieldResponse> getAllFields();
+    @GET("api/fields/{name}")
+    Call<ListFieldResponse> getFieldByName();
+    @GET("api/fields/interested/{applicantId}")
+    Call<ListInterestedFieldResponse> getInterestedField();
     @POST("api/fields/{applicantId}")
     Call<CreateInterestedFieldResponse> createInterestedField(@Path("fieldId") String applicantId);
     @DELETE("api/fields/{id}")

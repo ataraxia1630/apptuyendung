@@ -11,6 +11,8 @@ import com.example.workleap.data.api.RetrofitClient;
 import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
+import com.example.workleap.data.model.response.ListFieldResponse;
+import com.example.workleap.data.model.response.ListInterestedFieldResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
@@ -123,6 +125,21 @@ public class ApplicantRepository {
     //Delete experience
     public Call<MessageResponse> deleteApplicantExperience(String id) {
         return apiService.deleteApplicantExperience(id);
+    }
+
+    //Get all field
+    public Call<ListFieldResponse> getAllFields() {
+        return apiService.getAllFields();
+    }
+
+    //Get applicant field
+    public Call<ListInterestedFieldResponse> getInterestedField() {
+        return apiService.getInterestedField();
+    }
+
+    //Get field by name or id
+    public Call<ListFieldResponse> getFieldByName() {
+        return apiService.getFieldByName();
     }
 
     //Create interested field

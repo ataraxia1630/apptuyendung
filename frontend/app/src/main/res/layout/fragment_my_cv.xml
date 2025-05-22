@@ -32,7 +32,7 @@
                 android:textStyle="bold"
                 android:padding="8dp"
                 android:textColor="#004E8B"
-                android:background="@drawable/button_lightviolet" />
+                android:background="@drawable/button_lightblue" />
 
             <!-- Tab MY APPLIED JOB -->
             <TextView
