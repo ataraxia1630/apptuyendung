@@ -682,8 +682,8 @@ public class ApplicantViewModel extends ViewModel {
     }
 
     //Create InterestedField
-    public void createInterestedField(String applicantId) {
-        Call<CreateInterestedFieldResponse> call = applicantRepository.createInterestedField(applicantId);
+    public void createInterestedField(String applicantId, List<String> fieldIds) {
+        Call<CreateInterestedFieldResponse> call = applicantRepository.createInterestedField(applicantId, fieldIds);
         call.enqueue(new Callback<CreateInterestedFieldResponse>() {
             @Override
             public void onResponse(Call<CreateInterestedFieldResponse> call, Response<CreateInterestedFieldResponse> response) {

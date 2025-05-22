@@ -29,6 +29,8 @@ import com.example.workleap.data.model.response.UpdateApplicantResponse;
 import com.example.workleap.data.model.request.UpdateApplicantSkillRequest;
 import com.example.workleap.data.model.response.UpdateApplicantSkillResponse;
 
+import java.util.List;
+
 import retrofit2.Call;
 
 public class ApplicantRepository {
@@ -143,8 +145,8 @@ public class ApplicantRepository {
     }
 
     //Create interested field
-    public Call<CreateInterestedFieldResponse> createInterestedField(String applicantId) {
-        return apiService.createInterestedField(applicantId);
+    public Call<CreateInterestedFieldResponse> createInterestedField(String applicantId, List<String> fieldIds) {
+        return apiService.createInterestedField(applicantId, fieldIds);
     }
 
     //Delete interested field
