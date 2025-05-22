@@ -77,6 +77,19 @@ enum GenderType {
   FEMALE
 }
 
+enum FileType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  OTHER
+}
+
+enum UserStatusType {
+  ONLINE
+  OFFLINE
+  AWAY
+}
+
 // ------------ COMMON TYPES --------------
 
 /// ------------ MAIN MODEL ---------------
@@ -107,6 +120,7 @@ model User {
   user_token       user_token[]
   Message          Message[]
   ConversationUser ConversationUser[]
+  UserStatus       UserStatus[]
 }
 
 model Applicant {
@@ -411,21 +425,30 @@ model Reaction {
   @@id([postId, userId])
 }
 
+// name: tên của đoạn chat nhóm, nếu ko thì FE tự lấy tên của đối phương để hiện thị
 model Conversation {
-  id               String             @id @default(uuid())
-  created_at       DateTime           @default(now())
-  updated_at       DateTime           @updatedAt
-  Message          Message[]
-  ConversationUser ConversationUser[]
+  id         String              @id @default(uuid())
+  name       String?             @db.VarChar(255)
+  isGroup    Boolean             @default(false)
+  created_at DateTime            @default(now())
+  updated_at DateTime            @updatedAt
+  Message    Message[]
+  members    ConversationUser[]
+  labels     ConversationLabel[]
 }
 
+// nếu là admin thì có thể thực hiện các thao tác: đổi tên đoạn chat, thêm / xóa thành viên, trao quyền admin
 model ConversationUser {
-  conversationId String
-  userId         String
-  created_at     DateTime     @default(now())
-  updated_at     DateTime     @updatedAt
-  Conversation   Conversation @relation(fields: [conversationId], references: [id])
-  User           User         @relation(fields: [userId], references: [id])
+  conversationId    String
+  userId            String
+  isAdmin           Boolean      @default(false)
+  allowNotification Boolean      @default(true)
+  joined_at         DateTime     @default(now())
+  left_at           DateTime?
+  deleted_at        DateTime?
+  updated_at        DateTime     @updatedAt
+  Conversation      Conversation @relation(fields: [conversationId], references: [id])
+  User              User         @relation(fields: [userId], references: [id])
 
   @@unique([conversationId, userId])
 }
@@ -436,15 +459,37 @@ model Message {
   senderId       String
   content        String
   sent_at        DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
+  isRead         Boolean      @default(false)
+  isDeleted      Boolean      @default(false)
+  isEdited       Boolean      @default(false)
   Conversation   Conversation @relation(fields: [conversationId], references: [id])
   Sender         User         @relation(fields: [senderId], references: [id])
-  Attachment     Attachment[]
+  attachments    Attachment[]
 }
 
 model Attachment {
   id          String   @id @default(uuid())
   messageId   String
   filePath    String
+  fileType    FileType
   uploaded_at DateTime @default(now())
   Message     Message  @relation(fields: [messageId], references: [id])
+}
+
+model ConversationLabel {
+  id             String       @id @default(uuid())
+  conversationId String
+  label          String       @db.VarChar(50) // Ví dụ: "Quan trọng", "Công việc"
+  created_at     DateTime     @default(now())
+  Conversation   Conversation @relation(fields: [conversationId], references: [id])
+}
+
+model UserStatus {
+  userId        String         @id
+  status        UserStatusType @default(OFFLINE)
+  lastActive_at DateTime?
+  User          User           @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
