@@ -97,7 +97,15 @@ const ChatController = {
   // tạo một group chat mới
   createGroupChat: async (req, res) => {
     try {
-    } catch (error) {}
+      const groupchat = await ChatService.createGroupChat(
+        req.user.userId,
+        req.body
+      );
+      return res.status(201).json({ groupchat });
+    } catch (error) {
+      console.error('Error creating group chat:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
   },
 
   // thêm thành viên vào nhóm chat, chỉ admin nhóm mới có quyền này

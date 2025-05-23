@@ -143,6 +143,42 @@ const ChatService = {
       throw new Error('Failed to create chat');
     }
   },
+
+  createGroupChat: async (adminId, data) => {
+    try {
+      const result = await prisma.$transaction(async (tx) => {
+        // Tạo conversation (group chat)
+        const chat = await tx.conversation.create({
+          data: { name: data.name, isGroup: true },
+          select: {
+            id: true,
+            name: true,
+            isGroup: true,
+          },
+        });
+
+        const conversationId = chat.id;
+
+        // Chuẩn bị dữ liệu thành viên
+        const memData = [{ conversationId, userId: adminId, isAdmin: true }];
+        for (const mem of data.members) {
+          memData.push({ conversationId, userId: mem });
+        }
+
+        // Thêm các thành viên vào nhóm
+        const members = await tx.conversationUser.createManyAndReturn({
+          data: memData,
+        });
+
+        return { chat, members };
+      });
+
+      return result;
+    } catch (error) {
+      console.error('Error creating group chat (with rollback):', error);
+      throw new Error('Failed to create group chat');
+    }
+  },
 };
 
 module.exports = { ChatService };
