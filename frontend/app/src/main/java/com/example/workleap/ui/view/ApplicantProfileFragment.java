@@ -33,6 +33,7 @@ import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.chip.Chip;
+import com.google.gson.Gson;
 
 import org.w3c.dom.Text;
 
@@ -279,6 +280,7 @@ public class ApplicantProfileFragment extends Fragment {
                             Log.e("AppProfile", "interested field from dialog is empty");
 
                     }
+
                 }
         );
 
@@ -421,6 +423,7 @@ public class ApplicantProfileFragment extends Fragment {
     }
     private void LoadInterestedField()
     {
+        Log.e("yoooooo", "loadddd");
         fieldContainer.removeAllViews();
         applicantViewModel.getInterestedFields(user.getApplicantId());
         applicantViewModel.getGetInterestedFieldData().observe(getViewLifecycleOwner(), interestedFieldList ->
@@ -461,5 +464,6 @@ public class ApplicantProfileFragment extends Fragment {
             fieldContainer.removeView(chip);
         });
         fieldContainer.addView(chip);
+        Log.e("appprofile", "add field chip");
     }
 }

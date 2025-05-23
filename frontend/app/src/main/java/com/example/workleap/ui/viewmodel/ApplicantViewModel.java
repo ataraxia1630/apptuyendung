@@ -690,7 +690,7 @@ public class ApplicantViewModel extends ViewModel {
 
     //Create InterestedField
     public void createInterestedField(String applicantId, List<String> fieldIds) {
-        Log.e("appviewmodel test null", fieldIds.get(1));
+//        Log.e("appviewmodel test null", fieldIds.get(1));
         ListFieldIdRequest request = new ListFieldIdRequest(fieldIds);
         Call<CreateInterestedFieldResponse> call = applicantRepository.createInterestedField(applicantId, request);
         call.enqueue(new Callback<CreateInterestedFieldResponse>() {
@@ -703,7 +703,6 @@ public class ApplicantViewModel extends ViewModel {
                 } else {
                     try {
                         Log.e("appviewmodel", "create interestedfield NOT successful");
-
                         String error2 = response.errorBody().string();
                         Log.e("apviewmod creInteField", error2);
                         CreateInterestedFieldResponse error = new Gson().fromJson(response.errorBody().string(), CreateInterestedFieldResponse.class);

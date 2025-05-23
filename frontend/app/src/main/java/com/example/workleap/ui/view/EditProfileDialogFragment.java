@@ -122,7 +122,6 @@ public class EditProfileDialogFragment extends DialogFragment {
             {
                 for (Field field : listField) {
                     fieldNames.add(field.getName());
-                    Log.e("dialogField", field.getName());
                 }
             }
             else
