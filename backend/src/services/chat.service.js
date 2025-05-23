@@ -98,6 +98,51 @@ const ChatService = {
       throw new Error('Failed to fetch group chats');
     }
   },
+
+  createChat: async (userId, friendId) => {
+    try {
+      const existingChat = await prisma.conversation.findFirst({
+        where: {
+          isGroup: false,
+          members: {
+            some: {
+              userId: userId,
+            },
+          },
+          AND: {
+            members: {
+              some: {
+                userId: friendId,
+              },
+            },
+          },
+        },
+      });
+
+      console.log('chat is already existed');
+      if (existingChat) return existingChat;
+
+      const chat = await prisma.conversation.create({
+        data: { isGroup: false },
+        select: {
+          id: true,
+          name: true,
+          isGroup: true,
+        },
+      });
+      const members = await prisma.conversationUser.createManyAndReturn({
+        data: [
+          { conversationId: chat.id, userId },
+          { conversationId: chat.id, userId: friendId },
+        ],
+      });
+
+      return { chat, members };
+    } catch (error) {
+      console.error('Error creating chat:', error);
+      throw new Error('Failed to create chat');
+    }
+  },
 };
 
 module.exports = { ChatService };
