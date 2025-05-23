@@ -13,6 +13,7 @@ import com.example.workleap.data.model.entity.Field;
 import com.example.workleap.data.model.entity.InterestedField;
 import com.example.workleap.data.model.entity.Skill;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
+import com.example.workleap.data.model.request.ListFieldIdRequest;
 import com.example.workleap.data.model.response.CreateApplicantExperienceResponse;
 import com.example.workleap.data.model.response.CreateInterestedFieldResponse;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
@@ -689,7 +690,9 @@ public class ApplicantViewModel extends ViewModel {
 
     //Create InterestedField
     public void createInterestedField(String applicantId, List<String> fieldIds) {
-        Call<CreateInterestedFieldResponse> call = applicantRepository.createInterestedField(applicantId, fieldIds);
+        Log.e("appviewmodel test null", fieldIds.get(1));
+        ListFieldIdRequest request = new ListFieldIdRequest(fieldIds);
+        Call<CreateInterestedFieldResponse> call = applicantRepository.createInterestedField(applicantId, request);
         call.enqueue(new Callback<CreateInterestedFieldResponse>() {
             @Override
             public void onResponse(Call<CreateInterestedFieldResponse> call, Response<CreateInterestedFieldResponse> response) {

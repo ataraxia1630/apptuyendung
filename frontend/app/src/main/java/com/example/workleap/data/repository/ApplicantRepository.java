@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
+import com.example.workleap.data.model.request.ListFieldIdRequest;
 import com.example.workleap.data.model.response.CreateApplicantExperienceResponse;
 import com.example.workleap.data.model.response.CreateInterestedFieldResponse;
 import com.example.workleap.data.api.RetrofitClient;
@@ -145,8 +146,8 @@ public class ApplicantRepository {
     }
 
     //Create interested field
-    public Call<CreateInterestedFieldResponse> createInterestedField(String applicantId, List<String> fieldIds) {
-        return apiService.createInterestedField(applicantId, fieldIds);
+    public Call<CreateInterestedFieldResponse> createInterestedField(String applicantId, ListFieldIdRequest request) {
+        return apiService.createInterestedField(applicantId, request);
     }
 
     //Delete interested field

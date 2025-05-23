@@ -7,6 +7,7 @@ import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
+import com.example.workleap.data.model.request.ListFieldIdRequest;
 import com.example.workleap.data.model.response.CVResponse;
 import com.example.workleap.data.model.response.CreateApplicantEducationResponse;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
@@ -144,7 +145,7 @@ public interface ApiService {
     @GET("api/fields/interested/{applicantId}")
     Call<ListInterestedFieldResponse> getInterestedField(@Path("applicantId") String applicantId);
     @POST("api/fields/interested/{applicantId}")
-    Call<CreateInterestedFieldResponse> createInterestedField(@Path("applicantId") String applicantId, @Body List<String> fieldIds);
+    Call<CreateInterestedFieldResponse> createInterestedField(@Path("applicantId") String applicantId, @Body ListFieldIdRequest request);
     @DELETE("api/fields/interested/{applicantId}/{fieldId}")
     Call<MessageResponse> deleteInterestedField(@Path("applicantId") String applicantId, @Path("fieldId") String fieldId);
     @DELETE("api/fields/interested/{applicantId}")
