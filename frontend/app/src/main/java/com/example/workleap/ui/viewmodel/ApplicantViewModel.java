@@ -630,8 +630,8 @@ public class ApplicantViewModel extends ViewModel {
     }
 
     //Get Applicant Field
-    public void getInterestedFields() {
-        Call<ListInterestedFieldResponse> call = applicantRepository.getInterestedField();
+    public void getInterestedFields(String applicantId) {
+        Call<ListInterestedFieldResponse> call = applicantRepository.getInterestedField(applicantId);
         call.enqueue(new Callback<ListInterestedFieldResponse>() {
             @Override
             public void onResponse(Call<ListInterestedFieldResponse> call, Response<ListInterestedFieldResponse> response) {

@@ -135,8 +135,8 @@ public class ApplicantRepository {
     }
 
     //Get applicant field
-    public Call<ListInterestedFieldResponse> getInterestedField() {
-        return apiService.getInterestedField();
+    public Call<ListInterestedFieldResponse> getInterestedField(String applicantId) {
+        return apiService.getInterestedField(applicantId);
     }
 
     //Get field by name or id
