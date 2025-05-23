@@ -151,7 +151,7 @@ public class ApplicantRepository {
 
     //Delete interested field
     public Call<MessageResponse> deleteInterestedField(String applicantId, String fieldId) {
-        return apiService.deleteInterestedField(applicantId, fieidId);
+        return apiService.deleteInterestedField(applicantId, fieldId);
     }
 
     //Delete all interested field

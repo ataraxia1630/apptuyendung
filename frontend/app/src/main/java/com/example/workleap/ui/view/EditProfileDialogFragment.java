@@ -10,24 +10,31 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.lifecycle.ViewModelProvider;
 
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Education;
+import com.example.workleap.data.model.entity.Field;
+import com.example.workleap.ui.viewmodel.ApplicantViewModel;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EditProfileDialogFragment extends DialogFragment {
     private String cardType;
-
     private AutoCompleteTextView autoCompleteSchool;
+    ArrayList<Field> listField;
+    private Spinner spinnerInterestedField;
     private ArrayList<Education> listEducation;
     private final List<EditText> editTexts = new ArrayList<>();
+    ApplicantViewModel applicantViewModel;
     public static EditProfileDialogFragment newInstance(String cardType) {
         EditProfileDialogFragment fragment = new EditProfileDialogFragment();
         Bundle args = new Bundle();
@@ -44,6 +51,9 @@ public class EditProfileDialogFragment extends DialogFragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_profile, null);
 
         LinearLayout container = view.findViewById(R.id.fieldsContainer);
+
+        applicantViewModel = new ViewModelProvider(requireActivity()).get(ApplicantViewModel.class);
+        applicantViewModel.InitiateRepository(getContext());
 
         //applicant
         if ("ApplicantName".equals(cardType)) {
@@ -103,6 +113,37 @@ public class EditProfileDialogFragment extends DialogFragment {
             addField(container, "Edu level");
             addField(container, "Achievement");
         }
+        else if("ApplicantInterestedField".equalsIgnoreCase(cardType))
+        {
+            listField = (ArrayList<Field>) getArguments().getSerializable("listField");
+            //list field name
+            ArrayList<String> fieldNames = new ArrayList<>();
+            if(listField != null)
+            {
+                for (Field field : listField) {
+                    fieldNames.add(field.getName());
+                    Log.e("dialogField", field.getName());
+                }
+            }
+            else
+            {
+                Log.e("EditProfileDialog", "list Interested field null");
+            }
+
+            //spinner
+            spinnerInterestedField = new Spinner(getContext());
+            spinnerInterestedField.setLayoutParams(new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            ));
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    getContext(), android.R.layout.simple_spinner_item, fieldNames
+            );
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerInterestedField.setAdapter(adapter);
+            container.addView(spinnerInterestedField);
+        }
         //company
         else if ("AboutCompany".equalsIgnoreCase(cardType))
         {
@@ -128,8 +169,19 @@ public class EditProfileDialogFragment extends DialogFragment {
                     }
 
                     //applicant edu
-                    if (autoCompleteSchool != null && autoCompleteSchool.getText() != null && !autoCompleteSchool.getText().toString().trim().isEmpty()) {
-                        updated.add(autoCompleteSchool.getText().toString().trim());
+                    if("ApplicantEdu".equalsIgnoreCase(cardType))
+                    {
+                        if (autoCompleteSchool != null && autoCompleteSchool.getText() != null && !autoCompleteSchool.getText().toString().trim().isEmpty()) {
+                            updated.add(autoCompleteSchool.getText().toString().trim());
+                        }
+                    }
+                    if("ApplicantInterestedField".equalsIgnoreCase(cardType))
+                    {
+                        if (spinnerInterestedField != null && spinnerInterestedField.getSelectedItem() != null && !spinnerInterestedField.getSelectedItem().toString().trim().isEmpty()) {
+                            int position = spinnerInterestedField.getSelectedItemPosition();
+                            Field field = listField.get(position);
+                            updated.add(field.getId());
+                        }
                     }
 
                     // Tạo Bundle và đẩy kết quả

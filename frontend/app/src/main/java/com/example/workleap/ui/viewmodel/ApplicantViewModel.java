@@ -202,7 +202,7 @@ public class ApplicantViewModel extends ViewModel {
             public void onResponse(Call<ListSkillResponse> call, Response<ListSkillResponse> response) {
                 if (response.isSuccessful()) {
                     ListSkillResponse createResponse = response.body();
-                    Log.e("applicantviewmodel", createResponse.getMessage());
+                    //Log.e("applicantviewmodel", createResponse.getMessage());
                     getApplicantSkillData.setValue(createResponse.getAllApplicantSkills());
                     getApplicantSkillResult.setValue("sucess");
                 } else {
@@ -234,6 +234,8 @@ public class ApplicantViewModel extends ViewModel {
                     createApplicantSkillResult.setValue(createResponse.getMessage());
                 } else {
                     try {
+                        String error2 = response.errorBody().string();
+                        Log.e("apviewmod createskill", error2);
                         CreateApplicantSkillResponse error = new Gson().fromJson(response.errorBody().string(), CreateApplicantSkillResponse.class);
                         createApplicantSkillResult.setValue("Lỗi: " + error.getMessage());
                     } catch (Exception e) {
@@ -285,7 +287,7 @@ public class ApplicantViewModel extends ViewModel {
                 if (response.isSuccessful())
                 {
                     MessageResponse deleteResponse = response.body();
-                    deleteApplicantSkillResult.setValue(deleteResponse.getMessage());
+                    deleteApplicantSkillResult.setValue("sucess delete skill");
                 } else {
                     try {
                         MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
@@ -344,6 +346,8 @@ public class ApplicantViewModel extends ViewModel {
                     getAllEducationResult.setValue("Success");
                 } else {
                     try {
+                        String error2 = response.errorBody().string();
+                        Log.e("apviewmod getalledu", error2);
                         ListEducationResponse error = new Gson().fromJson(response.errorBody().string(), ListEducationResponse.class);
                         getAllEducationResult.setValue("Lỗi: " + error.getMessage());
                     } catch (Exception e) {
@@ -395,6 +399,8 @@ public class ApplicantViewModel extends ViewModel {
                     getAllApplicantEducationResult.setValue("Success");
                 } else {
                     try {
+                        String error2 = response.errorBody().string();
+                        Log.e("apviewmod getallapedu", error2);
                         ListEducationResponse error = new Gson().fromJson(response.errorBody().string(), ListEducationResponse.class);
                         getAllApplicantEducationResult.setValue("Lỗi: " + error.getMessage());
                     } catch (Exception e) {
@@ -690,8 +696,13 @@ public class ApplicantViewModel extends ViewModel {
                 if (response.isSuccessful()) {
                     CreateInterestedFieldResponse createResponse = response.body();
                     createInterestedFieldResult.setValue(createResponse.getMessage());
+                    Log.e("appviewmodel", "create interestedfield successful");
                 } else {
                     try {
+                        Log.e("appviewmodel", "create interestedfield NOT successful");
+
+                        String error2 = response.errorBody().string();
+                        Log.e("apviewmod creInteField", error2);
                         CreateInterestedFieldResponse error = new Gson().fromJson(response.errorBody().string(), CreateInterestedFieldResponse.class);
                         createInterestedFieldResult.setValue("Lỗi: " + error.getMessage());
                     } catch (Exception e) {
