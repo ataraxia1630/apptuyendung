@@ -140,7 +140,7 @@ public interface ApiService {
     @GET("api/fields/all")
     Call<ListFieldResponse> getAllFields();
     @GET("api/fields/{name}")
-    Call<ListFieldResponse> getFieldByName();
+    Call<ListFieldResponse> getFieldByName(@Path("name") String name);
     @GET("api/fields/interested/{applicantId}")
     Call<ListInterestedFieldResponse> getInterestedField(@Path("applicantId") String applicantId);
     @POST("api/fields/{applicantId}")
@@ -148,7 +148,7 @@ public interface ApiService {
     @DELETE("api/fields/{applicantId}/{fieldId}")
     Call<MessageResponse> deleteInterestedField(@Path("applicantId") String applicantId, @Path("fieldId") String fieldId);
     @DELETE("api/fields/interested/{applicantId}")
-    Call<MessageResponse> deleteAllInterestedField(@Path("fieldId") String id);
+    Call<MessageResponse> deleteAllInterestedField(@Path("applicantId") String id);
 
 
     //JobPost

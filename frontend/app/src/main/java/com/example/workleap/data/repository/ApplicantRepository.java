@@ -140,8 +140,8 @@ public class ApplicantRepository {
     }
 
     //Get field by name or id
-    public Call<ListFieldResponse> getFieldByName() {
-        return apiService.getFieldByName();
+    public Call<ListFieldResponse> getFieldByName(String name) {
+        return apiService.getFieldByName(name);
     }
 
     //Create interested field
@@ -151,7 +151,7 @@ public class ApplicantRepository {
 
     //Delete interested field
     public Call<MessageResponse> deleteInterestedField(String applicantId, String fieldId) {
-        return apiService.deleteInterestedField(applicantId, fieldId);
+        return apiService.deleteInterestedField(applicantId, fieidId);
     }
 
     //Delete all interested field

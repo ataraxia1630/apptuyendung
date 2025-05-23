@@ -78,7 +78,7 @@ public class ApplicantViewModel extends ViewModel {
     private MutableLiveData<String> getAllFieldResult = new MutableLiveData<>();
     private MutableLiveData<List<InterestedField>> getInterestedFieldData = new MutableLiveData<>();
     private MutableLiveData<String> getInterestedFieldResult = new MutableLiveData<>();
-    private MutableLiveData<List<Field>> getFieldByName = new MutableLiveData<>();
+    private MutableLiveData<List<Field>> getFieldByNameData = new MutableLiveData<>();
     private MutableLiveData<String> getFieldByNameResult = new MutableLiveData<>();
     private MutableLiveData<String> createInterestedFieldResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteInterestedFieldResult = new MutableLiveData<>();
@@ -120,7 +120,7 @@ public class ApplicantViewModel extends ViewModel {
     public LiveData<String> getGetInterestedFieldResult() { return getInterestedFieldResult; }
     public LiveData<List<InterestedField>> getGetInterestedFieldData() { return getInterestedFieldData; }
     public LiveData<String> getGetFieldByNameResult() { return getFieldByNameResult; }
-    public LiveData<List<Field>> getGetFieldByNameDdata() { return getFieldByName; }
+    public LiveData<List<Field>> getGetFieldByNameDdata() { return getFieldByNameData; }
     public LiveData<String> getCreateInterestedFieldResult() { return createApplicantSkillResult; }
     public LiveData<String> getDeleteInterestedFieldResult() { return deleteApplicantSkillResult; }
     public LiveData<String> getDeleteAllInterestedFieldResult() { return deleteAllApplicantSkillResult; }
@@ -656,18 +656,18 @@ public class ApplicantViewModel extends ViewModel {
     }
 
     //Get Field By Name of Id
-    public void setGetFieldByName() {
-        Call<ListInterestedFieldResponse> call = applicantRepository.getInterestedField();
-        call.enqueue(new Callback<ListInterestedFieldResponse>() {
+    public void getFieldByName(String name) {
+        Call<ListFieldResponse> call = applicantRepository.getFieldByName(name);
+        call.enqueue(new Callback<ListFieldResponse>() {
             @Override
-            public void onResponse(Call<ListInterestedFieldResponse> call, Response<ListInterestedFieldResponse> response) {
+            public void onResponse(Call<ListFieldResponse> call, Response<ListFieldResponse> response) {
                 if (response.isSuccessful()) {
-                    ListInterestedFieldResponse getResponse = response.body();
-                    getInterestedFieldData.postValue(getResponse.getAllApplicantFields());
-                    getInterestedFieldResult.setValue("Success");
+                    ListFieldResponse getResponse = response.body();
+                    getFieldByNameData.postValue(getResponse.getAllField());
+                    getFieldByNameResult.setValue("Success");
                 } else {
                     try {
-                        ListInterestedFieldResponse error = new Gson().fromJson(response.errorBody().string(), ListInterestedFieldResponse.class);
+                        ListFieldResponse error = new Gson().fromJson(response.errorBody().string(), ListFieldResponse.class);
                         getAllFieldResult.setValue("Lỗi: " + error.getMessage());
                     } catch (Exception e) {
                         getAllFieldResult.setValue("Lỗi không xác định: " + response.code());
@@ -675,7 +675,7 @@ public class ApplicantViewModel extends ViewModel {
                 }
             }
             @Override
-            public void onFailure(Call<ListInterestedFieldResponse> call, Throwable t) {
+            public void onFailure(Call<ListFieldResponse> call, Throwable t) {
                 getAllFieldResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
