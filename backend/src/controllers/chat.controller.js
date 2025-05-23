@@ -15,7 +15,7 @@ const ChatController = {
   // lấy tất cả đoạn chat có tin nhắn chưa đọc
   getAllUnreadChats: async (req, res) => {
     try {
-      const chats = await ChatService.getAllChats(req.user.userId);
+      const chats = await ChatService.getAllUnreadChats(req.user.userId);
       return res.status(200).json({ chats });
     } catch (error) {
       console.error('Error fetching chats:', error);
@@ -26,7 +26,7 @@ const ChatController = {
   // lấy tất cả các nhóm chat của user
   getAllGroupChats: async (req, res) => {
     try {
-      const chats = await ChatService.getAllChats(req.user.userId);
+      const chats = await ChatService.getAllGroupChats(req.user.userId);
       return res.status(200).json({ chats });
     } catch (error) {
       console.error('Error fetching chats:', error);
@@ -37,7 +37,7 @@ const ChatController = {
   // lấy thông tin của một cuộc trò chuyện có id là chatId
   getChatById: async (req, res) => {
     try {
-      const chat = await ChatService.getAllChats(req.params.chatId);
+      const chat = await ChatService.getChatById(req.params.chatId);
       return res.status(200).json({ chat });
     } catch (error) {
       console.error('Error fetching chats:', error);

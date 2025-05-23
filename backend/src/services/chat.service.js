@@ -10,18 +10,17 @@ const ChatService = {
         include: {
           Conversation: {
             select: {
-              id,
-              name,
-              type,
+              id: true,
+              name: true,
               Message: {
-                select: { senderId, content },
+                select: { senderId: true, content: true },
                 orderBy: { sent_at: 'desc' },
                 take: 1,
               },
+              members: {
+                include: { User: { select: { id: true, avatar: true } } },
+              },
             },
-          },
-          members: {
-            include: { User: { select: { id, avatar } } },
           },
         },
         take: 10,
@@ -50,12 +49,12 @@ const ChatService = {
         },
         include: {
           Message: {
-            select: { senderId, content },
+            select: { senderId: true, content: true },
             orderBy: { sent_at: 'desc' },
             take: 1,
           },
           members: {
-            include: { User: { select: { id, avatar } } },
+            include: { User: { select: { id: true, avatar: true } } },
           },
         },
         take: 10,
@@ -65,6 +64,38 @@ const ChatService = {
     } catch (error) {
       console.error('Error fetching unread chats:', error);
       throw new Error('Failed to fetch unread chats');
+    }
+  },
+
+  getAllGroupChats: async (userId) => {
+    try {
+      const groupchats = await prisma.conversation.findMany({
+        where: {
+          isGroup: true,
+          members: {
+            some: {
+              userId,
+              left_at: null,
+            },
+          },
+        },
+        include: {
+          Message: {
+            select: { senderId: true, content: true },
+            orderBy: { sent_at: 'desc' },
+            take: 1,
+          },
+          members: {
+            include: { User: { select: { id: true, avatar: true } } },
+          },
+        },
+        take: 10,
+      });
+
+      return groupchats;
+    } catch (error) {
+      console.error('Error fetching group chats:', error);
+      throw new Error('Failed to fetch group chats');
     }
   },
 };

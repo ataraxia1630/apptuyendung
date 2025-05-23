@@ -57,3 +57,5 @@ route.put('/mute', verifyToken, cache, ChatController.muteGroupChat);
 
 // bật thông báo của nhóm chat
 route.put('/unmute', verifyToken, cache, ChatController.unmuteGroupChat);
+
+module.exports = route;

@@ -20,6 +20,8 @@ const reactionRoutes = require('./reaction.route');
 const commentRoutes = require('./comment.route');
 const jobAppliedRoutes = require('./jobApplied.route');
 
+const chatRoutes = require('./chat.route');
+
 function route(app) {
   app.use('/api/auth', authRoutes);
   app.use('/api/users/applicant', applicantRoutes);
@@ -43,6 +45,8 @@ function route(app) {
   app.use('/api/reactions', reactionRoutes);
   app.use('/api/comments', commentRoutes);
   app.use('/api/apply', jobAppliedRoutes);
+
+  app.use('/api/chat', chatRoutes);
 }
 
 module.exports = route;
