@@ -1,11 +1,12 @@
 const { Router } = require('express');
 const { SkillController } = require('../controllers/applicantSkill.controller');
 const { verifyToken } = require('../middlewares/auth.middleware');
+const { cache } = require('../middlewares/cache.middleware');
 const { validate } = require('../middlewares/validate.middleware');
 const { SkillSchema } = require('../validators/Skill/skillSchema');
 const route = new Router();
 
-route.get('/:applicantId', verifyToken, SkillController.getAll);
+route.get('/:applicantId', verifyToken, cache, SkillController.getAll);
 route.post(
   '/:applicantId',
   verifyToken,

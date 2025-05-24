@@ -21,8 +21,8 @@ const RegisterSchema = Joi.object({
     'string.min': 'Password must be at least 8 characters long',
     'string.max': 'Password must be at most 30 characters long',
   }),
-  
   phoneNumber: Joi.string()
+    .optional()
     .pattern(/^(0|\+84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$/)
     .messages({
       'string.base': 'Phone Number must be a string',
