@@ -74,7 +74,7 @@ const ChatController = {
   deleteChat: async (req, res) => {
     try {
       const { chatId } = req.params;
-      await ChatService.deleteChat(chatId);
+      await ChatService.deleteChat(req.user.userId, chatId);
       return res.status(204).send();
     } catch (error) {
       console.error('Error deleting chat:', error);

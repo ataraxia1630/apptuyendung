@@ -179,6 +179,43 @@ const ChatService = {
       throw new Error('Failed to create group chat');
     }
   },
+
+  deleteChat: async (userId, chatId) => {
+    try {
+      const chat = await prisma.conversation.findUnique({
+        where: { id: chatId },
+      });
+      if (!chat) throw new Error('Chat not found!');
+
+      if (chat.isGroup) {
+        const role = await prisma.conversationUser.findUnique({
+          where: {
+            conversationId_userId: { userId, conversationId: chatId },
+          },
+        });
+        if (!role || !role.isAdmin) {
+          throw new Error('Only admin of group can delete!');
+        }
+      } else {
+        const participant = await prisma.conversationUser.findFirst({
+          where: {
+            conversationId: chatId,
+            userId,
+          },
+        });
+        if (!participant) {
+          throw new Error('You are not part of this chat!');
+        }
+      }
+
+      await prisma.conversation.delete({
+        where: { id: chatId },
+      });
+    } catch (error) {
+      console.error('Error deleting chat:', error);
+      throw new Error('Failed to delete chat');
+    }
+  },
 };
 
 module.exports = { ChatService };
