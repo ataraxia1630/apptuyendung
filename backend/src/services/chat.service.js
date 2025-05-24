@@ -187,30 +187,29 @@ const ChatService = {
       });
       if (!chat) throw new Error('Chat not found!');
 
+      const role = await prisma.conversationUser.findUnique({
+        where: {
+          conversationId_userId: { userId, conversationId: chatId },
+        },
+      });
+      if (!role) throw new Error('You are not part of this chat!');
+      // xóa group chat
       if (chat.isGroup) {
-        const role = await prisma.conversationUser.findUnique({
+        if (!role.isAdmin) throw new Error('Only admin of group can delete!');
+
+        await prisma.conversation.delete({
+          where: { id: chatId },
+        });
+      }
+
+      // xoá conversation từ 1 phía
+      else {
+        await prisma.conversationUser.delete({
           where: {
             conversationId_userId: { userId, conversationId: chatId },
           },
         });
-        if (!role || !role.isAdmin) {
-          throw new Error('Only admin of group can delete!');
-        }
-      } else {
-        const participant = await prisma.conversationUser.findFirst({
-          where: {
-            conversationId: chatId,
-            userId,
-          },
-        });
-        if (!participant) {
-          throw new Error('You are not part of this chat!');
-        }
       }
-
-      await prisma.conversation.delete({
-        where: { id: chatId },
-      });
     } catch (error) {
       console.error('Error deleting chat:', error);
       throw new Error('Failed to delete chat');
