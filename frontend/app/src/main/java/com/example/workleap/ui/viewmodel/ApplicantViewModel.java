@@ -644,6 +644,7 @@ public class ApplicantViewModel extends ViewModel {
             @Override
             public void onResponse(Call<ListInterestedFieldResponse> call, Response<ListInterestedFieldResponse> response) {
                 if (response.isSuccessful()) {
+                    Log.d("appviewmodel getinte", new Gson().toJson(response.body()));
                     ListInterestedFieldResponse getResponse = response.body();
                     getInterestedFieldData.postValue(getResponse.getAllApplicantFields());
                     getInterestedFieldResult.setValue("Success");

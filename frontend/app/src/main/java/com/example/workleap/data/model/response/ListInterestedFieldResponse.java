@@ -13,7 +13,7 @@ public class ListInterestedFieldResponse {
     public ListInterestedFieldResponse() {
     }
 
-    public ListInterestedFieldResponse(String message, List<InterestedField> interestedFields) {
+    public ListInterestedFieldResponse(String message, List<InterestedField> fields) {
         this.message = message;
         this.fields = fields;
     }

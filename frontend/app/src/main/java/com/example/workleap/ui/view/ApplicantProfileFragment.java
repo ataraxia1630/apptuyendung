@@ -10,7 +10,6 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.os.Debug;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +17,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.workleap.R;
-import com.example.workleap.data.model.entity.Applicant;
 import com.example.workleap.data.model.entity.ApplicantEducation;
-import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.Field;
 import com.example.workleap.data.model.entity.InterestedField;
 import com.example.workleap.data.model.entity.Skill;
@@ -33,9 +29,6 @@ import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.chip.Chip;
-import com.google.gson.Gson;
-
-import org.w3c.dom.Text;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -235,7 +228,7 @@ public class ApplicantProfileFragment extends Fragment {
                             applicantViewModel.getCreateApplicantSkillResult().observe(getViewLifecycleOwner(), result ->
                             {
                                 //reload
-                                LoadSkill();
+                                ReloadSkill();
 
                                 if(result != null)
                                     Log.e("AProfile creSkil result", result);
@@ -273,7 +266,7 @@ public class ApplicantProfileFragment extends Fragment {
                                 else
                                     Log.e("AProfile creInte result", "create AEdu result null");
 
-                                LoadInterestedField();
+                                ReLoadInterestedField();
                             });
                         }
                         else
@@ -421,9 +414,12 @@ public class ApplicantProfileFragment extends Fragment {
             }
         });
     }
+    private void ReloadSkill(){
+        skillContainer.removeAllViews();
+        applicantViewModel.getApplicantSkill(user.getApplicantId());
+    }
     private void LoadInterestedField()
     {
-        Log.e("yoooooo", "loadddd");
         fieldContainer.removeAllViews();
         applicantViewModel.getInterestedFields(user.getApplicantId());
         applicantViewModel.getGetInterestedFieldData().observe(getViewLifecycleOwner(), interestedFieldList ->
@@ -437,11 +433,29 @@ public class ApplicantProfileFragment extends Fragment {
                 fieldContainer.removeAllViews();
                 for(InterestedField interestedField : interestedFieldList)
                 {
-                    Field field = interestedField.getField();
-                    AddFieldChip(field.getName(), interestedField.getFieldId());
+                    Log.e("getintefieldlist", String.valueOf(interestedField.getId()));
+                    applicantViewModel.getFieldByName(interestedField.getId());
+                    applicantViewModel.getGetFieldByNameDdata().observe(getViewLifecycleOwner(), field ->
+                    {
+                        Log.e("approfileloadinte",field.getName());
+                        AddFieldChip(field.getName(), interestedField.getId());
+                    });
+                    applicantViewModel.getGetFieldByNameResult().observe(getViewLifecycleOwner(), result ->
+                    {
+                        Log.e("appproloadinte", result);
+                    });
                 }
             }
         });
+        applicantViewModel.getGetInterestedFieldResult().observe(getViewLifecycleOwner(), result->
+        {
+            Log.e("getintefieldresult", result);
+        });
+    }
+    private void ReLoadInterestedField()
+    {
+        fieldContainer.removeAllViews();
+        applicantViewModel.getInterestedFields(user.getApplicantId());
     }
     private void addSkillChip(String skillName, String skillId) {
         Chip chip = new Chip(requireContext());

@@ -3,7 +3,7 @@ package com.example.workleap.data.model.entity;
 import java.util.Date;
 
 public class InterestedField {
-    private String fieldId;
+    private String id;
     Field Field;
     private String applicantId;
     Applicant Applicant;
@@ -12,16 +12,16 @@ public class InterestedField {
 
     public InterestedField() {}
 
-    public InterestedField(String fieldId, String applicantId, Date created_at, Date updated_at) {
-        this.fieldId = fieldId;
+    public InterestedField(String id, String applicantId, Date created_at, Date updated_at) {
+        this.id = id;
         this.applicantId = applicantId;
         this.created_at = created_at;
         this.updated_at = updated_at;
     }
 
     // Getter và Setter
-    public String getFieldId() { return fieldId; }
-    public void setFieldId(String fieldId) { this.fieldId = fieldId; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
     public String getApplicantId() { return applicantId; }
     public void setApplicantId(String applicantId) { this.applicantId = applicantId; }
     public Date getCreatedAt() { return created_at; }
