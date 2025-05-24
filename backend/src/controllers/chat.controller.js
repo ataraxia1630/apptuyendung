@@ -8,7 +8,9 @@ const ChatController = {
       return res.status(200).json({ chats });
     } catch (error) {
       console.error('Error fetching chats:', error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res
+        .status(500)
+        .json({ message: 'Internal server error', error: error.message });
     }
   },
 
@@ -19,7 +21,9 @@ const ChatController = {
       return res.status(200).json({ chats });
     } catch (error) {
       console.error('Error fetching chats:', error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res
+        .status(500)
+        .json({ message: 'Internal server error', error: error.message });
     }
   },
 
@@ -30,7 +34,9 @@ const ChatController = {
       return res.status(200).json({ chats });
     } catch (error) {
       console.error('Error fetching chats:', error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res
+        .status(500)
+        .json({ message: 'Internal server error', error: error.message });
     }
   },
 
@@ -41,7 +47,9 @@ const ChatController = {
       return res.status(200).json({ chat });
     } catch (error) {
       console.error('Error fetching chats:', error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res
+        .status(500)
+        .json({ message: 'Internal server error', error: error.message });
     }
   },
 
@@ -53,7 +61,9 @@ const ChatController = {
       return res.status(201).json({ chat });
     } catch (error) {
       console.error('Error creating chat:', error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res
+        .status(500)
+        .json({ message: 'Internal server error', error: error.message });
     }
   },
 
@@ -120,10 +130,10 @@ const ChatController = {
   addMemberToGroupChat: async (req, res) => {
     try {
       const { chatId } = req.params;
-      const { userId } = req.body;
       const updatedChat = await ChatService.addMemberToGroupChat(
         chatId,
-        userId
+        req.user.userId,
+        req.body.members
       );
       return res.status(200).json(updatedChat);
     } catch (error) {

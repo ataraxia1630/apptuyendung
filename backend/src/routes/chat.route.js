@@ -32,15 +32,15 @@ route.delete('/:chatId', verifyToken, cache, ChatController.deleteChat);
 
 // thêm thành viên vào nhóm chat, chỉ admin nhóm mới có quyền này
 route.post(
-  '/add-member',
+  '/add-member/:chatId',
   verifyToken,
   cache,
   ChatController.addMemberToGroupChat
 );
 
 // xóa thành viên khỏi nhóm chat, chỉ admin nhóm mới có quyền này
-route.delete(
-  '/remove-member',
+route.put(
+  '/remove-member/:chatId',
   verifyToken,
   cache,
   ChatController.removeMemberFromGroupChat

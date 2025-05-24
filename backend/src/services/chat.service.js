@@ -230,6 +230,10 @@ const ChatService = {
     try {
       const chat = await prisma.conversation.findUnique({
         where: { id },
+        include: {
+          Message: [],
+          members: [],
+        },
       });
       if (!chat) throw new Error('Chat not found!');
       return chat;
@@ -247,6 +251,26 @@ const ChatService = {
       });
       if (!relation) throw new Error('You are not part of this chat!');
       return relation;
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+
+  addMemberToGroupChat: async (chatId, userId, members) => {
+    try {
+      await ChatService.getChatById(chatId);
+      console.log(userId);
+      const role = await ChatService.getRelationWithChat(userId, chatId);
+      if (!role.isAdmin)
+        throw new Error('Only admin of group can add members!');
+      await prisma.conversationUser.createManyAndReturn({
+        data: members.map((mem) => ({
+          conversationId: chatId,
+          userId: mem,
+        })),
+        skipDuplicates: true,
+      });
+      return await ChatService.getChatById(chatId);
     } catch (error) {
       throw new Error(error);
     }
