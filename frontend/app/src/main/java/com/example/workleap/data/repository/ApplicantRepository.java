@@ -12,6 +12,7 @@ import com.example.workleap.data.api.RetrofitClient;
 import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
+import com.example.workleap.data.model.response.FieldResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
 import com.example.workleap.data.model.response.ListInterestedFieldResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
@@ -141,7 +142,7 @@ public class ApplicantRepository {
     }
 
     //Get field by name or id
-    public Call<ListFieldResponse> getFieldByName(String name) {
+    public Call<FieldResponse> getFieldByName(String name) {
         return apiService.getFieldByName(name);
     }
 

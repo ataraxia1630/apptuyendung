@@ -8,14 +8,14 @@ import java.util.List;
 public class ListInterestedFieldResponse {
     String message;
 
-    List<InterestedField> interestedFields;
+    List<InterestedField> fields;
 
     public ListInterestedFieldResponse() {
     }
 
     public ListInterestedFieldResponse(String message, List<InterestedField> interestedFields) {
         this.message = message;
-        this.interestedFields = interestedFields;
+        this.fields = fields;
     }
 
     public String getMessage() {
@@ -23,6 +23,6 @@ public class ListInterestedFieldResponse {
     }
 
     public List<InterestedField> getAllApplicantFields() {
-        return interestedFields;
+        return fields;
     }
 }

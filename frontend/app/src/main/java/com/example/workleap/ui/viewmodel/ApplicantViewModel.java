@@ -18,6 +18,7 @@ import com.example.workleap.data.model.response.CreateApplicantExperienceRespons
 import com.example.workleap.data.model.response.CreateInterestedFieldResponse;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
+import com.example.workleap.data.model.response.FieldResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
 import com.example.workleap.data.model.response.ListInterestedFieldResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
@@ -79,7 +80,7 @@ public class ApplicantViewModel extends ViewModel {
     private MutableLiveData<String> getAllFieldResult = new MutableLiveData<>();
     private MutableLiveData<List<InterestedField>> getInterestedFieldData = new MutableLiveData<>();
     private MutableLiveData<String> getInterestedFieldResult = new MutableLiveData<>();
-    private MutableLiveData<List<Field>> getFieldByNameData = new MutableLiveData<>();
+    private MutableLiveData<Field> getFieldByNameData = new MutableLiveData<>();
     private MutableLiveData<String> getFieldByNameResult = new MutableLiveData<>();
     private MutableLiveData<String> createInterestedFieldResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteInterestedFieldResult = new MutableLiveData<>();
@@ -121,7 +122,7 @@ public class ApplicantViewModel extends ViewModel {
     public LiveData<String> getGetInterestedFieldResult() { return getInterestedFieldResult; }
     public LiveData<List<InterestedField>> getGetInterestedFieldData() { return getInterestedFieldData; }
     public LiveData<String> getGetFieldByNameResult() { return getFieldByNameResult; }
-    public LiveData<List<Field>> getGetFieldByNameDdata() { return getFieldByNameData; }
+    public LiveData<Field> getGetFieldByNameDdata() { return getFieldByNameData; }
     public LiveData<String> getCreateInterestedFieldResult() { return createApplicantSkillResult; }
     public LiveData<String> getDeleteInterestedFieldResult() { return deleteApplicantSkillResult; }
     public LiveData<String> getDeleteAllInterestedFieldResult() { return deleteAllApplicantSkillResult; }
@@ -664,26 +665,26 @@ public class ApplicantViewModel extends ViewModel {
 
     //Get Field By Name of Id
     public void getFieldByName(String name) {
-        Call<ListFieldResponse> call = applicantRepository.getFieldByName(name);
-        call.enqueue(new Callback<ListFieldResponse>() {
+        Call<FieldResponse> call = applicantRepository.getFieldByName(name);
+        call.enqueue(new Callback<FieldResponse>() {
             @Override
-            public void onResponse(Call<ListFieldResponse> call, Response<ListFieldResponse> response) {
+            public void onResponse(Call<FieldResponse> call, Response<FieldResponse> response) {
                 if (response.isSuccessful()) {
-                    ListFieldResponse getResponse = response.body();
+                    FieldResponse getResponse = response.body();
                     getFieldByNameData.postValue(getResponse.getAllField());
                     getFieldByNameResult.setValue("Success");
                 } else {
                     try {
-                        ListFieldResponse error = new Gson().fromJson(response.errorBody().string(), ListFieldResponse.class);
-                        getAllFieldResult.setValue("Lỗi: " + error.getMessage());
+                        FieldResponse error = new Gson().fromJson(response.errorBody().string(), FieldResponse.class);
+                        getFieldByNameResult.setValue("Lỗi: " + error.getMessage());
                     } catch (Exception e) {
-                        getAllFieldResult.setValue("Lỗi không xác định: " + response.code());
+                        getFieldByNameResult.setValue("Lỗi không xác định: " + response.code());
                     }
                 }
             }
             @Override
-            public void onFailure(Call<ListFieldResponse> call, Throwable t) {
-                getAllFieldResult.setValue("Lỗi kết nối: " + t.getMessage());
+            public void onFailure(Call<FieldResponse> call, Throwable t) {
+                getFieldByNameResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }
