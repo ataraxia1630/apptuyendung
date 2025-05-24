@@ -62,11 +62,17 @@ const ChatController = {
     try {
       const { chatId } = req.params;
       const chatData = req.body;
-      const updatedChat = await ChatService.updateChat(chatId, chatData);
+      const updatedChat = await ChatService.updateChat(
+        req.user.userId,
+        chatId,
+        chatData
+      );
       return res.status(200).json({ updatedChat });
     } catch (error) {
       console.error('Error updating chat:', error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res
+        .status(500)
+        .json({ message: 'Internal server error', error: error.message });
     }
   },
 
@@ -78,7 +84,9 @@ const ChatController = {
       return res.status(204).send();
     } catch (error) {
       console.error('Error deleting chat:', error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res
+        .status(500)
+        .json({ message: 'Internal server error', error: error.message });
     }
   },
 

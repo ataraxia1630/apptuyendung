@@ -182,17 +182,8 @@ const ChatService = {
 
   deleteChat: async (userId, chatId) => {
     try {
-      const chat = await prisma.conversation.findUnique({
-        where: { id: chatId },
-      });
-      if (!chat) throw new Error('Chat not found!');
-
-      const role = await prisma.conversationUser.findUnique({
-        where: {
-          conversationId_userId: { userId, conversationId: chatId },
-        },
-      });
-      if (!role) throw new Error('You are not part of this chat!');
+      const chat = await ChatService.getChatById(chatId);
+      const role = await ChatService.getRelationWithChat(userId, chatId);
       // xóa group chat
       if (chat.isGroup) {
         if (!role.isAdmin) throw new Error('Only admin of group can delete!');
@@ -212,7 +203,52 @@ const ChatService = {
       }
     } catch (error) {
       console.error('Error deleting chat:', error);
-      throw new Error('Failed to delete chat');
+      throw new Error(error);
+    }
+  },
+
+  updateChat: async (userId, id, data) => {
+    try {
+      const chat = await ChatService.getChatById(id);
+      const role = await ChatService.getRelationWithChat(userId, id);
+      if (!chat.isGroup)
+        throw new Error('This function is only for group chat!');
+
+      if (!role.isAdmin) throw new Error('Only admin of group can update!');
+      const updatedChat = await prisma.conversation.update({
+        data,
+        where: { id },
+      });
+      return updatedChat;
+    } catch (error) {
+      console.error('Error updating chat:', error);
+      throw new Error(error);
+    }
+  },
+
+  getChatById: async (id) => {
+    try {
+      const chat = await prisma.conversation.findUnique({
+        where: { id },
+      });
+      if (!chat) throw new Error('Chat not found!');
+      return chat;
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+
+  getRelationWithChat: async (userId, chatId) => {
+    try {
+      const relation = await prisma.conversationUser.findUnique({
+        where: {
+          conversationId_userId: { userId, conversationId: chatId },
+        },
+      });
+      if (!relation) throw new Error('You are not part of this chat!');
+      return relation;
+    } catch (error) {
+      throw new Error(error);
     }
   },
 };
