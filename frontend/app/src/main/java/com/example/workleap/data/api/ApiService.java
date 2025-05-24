@@ -144,7 +144,7 @@ public interface ApiService {
     @GET("api/fields/{name}")
     Call<FieldResponse> getFieldByName(@Path("name") String name);
     @GET("api/fields/interested/{applicantId}")
-    Call<ListInterestedFieldResponse> getInterestedField(@Path("applicantId") String applicantId);
+    Call<ListFieldResponse> getInterestedField(@Path("applicantId") String applicantId);
     @POST("api/fields/interested/{applicantId}")
     Call<CreateInterestedFieldResponse> createInterestedField(@Path("applicantId") String applicantId, @Body ListFieldIdRequest request);
     @DELETE("api/fields/interested/{applicantId}/{fieldId}")
