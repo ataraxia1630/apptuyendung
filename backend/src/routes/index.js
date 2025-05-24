@@ -13,6 +13,7 @@ const jobTypeRoutes = require('./jobType.route');
 const jobCategoryRoutes = require('./jobCategory.route');
 
 const cvRoutes = require('./cv.route');
+const avatarRoutes = require('./avatar.route');
 
 const jobSavedRoutes = require('./jobSaved.route');
 const PostRoutes = require('./post.route');
@@ -39,6 +40,7 @@ function route(app) {
   app.use('/api/category', jobCategoryRoutes);
 
   app.use('/api/cv', cvRoutes);
+  app.use('/api/avatar', avatarRoutes);
 
   app.use('/api/save', jobSavedRoutes);
   app.use('/api/posts', PostRoutes);

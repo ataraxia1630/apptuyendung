@@ -181,7 +181,7 @@ model ApplicantEducation {
   created_at  DateTime      @default(now())
   updated_at  DateTime      @updatedAt
   education   Education     @relation(fields: [eduId], references: [id])
-  applicant   Applicant     @relation(fields: [applicantId], references: [id])
+  applicant   Applicant     @relation(fields: [applicantId], references: [id], onDelete: Cascade)
 }
 
 model Experience {
@@ -197,7 +197,7 @@ model Experience {
   achievement       Achievement[]
   created_at        DateTime      @default(now())
   updated_at        DateTime      @updatedAt
-  applicant         Applicant     @relation(fields: [applicantId], references: [id])
+  applicant         Applicant     @relation(fields: [applicantId], references: [id], onDelete: Cascade)
 }
 
 model Achievement {
@@ -228,8 +228,8 @@ model InterestedField {
   applicantId String
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
-  applicant   Applicant @relation(fields: [applicantId], references: [id])
-  field       Field     @relation(fields: [fieldId], references: [id])
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  field       Field     @relation(fields: [fieldId], references: [id], onDelete: Cascade)
 
   @@id([fieldId, applicantId])
 }
@@ -276,7 +276,7 @@ model JobCategory {
   name       String    @db.VarChar(255)
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
-  Field      Field?    @relation(fields: [fieldId], references: [id])
+  Field      Field?    @relation(fields: [fieldId], references: [id], onDelete: SetNull)
   JobPost    JobPost[]
 
   @@unique([name, fieldId])
@@ -288,7 +288,7 @@ model JobSaved {
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
   JobPost     JobPost   @relation(fields: [jobpostId], references: [id])
-  applicant   Applicant @relation(fields: [applicantId], references: [id])
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
 
   @@id([jobpostId, applicantId])
 }
@@ -302,14 +302,14 @@ model JobApplied {
   apply_at    DateTime      @default(now())
   updated_at  DateTime      @updatedAt
   JobPost     JobPost       @relation(fields: [jobpostId], references: [id])
-  applicant   Applicant     @relation(fields: [applicantId], references: [id])
+  applicant   Applicant     @relation(fields: [applicantId], references: [id], onDelete: Cascade)
   CV          CV?           @relation(fields: [cvId], references: [id])
 }
 
 model CV {
   id          String       @id @default(uuid())
   applicantId String
-  Applicant   Applicant    @relation(fields: [applicantId], references: [id])
+  Applicant   Applicant    @relation(fields: [applicantId], references: [id], onDelete: Cascade)
   title       String
   filePath    String
   viewCount   Int          @db.SmallInt
@@ -344,7 +344,7 @@ model user_token {
   user_id    String
   fcm_token  String   @unique
   updated_at DateTime @updatedAt
-  User       User     @relation(fields: [user_id], references: [id])
+  User       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Notification {
@@ -354,7 +354,7 @@ model Notification {
   message    String
   status     NotificationStatus
   created_at DateTime           @default(now())
-  User       User               @relation(fields: [userId], references: [id])
+  User       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Review {
@@ -447,8 +447,8 @@ model ConversationUser {
   left_at           DateTime?
   deleted_at        DateTime?
   updated_at        DateTime     @updatedAt
-  Conversation      Conversation @relation(fields: [conversationId], references: [id])
-  User              User         @relation(fields: [userId], references: [id])
+  Conversation      Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  User              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([conversationId, userId])
 }
@@ -463,8 +463,8 @@ model Message {
   isRead         Boolean      @default(false)
   isDeleted      Boolean      @default(false)
   isEdited       Boolean      @default(false)
-  Conversation   Conversation @relation(fields: [conversationId], references: [id])
-  Sender         User         @relation(fields: [senderId], references: [id])
+  Conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  Sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
   attachments    Attachment[]
 }
 
@@ -474,7 +474,7 @@ model Attachment {
   filePath    String
   fileType    FileType
   uploaded_at DateTime @default(now())
-  Message     Message  @relation(fields: [messageId], references: [id])
+  Message     Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
 }
 
 model ConversationLabel {
@@ -482,14 +482,14 @@ model ConversationLabel {
   conversationId String
   label          String       @db.VarChar(50) // Ví dụ: "Quan trọng", "Công việc"
   created_at     DateTime     @default(now())
-  Conversation   Conversation @relation(fields: [conversationId], references: [id])
+  Conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 }
 
 model UserStatus {
   userId        String         @id
   status        UserStatusType @default(OFFLINE)
   lastActive_at DateTime?
-  User          User           @relation(fields: [userId], references: [id])
+  User          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
