@@ -108,14 +108,14 @@ public class ApplicantViewModel extends ViewModel {
     public LiveData<String> getAllEducationResult() { return getAllEducationResult; }
     public LiveData<String> getAllApplicantEducationResult() { return getAllApplicantEducationResult; }
     public LiveData<String> createEducationResult() { return createEducationResult; }
-    public LiveData<String> getCreateApplicantEducationResult() { return createApplicantSkillResult; }
-    public LiveData<String> getUpdateApplicantEducationResult() { return updateApplicantSkillResult; }
-    public LiveData<String> getDeleteApplicantEducationResult() { return deleteApplicantSkillResult; }
-    public LiveData<String> getDeleteAllApplicantEducationResult() { return deleteAllApplicantSkillResult; }
+    public LiveData<String> getCreateApplicantEducationResult() { return createApplicantEducationResult; }
+    public LiveData<String> getUpdateApplicantEducationResult() { return updateApplicantEducationResult; }
+    public LiveData<String> getDeleteApplicantEducationResult() { return deleteApplicantEducationResult; }
+    public LiveData<String> getDeleteAllApplicantEducationResult() { return deleteAllApplicantEducationResult; }
 
-    public LiveData<String> getCreateApplicantExperienceResult() { return createApplicantSkillResult; }
-    public LiveData<String> getUpdateApplicantExperienceResult() { return updateApplicantSkillResult; }
-    public LiveData<String> getDeleteApplicantExperienceResult() { return deleteApplicantSkillResult; }
+    public LiveData<String> getCreateApplicantExperienceResult() { return createApplicantExperienceResult; }
+    public LiveData<String> getUpdateApplicantExperienceResult() { return updateApplicantExperienceResult; }
+    public LiveData<String> getDeleteApplicantExperienceResult() { return deleteApplicantExperienceResult; }
 
     public LiveData<String> getGetAllFieldResult() { return getAllFieldResult; }
     public LiveData<List<Field>> getGetAllFieldData() { return getAllFieldData; }
@@ -123,9 +123,9 @@ public class ApplicantViewModel extends ViewModel {
     public LiveData<List<Field>> getGetInterestedFieldData() { return getInterestedFieldData; }
     public LiveData<String> getGetFieldByNameResult() { return getFieldByNameResult; }
     public LiveData<Field> getGetFieldByNameDdata() { return getFieldByNameData; }
-    public LiveData<String> getCreateInterestedFieldResult() { return createApplicantSkillResult; }
-    public LiveData<String> getDeleteInterestedFieldResult() { return deleteApplicantSkillResult; }
-    public LiveData<String> getDeleteAllInterestedFieldResult() { return deleteAllApplicantSkillResult; }
+    public LiveData<String> getCreateInterestedFieldResult() { return createInterestedFieldResult; }
+    public LiveData<String> getDeleteInterestedFieldResult() { return deleteInterestedFieldResult; }
+    public LiveData<String> getDeleteAllInterestedFieldResult() { return deleteAllInterestedFieldResult; }
 
     // Get applicant
     public void getApplicant(String id) {
@@ -731,7 +731,8 @@ public class ApplicantViewModel extends ViewModel {
                 if (response.isSuccessful())
                 {
                     MessageResponse deleteResponse = response.body();
-                    deleteInterestedFieldResult.setValue(deleteResponse.getMessage());
+                    //deleteInterestedFieldResult.setValue(deleteResponse.getMessage());
+                    deleteInterestedFieldResult.setValue("Delete success");
                 } else {
                     try {
                         MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);

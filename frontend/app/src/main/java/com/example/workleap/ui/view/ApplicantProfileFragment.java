@@ -59,6 +59,7 @@ public class ApplicantProfileFragment extends Fragment {
     LinearLayout educationListContainer;
 
     List<Field> listField;
+    List<Field> applicantInterestedField;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -163,8 +164,10 @@ public class ApplicantProfileFragment extends Fragment {
             listField = dataResult;
         });
 
+
+        //get applicant
         applicantViewModel.getApplicant(user.getApplicantId());
-        Log.e("applicant profile", user.getApplicantId());
+        Log.e("applicant profile", "USER ID: "+user.getApplicantId());
         applicantViewModel.getGetApplicantData().observe(getViewLifecycleOwner(), applicant -> {
             if(!isAdded() || getView()==null) return;
             if (applicant == null) {
@@ -179,7 +182,6 @@ public class ApplicantProfileFragment extends Fragment {
                 tvApplicantNameInfo.setText(applicant.getFirstName() + " " + applicant.getLastName());
             }
         });
-
         applicantViewModel.getUpdateApplicantResult().observe(getViewLifecycleOwner(), result -> {
             if(!isAdded() || getView()==null) return;
             if(result != null)
@@ -188,6 +190,8 @@ public class ApplicantProfileFragment extends Fragment {
                 Log.e("applicantprofile", "updateresult null");
 
         });
+
+        //user
         userViewModel.getUpdateUserResult().observe(getViewLifecycleOwner(), result -> {
             if(!isAdded() || getView()==null) return;
             if(result!=null)
@@ -255,18 +259,25 @@ public class ApplicantProfileFragment extends Fragment {
                     {
                         if (!values.get(0).isEmpty()) {
                             List<String> fieldIds = new ArrayList<>();
+
+                            //old fieldIds
+                            for(Field fieldId: applicantInterestedField)
+                            {
+                                fieldIds.add(fieldId.getId());
+                            }
+                            //new fieldIds
                             fieldIds.add(values.get(0));
+
                             applicantViewModel.createInterestedField(user.getApplicantId(), fieldIds);
                             applicantViewModel.getCreateInterestedFieldResult().observe(getViewLifecycleOwner(), result ->
                             {
+                                ReLoadInterestedField();
                                 if(result != null)
                                 {
                                     Log.e("AProfile creInte result", result);
                                 }
                                 else
                                     Log.e("AProfile creInte result", "create AEdu result null");
-
-                                ReLoadInterestedField();
                             });
                         }
                         else
@@ -420,6 +431,7 @@ public class ApplicantProfileFragment extends Fragment {
     }
     private void LoadInterestedField()
     {
+        Log.e("AppProfileFragment", "Load Interested Field");
         fieldContainer.removeAllViews();
         applicantViewModel.getInterestedFields(user.getApplicantId());
         applicantViewModel.getGetInterestedFieldData().observe(getViewLifecycleOwner(), interestedFieldList ->
@@ -430,10 +442,12 @@ public class ApplicantProfileFragment extends Fragment {
             }
             else
             {
+                applicantInterestedField= interestedFieldList;
                 fieldContainer.removeAllViews();
-                for(InterestedField interestedField : interestedFieldList)
+                for(Field interestedField : interestedFieldList)
                 {
-                    Log.e("getintefieldlist", String.valueOf(interestedField.getId()));
+                    AddFieldChip(interestedField.getName(), interestedField.getId());
+                    /*Log.e("getintefieldlist", String.valueOf(interestedField.getId()));
                     applicantViewModel.getFieldByName(interestedField.getId());
                     applicantViewModel.getGetFieldByNameDdata().observe(getViewLifecycleOwner(), field ->
                     {
@@ -443,7 +457,7 @@ public class ApplicantProfileFragment extends Fragment {
                     applicantViewModel.getGetFieldByNameResult().observe(getViewLifecycleOwner(), result ->
                     {
                         Log.e("appproloadinte", result);
-                    });
+                    });*/
                 }
             }
         });
