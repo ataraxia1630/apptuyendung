@@ -2,6 +2,7 @@ package com.example.workleap.ui.view;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,6 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 
 
@@ -22,19 +22,22 @@ import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.Field;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
-import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EditProfileDialogFragment extends DialogFragment {
     private String cardType;
-    private AutoCompleteTextView autoCompleteSchool;
+    private Spinner spinnerSchool;
     ArrayList<Field> listField;
     private Spinner spinnerInterestedField;
+    private Spinner spinnerMajor;
     private ArrayList<Education> listEducation;
     private final List<EditText> editTexts = new ArrayList<>();
     ApplicantViewModel applicantViewModel;
+
+    String[] majors = {"BACHELOR", "MASTER", "DOCTOR"};
     public static EditProfileDialogFragment newInstance(String cardType) {
         EditProfileDialogFragment fragment = new EditProfileDialogFragment();
         Bundle args = new Bundle();
@@ -91,7 +94,7 @@ public class EditProfileDialogFragment extends DialogFragment {
                 Log.e("EditProfileDialog", "list Education null");
             }
 
-            //add autocompletetextview to dialog
+            /*//add autocompletetextview to dialog
             autoCompleteSchool = new AutoCompleteTextView(getContext());
             autoCompleteSchool.setHint("School name");
             autoCompleteSchool.setThreshold(1); // Số ký tự gõ tối thiểu trước khi hiện dropdown
@@ -105,13 +108,16 @@ public class EditProfileDialogFragment extends DialogFragment {
             );
             autoCompleteSchool.setAdapter(adapter);
             //editTexts.add(autoCompleteSchool);
-            container.addView(autoCompleteSchool);
-            //eduStart, eduEnd, major, eduLevel, achievement
+            container.addView(autoCompleteSchool);*/
 
-            addField(container, "Year Start");
-            addField(container, "Year End");
+            //eduStart, eduEnd, major, eduLevel, achievement
+            spinnerSchool = addSchoolField(container, listEducation, "School");
+            addDateField(container, "Year Start");
+            addDateField(container, "Year End");
+            //addField(container, "Major");
+            spinnerMajor = addSpinnerField(container, majors, "Major");
             addField(container, "Edu level");
-            addField(container, "Achievement");
+            //addField(container, "Achievement");
         }
         else if("ApplicantInterestedField".equalsIgnoreCase(cardType))
         {
@@ -166,12 +172,23 @@ public class EditProfileDialogFragment extends DialogFragment {
                     for (EditText et : editTexts) {
                         updated.add(et.getText().toString());
                     }
+                    ArrayList<Date> dates= new ArrayList<>();
 
                     //applicant edu
                     if("ApplicantEdu".equalsIgnoreCase(cardType))
                     {
-                        if (autoCompleteSchool != null && autoCompleteSchool.getText() != null && !autoCompleteSchool.getText().toString().trim().isEmpty()) {
-                            updated.add(autoCompleteSchool.getText().toString().trim());
+                        //Major
+                        if (spinnerMajor != null && spinnerMajor.getSelectedItem() != null && !spinnerMajor.getSelectedItem().toString().trim().isEmpty()) {
+                            int position = spinnerMajor.getSelectedItemPosition();
+                            String major = majors[position];
+                            updated.add(major);
+                        }
+
+                        //list education
+                        if (spinnerSchool != null && spinnerSchool.getSelectedItem() != null && !spinnerSchool.getSelectedItem().toString().trim().isEmpty()) {
+                            int position = spinnerSchool.getSelectedItemPosition();
+                            String eduId = listEducation.get(position).getId();
+                            updated.add(eduId);
                         }
                     }
                     if("ApplicantInterestedField".equalsIgnoreCase(cardType))
@@ -187,6 +204,7 @@ public class EditProfileDialogFragment extends DialogFragment {
                     Bundle result = new Bundle();
                     result.putString("cardType", cardType);
                     result.putStringArrayList("values", updated);
+
                     getParentFragmentManager()
                             .setFragmentResult("editProfile", result);
                 })
@@ -203,5 +221,52 @@ public class EditProfileDialogFragment extends DialogFragment {
         container.addView(editText);
 
         editTexts.add(editText);
+    }
+    private void addDateField(LinearLayout container, String hint) {
+        EditText editText = new EditText(getContext());
+        editText.setHint(hint);
+        editText.setInputType(InputType.TYPE_CLASS_DATETIME);
+        container.addView(editText);
+
+        editTexts.add(editText);
+    }
+    private Spinner addSpinnerField(LinearLayout container, String[] array, String hint)
+    {
+        Spinner spinner = new Spinner(getContext());
+        spinner.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                getContext(), android.R.layout.simple_spinner_item, array
+        );
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+
+        container.addView(spinner);
+        return spinner;
+    }
+    private Spinner addSchoolField(LinearLayout container, ArrayList<Education> array, String hint)
+    {
+        Spinner spinner = new Spinner(getContext());
+        spinner.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+
+        ArrayList<String> names = new ArrayList<>();
+        for (Education education: array)
+        {
+            names.add(education.getUniName());
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                getContext(), android.R.layout.simple_spinner_item, names
+        );
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+
+        container.addView(spinner);
+        return spinner;
     }
 }

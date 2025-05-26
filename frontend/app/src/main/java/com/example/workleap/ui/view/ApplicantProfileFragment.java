@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.ApplicantEducation;
+import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.Field;
 import com.example.workleap.data.model.entity.InterestedField;
 import com.example.workleap.data.model.entity.Skill;
@@ -31,8 +32,12 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.chip.Chip;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,6 +65,7 @@ public class ApplicantProfileFragment extends Fragment {
 
     List<Field> listField;
     List<Field> applicantInterestedField;
+    List<Education> listEducation;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -144,8 +150,25 @@ public class ApplicantProfileFragment extends Fragment {
 
         //load
         LoadSkill();
-        LoadEducation();
+        //LoadEducation();
         LoadInterestedField();
+
+        //get all education
+        applicantViewModel.getAllEducation();
+        applicantViewModel.getAllEducationResult().observe(getViewLifecycleOwner(), result ->
+        {
+            if(result != null)
+                Log.e("ApplicantProfile result", result);
+            else
+                Log.e("applicantprofileEdu", "getAllEdu result null");
+
+        });
+        applicantViewModel.getAllEducationData().observe(getViewLifecycleOwner(), allEducation -> {
+            if(allEducation==null) Log.e("ApplicantProfile", "getAllEducationData NULL");
+            else Log.e("ApplicantProfile", "getAllEducationData NOT null");
+
+            listEducation = allEducation;
+        });
 
         //get all fields for interested fields
         applicantViewModel.getAllFields();
@@ -200,8 +223,7 @@ public class ApplicantProfileFragment extends Fragment {
                 Log.e("applicantprofile", "update user result null" );
         });
 
-        getParentFragmentManager().setFragmentResultListener(
-                "editProfile",
+        getParentFragmentManager().setFragmentResultListener("editProfile",
                 getViewLifecycleOwner(),
                 (requestKey, bundle) -> {
                     String cardType = bundle.getString("cardType");
@@ -244,14 +266,17 @@ public class ApplicantProfileFragment extends Fragment {
                     }
                     else if ("ApplicantEdu".equalsIgnoreCase(cardType) && values != null)
                     {
-                        //applicantViewModel.updateApplicantEducation(values.get(0), values.get(1), values.get(2), values.get(3), values.get(4), values.get(5), values.get(7));
-                        applicantViewModel.getUpdateApplicantEducationResult().observe(getViewLifecycleOwner(), result ->
+                        Date yearStart = StringToDate(values.get(0));
+                        Date yearEnd = StringToDate(values.get(1));
+
+                        applicantViewModel.createApplicantEducation(values.get(4), user.getApplicantId(), yearStart, yearEnd, values.get(2), values.get(3), null, null );
+                        applicantViewModel.getCreateApplicantEducationResult().observe(getViewLifecycleOwner(), result ->
                         {
-                            LoadEducation();
+                            //LoadEducation();
                             if(result != null)
-                                Log.e("AProfile upAEdu result", result);
+                                Log.e("ApplicantProfile", "getCreateApplicantEduResult " + result);
                             else
-                                Log.e("AProfile upAEdu result", "update AEdu result null");
+                                Log.e("ApplicantProfile", "getCreateApplicantEduResult NULL");
                         });
 
                     }
@@ -331,25 +356,10 @@ public class ApplicantProfileFragment extends Fragment {
         btnAddEdu.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantEdu");
 
-            applicantViewModel.getAllEducation();
-            applicantViewModel.getAllEducationResult().observe(getViewLifecycleOwner(), result ->
-            {
-                if(result != null)
-                    Log.e("ApplicantProfile result", result);
-                else
-                    Log.e("applicantprofileEdu", "getAllEdu result null");
-
-            });
-            applicantViewModel.getAllEducationData().observe(getViewLifecycleOwner(), listEducation -> {
-                if(listEducation==null) Log.e("Appprofile", "listedu null");
-                else Log.e("Appprofile", "listedu NOT null");
-
-                Bundle args = dialog.getArguments();
-                args.putSerializable("listEducation", (Serializable) listEducation);
-                dialog.setArguments(args);
-                dialog.show(getParentFragmentManager(), "AddApplicantEduDialog");
-            });
-
+            Bundle args = dialog.getArguments();
+            args.putSerializable("listEducation", (Serializable) listEducation);
+            dialog.setArguments(args);
+            dialog.show(getParentFragmentManager(), "AddApplicantEduDialog");
         });
         btnAddInterestedField.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantInterestedField");
@@ -371,13 +381,14 @@ public class ApplicantProfileFragment extends Fragment {
         applicantViewModel.getAllApplicantEducationResult().observe(getViewLifecycleOwner(), result ->
         {
             if(result != null)
-                Log.e("AProfile LoadEdu result", result);
+                Log.e("ApplicantProfile", "getAllApplicantEducationResult" + result);
             else
-                Log.e("AProfile LoadEdu", "getAllApplicantEdu result null");
+                Log.e("ApplicantProfile", "getAllApplicantEducationResult result NULL");
         });
 
         applicantViewModel.getAllApplicantEducationData().observe(getViewLifecycleOwner(), listApplicantEdu ->
         {
+            if(listApplicantEdu==null) return;
             for (ApplicantEducation applicantEdu : listApplicantEdu) {
                 View eduItem = LayoutInflater.from(getContext()).inflate(R.layout.item_education, educationListContainer, false);
 
@@ -493,5 +504,27 @@ public class ApplicantProfileFragment extends Fragment {
         });
         fieldContainer.addView(chip);
         Log.e("appprofile", "add field chip");
+    }
+    private Date StringToDate(String string)
+    {
+        Date date = new Date();
+        if (!string.isEmpty()) {
+            int year = Integer.parseInt(string);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, Calendar.JANUARY); // hoặc MONTH nào đó
+            calendar.set(Calendar.DAY_OF_MONTH, 1);         // ngày mặc định
+
+            date = calendar.getTime();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String formatted = sdf.format(date);
+        }
+        else {
+            date = null;
+        }
+
+        return date;
     }
 }

@@ -419,8 +419,8 @@ public class ApplicantViewModel extends ViewModel {
     }
 
     //Create Applicant Education
-    public void createApplicantEducation(String applicantId, Date eduStart, Date eduEnd, String major, String eduLevel, String moreInfo, List<String> achievement) {
-        CreateApplicantEducationRequest request = new CreateApplicantEducationRequest(eduStart, eduEnd, major, eduLevel, moreInfo, achievement);
+    public void createApplicantEducation(String educationId, String applicantId, Date eduStart, Date eduEnd, String major, String eduLevel, String moreInfo, List<String> achievement) {
+        CreateApplicantEducationRequest request = new CreateApplicantEducationRequest(educationId, eduStart, eduEnd, major, eduLevel, moreInfo, achievement);
         Call<CreateApplicantEducationResponse> call = applicantRepository.createApplicantEducation(applicantId, request);
         call.enqueue(new Callback<CreateApplicantEducationResponse>() {
             @Override
@@ -428,8 +428,11 @@ public class ApplicantViewModel extends ViewModel {
                 if (response.isSuccessful()) {
                     CreateApplicantEducationResponse createResponse = response.body();
                     createApplicantEducationResult.setValue(createResponse.getMessage());
+                    //createApplicantEducationResult.setValue("success");
                 } else {
                     try {
+                        String error2 = response.errorBody().string();
+                        Log.e("loi create", error2);
                         CreateApplicantEducationResponse error = new Gson().fromJson(response.errorBody().string(), CreateApplicantEducationResponse.class);
                         createApplicantEducationResult.setValue("Lỗi: " + error.getMessage());
                     } catch (Exception e) {
