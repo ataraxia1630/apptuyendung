@@ -13,6 +13,7 @@ import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
 import com.example.workleap.data.model.response.FieldResponse;
+import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
 import com.example.workleap.data.model.response.ListInterestedFieldResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
@@ -114,6 +115,11 @@ public class ApplicantRepository {
     //Delete all applicant education
     public Call<MessageResponse> deleteAllApplicantEducation(String id) {
         return apiService.deleteAllApplicantEducation(id);
+    }
+
+    //Get applicant experience
+    public Call<ListExperienceResponse> getApplicantExperience(String applicantId) {
+        return apiService.getApplicantExperience(applicantId);
     }
 
     //Create experience

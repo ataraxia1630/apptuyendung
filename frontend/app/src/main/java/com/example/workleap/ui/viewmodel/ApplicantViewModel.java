@@ -9,11 +9,13 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.workleap.data.model.entity.ApplicantEducation;
 import com.example.workleap.data.model.entity.Education;
+import com.example.workleap.data.model.entity.Experience;
 import com.example.workleap.data.model.entity.Field;
 import com.example.workleap.data.model.entity.InterestedField;
 import com.example.workleap.data.model.entity.Skill;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
+import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.CreateApplicantExperienceResponse;
 import com.example.workleap.data.model.response.CreateInterestedFieldResponse;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
@@ -72,6 +74,8 @@ public class ApplicantViewModel extends ViewModel {
     private MutableLiveData<String> deleteApplicantEducationResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteAllApplicantEducationResult = new MutableLiveData<>();
 
+    private MutableLiveData<List<Experience>> getAllApplicantExperienceData = new MutableLiveData<>();
+    private MutableLiveData<String> getAllApplicantExperienceResult = new MutableLiveData<>();
     private MutableLiveData<String> createApplicantExperienceResult = new MutableLiveData<>();
     private MutableLiveData<String> updateApplicantExperienceResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteApplicantExperienceResult = new MutableLiveData<>();
@@ -113,6 +117,8 @@ public class ApplicantViewModel extends ViewModel {
     public LiveData<String> getDeleteApplicantEducationResult() { return deleteApplicantEducationResult; }
     public LiveData<String> getDeleteAllApplicantEducationResult() { return deleteAllApplicantEducationResult; }
 
+    public LiveData<List<Experience>> getGetApplicantExperienceData() { return getAllApplicantExperienceData; }
+    public LiveData<String> getGetApplicantExperienceResult() { return getAllApplicantExperienceResult; }
     public LiveData<String> getCreateApplicantExperienceResult() { return createApplicantExperienceResult; }
     public LiveData<String> getUpdateApplicantExperienceResult() { return updateApplicantExperienceResult; }
     public LiveData<String> getDeleteApplicantExperienceResult() { return deleteApplicantExperienceResult; }
@@ -527,6 +533,34 @@ public class ApplicantViewModel extends ViewModel {
             @Override
             public void onFailure(Call<MessageResponse> call, Throwable t) {
                 deleteAllApplicantEducationResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Get Experience
+    public void getApplicantExperience(String applicantId) {
+        Call<ListExperienceResponse> call = applicantRepository.getApplicantExperience(applicantId);
+        call.enqueue(new Callback<ListExperienceResponse>() {
+            @Override
+            public void onResponse(Call<ListExperienceResponse> call, Response<ListExperienceResponse> response) {
+                if (response.isSuccessful()) {
+                    ListExperienceResponse getResponse = response.body();
+                    getAllApplicantExperienceData.postValue(getResponse.getAllExperience());
+                    getAllApplicantExperienceResult.setValue("Success");
+                } else {
+                    try {
+                        ListExperienceResponse error = new Gson().fromJson(response.errorBody().string(), ListExperienceResponse.class);
+                        error = new Gson().fromJson(response.errorBody().string(), ListExperienceResponse.class);
+                        getAllApplicantExperienceResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getAllApplicantExperienceResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ListExperienceResponse> call, Throwable t) {
+                getAllApplicantExperienceResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }

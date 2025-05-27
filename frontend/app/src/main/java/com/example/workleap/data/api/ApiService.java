@@ -23,6 +23,7 @@ import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
+import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
 import com.example.workleap.data.model.response.ListInterestedFieldResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
@@ -130,6 +131,8 @@ public interface ApiService {
 
 
     //Experience
+    @GET("api/experience/{applicantId}")
+    Call<ListExperienceResponse> getApplicantExperience(@Path("applicantId") String applicantId);
     @POST("api/experience/{applicantId}")
     Call<CreateApplicantExperienceResponse> createApplicantExperience(@Path("applicantId") String applicantId, @Body CreateApplicantExperienceRequest request);
     @PUT("api/experience/{id}")
