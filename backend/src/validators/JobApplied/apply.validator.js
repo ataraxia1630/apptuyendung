@@ -18,4 +18,23 @@ const ApplySchema = Joi.object({
   }),
 });
 
-module.exports = { ApplySchema };
+const ProcessSchema = Joi.object({
+  jobpostId: Joi.string().required().messages({
+    'string.base': 'Job post ID must be a string',
+    'any.required': 'jobpostId is required',
+    'string.empty': 'Job post ID cannot be empty',
+  }),
+  applicantId: Joi.string().required().messages({
+    'string.base': 'Applicant ID must be a string',
+    'any.required': 'applicantId is required',
+    'string.empty': 'Applicant ID cannot be empty',
+  }),
+  status: Joi.string().valid('SUCCESS', 'FAILURE').required().messages({
+    'string.base': 'Status must be a string',
+    'any.required': 'status is required',
+    'any.only': 'Status must be either SUCCESS or FAILURE',
+    'string.empty': 'Status cannot be empty',
+  }),
+});
+
+module.exports = { ApplySchema, ProcessSchema };
