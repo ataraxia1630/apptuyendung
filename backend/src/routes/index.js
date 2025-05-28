@@ -13,12 +13,15 @@ const jobTypeRoutes = require('./jobType.route');
 const jobCategoryRoutes = require('./jobCategory.route');
 
 const cvRoutes = require('./cv.route');
+const avatarRoutes = require('./avatar.route');
 
 const jobSavedRoutes = require('./jobSaved.route');
 const PostRoutes = require('./post.route');
 const reactionRoutes = require('./reaction.route');
 const commentRoutes = require('./comment.route');
 const jobAppliedRoutes = require('./jobApplied.route');
+
+const dailyReportRoutes = require('./dailyReport.route');
 
 function route(app) {
   app.use('/api/auth', authRoutes);
@@ -37,12 +40,15 @@ function route(app) {
   app.use('/api/category', jobCategoryRoutes);
 
   app.use('/api/cv', cvRoutes);
+  app.use('/api/avatar', avatarRoutes);
 
   app.use('/api/save', jobSavedRoutes);
   app.use('/api/posts', PostRoutes);
   app.use('/api/reactions', reactionRoutes);
   app.use('/api/comments', commentRoutes);
   app.use('/api/apply', jobAppliedRoutes);
+
+  app.use('/api/dailyReport', dailyReportRoutes);
 }
 
 module.exports = route;

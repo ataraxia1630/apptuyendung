@@ -76,6 +76,59 @@ const JobAppliedService = {
       throw new Error('Error applying to job (service): ' + error.message);
     }
   },
+
+  withdraw: async (applicantId, jobpostId) => {
+    try {
+      const jobpost = await prisma.jobPost.findUnique({
+        where: { id: jobpostId },
+      });
+      if (!jobpost) throw new Error('Jobpost is not existed');
+      if (jobpost.status !== 'OPENING')
+        throw new Error(
+          'Cannot withdraw because this post was closed or cancelled'
+        );
+      const existing = await prisma.jobApplied.findFirst({
+        where: {
+          jobpostId,
+          applicantId,
+        },
+      });
+      if (!existing) throw new Error('Not applied yet');
+      console.log(existing);
+      if (existing.status !== 'PENDING')
+        throw new Error(
+          'Cannot withdraw because the company processed your CV'
+        );
+      await prisma.jobApplied.delete({
+        where: {
+          id: existing.id,
+        },
+      });
+    } catch (error) {
+      throw new Error(error || 'Server error');
+    }
+  },
+
+  processCV: async (data) => {
+    try {
+      const { applicantId, jobpostId, status } = data;
+      const existing = await prisma.jobApplied.findFirst({
+        where: {
+          jobpostId,
+          applicantId,
+        },
+      });
+      if (!existing) throw new Error('Not applied yet');
+      return await prisma.jobApplied.update({
+        data: {
+          status,
+        },
+        where: { id: existing.id },
+      });
+    } catch (error) {
+      throw new Error(error || 'Server error');
+    }
+  },
 };
 
 module.exports = { JobAppliedService };
