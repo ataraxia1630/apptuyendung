@@ -577,6 +577,8 @@ public class ApplicantViewModel extends ViewModel {
                     createApplicantExperienceResult.setValue(createResponse.getMessage());
                 } else {
                     try {
+                        String error2 = response.errorBody().string();
+                        Log.e("ApplicantViewModel", "Loi create experience "+error2);
                         CreateApplicantExperienceResponse error = new Gson().fromJson(response.errorBody().string(), CreateApplicantExperienceResponse.class);
                         createApplicantExperienceResult.setValue("Lỗi: " + error.getMessage());
                     } catch (Exception e) {

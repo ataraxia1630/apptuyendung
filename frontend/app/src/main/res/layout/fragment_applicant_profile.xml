@@ -505,7 +505,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="15dp">
+                android:padding="15dp"
+                android:layout_marginTop="32dp">
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -544,7 +545,7 @@
                         android:layout_height="wrap_content"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="Edit Experience"
-                        android:src="@drawable/ic_edit_pen"
+                        android:src="@drawable/ic_plus"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="8dp"
@@ -552,6 +553,14 @@
 
                 </RelativeLayout>
 
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/experienceListContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp"
+                android:layout_marginTop="32dp">
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>

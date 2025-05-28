@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -32,12 +31,12 @@ public class EditProfileDialogFragment extends DialogFragment {
     private Spinner spinnerSchool;
     ArrayList<Field> listField;
     private Spinner spinnerInterestedField;
-    private Spinner spinnerMajor;
+    private Spinner spinnerEduLevel;
     private ArrayList<Education> listEducation;
     private final List<EditText> editTexts = new ArrayList<>();
     ApplicantViewModel applicantViewModel;
 
-    String[] majors = {"BACHELOR", "MASTER", "DOCTOR"};
+    String[] eduLevels = {"BACHELOR", "MASTER", "DOCTOR"};
     public static EditProfileDialogFragment newInstance(String cardType) {
         EditProfileDialogFragment fragment = new EditProfileDialogFragment();
         Bundle args = new Bundle();
@@ -115,8 +114,8 @@ public class EditProfileDialogFragment extends DialogFragment {
             addDateField(container, "Year Start");
             addDateField(container, "Year End");
             //addField(container, "Major");
-            spinnerMajor = addSpinnerField(container, majors, "Major");
-            addField(container, "Edu level");
+            spinnerEduLevel = addSpinnerField(container, eduLevels, "Edu level");
+            addField(container, "Major");
             //addField(container, "Achievement");
         }
         else if("ApplicantInterestedField".equalsIgnoreCase(cardType))
@@ -149,6 +148,15 @@ public class EditProfileDialogFragment extends DialogFragment {
             spinnerInterestedField.setAdapter(adapter);
             container.addView(spinnerInterestedField);
         }
+        else if("ApplicantExperience".equalsIgnoreCase(cardType))
+        {
+            addField(container, "Company name");
+            addField(container, "Company link");
+            addField(container, "Position");
+            addDateField(container, "Work start");
+            addDateField(container, "Work end");
+            addField(container, "Job Responsibility");
+        }
         //company
         else if ("AboutCompany".equalsIgnoreCase(cardType))
         {
@@ -177,10 +185,10 @@ public class EditProfileDialogFragment extends DialogFragment {
                     //applicant edu
                     if("ApplicantEdu".equalsIgnoreCase(cardType))
                     {
-                        //Major
-                        if (spinnerMajor != null && spinnerMajor.getSelectedItem() != null && !spinnerMajor.getSelectedItem().toString().trim().isEmpty()) {
-                            int position = spinnerMajor.getSelectedItemPosition();
-                            String major = majors[position];
+                        //Edu level
+                        if (spinnerEduLevel != null && spinnerEduLevel.getSelectedItem() != null && !spinnerEduLevel.getSelectedItem().toString().trim().isEmpty()) {
+                            int position = spinnerEduLevel.getSelectedItemPosition();
+                            String major = eduLevels[position];
                             updated.add(major);
                         }
 
@@ -249,6 +257,8 @@ public class EditProfileDialogFragment extends DialogFragment {
     }
     private Spinner addSchoolField(LinearLayout container, ArrayList<Education> array, String hint)
     {
+        if(array==null) return null;
+
         Spinner spinner = new Spinner(getContext());
         spinner.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,

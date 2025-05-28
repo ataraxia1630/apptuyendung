@@ -1,22 +1,20 @@
 package com.example.workleap.data.model.response;
 
-import com.example.workleap.data.model.entity.Applicant;
 import com.example.workleap.data.model.entity.ApplicantEducation;
-import com.example.workleap.data.model.entity.Education;
 
 import java.util.List;
 
 public class ListApplicantEducationResponse {
     String message;
 
-    List<ApplicantEducation> applicantEducations;
+    List<ApplicantEducation> educations;
 
     public ListApplicantEducationResponse() {
     }
 
     public ListApplicantEducationResponse(String message, List<ApplicantEducation> applicantEducations) {
         this.message = message;
-        this.applicantEducations = applicantEducations;
+        this.educations = applicantEducations;
     }
 
     public String getMessage() {
@@ -24,6 +22,6 @@ public class ListApplicantEducationResponse {
     }
 
     public List<ApplicantEducation> getAllApplicantEducation() {
-        return applicantEducations;
+        return educations;
     }
 }

@@ -12,39 +12,24 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tvSchoolName"
-            android:text="School Name"
+            android:id="@+id/tvCompanyName"
+            android:text="Company Name"
             android:textStyle="bold"
             android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <!--<AutoCompleteTextView
-            android:id="@+id/autoCompleteEducation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="<Select school>" />-->
-
         <TextView
-            android:id="@+id/tvSchoolAddress"
-            android:text="School Address"
+            android:id="@+id/tvCompanyLink"
+            android:text="Company Address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/tvMajor"
+            android:id="@+id/tvPosition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Major"
-            android:textSize="14sp"
-            android:ellipsize="end"
-            android:maxLines="1" />
-
-        <TextView
-            android:id="@+id/tvEduLevel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Edu level"
+            android:text="Position"
             android:textSize="14sp"
             android:ellipsize="end"
             android:maxLines="1" />
@@ -57,24 +42,17 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/tvAchievements"
+            android:id="@+id/tvJobResponsibility"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Achievements"
+            android:text="JobResponsibility"
             android:textSize="14sp"
             android:ellipsize="end"
             android:maxLines="2" />
-
-        <TextView
-            android:id="@+id/tvSchoolLink"
-            android:text="https://school.link"
-            android:autoLink="web"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/btnEditEducation"
+        android:id="@+id/btnEditExperience"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_edit_pen"

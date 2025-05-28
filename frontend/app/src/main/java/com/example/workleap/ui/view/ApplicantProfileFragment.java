@@ -21,8 +21,8 @@ import android.widget.TextView;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.ApplicantEducation;
 import com.example.workleap.data.model.entity.Education;
+import com.example.workleap.data.model.entity.Experience;
 import com.example.workleap.data.model.entity.Field;
-import com.example.workleap.data.model.entity.InterestedField;
 import com.example.workleap.data.model.entity.Skill;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
@@ -54,7 +54,7 @@ public class ApplicantProfileFragment extends Fragment {
     TextView tvApplicantName, tvApplicantNameInfo, tvMailInfo, tvPhoneInfo, tvAddressInfo;
     User user;
 
-    ImageButton btnAddInterestedField, btnAddEdu, btnAddSkill, btnOptions, btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
+    ImageButton btnAddExperience, btnAddInterestedField, btnAddEdu, btnAddSkill, btnOptions, btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
 
     ApplicantViewModel applicantViewModel;
     UserViewModel userViewModel;
@@ -62,10 +62,11 @@ public class ApplicantProfileFragment extends Fragment {
     AuthViewModel authViewModel;
     FlexboxLayout skillContainer, fieldContainer ;
     LinearLayout educationListContainer;
-
+    LinearLayout experienceListContainer;
     List<Field> listField;
     List<Field> applicantInterestedField;
     List<Education> listEducation;
+    List<Experience> applicantExperience;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -141,17 +142,21 @@ public class ApplicantProfileFragment extends Fragment {
         btnAddSkill = view.findViewById(R.id.btnEditSkill);
         btnAddEdu = view.findViewById(R.id.btnEditEducation);
         btnAddInterestedField = view.findViewById(R.id.btnEditInterestedField);
+        btnAddExperience = view.findViewById(R.id.btnEditExperience);
 
         skillContainer = view.findViewById(R.id.skillContainer);
         fieldContainer = view.findViewById(R.id.interestedFieldContainer);
+        educationListContainer = view.findViewById(R.id.educationListContainer);
+        experienceListContainer = view.findViewById(R.id.experienceListContainer);
 
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
 
         //load
         LoadSkill();
-        //LoadEducation();
+        LoadEducation();
         LoadInterestedField();
+        LoadExperience();
 
         //get all education
         applicantViewModel.getAllEducation();
@@ -268,11 +273,12 @@ public class ApplicantProfileFragment extends Fragment {
                     {
                         Date yearStart = StringToDate(values.get(0));
                         Date yearEnd = StringToDate(values.get(1));
-
+                        Log.e("applicantprofile", "ooooooooooooooooooooo");
                         applicantViewModel.createApplicantEducation(values.get(4), user.getApplicantId(), yearStart, yearEnd, values.get(2), values.get(3), null, null );
                         applicantViewModel.getCreateApplicantEducationResult().observe(getViewLifecycleOwner(), result ->
                         {
-                            //LoadEducation();
+                            ReloadEducation();
+
                             if(result != null)
                                 Log.e("ApplicantProfile", "getCreateApplicantEduResult " + result);
                             else
@@ -308,6 +314,20 @@ public class ApplicantProfileFragment extends Fragment {
                         else
                             Log.e("AppProfile", "interested field from dialog is empty");
 
+                    }
+                    else if("ApplicantExperience".equalsIgnoreCase(cardType) && values != null)
+                    {
+                        Date workStart = StringToDate(values.get(3));
+                        Date workEnd = StringToDate(values.get(4));
+                        applicantViewModel.createApplicantExperience(user.getApplicantId(), values.get(0), values.get(1), values.get(2), workStart, workEnd, values.get(5), null, null );
+                        applicantViewModel.getCreateApplicantExperienceResult().observe(getViewLifecycleOwner(), result ->
+                        {
+                            ReloadExperience();
+                            if(result != null)
+                                Log.e("ApplicantProfile", "getCreateApplicantEduResult " + result);
+                            else
+                                Log.e("ApplicantProfile", "getCreateApplicantEduResult NULL");
+                        });
                     }
 
                 }
@@ -370,42 +390,56 @@ public class ApplicantProfileFragment extends Fragment {
                 dialog.show(getParentFragmentManager(), "EditApplicantInterestedFieldDialog");
             }
         });
+        btnAddExperience.setOnClickListener(v->
+        {
+            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantExperience");
+            if (!dialog.isAdded()) {
+                dialog.show(getParentFragmentManager(), "EditApplicantExperienceDialog");
+            }
+        });
 
     }
     private void LoadEducation()
     {
-        educationListContainer = view.findViewById(R.id.educationListContainer);
-        educationListContainer.removeAllViews();
-
         applicantViewModel.getAllApplicantEducation(user.getApplicantId());
         applicantViewModel.getAllApplicantEducationResult().observe(getViewLifecycleOwner(), result ->
         {
             if(result != null)
-                Log.e("ApplicantProfile", "getAllApplicantEducationResult" + result);
+                Log.e("ApplicantProfile", "getAllApplicantEducationResult " + result);
             else
                 Log.e("ApplicantProfile", "getAllApplicantEducationResult result NULL");
         });
 
         applicantViewModel.getAllApplicantEducationData().observe(getViewLifecycleOwner(), listApplicantEdu ->
         {
-            if(listApplicantEdu==null) return;
+            if(listApplicantEdu==null)
+            {
+                Log.e("ApplicantProfile", "getAllApplicantEducation Data NULL");
+                return;
+            }
+
+            educationListContainer.removeAllViews();
             for (ApplicantEducation applicantEdu : listApplicantEdu) {
                 View eduItem = LayoutInflater.from(getContext()).inflate(R.layout.item_education, educationListContainer, false);
 
                 TextView tvSchoolName   = eduItem.findViewById(R.id.tvSchoolName);
                 TextView tvSchoolAddress= eduItem.findViewById(R.id.tvSchoolAddress);
-                TextView tvMajorLevel   = eduItem.findViewById(R.id.tvMajorLevel);
+                TextView tvEduLevel   = eduItem.findViewById(R.id.tvEduLevel);
+                TextView tvMajor   = eduItem.findViewById(R.id.tvMajor);
                 TextView tvTimeRange    = eduItem.findViewById(R.id.tvTimeRange);
                 TextView tvAchievements = eduItem.findViewById(R.id.tvAchievements);
                 TextView tvSchoolLink   = eduItem.findViewById(R.id.tvSchoolLink);
                 ImageButton btnEdit     = eduItem.findViewById(R.id.btnEditEducation);
 
-                tvSchoolName.setText(applicantEdu.getEducation().getUniName());
-                tvSchoolAddress.setText(applicantEdu.getEducation().getUniName());
-                tvMajorLevel.setText(applicantEdu.getMajor());
+                //tvSchoolName.setText(applicantEdu.getEducation().getUniName());
+                //tvSchoolAddress.setText(applicantEdu.getEducation().getUniName());
+                tvEduLevel.setText(applicantEdu.getEduLevel());
+                tvMajor.setText(applicantEdu.getMajor());
                 String start = String.valueOf(applicantEdu.getEduStart());
-                String end   = String.valueOf(applicantEdu.getEduEnd().toString());
+                String end   = String.valueOf(applicantEdu.getEduEnd());
                 tvTimeRange.setText(start + " – " + end);
+                //tvAchievements.setText(applicantEdu.getAchievement().get(0));
+                //tvSchoolLink.setText(applicantEdu.getEducation().getUniLink());
 
                 btnEdit.setOnClickListener(v -> {
                     EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantSkill");
@@ -423,9 +457,13 @@ public class ApplicantProfileFragment extends Fragment {
             };
         });
     }
+    private void ReloadEducation()
+    {
+        educationListContainer.removeAllViews();
+        applicantViewModel.getAllApplicantEducation(user.getApplicantId());
+    }
     private void LoadSkill()
     {
-        skillContainer.removeAllViews();
         applicantViewModel.getApplicantSkill(user.getApplicantId());
         applicantViewModel.getGetApplicantSkillData().observe(getViewLifecycleOwner(), skills ->
         {
@@ -443,7 +481,6 @@ public class ApplicantProfileFragment extends Fragment {
     private void LoadInterestedField()
     {
         Log.e("AppProfileFragment", "Load Interested Field");
-        fieldContainer.removeAllViews();
         applicantViewModel.getInterestedFields(user.getApplicantId());
         applicantViewModel.getGetInterestedFieldData().observe(getViewLifecycleOwner(), interestedFieldList ->
         {
@@ -481,6 +518,57 @@ public class ApplicantProfileFragment extends Fragment {
     {
         fieldContainer.removeAllViews();
         applicantViewModel.getInterestedFields(user.getApplicantId());
+    }
+    private void LoadExperience()
+    {
+        applicantViewModel.getApplicantExperience(user.getApplicantId());
+        applicantViewModel.getGetApplicantExperienceData().observe(getViewLifecycleOwner(), applicantExperiences ->
+        {
+            experienceListContainer.removeAllViews();
+            for (Experience experience : applicantExperiences) {
+                View expItem = LayoutInflater.from(getContext()).inflate(R.layout.item_experience, experienceListContainer, false);
+
+                TextView tvCompanyName   = expItem.findViewById(R.id.tvCompanyName);
+                TextView tvCompanyLink= expItem.findViewById(R.id.tvCompanyLink);
+                TextView tvPosition   = expItem.findViewById(R.id.tvPosition);
+                TextView tvTimeRange    = expItem.findViewById(R.id.tvTimeRange);
+                TextView tvJobResponsibility    = expItem.findViewById(R.id.tvJobResponsibility);
+                ImageButton btnEdit     = expItem.findViewById(R.id.btnEditExperience);
+
+                tvCompanyName.setText(experience.getCompanyName());
+                tvCompanyLink.setText(experience.getCompanyLink());
+                tvPosition.setText(experience.getPosition());
+                String start = String.valueOf(experience.getWorkStart().getTime());
+                String end   = String.valueOf(experience.getWorkEnd().getTime());
+                tvTimeRange.setText(start + " – " + end);
+                tvJobResponsibility.setText(experience.getJobResponsibility());
+
+                btnEdit.setOnClickListener(v -> {
+                    EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("UpdateApplicantExperience");
+                    dialog.show(getParentFragmentManager(), "UpdateApplicantExperienceDialog");
+                });
+                //line
+                View divider = new View(getContext());
+                divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+                divider.setBackgroundColor(Color.LTGRAY);
+                divider.setPadding(0, 8, 0, 8);
+
+                experienceListContainer.addView(expItem);
+            };
+        });
+        applicantViewModel.getGetApplicantExperienceResult().observe(getViewLifecycleOwner(), result->
+        {
+            if(result != null)
+                Log.e("ApplicantProfile", "getGetApplicantExperienceResult " + result);
+            else
+                Log.e("ApplicantProfile", "getGetApplicantExperienceResult result NULL");
+        });
+
+    }
+    private void ReloadExperience()
+    {
+        experienceListContainer.removeAllViews();
+        applicantViewModel.getApplicantExperience(user.getApplicantId());
     }
     private void addSkillChip(String skillName, String skillId) {
         Chip chip = new Chip(requireContext());
@@ -523,6 +611,7 @@ public class ApplicantProfileFragment extends Fragment {
         }
         else {
             date = null;
+            Log.e("ApplicantProfile", "StringToDate() return date NULL");
         }
 
         return date;

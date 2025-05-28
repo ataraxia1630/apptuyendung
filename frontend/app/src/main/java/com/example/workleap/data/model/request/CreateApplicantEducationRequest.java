@@ -5,8 +5,8 @@ import java.util.List;
 
 public class CreateApplicantEducationRequest {
     private String eduId;
-    private Date eduStart;
-    private Date eduEnd;
+    private Date edu_start;
+    private Date edu_end;
     private String major;
     private String eduLevel; // Enum: HIGH_SCHOOL, BACHELOR, MASTER, DOCTORATE
     private String moreInfo;
@@ -16,8 +16,8 @@ public class CreateApplicantEducationRequest {
 
     public CreateApplicantEducationRequest(String educationId, Date eduStart, Date eduEnd, String major, String eduLevel, String moreInfo, List<String> achievement) {
         this.eduId = educationId;
-        this.eduStart = eduStart;
-        this.eduEnd = eduEnd;
+        this.edu_start = eduStart;
+        this.edu_end = eduEnd;
         this.major = major;
         this.eduLevel = eduLevel;
         this.moreInfo = moreInfo;
@@ -26,10 +26,10 @@ public class CreateApplicantEducationRequest {
 
     // Getter và Setter
     public String getEducationId(){return eduId;}
-    public Date getEduStart() { return eduStart; }
-    public void setEduStart(Date eduStart) { this.eduStart = eduStart; }
-    public Date getEduEnd() { return eduEnd; }
-    public void setEduEnd(Date eduEnd) { this.eduEnd = eduEnd; }
+    public Date getEduStart() { return edu_start; }
+    public void setEduStart(Date eduStart) { this.edu_start = eduStart; }
+    public Date getEduEnd() { return edu_end; }
+    public void setEduEnd(Date eduEnd) { this.edu_end = eduEnd; }
     public String getMajor() { return major; }
     public void setMajor(String major) { this.major = major; }
     public String getEduLevel() { return eduLevel; }
