@@ -435,8 +435,8 @@ public class ApplicantProfileFragment extends Fragment {
                 //tvSchoolAddress.setText(applicantEdu.getEducation().getUniName());
                 tvEduLevel.setText(applicantEdu.getEduLevel());
                 tvMajor.setText(applicantEdu.getMajor());
-                String start = String.valueOf(applicantEdu.getEduStart());
-                String end   = String.valueOf(applicantEdu.getEduEnd());
+                String start = formatYear(applicantEdu.getEduStart());
+                String end   = formatYear(applicantEdu.getEduEnd());
                 tvTimeRange.setText(start + " – " + end);
                 //tvAchievements.setText(applicantEdu.getAchievement().get(0));
                 //tvSchoolLink.setText(applicantEdu.getEducation().getUniLink());
@@ -538,8 +538,8 @@ public class ApplicantProfileFragment extends Fragment {
                 tvCompanyName.setText(experience.getCompanyName());
                 tvCompanyLink.setText(experience.getCompanyLink());
                 tvPosition.setText(experience.getPosition());
-                String start = String.valueOf(experience.getWorkStart().getTime());
-                String end   = String.valueOf(experience.getWorkEnd().getTime());
+                String start = formatYear(experience.getWorkStart());
+                String end   = formatYear(experience.getWorkEnd());
                 tvTimeRange.setText(start + " – " + end);
                 tvJobResponsibility.setText(experience.getJobResponsibility());
 
@@ -615,5 +615,10 @@ public class ApplicantProfileFragment extends Fragment {
         }
 
         return date;
+    }
+    private String formatYear(Date date) {
+        if (date == null) return "N/A";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
+        return sdf.format(date);
     }
 }
