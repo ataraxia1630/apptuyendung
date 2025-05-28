@@ -29,12 +29,15 @@ const ProcessSchema = Joi.object({
     'any.required': 'applicantId is required',
     'string.empty': 'Applicant ID cannot be empty',
   }),
-  status: Joi.string().valid('SUCCESS', 'FAILURE').required().messages({
-    'string.base': 'Status must be a string',
-    'any.required': 'status is required',
-    'any.only': 'Status must be either SUCCESS or FAILURE',
-    'string.empty': 'Status cannot be empty',
-  }),
+  status: Joi.string()
+    .valid('SUCCESS', 'FAILURE', 'PENDING')
+    .required()
+    .messages({
+      'string.base': 'Status must be a string',
+      'any.required': 'status is required',
+      'any.only': 'Status must be SUCCESS, FAILURE or PENDING',
+      'string.empty': 'Status cannot be empty',
+    }),
 });
 
 module.exports = { ApplySchema, ProcessSchema };

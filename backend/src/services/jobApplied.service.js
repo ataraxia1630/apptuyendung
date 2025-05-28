@@ -108,6 +108,27 @@ const JobAppliedService = {
       throw new Error(error || 'Server error');
     }
   },
+
+  processCV: async (data) => {
+    try {
+      const { applicantId, jobpostId, status } = data;
+      const existing = await prisma.jobApplied.findFirst({
+        where: {
+          jobpostId,
+          applicantId,
+        },
+      });
+      if (!existing) throw new Error('Not applied yet');
+      return await prisma.jobApplied.update({
+        data: {
+          status,
+        },
+        where: { id: existing.id },
+      });
+    } catch (error) {
+      throw new Error(error || 'Server error');
+    }
+  },
 };
 
 module.exports = { JobAppliedService };

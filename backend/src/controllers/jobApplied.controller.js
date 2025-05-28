@@ -67,7 +67,14 @@ const JobAppliedController = {
     }
   },
 
-  processCV: async (req, res) => {},
+  processCV: async (req, res) => {
+    try {
+      const jobApplied = await JobAppliedService.processCV(req.body);
+      return res.status(200).json({ jobApplied });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
 };
 
 module.exports = { JobAppliedController };
