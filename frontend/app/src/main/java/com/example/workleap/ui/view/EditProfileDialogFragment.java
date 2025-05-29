@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.ApplicantEducation;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.Field;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
@@ -81,7 +82,7 @@ public class EditProfileDialogFragment extends DialogFragment {
         {
             //list school name
             listEducation = (ArrayList<Education>) getArguments().getSerializable("listEducation");
-            ArrayList<String> schoolNames = new ArrayList<>();
+            /*ArrayList<String> schoolNames = new ArrayList<>();
             if(listEducation != null)
             {
                 for (Education edu : listEducation) {
@@ -91,7 +92,7 @@ public class EditProfileDialogFragment extends DialogFragment {
             else
             {
                 Log.e("EditProfileDialog", "list Education null");
-            }
+            }*/
 
             /*//add autocompletetextview to dialog
             autoCompleteSchool = new AutoCompleteTextView(getContext());
@@ -117,6 +118,19 @@ public class EditProfileDialogFragment extends DialogFragment {
             spinnerEduLevel = addSpinnerField(container, eduLevels, "Edu level");
             addField(container, "Major");
             //addField(container, "Achievement");
+        }
+        else if ("UpdateApplicantEducation".equalsIgnoreCase(cardType))
+        {
+            //list school name
+            listEducation = (ArrayList<Education>) getArguments().getSerializable("listEducation");
+            if(listEducation==null) Log.e("EditProfileDialog", "list Education null");
+
+            //eduStart, eduEnd, major, eduLevel, achievement
+            spinnerSchool = addSchoolField(container, listEducation, "School");
+            addDateField(container, "Year Start");
+            addDateField(container, "Year End");
+            spinnerEduLevel = addSpinnerField(container, eduLevels, "Edu level");
+            addField(container, "Major");
         }
         else if("ApplicantInterestedField".equalsIgnoreCase(cardType))
         {
@@ -172,54 +186,104 @@ public class EditProfileDialogFragment extends DialogFragment {
         }
 
 
-        builder.setView(view)
-                .setTitle("Edit")
+        if("UpdateApplicantEducation".equalsIgnoreCase(cardType))
+        {
+            builder.setView(view)
+                    .setTitle("Update Applicant Education")
 
-                .setPositiveButton("Save", (dialog, which) -> {
-                    ArrayList<String> updated = new ArrayList<>();
-                    for (EditText et : editTexts) {
-                        updated.add(et.getText().toString());
-                    }
-                    ArrayList<Date> dates= new ArrayList<>();
+                    .setPositiveButton("Save", (dialog, which) -> {
+                        ArrayList<String> updated = new ArrayList<>();
+                        for (EditText et : editTexts) {
+                            updated.add(et.getText().toString());
+                        }
+                        ArrayList<Date> dates= new ArrayList<>();
 
-                    //applicant edu
-                    if("ApplicantEdu".equalsIgnoreCase(cardType))
+                        //applicant edu
+                        if("UpdateApplicantEducation".equalsIgnoreCase(cardType))
+                        {
+                            //Edu level
+                            if (spinnerEduLevel != null && spinnerEduLevel.getSelectedItem() != null && !spinnerEduLevel.getSelectedItem().toString().trim().isEmpty()) {
+                                int position = spinnerEduLevel.getSelectedItemPosition();
+                                String major = eduLevels[position];
+                                updated.add(major);
+                            }
+
+                            //list education
+                            if (spinnerSchool != null && spinnerSchool.getSelectedItem() != null && !spinnerSchool.getSelectedItem().toString().trim().isEmpty()) {
+                                int position = spinnerSchool.getSelectedItemPosition();
+                                String eduId = listEducation.get(position).getId();
+                                updated.add(eduId);
+                            }
+                        }
+
+                        // Tạo Bundle và đẩy kết quả
+                        Bundle result = new Bundle();
+                        result.putString("cardType", cardType);
+                        result.putStringArrayList("values", updated);
+                        ApplicantEducation updateApplicantEducation = (ApplicantEducation) getArguments().getSerializable("deleteApplicantEducation");
+                        result.putString("deleteApplicantEducationId", updateApplicantEducation.getId());
+
+                        getParentFragmentManager()
+                                .setFragmentResult("editProfile", result);
+                    })
+                    .setNeutralButton("Delete", (dialog, which)->
                     {
-                        //Edu level
-                        if (spinnerEduLevel != null && spinnerEduLevel.getSelectedItem() != null && !spinnerEduLevel.getSelectedItem().toString().trim().isEmpty()) {
-                            int position = spinnerEduLevel.getSelectedItemPosition();
-                            String major = eduLevels[position];
-                            updated.add(major);
+                        ApplicantEducation deleteEducation = (ApplicantEducation) getArguments().getSerializable("deleteApplicantEducation");
+                        applicantViewModel.deleteApplicantEducation(deleteEducation.getId());
+                    })
+
+                    .setNegativeButton("Cancel", null);
+
+            return builder.create();
+        }
+        else {
+            builder.setView(view)
+                    .setTitle("Edit")
+
+                    .setPositiveButton("Save", (dialog, which) -> {
+                        ArrayList<String> updated = new ArrayList<>();
+                        for (EditText et : editTexts) {
+                            updated.add(et.getText().toString());
+                        }
+                        ArrayList<Date> dates = new ArrayList<>();
+
+                        //applicant edu
+                        if ("ApplicantEdu".equalsIgnoreCase(cardType)) {
+                            //Edu level
+                            if (spinnerEduLevel != null && spinnerEduLevel.getSelectedItem() != null && !spinnerEduLevel.getSelectedItem().toString().trim().isEmpty()) {
+                                int position = spinnerEduLevel.getSelectedItemPosition();
+                                String major = eduLevels[position];
+                                updated.add(major);
+                            }
+
+                            //list education
+                            if (spinnerSchool != null && spinnerSchool.getSelectedItem() != null && !spinnerSchool.getSelectedItem().toString().trim().isEmpty()) {
+                                int position = spinnerSchool.getSelectedItemPosition();
+                                String eduId = listEducation.get(position).getId();
+                                updated.add(eduId);
+                            }
+                        }
+                        if ("ApplicantInterestedField".equalsIgnoreCase(cardType)) {
+                            if (spinnerInterestedField != null && spinnerInterestedField.getSelectedItem() != null && !spinnerInterestedField.getSelectedItem().toString().trim().isEmpty()) {
+                                int position = spinnerInterestedField.getSelectedItemPosition();
+                                Field field = listField.get(position);
+                                updated.add(field.getId());
+                            }
                         }
 
-                        //list education
-                        if (spinnerSchool != null && spinnerSchool.getSelectedItem() != null && !spinnerSchool.getSelectedItem().toString().trim().isEmpty()) {
-                            int position = spinnerSchool.getSelectedItemPosition();
-                            String eduId = listEducation.get(position).getId();
-                            updated.add(eduId);
-                        }
-                    }
-                    if("ApplicantInterestedField".equalsIgnoreCase(cardType))
-                    {
-                        if (spinnerInterestedField != null && spinnerInterestedField.getSelectedItem() != null && !spinnerInterestedField.getSelectedItem().toString().trim().isEmpty()) {
-                            int position = spinnerInterestedField.getSelectedItemPosition();
-                            Field field = listField.get(position);
-                            updated.add(field.getId());
-                        }
-                    }
+                        // Tạo Bundle và đẩy kết quả
+                        Bundle result = new Bundle();
+                        result.putString("cardType", cardType);
+                        result.putStringArrayList("values", updated);
 
-                    // Tạo Bundle và đẩy kết quả
-                    Bundle result = new Bundle();
-                    result.putString("cardType", cardType);
-                    result.putStringArrayList("values", updated);
+                        getParentFragmentManager()
+                                .setFragmentResult("editProfile", result);
+                    })
 
-                    getParentFragmentManager()
-                            .setFragmentResult("editProfile", result);
-                })
+                    .setNegativeButton("Cancel", null);
 
-                .setNegativeButton("Cancel", null);
-
-        return builder.create();
+            return builder.create();
+        }
     }
 
     private void addField(LinearLayout container, String hint) {

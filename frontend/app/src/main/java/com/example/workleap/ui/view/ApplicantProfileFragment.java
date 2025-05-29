@@ -273,7 +273,6 @@ public class ApplicantProfileFragment extends Fragment {
                     {
                         Date yearStart = StringToDate(values.get(0));
                         Date yearEnd = StringToDate(values.get(1));
-                        Log.e("applicantprofile", "ooooooooooooooooooooo");
                         applicantViewModel.createApplicantEducation(values.get(4), user.getApplicantId(), yearStart, yearEnd, values.get(2), values.get(3), null, null );
                         applicantViewModel.getCreateApplicantEducationResult().observe(getViewLifecycleOwner(), result ->
                         {
@@ -285,6 +284,22 @@ public class ApplicantProfileFragment extends Fragment {
                                 Log.e("ApplicantProfile", "getCreateApplicantEduResult NULL");
                         });
 
+                    }
+                    else if("UpdateApplicantEducation".equalsIgnoreCase(cardType))
+                    {
+                        String updateApplicantEducationId = bundle.getString("deleteApplicantEducationId");
+                        Date yearStart = StringToDate(values.get(0));
+                        Date yearEnd = StringToDate(values.get(1));
+                        applicantViewModel.updateApplicantEducation(updateApplicantEducationId, values.get(4), yearStart, yearEnd, values.get(2), values.get(3), null, null );
+                        applicantViewModel.getUpdateApplicantEducationResult().observe(getViewLifecycleOwner(), result ->
+                        {
+                            ReloadEducation();
+
+                            if(result != null)
+                                Log.e("ApplicantProfile", "getUpdateApplicantEducationResult " + result);
+                            else
+                                Log.e("ApplicantProfile", "getUpdateApplicantEducationResult NULL");
+                        });
                     }
                     else if("ApplicantInterestedField".equalsIgnoreCase(cardType) && values != null)
                     {
@@ -302,13 +317,14 @@ public class ApplicantProfileFragment extends Fragment {
                             applicantViewModel.createInterestedField(user.getApplicantId(), fieldIds);
                             applicantViewModel.getCreateInterestedFieldResult().observe(getViewLifecycleOwner(), result ->
                             {
+                                applicantInterestedField.clear();
                                 ReLoadInterestedField();
                                 if(result != null)
                                 {
-                                    Log.e("AProfile creInte result", result);
+                                    Log.e("ApplicantProfile", "getCreateInterestedFieldResult " + result);
                                 }
                                 else
-                                    Log.e("AProfile creInte result", "create AEdu result null");
+                                    Log.e("ApplicantProfile", "getCreateInterestedFieldResult NULL");
                             });
                         }
                         else
@@ -431,19 +447,24 @@ public class ApplicantProfileFragment extends Fragment {
                 TextView tvSchoolLink   = eduItem.findViewById(R.id.tvSchoolLink);
                 ImageButton btnEdit     = eduItem.findViewById(R.id.btnEditEducation);
 
-                //tvSchoolName.setText(applicantEdu.getEducation().getUniName());
-                //tvSchoolAddress.setText(applicantEdu.getEducation().getUniName());
+                tvSchoolName.setText(applicantEdu.getEducation().getUniName());
+                tvSchoolAddress.setText(applicantEdu.getEducation().getAddress());
                 tvEduLevel.setText(applicantEdu.getEduLevel());
                 tvMajor.setText(applicantEdu.getMajor());
                 String start = formatYear(applicantEdu.getEduStart());
                 String end   = formatYear(applicantEdu.getEduEnd());
                 tvTimeRange.setText(start + " – " + end);
                 //tvAchievements.setText(applicantEdu.getAchievement().get(0));
-                //tvSchoolLink.setText(applicantEdu.getEducation().getUniLink());
+                tvSchoolLink.setText(applicantEdu.getEducation().getUniLink());
 
                 btnEdit.setOnClickListener(v -> {
-                    EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantSkill");
-                    dialog.show(getParentFragmentManager(), "EditApplicantSkillDialog");
+                    EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("UpdateApplicantEducation");
+
+                    Bundle args = dialog.getArguments();
+                    args.putSerializable("deleteApplicantEducation", (Serializable) applicantEdu);
+                    args.putSerializable("listEducation", (Serializable) listEducation);
+                    dialog.setArguments(args);
+                    dialog.show(getParentFragmentManager(), "UpdateApplicantEducation");
                 });
 
 
@@ -459,7 +480,6 @@ public class ApplicantProfileFragment extends Fragment {
     }
     private void ReloadEducation()
     {
-        educationListContainer.removeAllViews();
         applicantViewModel.getAllApplicantEducation(user.getApplicantId());
     }
     private void LoadSkill()
@@ -474,8 +494,8 @@ public class ApplicantProfileFragment extends Fragment {
             }
         });
     }
-    private void ReloadSkill(){
-        skillContainer.removeAllViews();
+    private void ReloadSkill()
+    {
         applicantViewModel.getApplicantSkill(user.getApplicantId());
     }
     private void LoadInterestedField()
@@ -486,37 +506,27 @@ public class ApplicantProfileFragment extends Fragment {
         {
             if(interestedFieldList==null)
             {
-                Log.e("AppProfile", "interestedFieldList null");
+                Log.e("ApplicantProfile", "interestedFieldList NULL");
             }
             else
             {
-                applicantInterestedField= interestedFieldList;
+                //applicantInterestedField cu de them moi
+                applicantInterestedField = interestedFieldList;
+
                 fieldContainer.removeAllViews();
                 for(Field interestedField : interestedFieldList)
                 {
                     AddFieldChip(interestedField.getName(), interestedField.getId());
-                    /*Log.e("getintefieldlist", String.valueOf(interestedField.getId()));
-                    applicantViewModel.getFieldByName(interestedField.getId());
-                    applicantViewModel.getGetFieldByNameDdata().observe(getViewLifecycleOwner(), field ->
-                    {
-                        Log.e("approfileloadinte",field.getName());
-                        AddFieldChip(field.getName(), interestedField.getId());
-                    });
-                    applicantViewModel.getGetFieldByNameResult().observe(getViewLifecycleOwner(), result ->
-                    {
-                        Log.e("appproloadinte", result);
-                    });*/
                 }
             }
         });
         applicantViewModel.getGetInterestedFieldResult().observe(getViewLifecycleOwner(), result->
         {
-            Log.e("getintefieldresult", result);
+            Log.e("ApplicantProfile", "getGetInterestedFieldResult " + result);
         });
     }
     private void ReLoadInterestedField()
     {
-        fieldContainer.removeAllViews();
         applicantViewModel.getInterestedFields(user.getApplicantId());
     }
     private void LoadExperience()
@@ -567,7 +577,6 @@ public class ApplicantProfileFragment extends Fragment {
     }
     private void ReloadExperience()
     {
-        experienceListContainer.removeAllViews();
         applicantViewModel.getApplicantExperience(user.getApplicantId());
     }
     private void addSkillChip(String skillName, String skillId) {

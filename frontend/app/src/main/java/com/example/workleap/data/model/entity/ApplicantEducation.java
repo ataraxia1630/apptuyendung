@@ -1,12 +1,13 @@
 package com.example.workleap.data.model.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class ApplicantEducation {
+public class ApplicantEducation implements Serializable {
     private String id;
     private String eduId;
-    private Education Education;
+    private Education education;
     private String applicantId;
     private Date eduStart;
     private Date eduEnd;
@@ -59,7 +60,7 @@ public class ApplicantEducation {
     public Date getUpdatedAt() { return updated_at; }
     public void setUpdatedAt(Date updated_at) { this.updated_at = updated_at; }
     public Education getEducation() {
-        return Education;
+        return education;
     }
 }
 

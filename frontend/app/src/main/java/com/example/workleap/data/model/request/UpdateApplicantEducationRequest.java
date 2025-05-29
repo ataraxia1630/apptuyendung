@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public class UpdateApplicantEducationRequest {
+    private String eduId;
     private Date eduStart;
     private Date eduEnd;
     private String major;
@@ -13,7 +14,8 @@ public class UpdateApplicantEducationRequest {
 
     public UpdateApplicantEducationRequest() {}
 
-    public UpdateApplicantEducationRequest(Date eduStart, Date eduEnd, String major, String eduLevel, String moreInfo, List<String> achievement) {
+    public UpdateApplicantEducationRequest(String eduId, Date eduStart, Date eduEnd, String major, String eduLevel, String moreInfo, List<String> achievement) {
+        this.eduId = eduId;
         this.eduStart = eduStart;
         this.eduEnd = eduEnd;
         this.major = major;
@@ -23,6 +25,7 @@ public class UpdateApplicantEducationRequest {
     }
 
     // Getter và Setter
+    public String getEduId () {return eduId;}
     public Date getEduStart() { return eduStart; }
     public void setEduStart(Date eduStart) { this.eduStart = eduStart; }
     public Date getEduEnd() { return eduEnd; }

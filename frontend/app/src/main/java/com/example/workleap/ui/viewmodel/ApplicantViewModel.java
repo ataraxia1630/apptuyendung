@@ -455,9 +455,9 @@ public class ApplicantViewModel extends ViewModel {
     }
 
     //Update Applicant Education
-    public void updateApplicantEducation(String educationId, Date eduStart, Date eduEnd, String major, String eduLevel, String moreInfo, List<String> achievement) {
-        UpdateApplicantEducationRequest request = new UpdateApplicantEducationRequest(eduStart, eduEnd, major, eduLevel, moreInfo, achievement);
-        Call<UpdateApplicantEducationResponse> call = applicantRepository.updateApplicantEducation(educationId, request);
+    public void updateApplicantEducation(String applicantEducationId, String eduId, Date eduStart, Date eduEnd, String major, String eduLevel, String moreInfo, List<String> achievement) {
+        UpdateApplicantEducationRequest request = new UpdateApplicantEducationRequest(eduId, eduStart, eduEnd, major, eduLevel, moreInfo, achievement);
+        Call<UpdateApplicantEducationResponse> call = applicantRepository.updateApplicantEducation(applicantEducationId, request);
         call.enqueue(new Callback<UpdateApplicantEducationResponse>() {
             @Override
             public void onResponse(Call<UpdateApplicantEducationResponse> call, Response<UpdateApplicantEducationResponse> response) {
@@ -466,6 +466,8 @@ public class ApplicantViewModel extends ViewModel {
                     updateApplicantEducationResult.setValue(updateResponse.getMessage());
                 } else {
                     try {
+                        String error2 = response.errorBody().string();
+                        Log.e("ApplicantViewModel", "UpdateApplicantEducation loi " + error2);
                         UpdateApplicantEducationResponse error = new Gson().fromJson(response.errorBody().string(), UpdateApplicantEducationResponse.class);
                         updateApplicantEducationResult.setValue("Lỗi: " + error.getMessage());
                     } catch (Exception e) {
@@ -490,7 +492,7 @@ public class ApplicantViewModel extends ViewModel {
                 if (response.isSuccessful())
                 {
                     MessageResponse deleteResponse = response.body();
-                    deleteApplicantEducationResult.setValue(deleteResponse.getMessage());
+                    //deleteApplicantEducationResult.setValue(deleteResponse.getMessage());
                 } else {
                     try {
                         MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
@@ -683,7 +685,7 @@ public class ApplicantViewModel extends ViewModel {
             @Override
             public void onResponse(Call<ListFieldResponse> call, Response<ListFieldResponse> response) {
                 if (response.isSuccessful()) {
-                    Log.d("appviewmodel getinte", new Gson().toJson(response.body()));
+                    Log.d("ApplicantViewModel", "getInterestedFields" + new Gson().toJson(response.body()));
                     ListFieldResponse getResponse = response.body();
                     getInterestedFieldData.postValue(getResponse.getAllField());
                     getInterestedFieldResult.setValue("Success");
