@@ -1,13 +1,9 @@
 require('dotenv').config();
 const app = require('./app');
-<<<<<<< Updated upstream
 const { initSocket } = require('./socket');
 const server = require('http').createServer(app);
 
 initSocket(server);
-=======
-const { Server } = require('socket.io');
->>>>>>> Stashed changes
 
 const PORT = process.env.PORT || 5000;
 
