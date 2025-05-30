@@ -632,7 +632,7 @@ public class ApplicantViewModel extends ViewModel {
                 if (response.isSuccessful())
                 {
                     MessageResponse deleteResponse = response.body();
-                    deleteApplicantExperienceResult.setValue(deleteResponse.getMessage());
+                    //deleteApplicantExperienceResult.setValue(deleteResponse.getMessage());
                 } else {
                     try {
                         MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);

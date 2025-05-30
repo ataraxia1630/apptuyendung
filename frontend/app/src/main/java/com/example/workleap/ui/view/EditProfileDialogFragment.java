@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.ApplicantEducation;
 import com.example.workleap.data.model.entity.Education;
+import com.example.workleap.data.model.entity.Experience;
 import com.example.workleap.data.model.entity.Field;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
 
@@ -171,6 +172,15 @@ public class EditProfileDialogFragment extends DialogFragment {
             addDateField(container, "Work end");
             addField(container, "Job Responsibility");
         }
+        else if("UpdateApplicantExperience".equalsIgnoreCase(cardType))
+        {
+            addField(container, "Company name");
+            addField(container, "Company link");
+            addField(container, "Position");
+            addDateField(container, "Work start");
+            addDateField(container, "Work end");
+            addField(container, "Job Responsibility");
+        }
         //company
         else if ("AboutCompany".equalsIgnoreCase(cardType))
         {
@@ -230,6 +240,39 @@ public class EditProfileDialogFragment extends DialogFragment {
                     {
                         ApplicantEducation deleteEducation = (ApplicantEducation) getArguments().getSerializable("deleteApplicantEducation");
                         applicantViewModel.deleteApplicantEducation(deleteEducation.getId());
+                    })
+
+                    .setNegativeButton("Cancel", null);
+
+            return builder.create();
+        }
+        else if("UpdateApplicantExperience".equalsIgnoreCase(cardType))
+        {
+            builder.setView(view)
+                    .setTitle("Update Applicant Experience")
+
+                    .setPositiveButton("Save", (dialog, which) -> {
+                        ArrayList<String> updated = new ArrayList<>();
+                        for (EditText et : editTexts) {
+                            updated.add(et.getText().toString());
+                        }
+                        ArrayList<Date> dates= new ArrayList<>();
+
+
+                        // Tạo Bundle và đẩy kết quả
+                        Bundle result = new Bundle();
+                        result.putString("cardType", cardType);
+                        result.putStringArrayList("values", updated);
+                        Experience deleteApplicantExperience = (Experience) getArguments().getSerializable("deleteApplicantExperience");
+                        result.putString("deleteApplicantExperience", deleteApplicantExperience.getId());
+
+                        getParentFragmentManager()
+                                .setFragmentResult("editProfile", result);
+                    })
+                    .setNeutralButton("Delete", (dialog, which)->
+                    {
+                        Experience deleteExperience = (Experience) getArguments().getSerializable("deleteApplicantExperience");
+                        applicantViewModel.deleteApplicantExperience(deleteExperience.getId());
                     })
 
                     .setNegativeButton("Cancel", null);

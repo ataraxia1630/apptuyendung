@@ -345,6 +345,21 @@ public class ApplicantProfileFragment extends Fragment {
                                 Log.e("ApplicantProfile", "getCreateApplicantEduResult NULL");
                         });
                     }
+                    else if("UpdateApplicantExperience".equalsIgnoreCase(cardType))
+                    {
+                        String updateApplicantExperienceId = bundle.getString("deleteApplicantExperience");
+                        Date workStart = StringToDate(values.get(3));
+                        Date workEnd = StringToDate(values.get(4));
+                        applicantViewModel.updateApplicantExperience(updateApplicantExperienceId, values.get(0), values.get(1), values.get(2), workStart, workEnd, values.get(5), null, null );
+                        applicantViewModel.getUpdateApplicantExperienceResult().observe(getViewLifecycleOwner(), result ->
+                        {
+                            ReloadExperience();
+                            if(result != null)
+                                Log.e("ApplicantProfile", "getUpdateApplicantExperienceResult " + result);
+                            else
+                                Log.e("ApplicantProfile", "getUpdateApplicantExperienceResult NULL");
+                        });
+                    }
 
                 }
         );
@@ -555,6 +570,11 @@ public class ApplicantProfileFragment extends Fragment {
 
                 btnEdit.setOnClickListener(v -> {
                     EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("UpdateApplicantExperience");
+
+                    Bundle args = dialog.getArguments();
+                    args.putSerializable("deleteApplicantExperience", (Serializable) experience);
+                    args.putSerializable("listField", (Serializable) listField);
+                    dialog.setArguments(args);
                     dialog.show(getParentFragmentManager(), "UpdateApplicantExperienceDialog");
                 });
                 //line
