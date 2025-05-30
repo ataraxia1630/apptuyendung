@@ -1,43 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/ic_launcher_foreground">
+    android:layout_height="match_parent">
 
-    <!-- Logo của ứng dụng -->
-    <ImageView
-        android:id="@+id/logoImageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
-        android:src="@drawable/logo" />
 
-    <!-- Button Đăng ký -->
-    <Button
-        android:id="@+id/buttonSignup"
+    <!-- NavHostFragment -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/logoImageView"
-        android:layout_marginTop="50dp"
-        android:text="Sign Up"
-        android:textSize="18sp"
-        android:textColor="#ffffff"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp" />
-
-    <!-- Button Đăng nhập -->
-    <Button
-        android:id="@+id/buttonLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/buttonSignup"
-        android:layout_marginTop="20dp"
-        android:text="Log In"
-        android:textSize="18sp"
-        android:textColor="#ffffff"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp" />
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:navGraph="@navigation/auth_nav_graph"
+        app:defaultNavHost="true" />
 
 </RelativeLayout>

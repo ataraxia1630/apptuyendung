@@ -7,12 +7,11 @@
     android:background="#35504E"
     tools:context=".ui.view.ApplicantProfileFragment"
     android:clipToPadding="false"
-    android:paddingBottom="100dp">
+    android:paddingBottom="150dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:background="#AECA89"
         android:orientation="vertical"
         android:padding="15dp">
@@ -39,18 +38,18 @@
                     app:shapeAppearanceOverlay="@style/CircleImageView" />
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/tvApplicantName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_toEndOf="@+id/shapeableImageView"
-                    android:text="user name"
+                    android:text="applicant name"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <TextView
+                <!--<TextView
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -58,11 +57,65 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="3dp"
                     android:layout_toEndOf="@+id/shapeableImageView"
-                    android:text="--------"
+                    android:text="&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"
                     android:textAlignment="viewStart"
                     android:textColor="@color/design_default_color_secondary_variant"
                     android:textSize="14sp"
+                    android:textStyle="bold" />-->
+
+                <TextView
+                    android:id="@+id/emailInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvApplicantName"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_toEndOf="@+id/shapeableImageView"
+                    android:text="user email"
+                    android:textColor="#6E6C6C"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/phoneInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/emailInfo"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_toEndOf="@+id/shapeableImageView"
+                    android:text="mobile"
+                    android:textColor="#6E6C6C"
+                    android:textSize="15sp"
+                    android:textStyle="bold"/>
+
+                <ImageButton
+                    android:id="@+id/btnEditUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="8dp"
+
+                    android:layout_marginBottom="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Edit user name"
+                    android:src="@drawable/ic_edit_pen" />
+
+                <ImageButton
+                    android:id="@+id/btnOptions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginEnd="8dp"
+
+                    android:layout_marginBottom="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Log out"
+                    android:src="@drawable/ic_options" />
+
+
             </RelativeLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -95,6 +148,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/textViewAboutMe"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
@@ -102,6 +156,20 @@
                         android:text="--------"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
+
+                    <ImageButton
+                        android:id="@+id/btnEditAboutMe"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Edit About Me"
+                        android:src="@drawable/ic_edit_pen"
+
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"/>
+
                 </RelativeLayout>
 
             </LinearLayout>
@@ -134,6 +202,19 @@
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/btnApplicantInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Edit Info"
+                        android:src="@drawable/ic_edit_pen"
+
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -147,7 +228,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:text="username"
+                        android:text="Name"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
 
@@ -173,7 +254,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:text="gender"
+                        android:text="Gender"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
 
@@ -198,7 +279,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:text="age"
+                        android:text="Age"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
 
@@ -223,7 +304,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:text="date_of_birth"
+                        android:text="Date of birth"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
 
@@ -237,7 +318,7 @@
                         android:textStyle="bold" />
                 </RelativeLayout>
 
-                <RelativeLayout
+                <!--<RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -253,15 +334,44 @@
                         android:textSize="15sp" />
 
                     <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/emailInfo"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_toEndOf="@+id/shapeableImageView"
+                    android:text="mobile"
+                    android:textColor="#6E6C6C"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+                    <TextView
                         android:id="@+id/phoneInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="--------"
+                        android:text="&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"
                         android:textColor="#6E6C6C"
                         android:textSize="15sp"
                         android:textStyle="bold" />
-                </RelativeLayout>
+                </RelativeLayout>-->
+
+                <!--<RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:text="Email"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+
+                </RelativeLayout>-->
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -274,12 +384,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:text="email"
+                        android:text="Address"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
 
                     <TextView
-                        android:id="@+id/emailInfo"
+                        android:id="@+id/addressInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -287,7 +397,9 @@
                         android:textColor="#6E6C6C"
                         android:textSize="15sp"
                         android:textStyle="bold" />
+
                 </RelativeLayout>
+
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -296,7 +408,60 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
+            app:cardCornerRadius="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp">
+
+                    <TextView
+                        android:id="@+id/tvSkill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:text="Skill"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/skillContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation = "horizontal"
+                        android:layout_below="@id/btnEditSkill"
+                        app:flexWrap="wrap"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnEditSkill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Edit Skill"
+                        android:src="@drawable/ic_edit_pen"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             app:cardCornerRadius="10dp">
 
             <LinearLayout
@@ -319,11 +484,142 @@
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/btnEditEducation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Edit Education"
+                        android:src="@drawable/ic_plus"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/educationListContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp"
+                android:layout_marginTop="32dp">
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:cardCornerRadius="10dp">
+
+            <LinearLayout
+                android:id="@+id/experienceList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:text="Experience"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/btnEditExperience"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Edit Experience"
+                        android:src="@drawable/ic_plus"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/experienceListContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp"
+                android:layout_marginTop="32dp">
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:cardCornerRadius="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp">
+
+                    <TextView
+                        android:id="@+id/tvInterestedField"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:text="Interested Field"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/interestedFieldContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation = "horizontal"
+                        android:layout_below="@id/btnEditInterestedField"
+                        app:flexWrap="wrap"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/btnEditInterestedField"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Edit Skill"
+                        android:src="@drawable/ic_plus"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"/>
+
                 </RelativeLayout>
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
+
 
 
     </LinearLayout>

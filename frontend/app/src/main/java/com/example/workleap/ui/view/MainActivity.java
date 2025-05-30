@@ -2,18 +2,27 @@ package com.example.workleap.ui.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.workleap.R;
+import com.example.workleap.data.repository.PreferencesManager;
+import com.example.workleap.ui.viewmodel.AuthViewModel;
+import com.example.workleap.ui.viewmodel.UserViewModel;
 
 public class MainActivity extends AppCompatActivity {
-    private Button btnSignup, btnLogin;
+    private NavController navController;
+    private UserViewModel userViewModel;
+    private AuthViewModel authViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,18 +34,40 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        btnSignup = findViewById(R.id.buttonSignup);
-        btnLogin = findViewById(R.id.buttonLogin);
+        Log.e("hello", "heelo");
+        //Check token
+        PreferencesManager preferencesManager = new PreferencesManager(this);
+        if (preferencesManager.isTokenValid()) {
+            String userId = preferencesManager.getUserId();
+            userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+            userViewModel.InitiateRepository(this);
+            String token = preferencesManager.getToken();
+            Log.e("hi", String.valueOf(token));
+            Log.e("userId", String.valueOf(userId));
 
-        btnSignup.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, RoleSelection.class);
-            startActivity(intent);
-        });
+            userViewModel.getGetUserResult().observe(this, res -> {
+                if(res != null)
+                Log.e("getUserResult", res);
+                else
+                    Log.e("result", "no result");
+            });
 
-        btnLogin.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, Login.class);
-            startActivity(intent);
-        });
+            userViewModel.getGetUserData().observe(this, user -> {
+                if (user == null) {
+                    Log.e("AutoLogin", "user null");
+                } else {
+                    Intent intent = new Intent(this, NavigationActivity.class);
+                    Log.e("Welcome", "wellcome");
+                    intent.putExtra("user", user);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+            userViewModel.getUser(userId);
+        }
+
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        navController = navHostFragment.getNavController();
+
     }
-
 }

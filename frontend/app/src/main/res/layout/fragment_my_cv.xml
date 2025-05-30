@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    tools:context=".ui.view.JobpostFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <!-- Tabs Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <!-- Tab MY CV -->
+            <TextView
+                android:id="@+id/tabMyCv"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="My CV"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:padding="8dp"
+                android:textColor="#004E8B"
+                android:background="@drawable/button_lightblue" />
+
+            <!-- Tab MY APPLIED JOB -->
+            <TextView
+                android:id="@+id/tabAppliedJob"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Applied Job"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:padding="8dp"
+                android:textColor="#888888" />
+
+            <!-- Button Add -->
+            <ImageButton
+                android:id="@+id/btnAdd"
+                android:src="@drawable/ic_add"
+                android:background="@android:color/transparent"
+                android:contentDescription="Thêm"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+        </LinearLayout>
+
+        <!-- Divider Line -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- RecyclerView hiển thị danh sách -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerCvs"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+
+</FrameLayout>

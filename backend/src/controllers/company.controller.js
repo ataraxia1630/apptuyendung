@@ -44,13 +44,17 @@ const CompanyController = {
 
   updateCompany: async (req, res) => {
     try {
+      console.log("co try");
       const { id } = req.params;
       const company = await CompanyService.updateCompany(id, req.body);
       if (!company) {
+        console.log("not found");
         return res.status(404).json({ message: 'Company not found' });
       }
+            console.log("co update");
       return res.status(200).json({ company: company });
     } catch (error) {
+      console.log("co error", error);
       return res.status(500).json({
         message: 'Error updating company',
         error: error.message || error,
