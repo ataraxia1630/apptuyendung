@@ -24,6 +24,8 @@ const jobAppliedRoutes = require('./jobApplied.route');
 const chatRoutes = require('./chat.route');
 const messRoutes = require('./message.route');
 
+const dailyReportRoutes = require('./dailyReport.route');
+
 function route(app) {
   app.use('/api/auth', authRoutes);
   app.use('/api/users/applicant', applicantRoutes);
@@ -51,6 +53,8 @@ function route(app) {
 
   app.use('/api/chat', chatRoutes);
   app.use('/api/mess', messRoutes);
+
+  app.use('/api/dailyReport', dailyReportRoutes);
 }
 
 module.exports = route;

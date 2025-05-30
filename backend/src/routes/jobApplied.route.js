@@ -2,7 +2,10 @@ const { Router } = require('express');
 const {
   JobAppliedController,
 } = require('../controllers/jobApplied.controller');
-const { ApplySchema } = require('../validators/JobApplied/apply.validator');
+const {
+  ApplySchema,
+  ProcessSchema,
+} = require('../validators/JobApplied/apply.validator');
 const { verifyToken } = require('../middlewares/auth.middleware');
 const { requireRole } = require('../middlewares/role.middleware');
 const { cache } = require('../middlewares/cache.middleware');
@@ -27,6 +30,16 @@ route.get(
   JobAppliedController.getAllApplicantAppliedToJob
 );
 
+// for COMPANY: process CV applied
+route.put(
+  '/process-cv',
+  verifyToken,
+  requireRole('COMPANY'),
+  validate(ProcessSchema),
+  cache,
+  JobAppliedController.processCV
+);
+
 // for APPLICANT: get all job applied of a applicant
 route.get(
   '/:applicantId',
@@ -46,5 +59,11 @@ route.post(
 );
 
 // for APPLICANT: withdraw a job applied
+route.delete(
+  '/:applicantId/:jobpostId',
+  verifyToken,
+  requireRole('APPLICANT'),
+  JobAppliedController.withdraw
+);
 
 module.exports = route;
