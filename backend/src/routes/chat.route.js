@@ -18,6 +18,9 @@ route.get('/group', verifyToken, cache, ChatController.getAllGroupChats);
 // lấy thông tin của một cuộc trò chuyện có id là chatId
 route.get('/:chatId', verifyToken, cache, ChatController.getChatById);
 
+// lấy tất cả tin nhắn của 1 cuộc trò chuyện
+route.get('/:chatId/mess', verifyToken, cache, ChatController.getAllMessages);
+
 // tạo một cuộc trò chuyện mới
 route.post('/', verifyToken, cache, ChatController.createChat);
 

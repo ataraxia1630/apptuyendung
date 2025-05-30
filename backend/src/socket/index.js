@@ -1,5 +1,5 @@
 const { Server } = require('socket.io');
-
+const chatHandler = require('./handlers/chat.handler');
 let io;
 const userSockets = new Map();
 
@@ -12,15 +12,14 @@ function initSocket(server) {
 
   io.on('connection', (socket) => {
     console.log('🔌 New client connected', socket.id);
-    // const userId = socket.handshake.query.userId;
-    // if (userId) {
-    //   userSocketMap.set(userId, socket.id);
-    // }
-
     socket.on('register', (userId) => {
       userSockets.set(userId, socket.id);
+      socket.data.userId = userId;
       console.log(`✅ Registered user ${userId} with socket ${socket.id}`);
     });
+
+    chatHandler(socket, userSockets);
+    //notiHandler(socket, userSockets);
 
     socket.on('disconnect', () => {
       for (const [userId, id] of userSockets.entries()) {

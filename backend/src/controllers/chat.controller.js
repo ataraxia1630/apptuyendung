@@ -1,4 +1,5 @@
 const { ChatService } = require('../services/chat.service');
+const { MessService } = require('../services/message.service');
 
 const ChatController = {
   // lấy tất cả các cuộc trò chuyện của user
@@ -47,6 +48,18 @@ const ChatController = {
       return res.status(200).json({ chat });
     } catch (error) {
       console.error('Error fetching chats:', error);
+      return res
+        .status(500)
+        .json({ message: 'Internal server error', error: error.message });
+    }
+  },
+
+  // lấy tất cả tin nhắn của 1 cuộc trò chuyện
+  getAllMessages: async (req, res) => {
+    try {
+      const messages = await MessService.getAll(req.params.chatId);
+      return res.status(200).json({ messages });
+    } catch (error) {
       return res
         .status(500)
         .json({ message: 'Internal server error', error: error.message });
