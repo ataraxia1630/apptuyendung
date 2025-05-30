@@ -22,6 +22,7 @@ const commentRoutes = require('./comment.route');
 const jobAppliedRoutes = require('./jobApplied.route');
 
 const chatRoutes = require('./chat.route');
+const messRoutes = require('./message.route');
 
 function route(app) {
   app.use('/api/auth', authRoutes);
@@ -49,6 +50,7 @@ function route(app) {
   app.use('/api/apply', jobAppliedRoutes);
 
   app.use('/api/chat', chatRoutes);
+  app.use('/api/mess', messRoutes);
 }
 
 module.exports = route;

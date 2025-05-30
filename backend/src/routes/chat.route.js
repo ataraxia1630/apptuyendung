@@ -22,22 +22,21 @@ route.get('/:chatId', verifyToken, cache, ChatController.getChatById);
 route.get('/:chatId/mess', verifyToken, cache, ChatController.getAllMessages);
 
 // tạo một cuộc trò chuyện mới
-route.post('/', verifyToken, cache, ChatController.createChat);
+route.post('/', verifyToken, ChatController.createChat);
 
 // tạo một group chat mới
-route.post('/group', verifyToken, cache, ChatController.createGroupChat);
+route.post('/group', verifyToken, ChatController.createGroupChat);
 
 // cập nhật thông tin của một cuộc trò chuyện (name of group chat)
-route.put('/:chatId', verifyToken, cache, ChatController.updateChat);
+route.put('/:chatId', verifyToken, ChatController.updateChat);
 
 // xóa một cuộc trò chuyện
-route.delete('/:chatId', verifyToken, cache, ChatController.deleteChat);
+route.delete('/:chatId', verifyToken, ChatController.deleteChat);
 
 // thêm thành viên vào nhóm chat, chỉ admin nhóm mới có quyền này
 route.post(
   '/add-member/:chatId',
   verifyToken,
-  cache,
   ChatController.addMemberToGroupChat
 );
 
@@ -45,20 +44,19 @@ route.post(
 route.put(
   '/remove-member/:chatId',
   verifyToken,
-  cache,
   ChatController.removeMemberFromGroupChat
 );
 
 // tham gia vào nhóm chat
-route.post('/join', verifyToken, cache, ChatController.joinGroupChat);
+route.post('/join', verifyToken, ChatController.joinGroupChat);
 
 // rời khỏi nhóm chat
-route.put('/leave', verifyToken, cache, ChatController.leaveGroupChat);
+route.put('/leave', verifyToken, ChatController.leaveGroupChat);
 
 // tắt thông báo của nhóm chat
-route.put('/mute', verifyToken, cache, ChatController.muteGroupChat);
+route.put('/mute', verifyToken, ChatController.muteGroupChat);
 
 // bật thông báo của nhóm chat
-route.put('/unmute', verifyToken, cache, ChatController.unmuteGroupChat);
+route.put('/unmute', verifyToken, ChatController.unmuteGroupChat);
 
 module.exports = route;

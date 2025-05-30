@@ -34,6 +34,12 @@ const MessService = {
 
   editMess: async (id, content) => {
     try {
+      const existing = await prisma.message.findFirst({
+        where: { id },
+      });
+      if (!existing) throw new Error('Not found');
+      if (existing.isDeleted)
+        throw new Error('This message is already deleted');
       const mess = await prisma.message.update({
         where: {
           id,

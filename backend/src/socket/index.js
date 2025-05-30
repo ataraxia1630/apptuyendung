@@ -40,7 +40,14 @@ function sendToUser(userId, eventName, data) {
   }
 }
 
+function sendToChatRoom(chatId, eventName, data) {
+  if (io) {
+    io.to(chatId).emit(eventName, data);
+  }
+}
+
 module.exports = {
   initSocket,
   sendToUser,
+  sendToChatRoom,
 };
