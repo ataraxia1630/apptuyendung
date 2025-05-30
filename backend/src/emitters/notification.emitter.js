@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const { NotiEventHandler } = require('../socket/noti.event');
+const { NotiEventHandler } = require('../socket/noti.eventHandler');
 
 const NotiEmitter = new EventEmitter();
 
