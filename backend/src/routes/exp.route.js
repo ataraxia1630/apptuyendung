@@ -6,7 +6,7 @@ const { validate } = require('../middlewares/validate.middleware');
 const { ExpSchema } = require('../validators/Experience/exp.validator');
 
 const route = Router();
-route.get('/:applicantId', verifyToken, cache, ExpController.getAllExp);
+route.get('/:applicantId', verifyToken, ExpController.getAllExp);
 route.post(
   '/:applicantId',
   verifyToken,
