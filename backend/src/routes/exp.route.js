@@ -13,7 +13,7 @@ route.post(
   validate(ExpSchema),
   ExpController.createExp
 );
-route.put(':/id', verifyToken, validate(ExpSchema), ExpController.updateExp);
+route.put('/:id', verifyToken, validate(ExpSchema), ExpController.updateExp);
 route.delete('/:id', verifyToken, ExpController.deleteExp);
 
 module.exports = route;
