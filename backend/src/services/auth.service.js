@@ -92,23 +92,23 @@ const AuthService = {
           password: hashedPassword,
           ...(role === 'APPLICANT'
             ? {
-                Applicant: {
-                  create: {
-                    address: '',
-                    firstName: '',
-                    lastName: '',
-                  },
+              Applicant: {
+                create: {
+                  address: '',
+                  firstName: '',
+                  lastName: '',
                 },
-              }
+              },
+            }
             : {}),
           ...(role === 'COMPANY'
             ? {
-                Company: {
-                  create: {
-                    name: '',
-                  },
+              Company: {
+                create: {
+                  name: '',
                 },
-              }
+              },
+            }
             : {}),
         },
       });
@@ -177,7 +177,7 @@ const AuthService = {
     if (!isPasswordValid) {
       throw new Error('Invalid password');
     }
-    const token = jwt.sign({ userId: user.id, role: user.role }, SECRET_KEY, {
+    const token = jwt.sign({ userId: user.id, role: user.role, companyId: user.companyId }, SECRET_KEY, {
       expiresIn: '24h',
     });
     return { token, user };
@@ -244,24 +244,24 @@ const AuthService = {
           role,
           ...(role === 'APPLICANT'
             ? {
-                Applicant: {
-                  create: {
-                    address: '',
-                    firstName: name.split(' ')[0],
-                    lastName: name.split(' ')[1] || '',
-                  },
+              Applicant: {
+                create: {
+                  address: '',
+                  firstName: name.split(' ')[0],
+                  lastName: name.split(' ')[1] || '',
                 },
-              }
+              },
+            }
             : {}),
 
           ...(role === 'COMPANY'
             ? {
-                Company: {
-                  create: {
-                    name: name,
-                  },
+              Company: {
+                create: {
+                  name: name,
                 },
-              }
+              },
+            }
             : {}),
         },
       });

@@ -61,24 +61,46 @@ const PostController = {
         }
     },
 
+    // PostController.js
     searchPosts: async (req, res) => {
-        const { keyword } = req.query;
+        const { page = 1, pageSize = 10, title, companyName, contents } = req.query;
+        const { skip, take } = getPagination(parseInt(page), parseInt(pageSize));
+
+        const filters = { title, companyName, contents };
+
+        try {
+            const { posts, total } = await PostService.searchPosts(filters, skip, take);
+            const meta = buildMeta(total, parseInt(page), parseInt(pageSize));
+            return res.status(200).json({ data: posts, meta });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Error searching posts', error });
+        }
+    },
+
+
+    getPostsByCompany: async (req, res) => {
+        const { companyId } = req.params;
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 10;
         const { skip, take } = getPagination(page, pageSize);
 
-        if (!keyword) {
-            return res.status(400).json({ message: 'Keyword is required' });
+        const role = req.user?.role;
+        const userCompanyId = req.user?.companyId;
+
+        if (role !== 'ADMIN' && userCompanyId !== companyId) {
+            return res.status(403).json({ message: 'Forbidden: You do not own this company' });
         }
 
         try {
-            const { posts, total } = await PostService.searchPosts(keyword, skip, take);
+            const { posts, total } = await PostService.getPostsByCompany(companyId, skip, take);
             const meta = buildMeta(total, page, pageSize);
             return res.status(200).json({ data: posts, meta });
         } catch (error) {
-            return res.status(500).json({ message: 'Error searching posts', error });
+            console.error(error);
+            return res.status(500).json({ message: 'Error fetching posts by company', error });
         }
-    },
+    }
 };
 
 module.exports = { PostController };

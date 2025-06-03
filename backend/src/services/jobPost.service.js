@@ -79,26 +79,54 @@ const JobPostService = {
         }
     },
 
-    searchJobPosts: async (keyword, skip = 0, take = 10) => {
-        if (!keyword) throw new Error('Search keyword is required');
+    searchJobPosts: async (filters, skip, take) => {
+        // filters là object chứa các trường có thể search, ví dụ:
+        // { title, location, position, companyName, educationRequirement }
 
-        const query = keyword.toLowerCase().trim();
+        const where = {};
 
+        if (filters.title) {
+            where.title = { contains: filters.title.trim(), mode: 'insensitive' };
+        }
+        if (filters.location) {
+            where.location = { contains: filters.location.trim(), mode: 'insensitive' };
+        }
+        if (filters.position) {
+            where.position = { contains: filters.position.trim(), mode: 'insensitive' };
+        }
+        if (filters.educationRequirement) {
+            where.educationRequirement = { contains: filters.educationRequirement.trim(), mode: 'insensitive' };
+        }
+        if (filters.companyName) {
+            where.Company = {
+                name: { contains: filters.companyName.trim(), mode: 'insensitive' }
+            };
+        }
+        // Bạn có thể thêm các trường khác tương tự...
+
+        const [jobPosts, total] = await Promise.all([
+            prisma.jobPost.findMany({
+                where,
+                skip,
+                take,
+                orderBy: { created_at: 'desc' },
+                include: {
+                    Company: true,
+                    JobType: true,
+                    JobCategory: true,
+                }
+            }),
+            prisma.jobPost.count({ where }),
+        ]);
+
+        return { jobPosts, total };
+    },
+    getJobPostsByCompany: async (companyId, skip = 0, take = 10) => {
+        if (!companyId) throw new Error('Company ID is required');
         try {
             const [jobPosts, total] = await Promise.all([
                 prisma.jobPost.findMany({
-                    where: {
-                        OR: [
-                            { title: { contains: query, mode: 'insensitive' } },
-                            { description: { contains: query, mode: 'insensitive' } },
-                            { location: { contains: query, mode: 'insensitive' } },
-                            {
-                                Company: {
-                                    name: { contains: query, mode: 'insensitive' }
-                                }
-                            }
-                        ],
-                    },
+                    where: { companyId },
                     skip,
                     take,
                     orderBy: { created_at: 'desc' },
@@ -109,26 +137,16 @@ const JobPostService = {
                     },
                 }),
                 prisma.jobPost.count({
-                    where: {
-                        OR: [
-                            { title: { contains: query, mode: 'insensitive' } },
-                            { description: { contains: query, mode: 'insensitive' } },
-                            { location: { contains: query, mode: 'insensitive' } },
-                            {
-                                Company: {
-                                    name: { contains: query, mode: 'insensitive' }
-                                }
-                            }
-                        ],
-                    },
+                    where: { companyId },
                 }),
             ]);
 
             return { jobPosts, total };
         } catch (error) {
-            throw new Error(`Error searching job posts: ${error.message}`);
+            throw new Error(`Error fetching job posts by company: ${error.message}`);
         }
     },
+
 };
 
 module.exports = { JobPostService };
