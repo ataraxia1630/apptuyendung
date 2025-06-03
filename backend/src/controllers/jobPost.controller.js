@@ -12,6 +12,7 @@ const JobPostController = {
             const meta = buildMeta(total, page, pageSize);
             return res.status(200).json({ data: jobPosts, meta });
         } catch (error) {
+            console.error('Error fetching job posts:', error);
             return res
                 .status(500)
                 .json({ message: 'Error fetching job posts', error });

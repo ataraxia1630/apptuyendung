@@ -7,7 +7,7 @@ const JobPostService = {
                 prisma.jobPost.findMany({
                     skip,
                     take,
-                    orderBy: { createdAt: 'desc' },
+                    orderBy: { created_at: 'desc' },
                     include: {
                         Company: true,
                         JobType: true,
@@ -101,7 +101,7 @@ const JobPostService = {
                     },
                     skip,
                     take,
-                    orderBy: { createdAt: 'desc' },
+                    orderBy: { created_at: 'desc' },
                     include: {
                         Company: true,
                         JobType: true,
