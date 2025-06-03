@@ -7,8 +7,8 @@ public class UpdateApplicantExperienceRequest {
     private String companyName;
     private String companyLink;
     private String position;
-    private Date workStart;
-    private Date workEnd;
+    private Date work_start;
+    private Date work_end;
     private String jobResponsibility;
     private String moreInfo;
     private List<String> achievement;
@@ -19,8 +19,8 @@ public class UpdateApplicantExperienceRequest {
         this.companyName = companyName;
         this.companyLink = companyLink;
         this.position = position;
-        this.workStart = workStart;
-        this.workEnd = workEnd;
+        this.work_start = workStart;
+        this.work_end = workEnd;
         this.jobResponsibility = jobResponsibility;
         this.moreInfo = moreInfo;
         this.achievement = achievement;
@@ -33,10 +33,10 @@ public class UpdateApplicantExperienceRequest {
     public void setCompanyLink(String companyLink) { this.companyLink = companyLink; }
     public String getPosition() { return position; }
     public void setPosition(String position) { this.position = position; }
-    public Date getWorkStart() { return workStart; }
-    public void setWorkStart(Date workStart) { this.workStart = workStart; }
-    public Date getWorkEnd() { return workEnd; }
-    public void setWorkEnd(Date workEnd) { this.workEnd = workEnd; }
+    public Date getWorkStart() { return work_start; }
+    public void setWorkStart(Date workStart) { this.work_start = workStart; }
+    public Date getWorkEnd() { return work_end; }
+    public void setWorkEnd(Date workEnd) { this.work_end = workEnd; }
     public String getJobResponsibility() { return jobResponsibility; }
     public void setJobResponsibility(String jobResponsibility) { this.jobResponsibility = jobResponsibility; }
     public String getMoreInfo() { return moreInfo; }
