@@ -65,6 +65,9 @@ public class NavigationActivity extends AppCompatActivity {
             companyViewModel.getCompany(user.getCompanyId());
         }
 
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("user", user);
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
@@ -74,9 +77,9 @@ public class NavigationActivity extends AppCompatActivity {
 
             } else if (itemId == R.id.menu_cv_jobpost) {
                 if ("applicant".equalsIgnoreCase( user.getRole())) { //dat userRole sau tranh loi null
-                    navController.navigate(R.id.cvFragment);
+                    navController.navigate(R.id.cvFragment, bundle);
                 } else if ("company".equalsIgnoreCase(user.getRole())) {
-                    navController.navigate(R.id.jobpostFragment);
+                    navController.navigate(R.id.jobpostFragment, bundle);
                 } else {
                     Log.e("NavActivity", "role: "+ user.getRole() );
                     Toast.makeText(this, "Vai trò không hợp lệ!", Toast.LENGTH_SHORT).show();
@@ -92,9 +95,6 @@ public class NavigationActivity extends AppCompatActivity {
                 return true;
 
             } else if (itemId == R.id.menu_profile) {
-
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("user", user);
 
                 if ("applicant".equalsIgnoreCase( user.getRole())) {
                     navController.navigate(R.id.applicantProfileFragment, bundle);

@@ -30,7 +30,7 @@
                 android:id="@+id/txtTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tên công việc, vị trí, mô tả sơ bộ thông tin kèm theo"
+                android:text="Tên CV, ứng tuyển cho vị trí"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:maxLines="2"

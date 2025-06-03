@@ -1,21 +1,20 @@
 package com.example.workleap.data.model.response;
 
 import com.example.workleap.data.model.entity.CV;
-import com.example.workleap.data.model.entity.JobApplied;
 
 import java.util.List;
 
 public class ListCVResponse {
     String message;
 
-    List<CV> Cvs;
+    List<CV> cvs;
 
     public ListCVResponse() {
     }
 
     public ListCVResponse(String message, List<CV> Cvs) {
         this.message = message;
-        this.Cvs = Cvs;
+        this.cvs = Cvs;
     }
 
     public String getMessage() {
@@ -23,6 +22,6 @@ public class ListCVResponse {
     }
 
     public List<CV> getAllCvs() {
-        return Cvs;
+        return cvs;
     }
 }
