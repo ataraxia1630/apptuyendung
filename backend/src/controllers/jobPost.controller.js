@@ -1,3 +1,4 @@
+const { user } = require('../config/db/prismaClient');
 const { JobPostService } = require('../services/jobPost.service');
 const { getPagination, buildMeta } = require('../utils/paginate');
 
@@ -41,6 +42,7 @@ const JobPostController = {
             const newJobPost = await JobPostService.createJobPost(req.body);
             return res.status(201).json({ newJobPost: newJobPost });
         } catch (error) {
+            console.log(error);
             return res
                 .status(500)
                 .json({ message: 'Error creating job post', error });
@@ -54,6 +56,7 @@ const JobPostController = {
             const jobPost = await JobPostService.updateJobPost(id, req.body);
             return res.status(200).json({ jobPost: jobPost });
         } catch (error) {
+            console.log(error);
             return res
                 .status(500)
                 .json({ message: 'Error updating job post', error });
@@ -93,6 +96,30 @@ const JobPostController = {
                 .json({ message: 'Error searching job posts', error });
         }
     },
+    getJobPostsByCompany: async (req, res) => {
+        const { id: companyId } = req.params;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 10;
+        const { skip, take } = getPagination(page, pageSize);
+
+        const role = req.user?.role;
+        const userCompanyId = req.user?.companyId;
+        console.log(userCompanyId, companyId, role)
+
+        if (role !== 'ADMIN' && userCompanyId !== companyId) {
+            return res.status(403).json({ message: 'Forbidden: You do not own this company' });
+        }
+
+        try {
+            const { jobPosts, total } = await JobPostService.getJobPostsByCompany(companyId, skip, take);
+            const meta = buildMeta(total, page, pageSize);
+            return res.status(200).json({ jobPosts, meta });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Error fetching job posts by company', error });
+        }
+    },
+
 };
 
 module.exports = { JobPostController };

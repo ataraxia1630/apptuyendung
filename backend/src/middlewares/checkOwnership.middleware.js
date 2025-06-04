@@ -64,8 +64,8 @@ const checkOwnership = (modelName, ownerField = 'companyId') => {
                 if (!record) {
                     return res.status(404).json({ message: `${modelName} not found` });
                 }
-
                 if (record[ownerField] !== user[ownerField]) {
+
                     return res.status(403).json({ message: 'Forbidden: You do not own this resource' });
                 }
             }
