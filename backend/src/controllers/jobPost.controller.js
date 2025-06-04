@@ -42,6 +42,7 @@ const JobPostController = {
             const newJobPost = await JobPostService.createJobPost(req.body);
             return res.status(201).json({ newJobPost: newJobPost });
         } catch (error) {
+            console.log(error);
             return res
                 .status(500)
                 .json({ message: 'Error creating job post', error });
@@ -55,6 +56,7 @@ const JobPostController = {
             const jobPost = await JobPostService.updateJobPost(id, req.body);
             return res.status(200).json({ jobPost: jobPost });
         } catch (error) {
+            console.log(error);
             return res
                 .status(500)
                 .json({ message: 'Error updating job post', error });

@@ -387,8 +387,8 @@ model Comment {
   created_at    DateTime  @default(now())
   updated_at    DateTime  @updatedAt
   User          User      @relation(fields: [userId], references: [id])
-  Post          Post      @relation(fields: [postId], references: [id])
-  parentComment Comment?  @relation("ParentChild", fields: [CommentId], references: [id])
+  Post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parentComment Comment?  @relation("ParentChild", fields: [CommentId], references: [id], onDelete: Cascade)
   childComment  Comment[] @relation("ParentChild")
 }
 
@@ -410,7 +410,7 @@ model PostContent {
   type   ContentType
   value  String
   order  Int // tách theo đoạn
-  Post   Post        @relation(fields: [postId], references: [id])
+  Post   Post        @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model Reaction {
@@ -419,7 +419,7 @@ model Reaction {
   reactionType ReactionType
   created_at   DateTime     @default(now())
   updated_at   DateTime     @updatedAt
-  Post         Post         @relation(fields: [postId], references: [id])
+  Post         Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
   User         User         @relation(fields: [userId], references: [id])
 
   @@id([postId, userId])

@@ -47,6 +47,7 @@ const PostController = {
             const post = await PostService.updatePost(id, req.body);
             return res.status(200).json({ post: post });
         } catch (error) {
+            console.log(error);
             return res.status(500).json({ message: 'Error updating post', error });
         }
     },

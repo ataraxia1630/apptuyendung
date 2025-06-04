@@ -37,7 +37,11 @@ const PostService = {
                 companyId,
                 title,
                 contents: {
-                    create: contents.map((c) => ({ content: c })),
+                    create: contents.map(c => ({
+                        type: c.type,
+                        value: c.value,
+                        order: c.order,
+                    })),
                 },
             },
             include: {
@@ -47,12 +51,41 @@ const PostService = {
         });
     },
 
+
     updatePost: async (id, data) => {
-        return prisma.post.update({
-            where: { id },
-            data,
-        });
+        if (!id) throw new Error('Post ID is required');
+
+        const { title, contents } = data;
+
+        try {
+            const result = await prisma.$transaction([
+                prisma.post.update({
+                    where: { id },
+                    data: { title },
+                }),
+
+                prisma.postContent.deleteMany({
+                    where: { postId: id },
+                }),
+
+                ...(Array.isArray(contents) && contents.length > 0
+                    ? [prisma.postContent.createMany({
+                        data: contents.map(c => ({
+                            postId: id,
+                            type: c.type,
+                            value: c.value,
+                            order: c.order,
+                        })),
+                    })]
+                    : [])
+            ]);
+
+            return result[0]; // post đã update
+        } catch (error) {
+            throw new Error(`Error updating post: ${error.message}`);
+        }
     },
+
 
     deletePost: async (id) => {
         return prisma.post.delete({ where: { id } });

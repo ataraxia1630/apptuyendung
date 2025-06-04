@@ -44,9 +44,50 @@ const JobPostService = {
         if (!data?.title || !data?.companyId) {
             throw new Error('Title and CompanyId are required');
         }
+
+        const {
+            companyId,
+            jobCategory,
+            jobType,
+            title,
+            description,
+            position,
+            workingAddress,
+            skillRequirement,
+            responsibility,
+            salary_start,
+            salary_end,
+            currency,
+            status,
+            apply_until,
+            educationRequirement,
+        } = data;
+
+        function convertDDMMYYYYtoISO(str) {
+            const [day, month, year] = str.split("-");
+            return `${year}-${month}-${day}T00:00:00.000Z`;
+        }
+
         try {
             const jobPost = await prisma.jobPost.create({
-                data,
+                data: {
+                    title,
+                    description,
+                    position,
+                    workingAddress,
+                    skillRequirement,
+                    responsibility,
+                    salary_start,
+                    salary_end,
+                    currency,
+                    status,
+                    educationRequirement,
+                    apply_until: new Date(convertDDMMYYYYtoISO(apply_until)),
+
+                    companyId,
+                    jobCategoryId: jobCategory,
+                    jobTypeId: jobType,
+                },
             });
             return jobPost;
         } catch (error) {
@@ -54,28 +95,51 @@ const JobPostService = {
         }
     },
 
+
+
+
     updateJobPost: async (id, data) => {
         if (!id) throw new Error('JobPost ID is required');
+
+        // Hàm chuyển ngày định dạng "dd-mm-yyyy" sang Date ISO
+        function convertDDMMYYYYtoISO(str) {
+            if (!str) return null;
+            const [day, month, year] = str.split("-");
+            return new Date(`${year}-${month}-${day}T00:00:00.000Z`);
+        }
+
+        // Tạo object mới để update, tránh thay đổi trực tiếp data đầu vào
+        const updateData = {};
+
+        if (data.title !== undefined) updateData.title = data.title;
+        if (data.description !== undefined) updateData.description = data.description;
+        if (data.position !== undefined) updateData.position = data.position;
+        if (data.workingAddress !== undefined) updateData.workingAddress = data.workingAddress;
+        if (data.skillRequirement !== undefined) updateData.skillRequirement = data.skillRequirement;
+        if (data.responsibility !== undefined) updateData.responsibility = data.responsibility;
+        if (data.salary_start !== undefined) updateData.salary_start = data.salary_start;
+        if (data.salary_end !== undefined) updateData.salary_end = data.salary_end;
+        if (data.currency !== undefined) updateData.currency = data.currency;
+        if (data.status !== undefined) updateData.status = data.status;
+        if (data.educationRequirement !== undefined) updateData.educationRequirement = data.educationRequirement;
+
+        if (data.apply_until) {
+            updateData.apply_until = convertDDMMYYYYtoISO(data.apply_until);
+        }
+
+        // Chuyển đổi các FK nếu có
+        if (data.companyId !== undefined) updateData.companyId = data.companyId;
+        if (data.jobCategory !== undefined) updateData.jobCategoryId = data.jobCategory;
+        if (data.jobType !== undefined) updateData.jobTypeId = data.jobType;
+
         try {
             const jobPost = await prisma.jobPost.update({
-                where: { id: Number(id) },
-                data,
+                where: { id: id },  // giữ nguyên string id
+                data: updateData,
             });
             return jobPost;
         } catch (error) {
             throw new Error(`Error updating job post: ${error.message}`);
-        }
-    },
-
-    deleteJobPost: async (id) => {
-        if (!id) throw new Error('JobPost ID is required');
-        try {
-            await prisma.jobPost.delete({
-                where: { id: Number(id) },
-            });
-            return true;
-        } catch (error) {
-            throw new Error(`Error deleting job post: ${error.message}`);
         }
     },
 
