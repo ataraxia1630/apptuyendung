@@ -22,7 +22,7 @@ const PostController = {
             if (!post) {
                 return res.status(404).json({ message: 'Post not found' });
             }
-            return res.status(200).json({ posts: post });
+            return res.status(200).json({ post: post });
         } catch (error) {
             return res.status(500).json({ message: 'Error fetching post', error });
         }
@@ -101,7 +101,31 @@ const PostController = {
             console.error(error);
             return res.status(500).json({ message: 'Error fetching posts by company', error });
         }
-    }
+    },
+    getPendingPosts: async (req, res) => {
+        try {
+            const pendingPosts = await PostService.getPostsByStatus('PENDING');
+            res.status(200).json(pendingPosts);
+        } catch (error) {
+            res.status(500).json({ message: 'Failed to fetch pending posts', error: error.message });
+        }
+    },
+    togglePostStatus: async (req, res) => {
+        const { id } = req.params;
+        const { status } = req.body;
+        const validStatuses = ['PENDING', 'APPROVED', 'REJECTED'];
+
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ message: 'Invalid status' });
+        }
+
+        try {
+            const updated = await PostService.updatePostStatus(id, status);
+            res.status(200).json({ message: 'Status updated', Post: updated });
+        } catch (error) {
+            res.status(500).json({ message: 'Failed to update status', error: error.message });
+        }
+    },
 };
 
 module.exports = { PostController };

@@ -144,43 +144,6 @@ const JobPostController = {
             res.status(500).json({ message: 'Failed to update status', error: error.message });
         }
     },
-    getJobPostsByStatus: async (status) => {
-        if (!status) throw new Error('Status is required');
-        try {
-            const jobPosts = await prisma.jobPost.findMany({
-                where: { AdminApprovalStatus: status },
-                orderBy: { created_at: 'desc' },
-                include: {
-                    Company: true,
-                    JobType: true,
-                    JobCategory: true,
-                },
-            });
-            return jobPosts;
-        } catch (error) {
-            throw new Error(`Error fetching job posts by status: ${error.message}`);
-        }
-    },
-    updateJobPostStatus: async (id, status) => {
-        if (!id) throw new Error('JobPost ID is required');
-        if (!status) throw new Error('Status is required');
-
-        try {
-            const updatedJobPost = await prisma.jobPost.update({
-                where: { id },
-                data: { AdminApprovalStatus: status },
-                include: {
-                    Company: true,
-                    JobType: true,
-                    JobCategory: true,
-                },
-            });
-            return updatedJobPost;
-        } catch (error) {
-            throw new Error(`Error updating job post status: ${error.message}`);
-        }
-    },
-
 };
 
 module.exports = { JobPostController };
