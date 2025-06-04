@@ -62,6 +62,18 @@ const UserService = {
       throw new Error('Error deleting user (service): ' + error.message);
     }
   },
+  changeUserRole: async (id, role) => {
+    return await prisma.user.update({
+      where: { id },
+      data: { role },
+    });
+  },
+  toggleUserAccountStatus: async (id, status) => {
+    return await prisma.user.update({
+      where: { id },
+      data: { status },
+    });
+  },
 
   changeSetting: async (id, data) => {
     const { oldPassword, newPassword, confirmPassword, ...updateData } = data;

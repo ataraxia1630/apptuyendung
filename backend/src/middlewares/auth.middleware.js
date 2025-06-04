@@ -28,5 +28,12 @@ const verifyToken = async (req, res, next) => {
     next();
   });
 };
+const verifyAdmin = (req, res, next) => {
+  if (req.user?.role !== 'ADMIN') {
+    return res.status(403).json({ message: 'Access denied. Admins only.' });
+  }
+  console.log('Middleware: verifyAdmin passed');
+  next();
+};
 
-module.exports = { verifyToken };
+module.exports = { verifyToken, verifyAdmin };
