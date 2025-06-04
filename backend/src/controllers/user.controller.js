@@ -85,6 +85,29 @@ const UserController = {
       });
     }
   },
+  changeUserRole: async (req, res) => {
+    try {
+      const { role } = req.body;
+      if (!role) return res.status(400).json({ message: 'Role is required' });
+      const user = await UserService.changeUserRole(req.params.id, role);
+      return res.status(200).json({ user });
+    } catch (error) {
+      return res.status(500).json({ message: 'Failed to change user role', error: error.message });
+    }
+  },
+
+  toggleUserAccountStatus: async (req, res) => {
+    try {
+      const { status } = req.body;
+      if (!status) return res.status(400).json({ message: 'Status is required' });
+
+      const user = await UserService.toggleUserAccountStatus(req.params.id, status);
+      return res.status(200).json({ user });
+    } catch (error) {
+      return res.status(500).json({ message: 'Failed to update account status', error: error.message });
+    }
+  },
+
 
   changeSetting: async (req, res) => {
     try {
