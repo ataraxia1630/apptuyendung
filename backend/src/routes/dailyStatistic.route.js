@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { requireRole } = require('../middlewares/role.middleware');
 const { DailyStatisticController } = require('../controllers/dailyStatistic.controller');
+const { ReportController } = require('../controllers/report.controller');
 const { verifyToken } = require('../middlewares/auth.middleware');
 const { cache } = require('../middlewares/cache.middleware');
 
