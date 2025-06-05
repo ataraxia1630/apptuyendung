@@ -17,7 +17,7 @@ router.post('/', verifyToken, requireRole('COMPANY'), validate(JobPostSchema), J
 router.get('/search/query', cache, JobPostController.searchJobPosts);
 router.get('/company/:id', verifyToken, cache, JobPostController.getJobPostsByCompany);
 //Danh cho admin
-router.get('/admin/pending', verifyToken, verifyAdmin, cache, JobPostController.getPendingJobPosts);
-router.put('/admin/toggle/:id', verifyToken, verifyAdmin, JobPostController.toggleJobPostStatus);
+router.get('/admin/pending', verifyToken, requireRole('ADMIN'), cache, JobPostController.getPendingJobPosts);
+router.put('/admin/toggle/:id', verifyToken, requireRole('ADMIN'), JobPostController.toggleJobPostStatus);
 
 module.exports = router;

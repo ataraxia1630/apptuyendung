@@ -508,3 +508,26 @@ model UserStatus {
 
   @@index([userId])
 }
+
+model Report {
+  id             String              @id @default(uuid())
+  userId         String
+  reportedUserId String? // Nếu báo cáo người dùng
+  postId         String? // Nếu báo cáo Post
+  jobPostId      String? // Nếu báo cáo JobPost
+  reason         String              @db.VarChar(1000)
+  status         AdminApprovalStatus @default(PENDING)
+  created_at     DateTime            @default(now())
+  updated_at     DateTime            @updatedAt
+}
+
+model DailyStatistic {
+  id               String   @id @default(uuid())
+  date             DateTime @unique // Ngày thống kê (lấy ở mốc 00:00:00)
+  userCount        Int      @default(0) // Tổng số user tại ngày đó
+  jobPostCount     Int      @default(0) // Tổng số JobPost tại ngày đó
+  reportCount      Int      @default(0) // Tổng số Report (khiếu nại) tại ngày đó
+  applicationCount Int      @default(0) // Tổng số đơn ứng tuyển tại ngày đó
+  created_at       DateTime @default(now()) // Thời gian ghi nhận bản ghi
+  updated_at       DateTime @updatedAt // Thời gian cập nhật cuối cùng
+}

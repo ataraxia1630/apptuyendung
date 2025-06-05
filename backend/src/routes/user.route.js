@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { UserController } = require('../controllers/user.controller');
-const { verifyToken, verifyAdmin } = require('../middlewares/auth.middleware');
+const { verifyToken } = require('../middlewares/auth.middleware');
+const { requireRole } = require('../middlewares/role.middleware');
 const { cache } = require('../middlewares/cache.middleware');
 const { validate } = require('../middlewares/validate.middleware');
 const { userSchema } = require('../validators/User/updateUser.validator');
@@ -28,9 +29,9 @@ route.put('/:id', verifyToken, validate(userSchema), UserController.updateUser);
 route.delete('/:id', verifyToken, UserController.deleteUser);
 
 // đổi role người dùng (admin)
-route.patch('/admin/:id/role', verifyToken, verifyAdmin, UserController.changeUserRole);
+route.patch('/admin/:id/role', verifyToken, requireRole('ADMIN'), UserController.changeUserRole);
 // Khóa/mở tài khoản (admin)
-route.patch('/admin/:id/status', verifyToken, verifyAdmin, UserController.toggleUserAccountStatus);
+route.patch('/admin/:id/status', verifyToken, requireRole('ADMIN'), UserController.toggleUserAccountStatus);
 
 // đổi mật khẩu người dùng
 route.put(
