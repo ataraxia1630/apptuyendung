@@ -30,4 +30,13 @@ NotiEmitter.on('jobApplied.fail', async ({ userId, jobTitle }) => {
   );
 });
 
+NotiEmitter.on('mess.new', async ({ userId }) => {
+  await NotiEventHandler.notify(
+    userId,
+    'Bạn có tin nhắn mới!',
+    'Kiểm tra hộp thư ngay ✉️',
+    'fcm'
+  );
+});
+
 module.exports = NotiEmitter;

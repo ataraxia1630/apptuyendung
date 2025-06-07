@@ -50,7 +50,8 @@ const JobAppliedController = {
   applyJob: async (req, res) => {
     try {
       const apply = await JobAppliedService.applyJob(req.body);
-      res.status(201).json({ apply: apply })(async () => {
+      res.status(201).json({ apply: apply });
+      (async () => {
         try {
           const jobpost = await JobPostService.getJobPostById(
             req.body.jobpostId
