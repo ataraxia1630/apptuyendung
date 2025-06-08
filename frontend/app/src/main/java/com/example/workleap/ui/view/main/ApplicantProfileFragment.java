@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view;
+package com.example.workleap.ui.view.main;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,6 +25,7 @@ import com.example.workleap.data.model.entity.Experience;
 import com.example.workleap.data.model.entity.Field;
 import com.example.workleap.data.model.entity.Skill;
 import com.example.workleap.data.model.entity.User;
+import com.example.workleap.ui.view.auth.MainActivity;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;

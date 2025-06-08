@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view;
+package com.example.workleap.ui.view.main;
 
 import android.os.Bundle;
 
@@ -16,9 +16,7 @@ import android.view.ViewGroup;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.CV;
-import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.ui.viewmodel.CVViewModel;
-import com.example.workleap.ui.viewmodel.JobPostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

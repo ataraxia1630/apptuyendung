@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.view.LoginSignupFragment">
+    tools:context=".ui.view.auth.LoginSignupFragment">
 
     <!-- Logo của ứng dụng -->
     <ImageView

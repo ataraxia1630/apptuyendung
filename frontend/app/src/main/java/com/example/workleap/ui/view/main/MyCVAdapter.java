@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view;
+package com.example.workleap.ui.view.main;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,8 +6,10 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workleap.R;
@@ -56,6 +58,36 @@ public class MyCVAdapter extends RecyclerView.Adapter<MyCVAdapter.CVViewHolder> 
             txtSize = itemView.findViewById(R.id.txtSize);
             txtDate = itemView.findViewById(R.id.txtDate);
             btnOption = itemView.findViewById(R.id.btnOption);
+
+
+            itemView.setOnLongClickListener(v -> {
+                showPopupMenu(v, getAdapterPosition());
+                return true;
+            });
+            btnOption.setOnClickListener( v -> {
+                showPopupMenu(v, getAdapterPosition());
+
+            });
+        }
+        private void showPopupMenu(View view, int position) {
+            PopupMenu popup = new PopupMenu(view.getContext(), view);
+            popup.inflate(R.menu.menu_cv_options); // File menu XML
+
+            popup.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.action_open) {
+                    Toast.makeText(view.getContext(), "OPEN", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (item.getItemId() == R.id.action_rename) {
+                    Toast.makeText(view.getContext(), "Sửa " + position, Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (item.getItemId() == R.id.action_delete) {
+                    // Xử lý xóa
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+            popup.show();
         }
     }
 }

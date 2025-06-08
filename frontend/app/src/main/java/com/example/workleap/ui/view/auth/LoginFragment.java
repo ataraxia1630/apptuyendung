@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view;
+package com.example.workleap.ui.view.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,9 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workleap.R;
-import com.example.workleap.ui.viewmodel.ApplicantViewModel;
+import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
-import com.example.workleap.ui.viewmodel.CompanyViewModel;
 
 public class LoginFragment extends Fragment {
 

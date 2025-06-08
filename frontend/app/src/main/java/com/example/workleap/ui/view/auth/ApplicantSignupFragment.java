@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view;
+package com.example.workleap.ui.view.auth;
 
 import android.os.Bundle;
 
@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workleap.R;
+import com.example.workleap.ui.view.main.EditProfileDialogFragment;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 
 public class ApplicantSignupFragment extends Fragment {

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    tools:context=".ui.view.JobpostFragment">
+    tools:context=".ui.view.main.JobpostFragment">
 
     <LinearLayout
         android:orientation="vertical"
@@ -19,7 +19,7 @@
 
         <ImageButton
             android:id="@+id/btnRearrange"
-            android:src="@drawable/ic_option"
+            android:src="@drawable/ic_sort"
             android:background="@android:color/transparent"
             android:contentDescription="Rearrange"
             android:layout_width="50dp"
