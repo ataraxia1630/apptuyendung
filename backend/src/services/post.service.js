@@ -184,6 +184,46 @@ const PostService = {
             throw new Error(`Error fetching posts by company: ${error.message}`);
         }
     },
+    getPostsByStatus: async (status) => {
+        if (!status) throw new Error('Status is required');
+        try {
+            const posts = await prisma.post.findMany({
+                where: { approvalStatus: status },
+                orderBy: { created_at: 'desc' },
+                include: {
+                    Company: true,          // lấy thông tin công ty
+                    contents: true,         // lấy mảng PostContent
+                    Comment: true,          // lấy comment nếu cần
+                    Reaction: true,
+                },
+            });
+            return posts;
+        } catch (error) {
+            throw new Error(`Error fetching job posts by status: ${error.message}`);
+        }
+    },
+    updatePostStatus: async (id, status) => {
+        if (!id) throw new Error('JobPost ID is required');
+        if (!status) throw new Error('Status is required');
+        const validStatuses = ['PENDING', 'APPROVED', 'REJECTED'];
+        if (!validStatuses.includes(status)) {
+            throw new Error('Invalid status');
+        }
+
+        try {
+            const updatedPost = await prisma.post.update({
+                where: { id },
+                data: { approvalStatus: status },
+                include: {
+                    Company: true,          // nếu cần trả về luôn thông tin Company
+                    contents: true,
+                },
+            });
+            return updatedPost;
+        } catch (error) {
+            throw new Error(`Error updating job post status: ${error.message}`);
+        }
+    },
 };
 
 module.exports = { PostService };

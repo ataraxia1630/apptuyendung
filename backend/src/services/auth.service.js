@@ -173,6 +173,9 @@ const AuthService = {
     if (!user) {
       throw new Error('Invalid credentials');
     }
+    if (user.status === 'LOCKED' || user.status === 'BANNED') {
+      throw new Error('Your account has been locked. Please contact support.');
+    }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new Error('Invalid password');
@@ -224,6 +227,9 @@ const AuthService = {
       });
 
       if (existingUser) {
+        if (existingUser.status === 'LOCKED' || existingUser.status === 'BANNED') {
+          throw new Error('Your account has been locked. Please contact support.');
+        }
         const token = jwt.sign(
           { userId: existingUser.id, role: existingUser.role },
           SECRET_KEY,

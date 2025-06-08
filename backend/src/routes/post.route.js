@@ -11,8 +11,10 @@ router.get('/:id', cache, PostController.getPostById);
 router.post('/', verifyToken, requireRole("COMPANY"), PostController.createPost);
 router.put('/:id', verifyToken, checkOwnership('Post', 'companyId'), PostController.updatePost);
 router.delete('/:id', verifyToken, checkOwnership('Post', 'companyId'), PostController.deletePost);
-router.get('/search/query', PostController.searchPosts);
-router.get('/company/:companyId', verifyToken, PostController.getPostsByCompany);
+router.get('/search/query', cache, PostController.searchPosts);
+router.get('/company/:companyId', verifyToken, cache, PostController.getPostsByCompany);
 
+router.get('/admin/pending', verifyToken, requireRole('ADMIN'), cache, PostController.getPendingPosts);
+router.put('/admin/toggle/:id', verifyToken, requireRole('ADMIN'), PostController.togglePostStatus);
 
 module.exports = router;

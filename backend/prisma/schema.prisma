@@ -90,6 +90,18 @@ enum UserStatusType {
   AWAY
 }
 
+enum UserAccountStatus {
+  ACTIVE
+  LOCKED
+  BANNED
+}
+
+enum AdminApprovalStatus {
+  PENDING // Chưa duyệt
+  APPROVED // Đã duyệt
+  REJECTED // Bị từ chối
+}
+
 // ------------ COMMON TYPES --------------
 
 /// ------------ MAIN MODEL ---------------
@@ -121,6 +133,7 @@ model User {
   Message          Message[]
   ConversationUser ConversationUser[]
   UserStatus       UserStatus[]
+  status           UserAccountStatus  @default(ACTIVE)
 }
 
 model Applicant {
@@ -236,30 +249,31 @@ model InterestedField {
 
 // ? 1 jobpost co nen co nhieu jobtype va category
 model JobPost {
-  id                   String       @id @default(uuid())
+  id                   String              @id @default(uuid())
   companyId            String //ref
   jobCategoryId        String?
   jobTypeId            String
-  title                String       @db.VarChar(255)
-  description          String?      @db.VarChar(1000)
-  location             String       @default("Unknown") @db.VarChar(255)
-  position             String       @db.VarChar(255)
+  title                String              @db.VarChar(255)
+  description          String?             @db.VarChar(1000)
+  location             String              @default("Unknown") @db.VarChar(255)
+  position             String              @db.VarChar(255)
   workingAddress       String //ref
-  educationRequirement String       @db.VarChar(1000)
-  skillRequirement     String       @db.VarChar(1000)
+  educationRequirement String              @db.VarChar(1000)
+  skillRequirement     String              @db.VarChar(1000)
   responsibility       String
-  salary_start         Decimal      @db.Decimal(10, 2)
-  salary_end           Decimal      @db.Decimal(10, 2)
-  currency             String       @db.VarChar(10)
-  status               PostStatus?  @default(OPENING)
+  salary_start         Decimal             @db.Decimal(10, 2)
+  salary_end           Decimal             @db.Decimal(10, 2)
+  currency             String              @db.VarChar(10)
+  status               PostStatus?         @default(OPENING)
   apply_until          DateTime
   JobApplied           JobApplied[]
-  created_at           DateTime     @default(now())
-  updated_at           DateTime     @updatedAt
-  Company              Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  JobType              JobType      @relation(fields: [jobTypeId], references: [id], onDelete: Cascade)
-  JobCategory          JobCategory? @relation(fields: [jobCategoryId], references: [id], onDelete: SetNull)
+  created_at           DateTime            @default(now())
+  updated_at           DateTime            @updatedAt
+  Company              Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  JobType              JobType             @relation(fields: [jobTypeId], references: [id], onDelete: Cascade)
+  JobCategory          JobCategory?        @relation(fields: [jobCategoryId], references: [id], onDelete: SetNull)
   JobSaved             JobSaved[]
+  approvalStatus       AdminApprovalStatus @default(PENDING)
 }
 
 model JobType {
@@ -393,15 +407,16 @@ model Comment {
 }
 
 model Post {
-  id         String        @id @default(uuid())
-  companyId  String
-  title      String
-  created_at DateTime      @default(now())
-  updated_at DateTime      @updatedAt
-  Company    Company       @relation(fields: [companyId], references: [id])
-  contents   PostContent[]
-  Reaction   Reaction[]
-  Comment    Comment[]
+  id             String              @id @default(uuid())
+  companyId      String
+  title          String
+  created_at     DateTime            @default(now())
+  updated_at     DateTime            @updatedAt
+  Company        Company             @relation(fields: [companyId], references: [id])
+  contents       PostContent[]
+  Reaction       Reaction[]
+  Comment        Comment[]
+  approvalStatus AdminApprovalStatus @default(PENDING)
 }
 
 model PostContent {
@@ -492,4 +507,27 @@ model UserStatus {
   User          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model Report {
+  id             String              @id @default(uuid())
+  userId         String
+  reportedUserId String? // Nếu báo cáo người dùng
+  postId         String? // Nếu báo cáo Post
+  jobPostId      String? // Nếu báo cáo JobPost
+  reason         String              @db.VarChar(1000)
+  status         AdminApprovalStatus @default(PENDING)
+  created_at     DateTime            @default(now())
+  updated_at     DateTime            @updatedAt
+}
+
+model DailyStatistic {
+  id               String   @id @default(uuid())
+  date             DateTime @unique // Ngày thống kê (lấy ở mốc 00:00:00)
+  userCount        Int      @default(0) // Tổng số user tại ngày đó
+  jobPostCount     Int      @default(0) // Tổng số JobPost tại ngày đó
+  reportCount      Int      @default(0) // Tổng số Report (khiếu nại) tại ngày đó
+  applicationCount Int      @default(0) // Tổng số đơn ứng tuyển tại ngày đó
+  created_at       DateTime @default(now()) // Thời gian ghi nhận bản ghi
+  updated_at       DateTime @updatedAt // Thời gian cập nhật cuối cùng
 }
