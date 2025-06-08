@@ -31,7 +31,7 @@
                 android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/btnAdd"
+            android:id="@+id/btnAddCV"
             android:src="@drawable/ic_add"
             android:background="@android:color/transparent"
             android:contentDescription="Add CV"

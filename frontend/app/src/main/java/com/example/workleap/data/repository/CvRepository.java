@@ -1,10 +1,12 @@
 package com.example.workleap.data.repository;
 
 import android.content.Context;
+import android.view.PixelCopy;
 
 import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.api.RetrofitClient;
 import com.example.workleap.data.model.entity.CV;
+import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
 import com.example.workleap.data.model.request.CreateApplicantSkillRequest;
@@ -25,12 +27,17 @@ import com.example.workleap.data.model.response.UpdateApplicantExperienceRespons
 import com.example.workleap.data.model.response.UpdateApplicantResponse;
 import com.example.workleap.data.model.response.UpdateApplicantSkillResponse;
 
+import java.io.File;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public class CvRepository {
@@ -44,8 +51,8 @@ public class CvRepository {
         apiService = RetrofitClient.getClient(token).create(ApiService.class);
     }
 
-    public Call<MessageResponse> createCv(String applicantId, CV request) {
-        return apiService.createCv(applicantId, request);
+    public Call<MessageResponse> createCv(String applicantId, MultipartBody.Part file, RequestBody title) {
+        return apiService.createCv(applicantId, file, title);
     }
 
     public Call<ListCVResponse> getAllCv(String applicantId) {

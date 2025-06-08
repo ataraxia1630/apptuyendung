@@ -45,7 +45,7 @@ public class CVFragment extends Fragment {
         ViewPager2 viewPager = view.findViewById(R.id.cv_viewpager);
         TabLayout tabLayout = view.findViewById(R.id.cv_tablayout);
 
-        CVPagerAdapter adapter = new CVPagerAdapter(this);
+        CVPagerAdapter adapter = new CVPagerAdapter(this, user);
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager,

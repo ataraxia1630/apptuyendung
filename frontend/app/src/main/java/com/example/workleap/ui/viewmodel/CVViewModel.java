@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.workleap.data.model.entity.CV;
+import com.example.workleap.data.model.entity.User;
+import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.request.UpdateCompanyRequest;
 import com.example.workleap.data.model.response.CVResponse;
 import com.example.workleap.data.model.response.GetCompanyResponse;
@@ -16,8 +18,12 @@ import com.example.workleap.data.model.response.UpdateCompanyResponse;
 import com.example.workleap.data.repository.CvRepository;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,7 +32,6 @@ public class CVViewModel extends ViewModel {
     private CvRepository cvRepository;
     private MutableLiveData<List<CV>> getAllCvData = new MutableLiveData<>();
     private MutableLiveData<CV> getCvByIdData = new MutableLiveData<>();
-
     private MutableLiveData<String> getAllCvResult = new MutableLiveData<>();
     private MutableLiveData<String> createCvResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteAllCvResult = new MutableLiveData<>();
@@ -78,8 +83,14 @@ public class CVViewModel extends ViewModel {
     }
 
     //Create cv
-    public void createCv(String applicantId, CV request) {
-        Call<MessageResponse> call = cvRepository.createCv(applicantId, request);
+    public void createCv(String applicantId, File file, String title) {
+        //CVRequest request = new CVRequest(file, title);
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse("application/pdf"), file);
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+        RequestBody titlePart = RequestBody.create(MediaType.parse("text/plain"), title);
+
+        Call<MessageResponse> call = cvRepository.createCv(applicantId, filePart, titlePart);
         call.enqueue(new Callback<MessageResponse>() {
             @Override
             public void onResponse(Call<MessageResponse> call,
