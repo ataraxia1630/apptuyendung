@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -37,6 +38,9 @@ public class JobpostFragment extends Fragment {
     private JobPostAdapter adapter;
     private List<JobPost> allJobs = new ArrayList<>();
     private JobPostViewModel jobPostViewModel;
+
+    private User user;
+    private Bundle bundle;
 
     public JobpostFragment() {
         // Required empty public constructor
@@ -69,7 +73,11 @@ public class JobpostFragment extends Fragment {
         ImageButton btnCreateJobPost = v.findViewById(R.id.btnAdd);
 
         btnCreateJobPost.setOnClickListener(x ->
-                nav.navigate(R.id.createJobpostFragment)
+                {
+                    // Ẩn bottom navigation
+                    ((NavigationActivity) getActivity()).showBottomNav(false);
+                    nav.navigate(R.id.createJobpostFragment, bundle);
+                }
         );
         return v;
     }
@@ -81,21 +89,25 @@ public class JobpostFragment extends Fragment {
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
 
+        user = (User) getArguments().getSerializable("user");
+        bundle = new Bundle();
+        bundle.putSerializable("companyId", user.getCompanyId());
 
-        jobPostViewModel.getAllJobPostResult().observe(getViewLifecycleOwner(), result ->
+        jobPostViewModel.getJobPostsByCompanyResult().observe(getViewLifecycleOwner(), result ->
         {
             String s = result.toString();
-            Log.e("JobpostFragment", "getAllJobPostResult: " + s + "");
+            Log.e("JobpostFragment", "getJobPost Company Result: " + s + "");
         });
-        jobPostViewModel.getAllJobPostData().observe(getViewLifecycleOwner(), jobPosts ->
+        jobPostViewModel.getJobPostsByCompanyData().observe(getViewLifecycleOwner(), jobPosts ->
         {
-            allJobs.addAll(jobPosts);
+            if(jobPosts != null)
+                allJobs.addAll(jobPosts);
             // Setup RecyclerView
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             adapter = new JobPostAdapter(allJobs); // mặc định show tất cả
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         });
-        jobPostViewModel.getAllJobPosts();
+        jobPostViewModel.getJobPostsByCompany(user.getCompanyId());
     }
 }

@@ -159,6 +159,8 @@ public interface ApiService {
     //JobPost
     @GET("api/job-posts/all")
     Call<ListJobPostResponse> getAllJobPosts();
+    @GET("api/job-posts/company/{id}")
+    Call<ListJobPostResponse> getJobPostsByCompany(@Path ("id") String id);
     @GET("api/job-posts/{id}")
     Call<JobPostResponse> getJobPostById(@Path("id") String id);
     @POST("api/job-posts")

@@ -1,12 +1,14 @@
 package com.example.workleap.ui.view;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,7 +17,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
+import com.example.workleap.utils.Utils;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,12 +84,46 @@ public class CreateJobpostFragment extends Fragment {
         btnSaveJob = view.findViewById(R.id.btnSaveJob);
         btnCancel = view.findViewById(R.id.btnCancel);
 
+        String companyId = "1";
         // TODO: Add listeners or bind ViewModel here
         btnSaveJob.setOnClickListener(v -> {
+            Log.e("click", "click");
             // Handle save logic here
+            JobPost jobPost = new JobPost(
+                    getArguments().getString("companyId"),
+                    autoJobCategory.getText().toString(),
+                    autoJobType.getText().toString(),
+                    edtTitle.getText().toString(),
+                    edtDescription.getText().toString(),
+                    edtPosition.getText().toString(),
+                    edtWorkingAddress.getText().toString(),
+                    edtEducation.getText().toString(),
+                    edtSkillRequirement.getText().toString(),
+                    edtResponsibility.getText().toString(),
+                    Utils.getDecimal(edtSalaryStart),
+                    Utils.getDecimal(edtSalaryEnd),
+                    edtCurrency.getText().toString(),
+                    edtStatus.getText().toString(),
+                    Utils.getDate(edtApplyUntil)
+            );
+            
+            //Nhan ket qua
+            jobPostViewModel.getCreateJobPostResult().observe(getViewLifecycleOwner(), result ->
+            {
+                if(result != null)
+                    Log.e("Create jobpost result", result);
+                else
+                    Log.e("Create jobpost result", "Create jobpost result null");
+            });
+            jobPostViewModel.createJobPost(jobPost);
+
+            // Hien lai bottom navigation va quay ve
+            ((NavigationActivity) getActivity()).showBottomNav(true);
+            NavHostFragment.findNavController(this).navigateUp();
         });
 
         btnCancel.setOnClickListener(v -> {
+            ((NavigationActivity) getActivity()).showBottomNav(true);
             NavHostFragment.findNavController(this).navigateUp();
         });
     }

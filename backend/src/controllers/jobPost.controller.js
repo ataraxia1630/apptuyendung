@@ -12,7 +12,7 @@ const JobPostController = {
         try {
             const { jobPosts, total } = await JobPostService.getAllJobPosts(skip, take);
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ data: jobPosts, meta });
+            return res.status(200).json({ jobPosts: jobPosts, meta });
         } catch (error) {
             console.error('Error fetching job posts:', error);
             return res

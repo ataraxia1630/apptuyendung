@@ -7,14 +7,14 @@ import java.util.List;
 public class ListJobPostResponse {
     String message;
 
-    List<JobPost> data;
+    List<JobPost> jobPosts;
 
     public ListJobPostResponse() {
     }
 
-    public ListJobPostResponse(String message,  List<JobPost> data) {
+    public ListJobPostResponse(String message,  List<JobPost> jobPosts) {
         this.message = message;
-        this.data = data;
+        this.jobPosts = jobPosts;
     }
 
     public String getMessage() {
@@ -22,6 +22,6 @@ public class ListJobPostResponse {
     }
 
     public List<JobPost> getAllJobPost() {
-        return data;
+        return jobPosts;
     }
 }
