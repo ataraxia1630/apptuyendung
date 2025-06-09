@@ -169,8 +169,9 @@ public class CVViewModel extends ViewModel {
     }
 
     //update cv by id
-    public void updateCvById(String id) {
-        Call<MessageResponse> call = cvRepository.updateCvById(id);
+    public void updateCvById(String id, String title) {
+        CVRequest request = new CVRequest(title);
+        Call<MessageResponse> call = cvRepository.updateCvById(id, request);
         call.enqueue(new Callback<MessageResponse>() {
             @Override
             public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {

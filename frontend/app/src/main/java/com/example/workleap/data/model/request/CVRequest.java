@@ -1,20 +1,20 @@
 package com.example.workleap.data.model.request;
 
+import com.example.workleap.data.model.entity.JobApplied;
+
 import java.io.File;
+import java.util.Date;
+import java.util.List;
 
 public class CVRequest {
-
-    private File file;
     private String title;
 
     public CVRequest() {}
 
-    public CVRequest(File file, String title) {
-        this.file = file;
+    public CVRequest(String title) {
         this.title = title;
     }
 
     // Getter
-    public File getFile() { return file; }
     public String getTitle() { return title; }
 }

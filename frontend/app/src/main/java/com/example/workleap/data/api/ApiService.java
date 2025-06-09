@@ -223,7 +223,7 @@ public interface ApiService {
     @GET("api/cv/{id}")
     Call<CVResponse> getCvById(@Path("id") String id);
     @PUT("api/cv/{id}")
-    Call<MessageResponse> updateCvById(@Path("id") String id);
+    Call<MessageResponse> updateCvById(@Path("id") String id, @Body CVRequest request);
     @DELETE("api/cv/{id}")
     Call<MessageResponse> deleteCvById(@Path("id") String id);
 }

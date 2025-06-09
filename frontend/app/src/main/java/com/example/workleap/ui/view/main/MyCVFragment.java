@@ -2,6 +2,7 @@ package com.example.workleap.ui.view.main;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -80,7 +83,9 @@ public class MyCVFragment extends Fragment {
                 @Override
                 public void onRename(CV cv) {
                     //Toast.makeText(getContext(), "Đổi tên: " + cv.getTitle(), Toast.LENGTH_SHORT).show();
-
+                    showInputDialog(getContext(), cv.getTitle(), newTitle ->{
+                        cvViewModel.updateCvById(cv.getId(), newTitle);
+                    });
                 }
 
                 @Override
@@ -111,6 +116,18 @@ public class MyCVFragment extends Fragment {
             adapter.updateList(CVs);
         });
 
+        cvViewModel.updateCvByIdResult().observe(getViewLifecycleOwner(), updateCVResul-> {
+            if(!isAdded() || getView()==null) return;
+
+            //reload
+            cvViewModel.getAllCv(user.getApplicantId());
+
+            if(updateCVResul!=null)
+                Log.e("MyCVFragment", "updateCvByIdResult " + updateCVResul);
+            else
+                Log.e("MyCVFragment", "updateCvByIdResult result NULL" );
+
+        });
         cvViewModel.deleteCvByIdResult().observe(getViewLifecycleOwner(), deleteResult -> {
             if(!isAdded() || getView()==null) return;
 
@@ -193,5 +210,30 @@ public class MyCVFragment extends Fragment {
             result = uri.getLastPathSegment();
         }
         return result;
+    }
+    private void showInputDialog(Context context, String oldTitle, OnInputConfirmedListener listener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Rename");
+
+        // Tạo EditText
+        final EditText input = new EditText(context);
+        input.setText(oldTitle);
+        input.setTextSize(24);
+        input.setPadding(64, 16, 48, 48);
+        builder.setView(input);
+
+        // Nút Xác nhận
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            String userInput = input.getText().toString().trim();
+            listener.onConfirmed(userInput);
+        });
+
+        // Nút Hủy
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+    public interface OnInputConfirmedListener {
+        void onConfirmed(String input);
     }
 }

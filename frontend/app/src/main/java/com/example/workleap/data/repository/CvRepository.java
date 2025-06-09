@@ -67,8 +67,8 @@ public class CvRepository {
         return apiService.getCvById(id);
     }
 
-    public Call<MessageResponse> updateCvById(String id) {
-        return apiService.updateCvById(id);
+    public Call<MessageResponse> updateCvById(String id, CVRequest request) {
+        return apiService.updateCvById(id, request);
     }
 
     public Call<MessageResponse> deleteCvById(String id) {
