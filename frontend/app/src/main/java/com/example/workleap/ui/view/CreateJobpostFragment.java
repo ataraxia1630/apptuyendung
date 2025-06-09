@@ -41,6 +41,9 @@ public class CreateJobpostFragment extends Fragment {
     private EditText edtSalaryStart, edtSalaryEnd, edtCurrency, edtApplyUntil;
     private Button btnSaveJob, btnCancel;
 
+    private ArrayList<JobCategory> jobCategories = new ArrayList<>();
+    private ArrayList<JobType> jobTypes = new ArrayList<>();
+    private boolean isJobPostSubmitted = false; // Biến trạng thái đảm bảo chỉ trở về khi đã tạo thành công
     public CreateJobpostFragment() {
         // Required empty public constructor
     }
@@ -97,7 +100,8 @@ public class CreateJobpostFragment extends Fragment {
         {
             if(data != null)
             {
-                ArrayList<JobCategory> jobCategories = new ArrayList<>();
+                jobCategories.clear();
+                jobCategoriesName.clear();
                 jobCategories.addAll(data);
                 for(JobCategory jobCategory : jobCategories)
                     jobCategoriesName.add(jobCategory.getName());
@@ -106,6 +110,7 @@ public class CreateJobpostFragment extends Fragment {
                 Log.e("Load jobcategory data", "Jobcategory data null");
         });
         jobPostViewModel.getAllJobCategory();
+
         //Xu li Auto complete textview jobcategory
         ArrayAdapter<String> adapterCategory = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, jobCategoriesName);
         autoJobCategory.setAdapter(adapterCategory);
@@ -136,7 +141,8 @@ public class CreateJobpostFragment extends Fragment {
         {
             if(data != null)
             {
-                ArrayList<JobType> jobTypes = new ArrayList<>();
+                jobTypes.clear();
+                jobTypesName.clear();
                 jobTypes.addAll(data);
                 for(JobType jobType : jobTypes)
                     jobTypesName.add(jobType.getName());
@@ -145,6 +151,7 @@ public class CreateJobpostFragment extends Fragment {
                 Log.e("Load jobtype data", "Jobtype data null");
         });
         jobPostViewModel.getAllJobType();
+
         //Xu li Auto complete textview jobtype
         ArrayAdapter<String> adapterType = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, jobTypesName);
         autoJobType.setAdapter(adapterType);
@@ -170,22 +177,39 @@ public class CreateJobpostFragment extends Fragment {
             else
                 Log.e("Create jobpost result", "Create jobpost result null");
 
-            // Hien lai bottom navigation va quay ve
-            ((NavigationActivity) getActivity()).showBottomNav(true);
-            NavHostFragment.findNavController(this).navigateUp();
+            if(isJobPostSubmitted) {
+                // Hien lai bottom navigation va quay ve
+                ((NavigationActivity) getActivity()).showBottomNav(true);
+                NavHostFragment.findNavController(this).navigateUp();
+            }
         });
 
         // TODO: Add listeners or bind ViewModel here
         btnSaveJob.setOnClickListener(v -> {
-            Log.e("click", "click");
-            Log.e("click", getArguments().getString("companyId"));
-            Toast.makeText(this.getActivity(), "Company ID: " + getArguments().getString("companyId"), Toast.LENGTH_SHORT).show();
-            BigDecimal a = BigDecimal.valueOf(1000);
+            Toast.makeText(this.getActivity(), "Create new job post sucessful", Toast.LENGTH_SHORT).show();
+
+            // Tìm JobCategory tương ứng
+            String categoryId = null;
+            for (JobCategory jobCategory : jobCategories) {
+                if (jobCategory.getName().equals(autoJobCategory.getText().toString())) {
+                    categoryId = jobCategory.getId(); // Gán vào categorySelected
+                    break;
+                }
+            }
+            // Tìm JobType tương ứng
+            String typeId = null;
+            for (JobType jobType : jobTypes) {
+                if (jobType.getName().equals(autoJobType.getText().toString())) {
+                    typeId = jobType.getId(); // Gán vào typeSelected
+                    break;
+                }
+            }
+
             // Handle save logic here
             JobPost jobPost = new JobPost(
                     getArguments().getString("companyId"),
-                    autoJobCategory.getText().toString(),
-                    autoJobType.getText().toString(),
+                    categoryId,
+                    typeId,
                     edtTitle.getText().toString(),
                     edtDescription.getText().toString(),
                     edtLocation.getText().toString(),
@@ -220,6 +244,7 @@ public class CreateJobpostFragment extends Fragment {
             Log.d("new jobpost", new Gson().toJson(jobPost));
             jobPostViewModel.createJobPost(jobPost);
 
+            isJobPostSubmitted = true;
         });
 
         btnCancel.setOnClickListener(v -> {

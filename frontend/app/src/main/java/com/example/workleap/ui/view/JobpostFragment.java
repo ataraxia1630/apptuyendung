@@ -41,6 +41,8 @@ public class JobpostFragment extends Fragment {
 
     private User user;
     private Bundle bundle;
+    private NavController nav;
+    private ImageButton btnCreateJobPost;
 
     public JobpostFragment() {
         // Required empty public constructor
@@ -67,18 +69,10 @@ public class JobpostFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        NavController nav = NavHostFragment.findNavController(this);
+        nav = NavHostFragment.findNavController(this);
 
         View v = inflater.inflate(R.layout.fragment_my_jobpost, container, false);
-        ImageButton btnCreateJobPost = v.findViewById(R.id.btnAdd);
-
-        btnCreateJobPost.setOnClickListener(x ->
-                {
-                    // Ẩn bottom navigation
-                    ((NavigationActivity) getActivity()).showBottomNav(false);
-                    nav.navigate(R.id.createJobpostFragment, bundle);
-                }
-        );
+        btnCreateJobPost = v.findViewById(R.id.btnAdd);
         return v;
     }
     @Override
@@ -109,5 +103,13 @@ public class JobpostFragment extends Fragment {
             adapter.notifyDataSetChanged();
         });
         jobPostViewModel.getJobPostsByCompany(user.getCompanyId());
+
+        btnCreateJobPost.setOnClickListener(x ->
+                {
+                    // Ẩn bottom navigation
+                    ((NavigationActivity) getActivity()).showBottomNav(false);
+                    nav.navigate(R.id.createJobpostFragment, bundle);
+                }
+        );
     }
 }
