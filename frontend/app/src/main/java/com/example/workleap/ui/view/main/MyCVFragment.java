@@ -1,7 +1,9 @@
 package com.example.workleap.ui.view.main;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.FileUtils;
@@ -15,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,6 +82,7 @@ public class MyCVFragment extends Fragment {
                 Log.e("CVFragment", "getAllCvData NULL");
                 return;
             }
+            allCVs.clear();
             allCVs.addAll(CVs);
             // Setup RecyclerView
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -92,13 +96,14 @@ public class MyCVFragment extends Fragment {
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri fileUri = result.getData().getData();
+                        String fileName = getFileNameFromUri(fileUri);
 
                         try {
                             // Tạo file tạm từ Uri
                             InputStream inputStream = getContext().getContentResolver().openInputStream(fileUri);
-                            File tempFile = File.createTempFile("cv_temp", ".pdf", getContext().getCacheDir());
+                            File targetFile = new File(getContext().getCacheDir(), fileName);
 
-                            OutputStream outputStream = new FileOutputStream(tempFile);
+                            OutputStream outputStream = new FileOutputStream(targetFile);
                             byte[] buffer = new byte[1024];
                             int length;
                             while ((length = inputStream.read(buffer)) > 0) {
@@ -107,13 +112,14 @@ public class MyCVFragment extends Fragment {
                             outputStream.close();
                             inputStream.close();
 
-                            // Truyền file vào ViewModel
-                            cvViewModel.createCv(user.getApplicantId(), tempFile, tempFile.getName());
+                            // Gửi file vào ViewModel
+                            cvViewModel.createCv(user.getApplicantId(), targetFile, fileName);
                             cvViewModel.createCvResult().observe(getViewLifecycleOwner(), createResult -> {
                                 if(!isAdded() || getView()==null) return;
 
                                 //reload
                                 cvViewModel.getAllCv(user.getApplicantId());
+
                                 if(result!=null)
                                     Log.e("MyCVFragment", createResult);
                                 else
@@ -134,5 +140,25 @@ public class MyCVFragment extends Fragment {
             intent.setType("application/pdf");
             filePickerLauncher.launch(intent);
         });
+
+    }
+    private String getFileNameFromUri(Uri uri) {
+        String result = null;
+
+        if ("content".equals(uri.getScheme())) {
+            Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null);
+            if (cursor != null) {
+                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                if (nameIndex != -1 && cursor.moveToFirst()) {
+                    result = cursor.getString(nameIndex);
+                }
+                cursor.close();
+            }
+        }
+
+        if (result == null) {
+            result = uri.getLastPathSegment();
+        }
+        return result;
     }
 }
