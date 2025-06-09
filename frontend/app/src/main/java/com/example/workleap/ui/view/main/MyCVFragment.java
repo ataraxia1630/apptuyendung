@@ -69,6 +69,31 @@ public class MyCVFragment extends Fragment {
 
         btnAddCV = view.findViewById(R.id.btnAddCV);
 
+        if(adapter==null)
+        {
+            adapter = new MyCVAdapter(allCVs, new MyCVAdapter.OnCVMenuClickListener() {
+                @Override
+                public void onOpen(CV cv) {
+                    Toast.makeText(getContext(), "Mở: " + cv.getTitle(), Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onRename(CV cv) {
+                    //Toast.makeText(getContext(), "Đổi tên: " + cv.getTitle(), Toast.LENGTH_SHORT).show();
+
+                }
+
+                @Override
+                public void onDelete(CV cv) {
+                    cvViewModel.deleteCvById(cv.getId());
+                }
+            });
+
+            // Setup RecyclerView
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setAdapter(adapter);
+        }
+
 
         cvViewModel.getAllCvResult().observe(getViewLifecycleOwner(), result ->
         {
@@ -82,13 +107,31 @@ public class MyCVFragment extends Fragment {
                 Log.e("CVFragment", "getAllCvData NULL");
                 return;
             }
-            allCVs.clear();
-            allCVs.addAll(CVs);
-            // Setup RecyclerView
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            adapter = new MyCVAdapter(allCVs); // mặc định show tất cả
-            recyclerView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+
+            adapter.updateList(CVs);
+        });
+
+        cvViewModel.deleteCvByIdResult().observe(getViewLifecycleOwner(), deleteResult -> {
+            if(!isAdded() || getView()==null) return;
+
+            //reload
+            cvViewModel.getAllCv(user.getApplicantId());
+
+            if(deleteResult!=null)
+                Log.e("MyCVFragment", "deleteCvByIdResult " + deleteResult);
+            else
+                Log.e("MyCVFragment", "deleteCvByIdResult result NULL" );
+        });
+        cvViewModel.createCvResult().observe(getViewLifecycleOwner(), createResult -> {
+            if(!isAdded() || getView()==null) return;
+
+            //reload
+            cvViewModel.getAllCv(user.getApplicantId());
+
+            if(createResult!=null)
+                Log.e("MyCVFragment", createResult);
+            else
+                Log.e("MyCVFragment", "createCvResult NULL" );
         });
 
         filePickerLauncher = registerForActivityResult(
@@ -114,17 +157,7 @@ public class MyCVFragment extends Fragment {
 
                             // Gửi file vào ViewModel
                             cvViewModel.createCv(user.getApplicantId(), targetFile, fileName);
-                            cvViewModel.createCvResult().observe(getViewLifecycleOwner(), createResult -> {
-                                if(!isAdded() || getView()==null) return;
 
-                                //reload
-                                cvViewModel.getAllCv(user.getApplicantId());
-
-                                if(result!=null)
-                                    Log.e("MyCVFragment", createResult);
-                                else
-                                    Log.e("MyCVFragment", "create MyCVFragment result NULL" );
-                            });
                             Log.e("MyCVFragment","create CV");
                         } catch (IOException e) {
                             e.printStackTrace();

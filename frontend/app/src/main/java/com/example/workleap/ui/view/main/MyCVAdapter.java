@@ -14,22 +14,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.CV;
+import com.example.workleap.ui.viewmodel.CVViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class MyCVAdapter extends RecyclerView.Adapter<MyCVAdapter.CVViewHolder> {
     private List<CV> CVList;
-
-    public MyCVAdapter(List<CV> CVList) {
+    private OnCVMenuClickListener menuClickListener;
+    public MyCVAdapter(List<CV> CVList, OnCVMenuClickListener listener)
+    {
         this.CVList = CVList;
+        this.menuClickListener = listener;
+    }
+
+    public interface OnCVMenuClickListener {
+        void onOpen(CV cv);
+        void onRename(CV cv);
+        void onDelete(CV cv);
     }
 
     @NonNull
     @Override
     public CVViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cv, parent, false);
-        return new CVViewHolder(view);
+        return new CVViewHolder(view, CVList, menuClickListener);
     }
 
     @Override
@@ -46,13 +55,24 @@ public class MyCVAdapter extends RecyclerView.Adapter<MyCVAdapter.CVViewHolder> 
         return CVList.size();
     }
 
+    public void updateList(List<CV> newCVs) {
+        this.CVList.clear();
+        this.CVList.addAll(newCVs);
+        notifyDataSetChanged();
+    }
+
     static class CVViewHolder extends RecyclerView.ViewHolder {
         ImageView imgCV;
         TextView txtTitle, txtSize, txtDate;
         ImageButton btnOption;
-
-        public CVViewHolder(@NonNull View itemView) {
+        private final List<CV> cvList;
+        private final OnCVMenuClickListener listener;
+        public CVViewHolder(@NonNull View itemView,  List<CV> cvList, OnCVMenuClickListener listener) {
             super(itemView);
+
+            this.cvList = cvList;
+            this.listener = listener;
+
             imgCV = itemView.findViewById(R.id.imgPost);
             txtTitle = itemView.findViewById(R.id.txtTitle);
             txtSize = itemView.findViewById(R.id.txtSize);
@@ -66,7 +86,6 @@ public class MyCVAdapter extends RecyclerView.Adapter<MyCVAdapter.CVViewHolder> 
             });
             btnOption.setOnClickListener( v -> {
                 showPopupMenu(v, getAdapterPosition());
-
             });
         }
         private void showPopupMenu(View view, int position) {
@@ -74,14 +93,19 @@ public class MyCVAdapter extends RecyclerView.Adapter<MyCVAdapter.CVViewHolder> 
             popup.inflate(R.menu.menu_cv_options); // File menu XML
 
             popup.setOnMenuItemClickListener(item -> {
+                CV cv = cvList.get(position);
+
                 if (item.getItemId() == R.id.action_open) {
-                    Toast.makeText(view.getContext(), "OPEN", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(view.getContext(), "Open " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                    listener.onOpen(cv);
                     return true;
                 } else if (item.getItemId() == R.id.action_rename) {
-                    Toast.makeText(view.getContext(), "Sửa " + position, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(view.getContext(), "Rename " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                    listener.onRename(cv);
                     return true;
                 } else if (item.getItemId() == R.id.action_delete) {
-                    // Xử lý xóa
+                    //Toast.makeText(view.getContext(), "Delete " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                    listener.onDelete(cv);
                     return true;
                 } else {
                     return false;

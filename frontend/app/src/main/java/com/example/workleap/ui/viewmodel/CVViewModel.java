@@ -202,7 +202,8 @@ public class CVViewModel extends ViewModel {
             public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
                 if (response.isSuccessful()) {
                     MessageResponse cvResponse = response.body();
-                    deleteCvByIdResult.setValue(cvResponse.getMessage());
+                    //deleteCvByIdResult.setValue(cvResponse.getMessage());
+                    deleteCvByIdResult.setValue("successful");
                 } else {
                     try {
                         CVResponse error = new Gson().fromJson(response.errorBody().string(), CVResponse.class);
