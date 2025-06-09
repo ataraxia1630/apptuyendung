@@ -4,10 +4,10 @@ const { CVHelper } = require('../helpers/cv.helper');
 const CVService = {
   uploadCV: async (applicantId, file, data) => {
     try {
-      const filePath = await CVHelper.uploadCV(file, applicantId);
+      const { filePath, size } = await CVHelper.uploadCV(file, applicantId);
       console.log('File uploaded to Supabase:', filePath);
       const cv = await prisma.cV.create({
-        data: { ...data, filePath, applicantId, viewCount: 0 },
+        data: { ...data, filePath, size, applicantId, viewCount: 0 },
       });
       return cv;
     } catch (error) {
