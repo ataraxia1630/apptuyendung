@@ -326,6 +326,7 @@ model CV {
   Applicant   Applicant    @relation(fields: [applicantId], references: [id], onDelete: Cascade)
   title       String
   filePath    String
+  size        Int // bytes
   viewCount   Int          @db.SmallInt
   created_at  DateTime     @default(now())
   updated_at  DateTime     @updatedAt
