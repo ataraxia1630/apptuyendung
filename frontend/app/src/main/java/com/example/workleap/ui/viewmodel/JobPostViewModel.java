@@ -24,6 +24,12 @@ import com.example.workleap.data.repository.UserRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -178,7 +184,19 @@ public class JobPostViewModel  extends ViewModel {
                 if (response.isSuccessful() && response.body() != null) {
                     createJobPostData.postValue(response.body().getJobPost());
                     createJobPostResult.postValue("Success");
+                    Log.d("API_RESPONSE", new Gson().toJson(response.body()));
                 } else {
+                    Log.d("API_RESPONSE", new Gson().toJson(response.body()));
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorBodyString = response.errorBody().string();
+                            Log.d("API_ERROR", "Lỗi từ server: " + errorBodyString);
+                        } else {
+                            Log.d("API_ERROR", "Không có errorBody");
+                        }
+                    } catch (IOException e) {
+                        Log.e("API_ERROR", "Lỗi khi đọc errorBody: ", e);
+                    }
                     createJobPostResult.postValue("Failed: " + response.message());
                 }
             }

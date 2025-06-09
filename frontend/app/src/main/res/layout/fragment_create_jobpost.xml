@@ -45,6 +45,7 @@
                 android:text="Job Category" android:textSize="16sp" android:textStyle="bold"/>
             <AutoCompleteTextView
                 android:id="@+id/autoJobCategory"
+                android:textSize="20sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Select job category"
@@ -56,6 +57,7 @@
                 android:paddingTop="8dp"/>
             <AutoCompleteTextView
                 android:id="@+id/autoJobType"
+                android:textSize="20sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Select job type"
@@ -67,6 +69,7 @@
                 android:paddingTop="8dp"/>
             <EditText
                 android:id="@+id/edtTitle"
+                android:textSize="20sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter job title"/>
@@ -83,6 +86,17 @@
                 android:minLines="4"
                 android:gravity="top"
                 android:inputType="textMultiLine"/>
+
+            <!-- Location -->
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Location" android:textSize="16sp" android:textStyle="bold"
+                android:paddingTop="8dp"/>
+            <EditText
+                android:id="@+id/edtLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:hint="Enter job location"/>
 
             <!-- Position -->
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -212,7 +226,7 @@
                 android:minHeight="56dp"
                 android:padding="12dp"
                 android:textSize="16sp"
-                android:hint="Enter deadline (yyyy-MM-dd)"/>
+                android:hint="Enter deadline (dd-mm-yyyy)"/>
 
             <!-- Save Button -->
             <Button

@@ -20,6 +20,7 @@ import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.utils.Utils;
+import com.google.gson.Gson;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -36,7 +37,7 @@ public class CreateJobpostFragment extends Fragment {
     private JobPostViewModel jobPostViewModel;
 
     private AutoCompleteTextView autoJobCategory, autoJobType;
-    private EditText edtTitle, edtDescription, edtPosition, edtWorkingAddress;
+    private EditText edtTitle, edtDescription, edtLocation, edtPosition, edtWorkingAddress;
     private EditText edtEducation, edtSkillRequirement, edtResponsibility;
     private EditText edtSalaryStart, edtSalaryEnd, edtCurrency, edtStatus, edtApplyUntil;
     private Button btnSaveJob, btnCancel;
@@ -71,6 +72,7 @@ public class CreateJobpostFragment extends Fragment {
         autoJobType = view.findViewById(R.id.autoJobType);
         edtTitle = view.findViewById(R.id.edtTitle);
         edtDescription = view.findViewById(R.id.edtDescription);
+        edtLocation = view.findViewById(R.id.edtLocation);
         edtPosition = view.findViewById(R.id.edtPosition);
         edtWorkingAddress = view.findViewById(R.id.edtWorkingAddress);
         edtEducation = view.findViewById(R.id.edtEducation);
@@ -84,10 +86,25 @@ public class CreateJobpostFragment extends Fragment {
         btnSaveJob = view.findViewById(R.id.btnSaveJob);
         btnCancel = view.findViewById(R.id.btnCancel);
 
-        String companyId = "1";
+        //Nhan ket qua
+        jobPostViewModel.getCreateJobPostResult().observe(getViewLifecycleOwner(), result ->
+        {
+            if(result != null)
+                Log.e("Create jobpost result", result);
+            else
+                Log.e("Create jobpost result", "Create jobpost result null");
+
+            // Hien lai bottom navigation va quay ve
+            ((NavigationActivity) getActivity()).showBottomNav(true);
+            NavHostFragment.findNavController(this).navigateUp();
+        });
+
         // TODO: Add listeners or bind ViewModel here
         btnSaveJob.setOnClickListener(v -> {
             Log.e("click", "click");
+            Log.e("click", getArguments().getString("companyId"));
+            Toast.makeText(this.getActivity(), "Company ID: " + getArguments().getString("companyId"), Toast.LENGTH_SHORT).show();
+            BigDecimal a = BigDecimal.valueOf(1000);
             // Handle save logic here
             JobPost jobPost = new JobPost(
                     getArguments().getString("companyId"),
@@ -95,31 +112,38 @@ public class CreateJobpostFragment extends Fragment {
                     autoJobType.getText().toString(),
                     edtTitle.getText().toString(),
                     edtDescription.getText().toString(),
+                    edtLocation.getText().toString(),
                     edtPosition.getText().toString(),
                     edtWorkingAddress.getText().toString(),
                     edtEducation.getText().toString(),
                     edtSkillRequirement.getText().toString(),
                     edtResponsibility.getText().toString(),
-                    Utils.getDecimal(edtSalaryStart),
-                    Utils.getDecimal(edtSalaryEnd),
+                    edtSalaryStart.getText().toString(),
+                    edtSalaryEnd.getText().toString(),
                     edtCurrency.getText().toString(),
-                    edtStatus.getText().toString(),
-                    Utils.getDate(edtApplyUntil)
+                    edtStatus.getText().toString(), //Enum
+                    edtApplyUntil.getText().toString()
+                    /*"aa2a80cb-e710-4df3-b9db-724919ee3393",
+                    "5773bc80-417f-4356-b144-4749d8528fe5",
+                    "24fc4e66-d391-4cc8-beca-41110bf612e1",
+                    "Khoa tao android studio ne",
+                    "Tham gia phát triển các ứng dụng web cho doanh nghiệp.",
+                    "HCM",
+                    "Lập trình viên",
+                    "Tầng 3, tòa nhà ABC, Quận 1, TP.HCM",
+                    "Đại học",
+                    "Thành thạo Java, Spring Boot, Git",
+                    "Viết code, sửa lỗi, làm việc nhóm",
+                    "1500",
+                    "2500",
+                    "USD",
+                    "OPENING",
+                    "30-06-2024"*/
             );
-            
-            //Nhan ket qua
-            jobPostViewModel.getCreateJobPostResult().observe(getViewLifecycleOwner(), result ->
-            {
-                if(result != null)
-                    Log.e("Create jobpost result", result);
-                else
-                    Log.e("Create jobpost result", "Create jobpost result null");
-            });
+
+            Log.d("new jobpost", new Gson().toJson(jobPost));
             jobPostViewModel.createJobPost(jobPost);
 
-            // Hien lai bottom navigation va quay ve
-            ((NavigationActivity) getActivity()).showBottomNav(true);
-            NavHostFragment.findNavController(this).navigateUp();
         });
 
         btnCancel.setOnClickListener(v -> {

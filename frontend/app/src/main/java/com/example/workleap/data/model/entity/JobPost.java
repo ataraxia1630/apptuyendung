@@ -9,27 +9,26 @@ import java.util.List;
 public class JobPost {
     private String id;
     private String companyId;
-    private String jobCategoryId;
-    private String jobTypeId;
+    private String jobCategory;
+    private String jobType;
     private String title;
     private String description;
+    private String location;
     private String position;
     private String workingAddress;
     private String educationRequirement;
     private String skillRequirement;
     private String responsibility;
-    private BigDecimal salary_start;
-    private BigDecimal salary_end;
+    private String salary_start;
+    private String salary_end;
     private String currency;
     private String status;  // OPENING or other values
-    private Date applyUntil;
+    private String apply_until;
     private List<JobApplied> jobApplied; // Assuming you use this in your API response
     private Date created_at;
     private Date updated_at;
-    private Company Company; // Assuming you define the Company model
-    private JobType jobType; // Assuming you define the JobType model
-    private JobCategory jobCategory; // Assuming you define the JobCategory model
-    private List<JobSaved> jobSaved; // Assuming you define JobSaved model
+    private Company Company;
+    private List<JobSaved> jobSaved;
 
     //Constructor
     public JobPost(String companyId,
@@ -37,21 +36,23 @@ public class JobPost {
                    String jobTypeId,
                    String title,
                    String description,
+                   String location,
                    String position,
                    String workingAddress,
                    String educationRequirement,
                    String skillRequirement,
                    String responsibility,
-                   BigDecimal salary_start,
-                   BigDecimal salary_end,
+                   String salary_start,
+                   String salary_end,
                    String currency,
                    String status,
-                   Date applyUntil) {
+                   String apply_until) {
         this.companyId = companyId;
-        this.jobCategoryId = jobCategoryId;
-        this.jobTypeId = jobTypeId;
+        this.jobCategory = jobCategoryId;
+        this.jobType = jobTypeId;
         this.title = title;
         this.description = description;
+        this.location = location;
         this.position = position;
         this.workingAddress = workingAddress;
         this.educationRequirement = educationRequirement;
@@ -61,7 +62,7 @@ public class JobPost {
         this.salary_end = salary_end;
         this.currency = currency;
         this.status = status;
-        this.applyUntil = applyUntil;
+        this.apply_until = apply_until;
     }
     // Getters and Setters
 
@@ -82,19 +83,19 @@ public class JobPost {
     }
 
     public String getJobCategoryId() {
-        return jobCategoryId;
+        return jobCategory;
     }
 
     public void setJobCategoryId(String jobCategoryId) {
-        this.jobCategoryId = jobCategoryId;
+        this.jobCategory = jobCategoryId;
     }
 
-    public String getJobTypeId() {
-        return jobTypeId;
+    public String getJobType() {
+        return jobType;
     }
 
-    public void setJobTypeId(String jobTypeId) {
-        this.jobTypeId = jobTypeId;
+    public void setJobType(String jobType) {
+        this.jobType = jobType;
     }
 
     public String getTitle() {
@@ -112,6 +113,15 @@ public class JobPost {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
 
     public String getPosition() {
         return position;
@@ -153,19 +163,19 @@ public class JobPost {
         this.responsibility = responsibility;
     }
 
-    public BigDecimal getSalaryStart() {
+    public String getSalaryStart() {
         return salary_start;
     }
 
-    public void setSalary_start(BigDecimal salary_start) {
+    public void setSalary_start(String salary_start) {
         this.salary_start = salary_start;
     }
 
-    public BigDecimal getSalaryEnd() {
+    public String getSalaryEnd() {
         return salary_end;
     }
 
-    public void setSalaryEnd(BigDecimal salary_end) {
+    public void setSalaryEnd(String salary_end) {
         this.salary_end = salary_end;
     }
 
@@ -185,12 +195,12 @@ public class JobPost {
         this.status = status;
     }
 
-    public Date getApplyUntil() {
-        return applyUntil;
+    public String getApplyUntil() {
+        return apply_until;
     }
 
-    public void setApplyUntil(Date applyUntil) {
-        this.applyUntil = applyUntil;
+    public void setApplyUntil(String apply_until) {
+        this.apply_until = apply_until;
     }
 
     public List<JobApplied> getJobApplied() {
@@ -223,22 +233,6 @@ public class JobPost {
 
     public void setCompany(Company company) {
         this.Company = company;
-    }
-
-    public JobType getJobType() {
-        return jobType;
-    }
-
-    public void setJobType(JobType jobType) {
-        this.jobType = jobType;
-    }
-
-    public JobCategory getJobCategory() {
-        return jobCategory;
-    }
-
-    public void setJobCategory(JobCategory jobCategory) {
-        this.jobCategory = jobCategory;
     }
 
     public List<JobSaved> getJobSaved() {
