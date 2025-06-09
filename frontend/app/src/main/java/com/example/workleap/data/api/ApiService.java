@@ -179,7 +179,7 @@ public interface ApiService {
     Call <ListJobTypeResponse> createJobType(@Body List<JobType> request);
 
     //JobCategory
-    @GET("api/category")
+    @GET("api/category/all")
     Call<ListJobCategoryResponse> getAllJobCategories();
     @POST("api/types/")
     Call <ListJobCategoryResponse> createJobCategory(@Body List<JobCategory> request);

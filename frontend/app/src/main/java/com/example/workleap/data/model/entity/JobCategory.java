@@ -17,7 +17,7 @@ public class JobCategory {
     void setId(String id) { this.id = id; }
     String getFieldId() { return fieldId; }
     void setFieldId(String fieldId) { this.fieldId = fieldId; }
-    String getName() { return name; }
+    public String getName() { return name; }
     void setName(String name) { this.name = name; }
 
     public Date getCreatedAt() {

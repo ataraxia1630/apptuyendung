@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,16 +18,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
-import com.example.workleap.utils.Utils;
 import com.google.gson.Gson;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,7 +38,7 @@ public class CreateJobpostFragment extends Fragment {
     private AutoCompleteTextView autoJobCategory, autoJobType;
     private EditText edtTitle, edtDescription, edtLocation, edtPosition, edtWorkingAddress;
     private EditText edtEducation, edtSkillRequirement, edtResponsibility;
-    private EditText edtSalaryStart, edtSalaryEnd, edtCurrency, edtStatus, edtApplyUntil;
+    private EditText edtSalaryStart, edtSalaryEnd, edtCurrency, edtApplyUntil;
     private Button btnSaveJob, btnCancel;
 
     public CreateJobpostFragment() {
@@ -67,10 +66,10 @@ public class CreateJobpostFragment extends Fragment {
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
 
-        // Ánh xạ các thành phần trong layout
+        //Tim cac thanh phan component
+        edtTitle = view.findViewById(R.id.edtTitle);
         autoJobCategory = view.findViewById(R.id.autoJobCategory);
         autoJobType = view.findViewById(R.id.autoJobType);
-        edtTitle = view.findViewById(R.id.edtTitle);
         edtDescription = view.findViewById(R.id.edtDescription);
         edtLocation = view.findViewById(R.id.edtLocation);
         edtPosition = view.findViewById(R.id.edtPosition);
@@ -81,12 +80,89 @@ public class CreateJobpostFragment extends Fragment {
         edtSalaryStart = view.findViewById(R.id.edtSalaryStart);
         edtSalaryEnd = view.findViewById(R.id.edtSalaryEnd);
         edtCurrency = view.findViewById(R.id.edtCurrency);
-        edtStatus = view.findViewById(R.id.edtStatus);
         edtApplyUntil = view.findViewById(R.id.edtApplyUntil);
         btnSaveJob = view.findViewById(R.id.btnSaveJob);
         btnCancel = view.findViewById(R.id.btnCancel);
 
-        //Nhan ket qua
+        //Lay danh sach jobcategory
+        ArrayList<String> jobCategoriesName = new ArrayList<>();
+        jobPostViewModel.getAllJobCategoryResult().observe(getViewLifecycleOwner(), result ->
+        {
+            if(result != null)
+                Log.e("Load jobcategory result", result);
+            else
+                Log.e("Load jobcategory result", "Create jobcategory result null");
+        });
+        jobPostViewModel.getAllJobCategoryData().observe(getViewLifecycleOwner(), data ->
+        {
+            if(data != null)
+            {
+                ArrayList<JobCategory> jobCategories = new ArrayList<>();
+                jobCategories.addAll(data);
+                for(JobCategory jobCategory : jobCategories)
+                    jobCategoriesName.add(jobCategory.getName());
+            }
+            else
+                Log.e("Load jobcategory data", "Jobcategory data null");
+        });
+        jobPostViewModel.getAllJobCategory();
+        //Xu li Auto complete textview jobcategory
+        ArrayAdapter<String> adapterCategory = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, jobCategoriesName);
+        autoJobCategory.setAdapter(adapterCategory);
+        // Hiển thị danh sách khi nhận focus hoac click, kiem tra ton tai
+        autoJobCategory.setThreshold(0); // Hiển thị danh sách ngay khi click, không cần nhập ký tự
+        autoJobCategory.setOnClickListener(v -> autoJobCategory.showDropDown()); // Hiển thị danh sách khi click
+        autoJobCategory.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus)
+                autoJobCategory.showDropDown();
+            else if (!hasFocus && !jobCategoriesName.contains(autoJobCategory.getText().toString())) {
+                Toast.makeText(this.getActivity(), "Please select an available category", Toast.LENGTH_SHORT).show();
+                autoJobCategory.setText(""); // Xóa nếu nhập không hợp lệ
+            }
+        });
+
+
+
+        //Lay danh sach jobtype
+        ArrayList<String> jobTypesName = new ArrayList<>();
+        jobPostViewModel.getAllJobTypeResult().observe(getViewLifecycleOwner(), result ->
+        {
+            if(result != null)
+                Log.e("Load jobtype result", result);
+            else
+                Log.e("Load jobtype result", "Create jobType result null");
+        });
+        jobPostViewModel.getAllJobTypeData().observe(getViewLifecycleOwner(), data ->
+        {
+            if(data != null)
+            {
+                ArrayList<JobType> jobTypes = new ArrayList<>();
+                jobTypes.addAll(data);
+                for(JobType jobType : jobTypes)
+                    jobTypesName.add(jobType.getName());
+            }
+            else
+                Log.e("Load jobtype data", "Jobtype data null");
+        });
+        jobPostViewModel.getAllJobType();
+        //Xu li Auto complete textview jobtype
+        ArrayAdapter<String> adapterType = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, jobTypesName);
+        autoJobType.setAdapter(adapterType);
+        // Hiển thị danh sách khi nhận focus hoac click, kiem tra ton tai
+        autoJobType.setThreshold(0); // Hiển thị danh sách ngay khi click, không cần nhập ký tự
+        autoJobType.setOnClickListener(v -> autoJobType.showDropDown()); // Hiển thị danh sách khi click
+        autoJobType.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus)
+                autoJobType.showDropDown();
+            else if (!hasFocus && !jobTypesName.contains(autoJobType.getText().toString())) {
+                Toast.makeText(this.getActivity(), "Please select an available Type", Toast.LENGTH_SHORT).show();
+                autoJobType.setText(""); // Xóa nếu nhập không hợp lệ
+            }
+        });
+
+
+
+        //Nhan ket qua creat jobpost
         jobPostViewModel.getCreateJobPostResult().observe(getViewLifecycleOwner(), result ->
         {
             if(result != null)
@@ -121,7 +197,7 @@ public class CreateJobpostFragment extends Fragment {
                     edtSalaryStart.getText().toString(),
                     edtSalaryEnd.getText().toString(),
                     edtCurrency.getText().toString(),
-                    edtStatus.getText().toString(), //Enum
+                    "OPENING", //Defalue value is OPENING with new jobpost
                     edtApplyUntil.getText().toString()
                     /*"aa2a80cb-e710-4df3-b9db-724919ee3393",
                     "5773bc80-417f-4356-b144-4749d8528fe5",
