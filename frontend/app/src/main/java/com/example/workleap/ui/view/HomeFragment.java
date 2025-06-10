@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment {
             allJobs.addAll(jobPosts);
             // Setup RecyclerView
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            adapter = new JobPostAdapter(allJobs); // mặc định show tất cả
+            adapter = new JobPostAdapter(allJobs, jobPostViewModel); // mặc định show tất cả
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         });

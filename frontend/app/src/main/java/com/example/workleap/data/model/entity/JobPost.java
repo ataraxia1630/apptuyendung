@@ -2,11 +2,12 @@ package com.example.workleap.data.model.entity;
 
 // JobPost.java
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-public class JobPost {
+public class JobPost implements Serializable {
     private String id;
     private String companyId;
     private String jobCategory;

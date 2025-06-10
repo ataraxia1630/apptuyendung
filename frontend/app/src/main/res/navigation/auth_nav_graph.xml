@@ -15,7 +15,4 @@
     <fragment
         android:id="@+id/applicantSignupFragment"
         android:name="com.example.workleap.ui.view.ApplicantSignupFragment"/>
-    <fragment
-        android:id="@+id/companySignupFragment"
-        android:name="com.example.workleap.ui.view.CompanySignupFragment"/>
 </navigation>

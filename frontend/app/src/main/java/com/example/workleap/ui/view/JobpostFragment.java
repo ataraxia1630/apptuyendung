@@ -28,14 +28,9 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link JobpostFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class JobpostFragment extends Fragment {
+public class JobpostFragment extends Fragment{
     private RecyclerView recyclerView;
-    private JobPostAdapter adapter;
+    private MyJobPostAdapter adapter;
     private List<JobPost> allJobs = new ArrayList<>();
     private JobPostViewModel jobPostViewModel;
 
@@ -48,15 +43,6 @@ public class JobpostFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment JobpostFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static JobpostFragment newInstance(String param1, String param2) {
         JobpostFragment fragment = new JobpostFragment();
         Bundle args = new Bundle();
@@ -98,7 +84,17 @@ public class JobpostFragment extends Fragment {
                 allJobs.addAll(jobPosts);
             // Setup RecyclerView
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            adapter = new JobPostAdapter(allJobs); // mặc định show tất cả
+            //show tat ca jobpost va vao detail fragment khi click vao item
+            adapter = new MyJobPostAdapter(allJobs, jobPostViewModel, new MyJobPostAdapter.OnJobPostClickListener() {
+                @Override
+                public void onJobPostClick(JobPost jobPost) {
+                    // Handle item click
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("jobPost", jobPost);
+                    ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
+                    nav.navigate(R.id.detailMyJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+                }
+            });
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         });
@@ -111,5 +107,7 @@ public class JobpostFragment extends Fragment {
                     nav.navigate(R.id.createJobpostFragment, bundle);
                 }
         );
+
+        //Viet lenh de khi click vao mot item trong recycler view thi se navigate den fragment DetailJObPost, dong thoi gui di jobpost do
     }
 }
