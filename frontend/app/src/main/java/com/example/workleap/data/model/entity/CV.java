@@ -8,6 +8,7 @@ public class CV {
     private String applicantId;
     private String title;
     private String filePath;
+    private int size; //byte
     private int viewCount;
     private Date created_at;
     private Date updated_at;
@@ -44,6 +45,9 @@ public class CV {
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
+
+    public int getSize() { return size; }
+    public void setSize(int size) { this.size = size; }
 
     public int getViewCount() {
         return viewCount;

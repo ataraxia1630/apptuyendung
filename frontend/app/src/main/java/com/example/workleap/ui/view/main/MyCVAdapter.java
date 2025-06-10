@@ -45,7 +45,19 @@ public class MyCVAdapter extends RecyclerView.Adapter<MyCVAdapter.CVViewHolder> 
     public void onBindViewHolder(@NonNull CVViewHolder holder, int position) {
         CV cv = CVList.get(position);
         holder.txtTitle.setText(cv.getTitle());
-        //holder.txtSize.setText(cv.get().getName());
+
+        //size
+        long sizeInBytes = cv.getSize();
+        String readableSize;
+        if (sizeInBytes >= 1024 * 1024) {
+            readableSize = String.format("%.2f MB", sizeInBytes / (1024.0 * 1024));
+        } else if (sizeInBytes >= 1024) {
+            readableSize = String.format("%.2f KB", sizeInBytes / 1024.0);
+        } else {
+            readableSize = sizeInBytes + " B";
+        }
+        holder.txtSize.setText(readableSize);
+
         holder.txtDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(cv.getUpdatedAt()));
         holder.imgCV.setImageResource(R.drawable.ic_pdf);
     }
