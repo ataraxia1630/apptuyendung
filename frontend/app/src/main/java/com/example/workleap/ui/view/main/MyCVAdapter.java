@@ -96,6 +96,9 @@ public class MyCVAdapter extends RecyclerView.Adapter<MyCVAdapter.CVViewHolder> 
                 showPopupMenu(v, getAdapterPosition());
                 return true;
             });
+            itemView.setOnClickListener( v ->{
+                listener.onOpen(cvList.get(getAdapterPosition()));
+            });
             btnOption.setOnClickListener( v -> {
                 showPopupMenu(v, getAdapterPosition());
             });

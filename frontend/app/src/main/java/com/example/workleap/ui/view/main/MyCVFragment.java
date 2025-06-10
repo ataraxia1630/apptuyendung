@@ -77,7 +77,18 @@ public class MyCVFragment extends Fragment {
             adapter = new MyCVAdapter(allCVs, new MyCVAdapter.OnCVMenuClickListener() {
                 @Override
                 public void onOpen(CV cv) {
-                    Toast.makeText(getContext(), "Mở: " + cv.getTitle(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Mở: " + cv.getTitle(), Toast.LENGTH_SHORT).show();
+                    PdfFragment pdfFragment = new PdfFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("pdf_title", cv.getTitle());
+                    bundle.putString("pdf_url", "https://epuxazakjgtmjuhuwkza.supabase.co/storage/v1/object/public/cv-storage/" + cv.getFilePath());
+                    pdfFragment.setArguments(bundle);
+
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, pdfFragment)
+                            .addToBackStack(null)
+                            .commit();
                 }
 
                 @Override
