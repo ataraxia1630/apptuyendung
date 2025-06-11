@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view;
+package com.example.workleap.ui.view.auth;
 
 import android.os.Bundle;
 

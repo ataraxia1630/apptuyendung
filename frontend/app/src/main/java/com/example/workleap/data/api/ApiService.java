@@ -6,6 +6,7 @@ import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
+import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
 import com.example.workleap.data.model.response.CVResponse;
@@ -52,12 +53,16 @@ import com.example.workleap.data.model.response.UpdateUserResponse;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface ApiService {
@@ -204,8 +209,15 @@ public interface ApiService {
 
 
     //Cv
+    //@POST("api/cv/upload/{applicantId}")
+    //Call<MessageResponse> createCv(@Path("applicantId") String applicantId, @Body CVRequest request);
+    @Multipart
     @POST("api/cv/upload/{applicantId}")
-    Call<MessageResponse> createCv(@Path("applicantId") String applicantId, @Body CV request);
+    Call<MessageResponse> createCv(
+            @Path("applicantId") String applicantId,
+            @Part MultipartBody.Part file,
+            @Part("title") RequestBody title
+    );
     @GET("api/cv/all/{applicantId}")
     Call<ListCVResponse> getAllCv(@Path("applicantId") String applicantId);
     @DELETE("api/cv/all/{applicantId}")
@@ -213,7 +225,7 @@ public interface ApiService {
     @GET("api/cv/{id}")
     Call<CVResponse> getCvById(@Path("id") String id);
     @PUT("api/cv/{id}")
-    Call<MessageResponse> updateCvById(@Path("id") String id);
+    Call<MessageResponse> updateCvById(@Path("id") String id, @Body CVRequest request);
     @DELETE("api/cv/{id}")
     Call<MessageResponse> deleteCvById(@Path("id") String id);
 }

@@ -5,14 +5,17 @@
 
     <fragment
         android:id="@+id/loginSignupFragment"
-        android:name="com.example.workleap.ui.view.LoginSignupFragment"/>
+        android:name="com.example.workleap.ui.view.auth.LoginSignupFragment"/>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.workleap.ui.view.LoginFragment"/>
+        android:name="com.example.workleap.ui.view.auth.LoginFragment"/>
     <fragment
         android:id="@+id/roleSelectionFragment"
-        android:name="com.example.workleap.ui.view.RoleSelectionFragment"/>
+        android:name="com.example.workleap.ui.view.auth.RoleSelectionFragment"/>
     <fragment
         android:id="@+id/applicantSignupFragment"
-        android:name="com.example.workleap.ui.view.ApplicantSignupFragment"/>
+        android:name="com.example.workleap.ui.view.auth.ApplicantSignupFragment"/>
+    <fragment
+        android:id="@+id/companySignupFragment"
+        android:name="com.example.workleap.ui.view.auth.CompanySignupFragment"/>
 </navigation>

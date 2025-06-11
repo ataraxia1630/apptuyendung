@@ -5,6 +5,7 @@ const CVHelper = {
     const fileExt = file.originalname.split('.').pop();
     const fileName = `${applicantId}-${Date.now()}.${fileExt}`;
     const filePath = `applicant-cv/${fileName}`;
+    const size = file.size;
 
     try {
       const { data, error } = await supabase.storage
@@ -17,7 +18,7 @@ const CVHelper = {
       if (error) {
         throw new Error('Upload failed: ' + error.message);
       }
-      return filePath;
+      return { filePath, size };
     } catch (error) {
       throw new Error('Upload failed (supabase): ' + error.message);
     }

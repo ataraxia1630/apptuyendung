@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.view.RoleSelectionFragment">
+    tools:context=".ui.view.auth.RoleSelectionFragment">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/role_tablayout"

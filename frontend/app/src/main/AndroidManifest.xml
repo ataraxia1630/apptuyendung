@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".App"
@@ -16,7 +17,7 @@
         android:theme="@style/Theme.Workleap"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".ui.view.NavigationActivity"
+            android:name=".ui.view.main.NavigationActivity"
             android:exported="false" />
         <activity
             android:name=".ui.view.RoleSelection"
@@ -37,7 +38,7 @@
             android:name=".ui.view.Login"
             android:exported="false" />
         <activity
-            android:name=".ui.view.MainActivity"
+            android:name=".ui.view.auth.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

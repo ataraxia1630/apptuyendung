@@ -4,7 +4,8 @@
     android:orientation="vertical"
     android:padding="10dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -63,7 +64,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@null"
-            android:src="@drawable/ic_option" />
+            android:src="@drawable/ic_show_more" />
 
 
     </LinearLayout>

@@ -7,37 +7,37 @@
 
     <fragment
         android:id="@+id/cvFragment"
-        android:name="com.example.workleap.ui.view.CVFragment"
+        android:name="com.example.workleap.ui.view.main.CVFragment"
         android:label="fragment_c_v_jobpost"
         tools:layout="@layout/fragment_cv" />
     <fragment
         android:id="@+id/menu_home"
-        android:name="com.example.workleap.ui.view.HomeFragment"
+        android:name="com.example.workleap.ui.view.main.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/menu_notifications"
-        android:name="com.example.workleap.ui.view.NotificationFragment"
+        android:name="com.example.workleap.ui.view.main.NotificationFragment"
         android:label="fragment_notification"
         tools:layout="@layout/fragment_notification" />
     <fragment
         android:id="@+id/applicantProfileFragment"
-        android:name="com.example.workleap.ui.view.ApplicantProfileFragment"
+        android:name="com.example.workleap.ui.view.main.ApplicantProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_applicant_profile" />
     <fragment
         android:id="@+id/menu_statistics"
-        android:name="com.example.workleap.ui.view.StatisticsFragment"
+        android:name="com.example.workleap.ui.view.main.StatisticsFragment"
         android:label="fragment_statistics"
         tools:layout="@layout/fragment_statistics" />
     <fragment
         android:id="@+id/companyProfileFragment"
-        android:name="com.example.workleap.ui.view.CompanyProfileFragment"
+        android:name="com.example.workleap.ui.view.main.CompanyProfileFragment"
         android:label="fragment_company_profile"
         tools:layout="@layout/fragment_company_profile" />
     <fragment
         android:id="@+id/jobpostFragment"
-        android:name="com.example.workleap.ui.view.JobpostFragment"
+        android:name="com.example.workleap.ui.view.main.JobpostFragment"
         android:label="fragment_jobpost"
         tools:layout="@layout/fragment_my_jobpost" />
     <fragment
