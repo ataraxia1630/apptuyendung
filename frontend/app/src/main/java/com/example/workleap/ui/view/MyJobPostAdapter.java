@@ -1,5 +1,6 @@
-package com.example.workleap.ui.view.main;
+package com.example.workleap.ui.view;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workleap.R;
@@ -22,13 +20,19 @@ import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostViewHolder> {
+public class MyJobPostAdapter extends RecyclerView.Adapter<MyJobPostAdapter.JobPostViewHolder> {
     private List<JobPost> jobPostList;
     private JobPostViewModel jobPostViewModel;
+    private OnJobPostClickListener clickListener;
 
-    public JobPostAdapter(List<JobPost> jobPostList, JobPostViewModel jobPostViewModel) {
+    public interface OnJobPostClickListener {
+        void onJobPostClick(JobPost jobPost);
+    }
+
+    public MyJobPostAdapter(List<JobPost> jobPostList, JobPostViewModel jobPostViewModel, OnJobPostClickListener clickListener) {
         this.jobPostList = jobPostList;
         this.jobPostViewModel = jobPostViewModel;
+        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -48,6 +52,13 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
         holder.txtLocation.setText(post.getPosition());
         //holder.imgPost.setImageResource(post.);
 
+        // Thêm sự kiện nhấp vào item
+        holder.itemView.setOnClickListener(v -> {
+            if (clickListener != null) {
+                clickListener.onJobPostClick(post);
+            }
+        });
+
         // Thêm PopupMenu cho btnOption
         holder.btnOption.setOnClickListener(v -> {
 
@@ -55,7 +66,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
             popupMenu.inflate(R.menu.menu_options_myjobpost); // Load menu từ file XML
             popupMenu.setOnMenuItemClickListener(item -> {
                     if(item.getItemId() == R.id.menu_edit) {
-                        //Chuyen sang fragment
+                        //Chuyen sang fragment edit jobpost
                         return true;
                     }
                     else if(item.getItemId() == R.id.menu_delete)
@@ -73,6 +84,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
                         return false;
             });
             popupMenu.show();
+
         });
     }
 

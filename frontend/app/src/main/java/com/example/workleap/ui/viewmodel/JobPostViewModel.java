@@ -24,6 +24,12 @@ import com.example.workleap.data.repository.UserRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -41,12 +47,14 @@ public class JobPostViewModel  extends ViewModel {
 
     //job post
     private MutableLiveData<List<JobPost>> getAllJobPostData = new MutableLiveData<>();
+    private MutableLiveData<List<JobPost>> getJobPostsByCompanyData = new MutableLiveData<>();
     private MutableLiveData<JobPost> getJobPostData = new MutableLiveData<>();
     private MutableLiveData<JobPost> createJobPostData = new MutableLiveData<>();
     private MutableLiveData<JobPost> updateJobPostData = new MutableLiveData<>();
     private MutableLiveData<List<JobPost>> searchJobPostData = new MutableLiveData<>();
 
     private MutableLiveData<String> getAllJobPostResult = new MutableLiveData<>();
+    private MutableLiveData<String> getJobPostsByCompanyResult = new MutableLiveData<>();
     private MutableLiveData<String> getJobPostResult = new MutableLiveData<>();
     private MutableLiveData<String> updateJobPostResult = new MutableLiveData<>();
     private MutableLiveData<String> createJobPostResult = new MutableLiveData<>();
@@ -78,9 +86,11 @@ public class JobPostViewModel  extends ViewModel {
 
     //Getter live data
     public LiveData<List<JobPost>> getAllJobPostData() { return getAllJobPostData; }
+    public LiveData<List<JobPost>> getJobPostsByCompanyData() { return getJobPostsByCompanyData; }
     public LiveData<JobPost> getJobPostData() { return getJobPostData; }
 
     public LiveData<String> getAllJobPostResult() { return getAllJobPostResult; }
+    public LiveData<String> getJobPostsByCompanyResult() { return getJobPostsByCompanyResult; }
     public LiveData<String> getJobPostResult() { return getJobPostResult; }
     public LiveData<String> getUpdateJobPostResult() { return updateJobPostResult; }
 
@@ -128,6 +138,26 @@ public class JobPostViewModel  extends ViewModel {
         });
     }
 
+    public void getJobPostsByCompany(String companyId) {
+        jobPostRepository.getJobPostsByCompany(companyId).enqueue(new Callback<ListJobPostResponse>() {
+            @Override
+            public void onResponse(Call<ListJobPostResponse> call, Response<ListJobPostResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    getJobPostsByCompanyData.postValue(response.body().getAllJobPost());
+                    getJobPostsByCompanyResult.postValue("Success");
+                    Log.d("API_RESPONSE", new Gson().toJson(response.body()));
+                } else {
+                    getJobPostsByCompanyResult.postValue("Failed: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ListJobPostResponse> call, Throwable t) {
+                getJobPostsByCompanyResult.postValue("Error: " + t.getMessage());
+            }
+        });
+    }
+
     public void getJobPostById(String id) {
         jobPostRepository.getJobPostById(id).enqueue(new Callback<JobPostResponse>() {
             @Override
@@ -154,7 +184,19 @@ public class JobPostViewModel  extends ViewModel {
                 if (response.isSuccessful() && response.body() != null) {
                     createJobPostData.postValue(response.body().getJobPost());
                     createJobPostResult.postValue("Success");
+                    Log.d("API_RESPONSE", new Gson().toJson(response.body()));
                 } else {
+                    Log.d("API_RESPONSE", new Gson().toJson(response.body()));
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorBodyString = response.errorBody().string();
+                            Log.d("API_ERROR", "Lỗi từ server: " + errorBodyString);
+                        } else {
+                            Log.d("API_ERROR", "Không có errorBody");
+                        }
+                    } catch (IOException e) {
+                        Log.e("API_ERROR", "Lỗi khi đọc errorBody: ", e);
+                    }
                     createJobPostResult.postValue("Failed: " + response.message());
                 }
             }
@@ -174,6 +216,7 @@ public class JobPostViewModel  extends ViewModel {
                     updateJobPostData.postValue(response.body().getJobPost());
                     updateJobPostResult.postValue("Success");
                 } else {
+                    Log.d("API_RESPONSE", new Gson().toJson(response.body()));
                     updateJobPostResult.postValue("Failed: " + response.message());
                 }
             }

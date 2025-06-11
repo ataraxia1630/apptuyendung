@@ -37,6 +37,10 @@ public class JobPostRepository {
         return apiService.getAllJobPosts();
     }
 
+    public Call<ListJobPostResponse> getJobPostsByCompany(String id) {
+        return apiService.getJobPostsByCompany(id);
+    }
+
     public Call<JobPostResponse> getJobPostById(String id) {
         return apiService.getJobPostById(id);
     }

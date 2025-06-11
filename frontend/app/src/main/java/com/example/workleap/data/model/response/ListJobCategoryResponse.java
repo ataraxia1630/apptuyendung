@@ -8,14 +8,14 @@ import java.util.List;
 public class ListJobCategoryResponse {
     String message;
 
-    List<JobCategory> jobCategories;
+    List<JobCategory> categories;
 
     public ListJobCategoryResponse() {
     }
 
     public ListJobCategoryResponse(String message, List<JobCategory> jobCategories) {
         this.message = message;
-        this.jobCategories = jobCategories;
+        this.categories = jobCategories;
     }
 
     public String getMessage() {
@@ -23,6 +23,6 @@ public class ListJobCategoryResponse {
     }
 
     public List<JobCategory> getAllJobCategory() {
-        return jobCategories;
+        return categories;
     }
 }
