@@ -1,6 +1,8 @@
 package com.example.workleap.data.model.entity;
 
-public class Company {
+import java.io.Serializable;
+
+public class Company implements Serializable {
     private String id;
     private String name;
     private String description;

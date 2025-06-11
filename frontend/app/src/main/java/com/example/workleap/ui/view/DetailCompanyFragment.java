@@ -17,31 +17,32 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.Company;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link DetailMyJobPostFragment#newInstance} factory method to
+ * Use the {@link DetailCompanyFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DetailMyJobPostFragment extends Fragment {
+public class DetailCompanyFragment extends Fragment {
     private JobPostViewModel jobPostViewModel;
 
-    private TextView txtJobName, txtCompanyName, txtSalary, txtLocation, txtDescription, txtResponsibilities, txtPosition, txtWorkingAddress, txtEducationRequirement, txtSkillRequirement, txtApplyUntil;
-    private Button btnApply, btnCompany;
+    private TextView txtJobName, txtCompanyName, txtSalary, txtLocation, txtAboutUs, txtContactInfor;
+    private Button btnApply;
     private ImageButton btnOption;
     private NavController nav;
     private Bundle bundle;
     private boolean isJobPostSubmitted = false; // Biến trạng thái đảm bảo chỉ trở về khi đã tạo thành công
 
-    public DetailMyJobPostFragment() {
+    public DetailCompanyFragment() {
         // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
-    public static DetailMyJobPostFragment newInstance(String param1, String param2) {
-        DetailMyJobPostFragment fragment = new DetailMyJobPostFragment();
+    public static DetailCompanyFragment newInstance(String param1, String param2) {
+        DetailCompanyFragment fragment = new DetailCompanyFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -52,7 +53,7 @@ public class DetailMyJobPostFragment extends Fragment {
         nav = NavHostFragment.findNavController(this);
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detail_jobpost, container, false);
+        return inflater.inflate(R.layout.fragment_detail_company, container, false);
     }
 
     @Override
@@ -62,21 +63,19 @@ public class DetailMyJobPostFragment extends Fragment {
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
 
+        //Lay company hien tai
+        Company currentCompany = (Company) getArguments().getSerializable("company");
+
         //find component
         txtJobName = view.findViewById(R.id.txtJobName);
         txtCompanyName = view.findViewById(R.id.txtCompanyName);
         txtSalary = view.findViewById(R.id.txtSalary);
         txtLocation = view.findViewById(R.id.txtLocation);
-        txtDescription = view.findViewById(R.id.txtDescription);
-        txtWorkingAddress = view.findViewById(R.id.txtWorkingAddress);
-        txtResponsibilities = view.findViewById(R.id.txtResponsibilities);
-        txtPosition = view.findViewById(R.id.txtPosition);
-        txtSkillRequirement = view.findViewById(R.id.txtSkillRequirement);
-        txtEducationRequirement = view.findViewById(R.id.txtEducationRequirement);
-        txtApplyUntil = view.findViewById(R.id.txtApplyUntil);
+        txtAboutUs = view.findViewById(R.id.txtAboutUs);
+        txtContactInfor = view.findViewById(R.id.txtContactInformation);
+
         btnApply = view.findViewById(R.id.btnApply);
         btnOption = view.findViewById(R.id.btnOption);
-        btnCompany = view.findViewById(R.id.btnCompany);
 
         //Get current jobpost from jobpost fragment
         JobPost jobPost = (JobPost) getArguments().getSerializable("jobPost");
@@ -84,14 +83,9 @@ public class DetailMyJobPostFragment extends Fragment {
         txtCompanyName.setText(jobPost.getCompany().getName());
         txtSalary.setText(jobPost.getSalaryStart() + " - " + jobPost.getSalaryEnd() + " " + jobPost.getCurrency());
         txtLocation.setText(jobPost.getLocation());
-        txtDescription.setText(jobPost.getDescription());
-        txtWorkingAddress.setText(jobPost.getWorkingAddress());
-        txtResponsibilities.setText(jobPost.getResponsibility());
-        txtPosition.setText(jobPost.getPosition());
-        txtSkillRequirement.setText(jobPost.getSkillRequirement());
-        txtEducationRequirement.setText(jobPost.getEducationRequirement());
+        txtAboutUs.setText(currentCompany.getDescription());
+        txtContactInfor.setText(currentCompany.getTaxcode());
         txtLocation.setText(jobPost.getLocation());
-        txtApplyUntil.setText(jobPost.getApplyUntil());
         // TODO: Add listeners or bind ViewModel here
 
         btnOption.setOnClickListener(v -> {
@@ -115,16 +109,5 @@ public class DetailMyJobPostFragment extends Fragment {
             });
             popupMenu.show();
         });
-
-        btnCompany.setOnClickListener(x ->
-                {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("jobPost", jobPost);
-                    bundle.putSerializable("company", jobPost.getCompany());
-                    // Ẩn bottom navigation
-                    ((NavigationActivity) getActivity()).showBottomNav(false);
-                    nav.navigate(R.id.detailCompanyFragment, bundle);
-                }
-        );
     }
 }

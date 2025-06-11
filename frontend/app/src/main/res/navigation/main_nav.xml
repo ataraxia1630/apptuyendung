@@ -54,6 +54,11 @@
         android:id="@+id/detailMyJobPostFragment"
         android:name="com.example.workleap.ui.view.DetailMyJobPostFragment"
         android:label="fragment_detailmyjobpost"
-        tools:layout="@layout/fragment_details_jobpost"/>
+        tools:layout="@layout/fragment_detail_jobpost"/>
+    <fragment
+        android:id="@+id/detailCompanyFragment"
+        android:name="com.example.workleap.ui.view.DetailCompanyFragment"
+        android:label="fragment_detailmycompany"
+        tools:layout="@layout/fragment_detail_company"/>
 
 </navigation>
