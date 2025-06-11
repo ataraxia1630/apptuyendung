@@ -1,6 +1,5 @@
 package com.example.workleap.data.model.response;
 
-import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 
 import java.util.List;
@@ -8,14 +7,14 @@ import java.util.List;
 public class ListJobTypeResponse {
     String message;
 
-    List<JobType> jobTypes;
+    List<JobType> types;
 
     public ListJobTypeResponse() {
     }
 
     public ListJobTypeResponse(String message, List<JobType> jobTypes) {
         this.message = message;
-        this.jobTypes = jobTypes;
+        this.types = jobTypes;
     }
 
     public String getMessage() {
@@ -23,6 +22,6 @@ public class ListJobTypeResponse {
     }
 
     public List<JobType> getAllJobType() {
-        return jobTypes;
+        return types;
     }
 }

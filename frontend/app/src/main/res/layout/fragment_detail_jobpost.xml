@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:background="#FDFDFD">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,6 +39,7 @@
 
 
             <TextView
+                android:id="@+id/txtJobName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="JOB NAME"
@@ -47,6 +49,7 @@
                 android:layout_marginTop="4dp" />
 
             <TextView
+                android:id="@+id/txtCompanyName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Company name"
@@ -82,9 +85,10 @@
                         android:textColor="#888888" />
 
                     <TextView
+                        android:id="@+id/txtSalary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tới 1500 USD"
+                        android:text="000 USD"
                         android:textSize="14sp"
                         android:textColor="#000000"
                         android:textStyle="bold" />
@@ -110,6 +114,7 @@
                         android:textColor="#888888" />
 
                     <TextView
+                        android:id="@+id/txtLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Hà Nội"
@@ -120,7 +125,7 @@
             </LinearLayout>
         </LinearLayout>
             <ImageButton
-                android:id="@+id/buttonOption"
+                android:id="@+id/btnOption"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="top|end"
@@ -168,6 +173,7 @@
             android:textColor="#000000" />
 
         <TextView
+            android:id="@+id/txtDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="This is job description, This is job description. This is job description, This is job description. This is job description, This is job description. This is job description, This is job description."
@@ -184,17 +190,18 @@
             android:layout_marginTop="8dp"
             android:backgroundTint="#EEEEEE" />
 
-        <!-- Requirements -->
+        <!-- Responsibilities -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Responsibilites"
+            android:text="Responsibilities"
             android:textStyle="bold"
             android:textSize="20sp"
             android:layout_marginTop="24dp"
             android:textColor="#000000" />
 
         <TextView
+            android:id="@+id/txtResponsibilities"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="• This is a resonsibilities...\n\n• This is a resonsibilities...\n\n• This is a resonsibilities...\n\n• This is a resonsibilities..."
@@ -228,9 +235,9 @@
                 android:layout_marginTop="10dp"
                 android:textColor="#000000" />
             <TextView
+                android:id="@+id/txtPosition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Position"
                 android:textSize="16sp"
                 android:layout_marginTop="5dp"
                 android:textColor="#000000" />
@@ -252,6 +259,7 @@
                 android:layout_marginTop="10dp"
                 android:textColor="#000000" />
             <TextView
+                android:id="@+id/txtWorkingAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Working Address"
@@ -276,6 +284,7 @@
                 android:layout_marginTop="10dp"
                 android:textColor="#000000" />
             <TextView
+                android:id="@+id/txtEducationRequirement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Education Requirement"
@@ -301,6 +310,7 @@
                 android:layout_marginTop="10dp"
                 android:textColor="#000000" />
             <TextView
+                android:id="@+id/txtSkillRequirement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Skill Requirement"
@@ -309,6 +319,32 @@
                 android:textColor="#000000" />
             <View
                 android:id="@+id/vector_4"
+                android:layout_width="wrap_content"
+                android:layout_height="2dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/horizontal_line" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Apply Until"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"
+                android:textColor="#000000" />
+            <TextView
+                android:id="@+id/txtApplyUntil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Skill Requirement"
+                android:textSize="16sp"
+                android:layout_marginTop="5dp"
+                android:textColor="#000000" />
+            <View
+                android:id="@+id/vector_5"
                 android:layout_width="wrap_content"
                 android:layout_height="2dp"
                 android:layout_alignParentLeft="true"

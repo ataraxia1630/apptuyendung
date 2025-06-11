@@ -2,6 +2,7 @@ package com.example.workleap.ui.view.main;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -108,5 +109,14 @@ public class NavigationActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    public void showBottomNav(boolean isVisible) {
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav); // đổi id nếu khác
+        if (isVisible) {
+            bottomNav.setVisibility(View.VISIBLE);
+        } else {
+            bottomNav.setVisibility(View.GONE);
+        }
     }
 }

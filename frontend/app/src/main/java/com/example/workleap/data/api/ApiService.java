@@ -172,6 +172,8 @@ public interface ApiService {
     //JobPost
     @GET("api/job-posts/all")
     Call<ListJobPostResponse> getAllJobPosts();
+    @GET("api/job-posts/company/{id}")
+    Call<ListJobPostResponse> getJobPostsByCompany(@Path ("id") String id);
     @GET("api/job-posts/{id}")
     Call<JobPostResponse> getJobPostById(@Path("id") String id);
     @POST("api/job-posts")
@@ -190,7 +192,7 @@ public interface ApiService {
     Call <ListJobTypeResponse> createJobType(@Body List<JobType> request);
 
     //JobCategory
-    @GET("api/category")
+    @GET("api/category/all")
     Call<ListJobCategoryResponse> getAllJobCategories();
     @POST("api/types/")
     Call <ListJobCategoryResponse> createJobCategory(@Body List<JobCategory> request);
