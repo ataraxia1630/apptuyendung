@@ -3,15 +3,14 @@ package com.example.workleap.data.model.entity;
 // JobPost.java
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 public class JobPost implements Serializable {
     private String id;
     private String companyId;
-    private String jobCategory;
-    private String jobType;
+    private String jobCategoryId;
+    private String jobTypeId;
     private String title;
     private String description;
     private String location;
@@ -49,8 +48,8 @@ public class JobPost implements Serializable {
                    String status,
                    String apply_until) {
         this.companyId = companyId;
-        this.jobCategory = jobCategoryId;
-        this.jobType = jobTypeId;
+        this.jobCategoryId = jobCategoryId;
+        this.jobTypeId = jobTypeId;
         this.title = title;
         this.description = description;
         this.location = location;
@@ -84,19 +83,19 @@ public class JobPost implements Serializable {
     }
 
     public String getJobCategoryId() {
-        return jobCategory;
+        return jobCategoryId;
     }
 
     public void setJobCategoryId(String jobCategoryId) {
-        this.jobCategory = jobCategoryId;
+        this.jobCategoryId = jobCategoryId;
     }
 
-    public String getJobType() {
-        return jobType;
+    public String getJobTypeId() {
+        return jobTypeId;
     }
 
-    public void setJobType(String jobType) {
-        this.jobType = jobType;
+    public void setJobTypeId(String jobTypeId) {
+        this.jobTypeId = jobTypeId;
     }
 
     public String getTitle() {

@@ -125,7 +125,7 @@
             </LinearLayout>
         </LinearLayout>
             <ImageButton
-                android:id="@+id/buttonOption"
+                android:id="@+id/btnOption"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="top|end"

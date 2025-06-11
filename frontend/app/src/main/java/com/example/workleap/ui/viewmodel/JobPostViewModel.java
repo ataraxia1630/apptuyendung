@@ -216,6 +216,7 @@ public class JobPostViewModel  extends ViewModel {
                     updateJobPostData.postValue(response.body().getJobPost());
                     updateJobPostResult.postValue("Success");
                 } else {
+                    Log.d("API_RESPONSE", new Gson().toJson(response.body()));
                     updateJobPostResult.postValue("Failed: " + response.message());
                 }
             }

@@ -47,8 +47,8 @@ const JobPostService = {
 
         const {
             companyId,
-            jobCategory,
-            jobType,
+            jobCategoryId,
+            jobTypeId,
             title,
             description,
             position,
@@ -85,8 +85,8 @@ const JobPostService = {
                     apply_until: new Date(convertDDMMYYYYtoISO(apply_until)),
 
                     companyId,
-                    jobCategoryId: jobCategory,
-                    jobTypeId: jobType,
+                    jobCategoryId: jobCategoryId,
+                    jobTypeId: jobTypeId,
                 },
             });
             return jobPost;
