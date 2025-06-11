@@ -30,6 +30,7 @@ public class MyCVAdapter extends RecyclerView.Adapter<MyCVAdapter.CVViewHolder> 
 
     public interface OnCVMenuClickListener {
         void onOpen(CV cv);
+        void onDownload(CV cv);
         void onRename(CV cv);
         void onDelete(CV cv);
     }
@@ -113,6 +114,9 @@ public class MyCVAdapter extends RecyclerView.Adapter<MyCVAdapter.CVViewHolder> 
                 if (item.getItemId() == R.id.action_open) {
                     //Toast.makeText(view.getContext(), "Open " + item.getTitle(), Toast.LENGTH_SHORT).show();
                     listener.onOpen(cv);
+                    return true;
+                } else if (item.getItemId() == R.id.action_download) {
+                    listener.onDownload(cv);
                     return true;
                 } else if (item.getItemId() == R.id.action_rename) {
                     //Toast.makeText(view.getContext(), "Rename " + item.getTitle(), Toast.LENGTH_SHORT).show();

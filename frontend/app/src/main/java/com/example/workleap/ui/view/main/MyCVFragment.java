@@ -1,12 +1,20 @@
 package com.example.workleap.ui.view.main;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.FileUtils;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -14,6 +22,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,11 +46,14 @@ import com.example.workleap.data.model.entity.CV;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.viewmodel.CVViewModel;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,8 +67,9 @@ public class MyCVFragment extends Fragment {
 
     private ImageButton btnAddCV;
     private ActivityResultLauncher<Intent> filePickerLauncher;
-
-
+    private ActivityResultLauncher<Intent> createFileLauncher;
+    private CV downloadingCV;
+    private String urlSupabase = "https://epuxazakjgtmjuhuwkza.supabase.co/storage/v1/object/public/cv-storage/";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -72,6 +88,16 @@ public class MyCVFragment extends Fragment {
 
         btnAddCV = view.findViewById(R.id.btnAddCV);
 
+        createFileLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri uri = result.getData().getData();
+                        downloadFileToUri(uri, downloadingCV);
+                    }
+                }
+        );
+
         if(adapter==null)
         {
             adapter = new MyCVAdapter(allCVs, new MyCVAdapter.OnCVMenuClickListener() {
@@ -81,7 +107,7 @@ public class MyCVFragment extends Fragment {
                     PdfFragment pdfFragment = new PdfFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("pdf_title", cv.getTitle());
-                    bundle.putString("pdf_url", "https://epuxazakjgtmjuhuwkza.supabase.co/storage/v1/object/public/cv-storage/" + cv.getFilePath());
+                    bundle.putString("pdf_url", urlSupabase + cv.getFilePath());
                     pdfFragment.setArguments(bundle);
 
                     requireActivity().getSupportFragmentManager()
@@ -89,6 +115,16 @@ public class MyCVFragment extends Fragment {
                             .replace(R.id.fragment_container, pdfFragment)
                             .addToBackStack(null)
                             .commit();
+                }
+
+                @Override
+                public void onDownload(CV cv)
+                {
+                    downloadingCV = cv;
+                    Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                    intent.setType("application/pdf");
+                    intent.putExtra(Intent.EXTRA_TITLE, cv.getTitle());
+                    createFileLauncher.launch(intent);
                 }
 
                 @Override
@@ -109,7 +145,6 @@ public class MyCVFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.setAdapter(adapter);
         }
-
 
         cvViewModel.getAllCvResult().observe(getViewLifecycleOwner(), result ->
         {
@@ -247,4 +282,119 @@ public class MyCVFragment extends Fragment {
     public interface OnInputConfirmedListener {
         void onConfirmed(String input);
     }
+    private void downloadFileToUri(Uri uri, CV cv) {
+        //notification
+        String channelId = "download_channel";
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(requireContext());
+
+        // Tạo Notification Channel (chỉ cần tạo 1 lần)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "Download Progress",
+                    NotificationManager.IMPORTANCE_LOW
+            );
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        int notificationId = (int) System.currentTimeMillis(); // ID duy nhất
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), channelId)
+                .setSmallIcon(R.drawable.ic_download) // Icon của bạn
+                .setContentTitle("Downloading: " + cv.getTitle())
+                .setContentText("0%")
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setOnlyAlertOnce(true)
+                .setProgress(100, 0, false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.POST_NOTIFICATIONS)
+                    == PackageManager.PERMISSION_GRANTED) {
+                notificationManager.notify(notificationId, builder.build());
+            }
+            else
+            {
+                Log.e("MyCVFragment", "khong co quyen thong bao");
+            }
+        } else {
+            // Android dưới 13 không yêu cầu quyền này
+            Log.e("MyCVFragment", "co quyen thong bao");
+
+            notificationManager.notify(notificationId, builder.build());
+        }
+
+        new Thread(() -> {
+            try {
+                URL url = new URL(urlSupabase + cv.getFilePath());
+                URLConnection connection = url.openConnection();
+                int fileLength = connection.getContentLength(); // Tổng dung lượng file
+
+                InputStream in = new BufferedInputStream(connection.getInputStream());
+                OutputStream out = requireContext().getContentResolver().openOutputStream(uri);
+
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                long totalRead = 0;
+
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    totalRead += bytesRead;
+                    out.write(buffer, 0, bytesRead);
+
+                    // Tính phần trăm tải
+                    int progress = (int) (totalRead * 100 / fileLength);
+
+                    // Cập nhật tiến trình vào notification
+                    builder.setContentText(progress + "%")
+                            .setProgress(100, progress, false);
+                    notificationManager.notify(notificationId, builder.build());
+                }
+
+                in.close();
+                out.close();
+
+                // Tạo intent mở file khi bấm vào notification
+                Intent openFileIntent = new Intent(Intent.ACTION_VIEW);
+                openFileIntent.setDataAndType(uri, "application/pdf");
+                openFileIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                PendingIntent pendingIntent = PendingIntent.getActivity(
+                        requireContext(),
+                        0,
+                        openFileIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                );
+
+                requireActivity().runOnUiThread(() -> {
+                    try {
+                        Log.d("NOTIFY", "Preparing to update notification");
+                        builder.setContentText("Download complete")
+                                .setSmallIcon(R.drawable.ic_success)
+                                .setProgress(0, 0, false)
+                                .setContentIntent(pendingIntent)
+                                .setAutoCancel(true);
+
+                        notificationManager.notify(notificationId, builder.build());
+                        Log.d("NOTIFY", "Notification updated successfully");
+                    } catch (Exception e) {
+                        Log.e("NOTIFY", "Error updating notification: " + e.getMessage());
+                    }
+                });
+
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(getContext(), "Download successfully", Toast.LENGTH_SHORT).show()
+                );
+
+            } catch (IOException e) {
+                e.printStackTrace();
+
+                builder.setContentText("Download failed")
+                        .setProgress(0, 0, false);
+                notificationManager.notify(notificationId, builder.build());
+
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(getContext(), "Download failed", Toast.LENGTH_SHORT).show()
+                );
+            }
+        }).start();
+
+    }
+
 }

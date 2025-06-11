@@ -4,6 +4,9 @@
         android:id="@+id/action_open"
         android:title="Open" />
     <item
+        android:id="@+id/action_download"
+        android:title="Download"/>
+    <item
         android:id="@+id/action_rename"
         android:title="Rename"/>
     <item
