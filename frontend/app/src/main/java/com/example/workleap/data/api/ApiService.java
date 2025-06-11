@@ -1,15 +1,19 @@
 package com.example.workleap.data.api;
 
 import com.example.workleap.data.model.entity.CV;
+import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
+import com.example.workleap.data.model.entity.Post;
+import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
 import com.example.workleap.data.model.response.CVResponse;
+import com.example.workleap.data.model.response.CommentResponse;
 import com.example.workleap.data.model.response.CreateApplicantEducationResponse;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
 import com.example.workleap.data.model.request.CreateApplicantSkillRequest;
@@ -23,11 +27,13 @@ import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
+import com.example.workleap.data.model.response.ListCommentResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
 import com.example.workleap.data.model.response.ListInterestedFieldResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
+import com.example.workleap.data.model.response.ListPostResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
@@ -37,6 +43,8 @@ import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.request.RegisterRequest;
+import com.example.workleap.data.model.response.PostResponse;
+import com.example.workleap.data.model.response.ReactionResponse;
 import com.example.workleap.data.model.response.RegisterResponse;
 import com.example.workleap.data.model.response.UpdateApplicantEducationResponse;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
@@ -226,4 +234,33 @@ public interface ApiService {
     Call<MessageResponse> updateCvById(@Path("id") String id, @Body CVRequest request);
     @DELETE("api/cv/{id}")
     Call<MessageResponse> deleteCvById(@Path("id") String id);
+
+
+    //Post
+    @GET("api/posts/all")
+    Call<ListPostResponse> getAllPosts();
+    @GET("api/posts/{id}")
+    Call<ListPostResponse> getPostById(@Path("id") String id);
+    @GET("api/posts/company/{id}")
+    Call<ListPostResponse> getPostsByCompany(@Path("id") String id);
+    @POST("api/posts")
+    Call<PostResponse> createPost(@Body Post request);
+    @PUT("api/posts/{id}")
+    Call<PostResponse> updatePost(@Path("id") String id, @Body Post request);
+    @DELETE("api/posts/{id}")
+    Call<MessageResponse> deletePost(@Path("id") String id);
+
+    //Comment
+    @POST("api/comments/")
+    Call<CommentResponse> createComment(@Body Comment request);
+    @GET("api/comments/post/{postId}")
+    Call<ListCommentResponse> getCommentsByPost(@Path("postId") String postId);
+    @DELETE("api/comments/{id}")
+    Call<MessageResponse> deleteComment(@Path("id") String id);
+
+    //Reactions
+    @POST("api/reactions/toggle")
+    Call<ReactionResponse> toggleReaction(@Body Reaction request);
+    @DELETE("api/reactions/{postId}")
+    Call<MessageResponse> removeReaction(@Path("postId") String postId);
 }
