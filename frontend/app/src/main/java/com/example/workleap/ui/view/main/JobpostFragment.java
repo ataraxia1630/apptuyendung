@@ -16,25 +16,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
+import com.example.workleap.ui.viewmodel.PostViewModel;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class JobpostFragment extends Fragment{
     private RecyclerView recyclerView;
-    private MyJobPostAdapter adapter;
+    private MyJobPostAdapter adapterJobPost;
+    private MyPostAdapter adapterPost;
     private List<JobPost> allJobs = new ArrayList<>();
+    private List<Post> allPosts = new ArrayList<>();
     private JobPostViewModel jobPostViewModel;
+    private PostViewModel postViewModel;
 
     private User user;
     private Bundle bundle;
     private NavController nav;
-    private ImageButton btnCreateJobPost;
+    private ImageButton btnCreateNew;
+
+    private boolean isOnJobPostTab = true;
 
     public JobpostFragment() {
         // Required empty public constructor
@@ -54,7 +63,7 @@ public class JobpostFragment extends Fragment{
         nav = NavHostFragment.findNavController(this);
 
         View v = inflater.inflate(R.layout.fragment_my_jobpost, container, false);
-        btnCreateJobPost = v.findViewById(R.id.btnAdd);
+        btnCreateNew = v.findViewById(R.id.btnAdd);
         return v;
     }
     @Override
@@ -64,11 +73,41 @@ public class JobpostFragment extends Fragment{
         recyclerView = view.findViewById(R.id.recyclerJobPosts); // ID trong layout
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
+        postViewModel = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
+        postViewModel.InitiateRepository(getContext());
 
         user = (User) getArguments().getSerializable("user");
         bundle = new Bundle();
         bundle.putSerializable("companyId", user.getCompanyId());
 
+        //Tab handle
+        TabLayout tabLayout = view.findViewById(R.id.tabLayout);
+        LinearLayout layoutJobPost = view.findViewById(R.id.layoutJobPost);
+        LinearLayout layoutPost = view.findViewById(R.id.layoutPost);
+        // Thêm 2 tab
+        tabLayout.addTab(tabLayout.newTab().setText("MY JOBPOST"));
+        tabLayout.addTab(tabLayout.newTab().setText("MY POST"));
+        // Xử lý khi chọn tab
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 0) {
+                    layoutJobPost.setVisibility(View.VISIBLE);
+                    layoutPost.setVisibility(View.GONE);
+                    isOnJobPostTab = true;
+                } else {
+                    layoutJobPost.setVisibility(View.GONE);
+                    layoutPost.setVisibility(View.VISIBLE);
+                    isOnJobPostTab = false;
+                }
+            }
+
+            @Override public void onTabUnselected(TabLayout.Tab tab) {}
+            @Override public void onTabReselected(TabLayout.Tab tab) {}
+        });
+
+
+        //Load jobpost
         jobPostViewModel.getJobPostsByCompanyResult().observe(getViewLifecycleOwner(), result ->
         {
             String s = result.toString();
@@ -81,7 +120,7 @@ public class JobpostFragment extends Fragment{
             // Setup RecyclerView
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             //show tat ca jobpost va vao detail fragment khi click vao item
-            adapter = new MyJobPostAdapter(allJobs, jobPostViewModel, new MyJobPostAdapter.OnJobPostClickListener() {
+            adapterJobPost = new MyJobPostAdapter(allJobs, jobPostViewModel, new MyJobPostAdapter.OnJobPostClickListener() {
                 @Override
                 public void onJobPostClick(JobPost jobPost) {
                     // Handle item click
@@ -91,19 +130,52 @@ public class JobpostFragment extends Fragment{
                     nav.navigate(R.id.detailMyJobPostFragment, bundle); // Navigate to DetailJobPostFragment
                 }
             });
-            recyclerView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+            recyclerView.setAdapter(adapterJobPost);
+            adapterJobPost.notifyDataSetChanged();
         });
         jobPostViewModel.getJobPostsByCompany(user.getCompanyId());
 
-        btnCreateJobPost.setOnClickListener(x ->
+
+        //Load Post
+        postViewModel.getPostCompanyResult().observe(getViewLifecycleOwner(), result ->
+        {
+            String s = result.toString();
+            Log.e("PostFragment", "getPost Company Result: " + s + "");
+        });
+        postViewModel.getPostCompanyData().observe(getViewLifecycleOwner(), posts ->
+        {
+            if(posts != null)
+                allPosts.addAll(posts);
+            // Setup RecyclerView
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            //show tat ca jobpost va vao detail fragment khi click vao item
+            adapterPost = new MyPostAdapter(allPosts, postViewModel);
+            /*adapter = new MyPostAdapter(allPosts, postViewModel, new MyPostAdapter.OnPostClickListener() {
+                @Override
+                public void onPostClick(JobPost post) {
+                    // Handle item click
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("post", post);
+                    ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
+                    nav.navigate(R.id.DetailMyPostFragment, bundle); // Navigate to DetailPostFragment
+                }
+            });*/
+            recyclerView.setAdapter(adapterPost);
+            adapterPost.notifyDataSetChanged();
+        });
+        postViewModel.getPostByCompany(user.getCompanyId());
+
+
+        //Create jobpost or post
+        btnCreateNew.setOnClickListener(x ->
                 {
                     // Ẩn bottom navigation
                     ((NavigationActivity) getActivity()).showBottomNav(false);
-                    nav.navigate(R.id.createJobpostFragment, bundle);
+                    if(isOnJobPostTab == true)
+                        nav.navigate(R.id.createJobpostFragment, bundle);
+                    else
+                        nav.navigate(R.id.createPostFragment, bundle);
                 }
         );
-
-        //Viet lenh de khi click vao mot item trong recycler view thi se navigate den fragment DetailJObPost, dong thoi gui di jobpost do
     }
 }
