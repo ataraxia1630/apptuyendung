@@ -242,7 +242,7 @@ public interface ApiService {
     @GET("api/posts/all")
     Call<ListPostResponse> getAllPosts();
     @GET("api/posts/{id}")
-    Call<ListPostResponse> getPostById(@Path("id") String id);
+    Call<PostResponse> getPostById(@Path("id") String id);
     @GET("api/posts/company/{id}")
     Call<ListPostResponse> getPostsByCompany(@Path("id") String id);
     @POST("api/posts")

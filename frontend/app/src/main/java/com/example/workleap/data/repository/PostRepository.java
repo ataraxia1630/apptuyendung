@@ -37,7 +37,7 @@ public class PostRepository {
         return apiService.getAllPosts();
     }
 
-    public Call<ListPostResponse> getPostById(String id) {
+    public Call<PostResponse> getPostById(String id) {
         return apiService.getPostById(id);
     }
 
