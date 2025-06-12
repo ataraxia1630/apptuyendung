@@ -21,6 +21,7 @@ import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
+import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.google.gson.Gson;
 

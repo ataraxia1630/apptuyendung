@@ -18,6 +18,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 
 /**

@@ -1,6 +1,7 @@
 package com.example.workleap.ui.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -18,12 +19,8 @@ import com.example.workleap.data.model.response.ReactionResponse;
 import com.example.workleap.data.repository.PostRepository;
 import com.google.gson.Gson;
 
-import java.io.File;
 import java.util.List;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -78,13 +75,14 @@ public class PostViewModel extends ViewModel {
     public LiveData<String> removeReactionResult() { return removeReactionResult; }
 
     // Get all post
-    public void getAllPost(String applicantId) {
+    public void getAllPost() {
         Call<ListPostResponse> call = postRepository.getAllPosts();
         call.enqueue(new Callback<ListPostResponse>() {
             @Override
             public void onResponse(Call<ListPostResponse> call, Response<ListPostResponse> response) {
                 if (response.isSuccessful()) {
                     ListPostResponse listPostResponse = response.body();
+                    Log.d("getAllPost", new Gson().toJson(listPostResponse));
                     getAllPostData.setValue(listPostResponse.getAllPost());
                     getAllPostResult.setValue("Lấy danh sách Post thành công");
                 } else {

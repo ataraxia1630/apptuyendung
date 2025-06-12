@@ -7,6 +7,10 @@ public class Post {
     private String id;
     private String companyId;
     private String title;
+    private Company Company;
+    private PostContent[] contents;
+    private Reaction[] Reaction;
+    private Comment[] Comment;
     private Date created_at;
     private Date updated_at;
 
@@ -63,4 +67,21 @@ public class Post {
     public void setUpdatedAt(Date updated_at) {
         this.updated_at = updated_at;
     }
+
+    public Company getCompany() {
+        return Company;
+    }
+
+    public PostContent[] getContents() {
+        return contents;
+    }
+
+    public Reaction[] getReaction() {
+        return Reaction;
+    }
+
+    public Comment[] getComment() {
+        return Comment;
+    }
+
 }
