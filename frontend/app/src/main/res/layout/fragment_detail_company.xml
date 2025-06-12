@@ -124,6 +124,14 @@
             </LinearLayout>
         </LinearLayout>
             <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="top|start"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_back_left" />
+
+            <ImageButton
                 android:id="@+id/btnOption"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -231,14 +239,14 @@
 
     <!-- Apply Button -->
     <Button
-    android:id="@+id/btnApply"
-    android:layout_width="500dp"
-    android:layout_height="56dp"
-    android:layout_alignParentBottom="true"
-    android:text="APPLY NOW"
-    android:textAllCaps="true"
-    android:textColor="#FFFFFF"
-    android:backgroundTint="#130160"
-    android:drawableStart="@drawable/ic_bookmark"
-    android:drawablePadding="8dp" />
+        android:id="@+id/btnApply"
+        android:layout_width="500dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:text="Apply Now"
+        android:textSize="25dp"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#0090FF"
+        android:drawableStart="@drawable/ic_bookmark"
+        android:drawablePadding="8dp" />
 </RelativeLayout>

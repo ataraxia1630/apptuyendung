@@ -42,22 +42,22 @@
         tools:layout="@layout/fragment_my_jobpost" />
     <fragment
         android:id="@+id/createJobpostFragment"
-        android:name="com.example.workleap.ui.view.CreateJobpostFragment"
+        android:name="com.example.workleap.ui.view.main.CreateJobpostFragment"
         android:label="fragment_createjobpost"
         tools:layout="@layout/fragment_create_jobpost" />
     <fragment
         android:id="@+id/updateJobPostFragment"
-        android:name="com.example.workleap.ui.view.UpdateJobPostFragment"
+        android:name="com.example.workleap.ui.view.main.UpdateJobPostFragment"
         android:label="fragment_detailmyjobpost"
         tools:layout="@layout/fragment_create_jobpost"/>
     <fragment
         android:id="@+id/detailMyJobPostFragment"
-        android:name="com.example.workleap.ui.view.DetailMyJobPostFragment"
+        android:name="com.example.workleap.ui.view.main.DetailMyJobPostFragment"
         android:label="fragment_detailmyjobpost"
         tools:layout="@layout/fragment_detail_jobpost"/>
     <fragment
         android:id="@+id/detailCompanyFragment"
-        android:name="com.example.workleap.ui.view.DetailCompanyFragment"
+        android:name="com.example.workleap.ui.view.main.DetailCompanyFragment"
         android:label="fragment_detailmycompany"
         tools:layout="@layout/fragment_detail_company"/>
 
