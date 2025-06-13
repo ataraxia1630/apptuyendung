@@ -218,6 +218,13 @@ public class MyCVFragment extends Fragment {
                             outputStream.close();
                             inputStream.close();
 
+                            // kiem tra dung luong file, gioi han 9MB (9 * 1024 * 1024 bytes)
+                            if (targetFile.length() > 9 * 1024 * 1024) {
+                                Toast.makeText(getContext(), "The file size limit is 9MB. Please select a smaller file.", Toast.LENGTH_LONG).show();
+                                targetFile.delete(); // Xoá file tạm
+                                return;
+                            }
+
                             // Gửi file vào ViewModel
                             cvViewModel.createCv(user.getApplicantId(), targetFile, fileName);
 
