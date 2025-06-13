@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,12 +33,14 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerViewJobPost, recyclerViewPost;
-    private JobPostAdapter adapterJobPost;
+    private MyJobPostAdapter adapterJobPost;
     private PostAdapter adapterPost;
     private List<JobPost> allJobs = new ArrayList<>();
     private List<Post> allPosts = new ArrayList<>();
     private JobPostViewModel jobPostViewModel;
     private PostViewModel postViewModel;
+
+    private NavController nav;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -53,6 +57,9 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        nav = NavHostFragment.findNavController(this);
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
@@ -77,7 +84,17 @@ public class HomeFragment extends Fragment {
                 allJobs.addAll(jobPosts);
             // Setup RecyclerView
             recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
-            adapterJobPost = new JobPostAdapter(allJobs, jobPostViewModel); // mặc định show tất cả
+            //adapterJobPost = new JobPostAdapter(allJobs, jobPostViewModel); // mặc định show tất cả
+            adapterJobPost = new MyJobPostAdapter(allJobs, jobPostViewModel, new MyJobPostAdapter.OnJobPostClickListener() {
+                @Override
+                public void onJobPostClick(JobPost jobPost) {
+                    // Handle item click
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("jobPost", jobPost);
+                    ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
+                    nav.navigate(R.id.detailMyJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+                }
+            });
             recyclerViewJobPost.setAdapter(adapterJobPost);
             adapterJobPost.notifyDataSetChanged();
         });
