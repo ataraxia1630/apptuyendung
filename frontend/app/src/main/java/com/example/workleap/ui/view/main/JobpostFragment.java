@@ -30,7 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JobpostFragment extends Fragment{
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerViewJobPost;
+    private RecyclerView recyclerViewPost;
     private MyJobPostAdapter adapterJobPost;
     private MyPostAdapter adapterPost;
     private List<JobPost> allJobs = new ArrayList<>();
@@ -70,7 +71,9 @@ public class JobpostFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.recyclerJobPosts); // ID trong layout
+        recyclerViewJobPost = view.findViewById(R.id.recyclerJobPosts);
+        recyclerViewPost = view.findViewById(R.id.recyclerPosts);
+
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
         postViewModel = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
@@ -118,7 +121,7 @@ public class JobpostFragment extends Fragment{
             if(jobPosts != null)
                 allJobs.addAll(jobPosts);
             // Setup RecyclerView
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
             //show tat ca jobpost va vao detail fragment khi click vao item
             adapterJobPost = new MyJobPostAdapter(allJobs, jobPostViewModel, new MyJobPostAdapter.OnJobPostClickListener() {
                 @Override
@@ -130,7 +133,7 @@ public class JobpostFragment extends Fragment{
                     nav.navigate(R.id.detailMyJobPostFragment, bundle); // Navigate to DetailJobPostFragment
                 }
             });
-            recyclerView.setAdapter(adapterJobPost);
+            recyclerViewJobPost.setAdapter(adapterJobPost);
             adapterJobPost.notifyDataSetChanged();
         });
         jobPostViewModel.getJobPostsByCompany(user.getCompanyId());
@@ -146,8 +149,10 @@ public class JobpostFragment extends Fragment{
         {
             if(posts != null)
                 allPosts.addAll(posts);
+            else
+                Log.d("posts: ", "null");
             // Setup RecyclerView
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
             //show tat ca jobpost va vao detail fragment khi click vao item
             adapterPost = new MyPostAdapter(allPosts, postViewModel);
             /*adapter = new MyPostAdapter(allPosts, postViewModel, new MyPostAdapter.OnPostClickListener() {
@@ -160,7 +165,7 @@ public class JobpostFragment extends Fragment{
                     nav.navigate(R.id.DetailMyPostFragment, bundle); // Navigate to DetailPostFragment
                 }
             });*/
-            recyclerView.setAdapter(adapterPost);
+            recyclerViewPost.setAdapter(adapterPost);
             adapterPost.notifyDataSetChanged();
         });
         postViewModel.getPostByCompany(user.getCompanyId());

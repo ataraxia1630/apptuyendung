@@ -35,7 +35,7 @@ const PostController = {
                 return res.status(400).json({ message: 'Post contents are required' });
             }
             const newPost = await PostService.createPost({ companyId, title, contents });
-            return res.status(201).json({ newPost: newPost });
+            return res.status(201).json({ post: newPost });
         } catch (error) {
             return res.status(500).json({ message: 'Error creating post', error });
         }
@@ -72,7 +72,7 @@ const PostController = {
         try {
             const { posts, total } = await PostService.searchPosts(filters, skip, take);
             const meta = buildMeta(total, parseInt(page), parseInt(pageSize));
-            return res.status(200).json({ data: posts, meta });
+            return res.status(200).json({ posts: posts, meta });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error searching posts', error });
@@ -96,7 +96,7 @@ const PostController = {
         try {
             const { posts, total } = await PostService.getPostsByCompany(companyId, skip, take);
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ data: posts, meta });
+            return res.status(200).json({ posts: posts, meta });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error fetching posts by company', error });

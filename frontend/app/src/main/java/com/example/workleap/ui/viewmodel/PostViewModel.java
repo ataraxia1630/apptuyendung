@@ -110,6 +110,7 @@ public class PostViewModel extends ViewModel {
             public void onResponse(Call<ListPostResponse> call, Response<ListPostResponse> response) {
                 if (response.isSuccessful()) {
                     ListPostResponse listPostResponse = response.body();
+                    Log.d("GET POST COMPANY", new Gson().toJson(response.body()));
                     getPostCompanyData.setValue(listPostResponse.getAllPost());
                     getPostCompanyResult.setValue("Lấy danh sách Post company thành công");
                 } else {
