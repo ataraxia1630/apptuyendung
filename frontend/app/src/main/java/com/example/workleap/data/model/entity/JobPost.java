@@ -28,6 +28,8 @@ public class JobPost implements Serializable {
     private Date created_at;
     private Date updated_at;
     private Company Company;
+    private JobCategory JobCategory;
+    private JobType JobType;
     private List<JobSaved> jobSaved;
 
     //Constructor
@@ -229,6 +231,12 @@ public class JobPost implements Serializable {
 
     public Company getCompany() {
         return Company;
+    }
+    public JobCategory getJobCategory() {
+        return JobCategory;
+    }
+    public JobType getJobType() {
+        return JobType;
     }
 
     public void setCompany(Company company) {
