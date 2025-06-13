@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "211623737680",
+    "project_id": "workleap-459217",
+    "storage_bucket": "workleap-459217.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211623737680:android:75e5c851297342f9fbd455",
+        "android_client_info": {
+          "package_name": "com.example.workleap"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUe7stk41U-nYmwFNEEyHidROLFcx83ZY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
