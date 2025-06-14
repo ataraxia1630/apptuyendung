@@ -108,7 +108,7 @@ public class HomeFragment extends Fragment {
                 public void onJobPostClick(JobPost jobPost) {
                     // Handle item click
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("jobPost", jobPost);
+                    jobPostViewModel.setCurrentJobPost(jobPost);
                     ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
                     nav.navigate(R.id.detailMyJobPostFragment, bundle); // Navigate to DetailJobPostFragment
                 }

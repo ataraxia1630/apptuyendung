@@ -118,6 +118,7 @@ public class JobpostFragment extends Fragment{
         });
         jobPostViewModel.getJobPostsByCompanyData().observe(getViewLifecycleOwner(), jobPosts ->
         {
+            allJobs.clear();
             if(jobPosts != null)
                 allJobs.addAll(jobPosts);
             // Setup RecyclerView
@@ -127,8 +128,7 @@ public class JobpostFragment extends Fragment{
                 @Override
                 public void onJobPostClick(JobPost jobPost) {
                     // Handle item click
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("jobPost", jobPost);
+                    jobPostViewModel.setCurrentJobPost(jobPost);
                     ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
                     nav.navigate(R.id.detailMyJobPostFragment, bundle); // Navigate to DetailJobPostFragment
                 }
@@ -147,6 +147,7 @@ public class JobpostFragment extends Fragment{
         });
         postViewModel.getPostCompanyData().observe(getViewLifecycleOwner(), posts ->
         {
+            allPosts.clear();
             if(posts != null)
                 allPosts.addAll(posts);
             else
@@ -182,5 +183,13 @@ public class JobpostFragment extends Fragment{
                         nav.navigate(R.id.createPostFragment, bundle);
                 }
         );
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Load lai sau khi create new hoac edit
+        jobPostViewModel.getJobPostsByCompany(user.getCompanyId());
     }
 }

@@ -17,6 +17,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.Company;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
@@ -35,6 +36,8 @@ public class DetailMyJobPostFragment extends Fragment {
     private NavController nav;
     private Bundle bundle;
     private boolean isJobPostSubmitted = false; // Biến trạng thái đảm bảo chỉ trở về khi đã tạo thành công
+
+    private Company company;
 
     public DetailMyJobPostFragment() {
         // Required empty public constructor
@@ -81,19 +84,28 @@ public class DetailMyJobPostFragment extends Fragment {
         btnCompany = view.findViewById(R.id.btnCompany);
 
         //Get current jobpost from jobpost fragment
-        JobPost jobPost = (JobPost) getArguments().getSerializable("jobPost");
-        txtJobName.setText(jobPost.getTitle());
-        txtCompanyName.setText(jobPost.getCompany().getName());
-        txtSalary.setText(jobPost.getSalaryStart() + " - " + jobPost.getSalaryEnd() + " " + jobPost.getCurrency());
-        txtLocation.setText(jobPost.getLocation());
-        txtDescription.setText(jobPost.getDescription());
-        txtWorkingAddress.setText(jobPost.getWorkingAddress());
-        txtResponsibilities.setText(jobPost.getResponsibility());
-        txtPosition.setText(jobPost.getPosition());
-        txtSkillRequirement.setText(jobPost.getSkillRequirement());
-        txtEducationRequirement.setText(jobPost.getEducationRequirement());
-        txtLocation.setText(jobPost.getLocation());
-        txtApplyUntil.setText(jobPost.getApplyUntil());
+        jobPostViewModel.getCurrentJobPost().observe(getViewLifecycleOwner(), currentJobPost -> {
+            if (currentJobPost != null) {
+                // Lay ra company cho trang detail company
+                company = currentJobPost.getCompany();
+
+                //Set thong tin
+                txtJobName.setText(currentJobPost.getTitle());
+                txtCompanyName.setText(currentJobPost.getCompany().getName());
+                txtSalary.setText(currentJobPost.getSalaryStart() + " - " + currentJobPost.getSalaryEnd() + " " + currentJobPost.getCurrency());
+                txtLocation.setText(currentJobPost.getLocation());
+                txtDescription.setText(currentJobPost.getDescription());
+                txtWorkingAddress.setText(currentJobPost.getWorkingAddress());
+                txtResponsibilities.setText(currentJobPost.getResponsibility());
+                txtPosition.setText(currentJobPost.getPosition());
+                txtSkillRequirement.setText(currentJobPost.getSkillRequirement());
+                txtEducationRequirement.setText(currentJobPost.getEducationRequirement());
+                txtLocation.setText(currentJobPost.getLocation());
+                txtApplyUntil.setText(currentJobPost.getApplyUntil());
+            }
+        });
+        //JobPost jobPost = (JobPost) getArguments().getSerializable("jobPost");
+
         // TODO: Add listeners or bind ViewModel here
 
         btnOption.setOnClickListener(v -> {
@@ -102,8 +114,6 @@ public class DetailMyJobPostFragment extends Fragment {
             popupMenu.inflate(R.menu.menu_details_myjobpost); // Load menu từ file XML
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.menu_edit) {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("jobPost", jobPost);
                     //Chuyen sang fragment edit update
                     // Ẩn bottom navigation
                     ((NavigationActivity) getActivity()).showBottomNav(false);
@@ -126,8 +136,7 @@ public class DetailMyJobPostFragment extends Fragment {
         btnCompany.setOnClickListener(x ->
                 {
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("jobPost", jobPost);
-                    bundle.putSerializable("company", jobPost.getCompany());
+                    bundle.putSerializable("company", company);
                     // Ẩn bottom navigation
                     ((NavigationActivity) getActivity()).showBottomNav(false);
                     nav.navigate(R.id.detailCompanyFragment, bundle);

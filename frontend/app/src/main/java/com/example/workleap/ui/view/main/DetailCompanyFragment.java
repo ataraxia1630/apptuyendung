@@ -81,15 +81,19 @@ public class DetailCompanyFragment extends Fragment {
         btnDescription = view.findViewById(R.id.btnDescription);
 
         //Get current jobpost from jobpost fragment
-        JobPost jobPost = (JobPost) getArguments().getSerializable("jobPost");
-        txtJobName.setText(jobPost.getTitle());
-        txtCompanyName.setText(jobPost.getCompany().getName());
-        txtSalary.setText(jobPost.getSalaryStart() + " - " + jobPost.getSalaryEnd() + " " + jobPost.getCurrency());
-        txtLocation.setText(jobPost.getLocation());
-        txtAboutUs.setText(currentCompany.getDescription());
-        txtContactInfor.setText(currentCompany.getTaxcode());
-        txtLocation.setText(jobPost.getLocation());
-        // TODO: Add listeners or bind ViewModel here
+        jobPostViewModel.getCurrentJobPost().observe(getViewLifecycleOwner(), currentJobPost -> {
+                    if (currentJobPost != null) {
+                        //JobPost jobPost = (JobPost) getArguments().getSerializable("jobPost");
+                        txtJobName.setText(currentJobPost.getTitle());
+                        txtCompanyName.setText(currentJobPost.getCompany().getName());
+                        txtSalary.setText(currentJobPost.getSalaryStart() + " - " + currentJobPost.getSalaryEnd() + " " + currentJobPost.getCurrency());
+                        txtLocation.setText(currentJobPost.getLocation());
+                        txtAboutUs.setText(currentCompany.getDescription());
+                        txtContactInfor.setText(currentCompany.getTaxcode());
+                        txtLocation.setText(currentJobPost.getLocation());
+                        // TODO: Add listeners or bind ViewModel here
+                    }
+                });
 
         btnOption.setOnClickListener(v -> {
             // TODO: Handle option button click
@@ -97,8 +101,8 @@ public class DetailCompanyFragment extends Fragment {
             popupMenu.inflate(R.menu.menu_details_myjobpost); // Load menu từ file XML
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.menu_edit) {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("jobPost", jobPost);
+                    //Bundle bundle = new Bundle();
+                    //bundle.putSerializable("jobPost", jobPost);
                     //Chuyen sang fragment edit update
                     // Ẩn bottom navigation
                     ((NavigationActivity) getActivity()).showBottomNav(false);
@@ -122,10 +126,7 @@ public class DetailCompanyFragment extends Fragment {
         //Chuyen qua detail job
         btnDescription.setOnClickListener(x ->
                 {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("jobPost", jobPost);
-                    bundle.putSerializable("company", jobPost.getCompany());
-                    // Ẩn bottom navigation
+                    // Ẩn bottom navigation;
                     ((NavigationActivity) getActivity()).showBottomNav(false);
                     NavHostFragment.findNavController(this).navigateUp();
                 }
