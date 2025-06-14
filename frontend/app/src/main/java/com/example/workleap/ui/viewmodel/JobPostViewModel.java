@@ -13,6 +13,7 @@ import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
+import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
 import com.example.workleap.data.model.response.ListJobCategoryResponse;
@@ -449,7 +450,9 @@ public class JobPostViewModel  extends ViewModel {
     });
     }
 
-    public void applyAJob(JobApplied request) { jobPostRepository.applyAJob(request).enqueue(new Callback<MessageResponse>() {
+    public void applyAJob(String jobpostId, String applicantId, String cvId) {
+        ApplyAJobRequest request = new ApplyAJobRequest(jobpostId, applicantId, cvId);
+        jobPostRepository.applyAJob(request).enqueue(new Callback<MessageResponse>() {
         @Override
         public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
             if(response.isSuccessful() && response.body() != null) {
