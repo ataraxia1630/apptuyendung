@@ -15,6 +15,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
@@ -39,7 +43,16 @@ public class HomeFragment extends Fragment {
     private List<Post> allPosts = new ArrayList<>();
     private JobPostViewModel jobPostViewModel;
     private PostViewModel postViewModel;
+    private int pageJobPost = 1;
+    private int pageSizeJobPost = 4;
+    private int pagePost = 1;
+    private int pageSizePost = 4;
 
+    private ImageButton btnPrev, btnNext;
+    private Button btnMorePost;
+    private TextView tvPageNumber;
+
+    private boolean isMorePost = false; // Kiểm tra đang tải lại fragment hay tải thêm bài đăng
     private NavController nav;
 
     public HomeFragment() {
@@ -69,6 +82,11 @@ public class HomeFragment extends Fragment {
 
         //JOBPOST LIST
         recyclerViewJobPost = view.findViewById(R.id.recyclerJobPosts); // ID trong layout
+        btnPrev = view.findViewById(R.id.btnPrev);
+        btnNext = view.findViewById(R.id.btnNext);
+        tvPageNumber = view.findViewById(R.id.tvPageNumber);
+        btnMorePost = view.findViewById(R.id.btnLoadMorePosts);
+
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
 
@@ -98,8 +116,21 @@ public class HomeFragment extends Fragment {
             recyclerViewJobPost.setAdapter(adapterJobPost);
             adapterJobPost.notifyDataSetChanged();
         });
-        jobPostViewModel.getAllJobPosts();
+        jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
 
+        //Page for jobpost
+        btnPrev.setOnClickListener(v -> {
+            if (pageJobPost > 1) {
+                pageJobPost--;
+                jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
+                tvPageNumber.setText(String.valueOf(pageJobPost));
+            }
+        });
+        btnNext.setOnClickListener(v -> {
+            pageJobPost++;
+            jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
+            tvPageNumber.setText(String.valueOf(pageJobPost));
+        });
 
         //POST LIST
         recyclerViewPost = view.findViewById(R.id.recyclerViewPosts); // ID trong layout
@@ -113,15 +144,31 @@ public class HomeFragment extends Fragment {
         });
         postViewModel.getAllPostData().observe(getViewLifecycleOwner(), posts ->
         {
-            allPosts.clear();
-            if(posts != null)
+            if(!isMorePost)
+               allPosts.clear(); //Neu khong phai tai them thi clear de tranh bi trung
+
+            isMorePost = false; //Dat lai neu dang la true
+
+            if(posts != null && !posts.isEmpty()) {
                 allPosts.addAll(posts);
+                Toast.makeText(this.getContext(), "Loading Posts...", Toast.LENGTH_SHORT).show();
+            }
+            else
+                Toast.makeText(this.getContext(), "No more posts", Toast.LENGTH_SHORT).show();
+
             // Setup RecyclerView
             recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
             adapterPost = new PostAdapter(allPosts, postViewModel); // mặc định show tất cả
             recyclerViewPost.setAdapter(adapterPost);
             adapterPost.notifyDataSetChanged();
         });
-        postViewModel.getAllPost();
+        postViewModel.getAllPost(pagePost, pageSizePost);
+
+        //Load more posts
+        btnMorePost.setOnClickListener(v -> {
+            pagePost++;
+            isMorePost = true;
+            postViewModel.getAllPost(pagePost, pageSizePost);
+        });
     }
 }

@@ -72,6 +72,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
     //Đăng ký
@@ -171,7 +172,7 @@ public interface ApiService {
 
     //JobPost
     @GET("api/job-posts/all")
-    Call<ListJobPostResponse> getAllJobPosts();
+    Call<ListJobPostResponse> getAllJobPosts(@Query("page") int page, @Query("pageSize") int pageSize);
     @GET("api/job-posts/company/{id}")
     Call<ListJobPostResponse> getJobPostsByCompany(@Path ("id") String id);
     @GET("api/job-posts/{id}")
@@ -240,7 +241,7 @@ public interface ApiService {
 
     //Post
     @GET("api/posts/all")
-    Call<ListPostResponse> getAllPosts();
+    Call<ListPostResponse> getAllPosts(@Query("page") int page, @Query("pageSize") int pageSize);
     @GET("api/posts/{id}")
     Call<PostResponse> getPostById(@Path("id") String id);
     @GET("api/posts/company/{id}")

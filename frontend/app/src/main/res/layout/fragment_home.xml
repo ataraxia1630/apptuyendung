@@ -46,21 +46,46 @@
                 android:nestedScrollingEnabled="false"
                 android:layout_marginBottom="8dp" />
 
-            <!-- Nút Xem thêm -->
-            <Button
-                android:id="@+id/btnLoadMoreJobs"
+        <LinearLayout
+            android:id="@+id/paginationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageButton
+                android:id="@+id/btnPrev"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Xem thêm"
-                android:layout_gravity="center_horizontal"
-                android:paddingHorizontal="24dp"
-                android:layout_marginBottom="12dp" />
+                android:src="@android:drawable/ic_media_previous"
+                android:background="@null"
+                android:contentDescription="Previous Page" />
+
+            <TextView
+                android:id="@+id/tvPageNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textSize="18sp"
+                android:layout_marginHorizontal="16dp" />
+
+            <ImageButton
+                android:id="@+id/btnNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_media_next"
+                android:background="@null"
+                android:contentDescription="Next Page" />
+        </LinearLayout>
+
+        <!-- Nút Xem thêm -->
 
             <!-- Danh sách Bài đăng / Tin tức -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Bài đăng, Tin tức"
+                android:text="Posts and News"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:padding="8dp" />
@@ -71,6 +96,15 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:nestedScrollingEnabled="false" />
+
+            <Button
+                android:id="@+id/btnLoadMorePosts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More"
+                android:layout_gravity="center_horizontal"
+                android:paddingHorizontal="24dp"
+                android:layout_marginBottom="12dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -118,8 +118,8 @@ public class JobPostViewModel  extends ViewModel {
     public LiveData<String> getApplyAJobResult() { return applyAJobResult; }
 
     // API Calls
-    public void getAllJobPosts() {
-        jobPostRepository.getAllJobPosts().enqueue(new Callback<ListJobPostResponse>() {
+    public void getAllJobPosts(int page, int pageSize) {
+        jobPostRepository.getAllJobPosts(page, pageSize).enqueue(new Callback<ListJobPostResponse>() {
             @Override
             public void onResponse(Call<ListJobPostResponse> call, Response<ListJobPostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
