@@ -37,7 +37,8 @@ public class CVFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         cvViewModel = new ViewModelProvider(requireActivity()).get(CVViewModel.class);
-        cvViewModel.InitiateRepository(getContext());
+        //lenh ben duoi duoc dua ve navigationactivity, dung cho nhieu fragment khac
+        //cvViewModel.InitiateRepository(getContext());
 
         user = (User) getArguments().getSerializable("user");
         cvViewModel.getAllCv(user.getApplicantId());

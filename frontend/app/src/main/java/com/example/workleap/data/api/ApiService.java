@@ -9,6 +9,7 @@ import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.Reaction;
+import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
@@ -213,7 +214,7 @@ public interface ApiService {
     @GET("api/apply/{applicantId}/cvs")
     Call<ListJobAppliedResponse> getJobApplied(@Path("applicantId") String applicantId);
     @POST("api/apply/")            //create a job applied
-    Call<MessageResponse> applyAJob(@Body JobApplied request);
+    Call<MessageResponse> applyAJob(@Body ApplyAJobRequest request);
 
 
     //Cv
