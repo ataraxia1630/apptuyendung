@@ -1,6 +1,7 @@
 package com.example.workleap.ui.view.main;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +9,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -18,9 +21,18 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Company;
+import com.example.workleap.data.model.entity.CV;
+import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.User;
+import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.ui.view.main.NavigationActivity;
+import com.example.workleap.ui.viewmodel.CVViewModel;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +47,9 @@ public class DetailMyJobPostFragment extends Fragment {
     private ImageButton btnOption, btnBack;
     private NavController nav;
     private Bundle bundle;
+    private List<CV> cvList;
+
+    private User user;
     private boolean isJobPostSubmitted = false; // Biến trạng thái đảm bảo chỉ trở về khi đã tạo thành công
 
     private Company company;
@@ -108,6 +123,24 @@ public class DetailMyJobPostFragment extends Fragment {
 
         // TODO: Add listeners or bind ViewModel here
 
+        user = (User) getArguments().getSerializable("user");
+        if(user==null) Log.e("DetailMyJobPostFragment", "user null");
+
+        CVViewModel cvViewModel = new ViewModelProvider(requireActivity()).get(CVViewModel.class);
+        cvViewModel.getAllCvData().observe(getViewLifecycleOwner(), CVs -> {
+            cvList = CVs;
+        });
+        cvViewModel.getAllCv(user.getApplicantId());
+
+        jobPostViewModel.getApplyAJobResult().observe(getViewLifecycleOwner(), result ->{
+            if(!isAdded() || getView()==null) return;
+
+            if(result!=null)
+                Log.e("DetailMyJobPostFragment", "getApplyAJobResult " + result);
+            else
+                Log.e("DetailMyJobPostFragment", "getApplyAJobResult result NULL" );
+        });
+
         btnOption.setOnClickListener(v -> {
             // TODO: Handle option button click
             PopupMenu popupMenu = new PopupMenu(v.getContext(), btnOption);
@@ -142,5 +175,26 @@ public class DetailMyJobPostFragment extends Fragment {
                     nav.navigate(R.id.detailCompanyFragment, bundle);
                 }
         );
+
+
+        btnApply.setOnClickListener(v -> {
+            if (cvList == null || cvList.isEmpty()) {
+                Toast.makeText(getContext(), "Please upload a CV to apply", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("cv_list", new ArrayList<>(cvList));
+            nav.navigate(R.id.chooseCVFragment, bundle);
+
+        });
+        // lang nghe ket qua tra ve cua choose cv
+        getParentFragmentManager().setFragmentResultListener("choose_cv_result", this, (requestKey, bundle) -> {
+            CV selectedCV = (CV) bundle.getSerializable("selected_cv");
+            if (selectedCV != null) {
+                jobPostViewModel.applyAJob(jobPost.getId(), selectedCV.getApplicantId(), selectedCV.getId());
+                Toast.makeText(getContext(), "Selected CV: " + selectedCV.getTitle(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

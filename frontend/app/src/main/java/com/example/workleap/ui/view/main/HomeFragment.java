@@ -23,8 +23,10 @@ import android.widget.Toast;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.Post;
+import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.PostViewModel;
+import com.example.workleap.ui.viewmodel.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +56,8 @@ public class HomeFragment extends Fragment {
 
     private boolean isMorePost = false; // Kiểm tra đang tải lại fragment hay tải thêm bài đăng
     private NavController nav;
+
+    private User user;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -90,6 +94,10 @@ public class HomeFragment extends Fragment {
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
 
+        //lay user cho detail jobpost applied cv
+        user = (User) getArguments().getSerializable("user");
+        if(user==null) Log.e("HomeFragment", "user null");
+
         jobPostViewModel.getAllJobPostResult().observe(getViewLifecycleOwner(), result ->
         {
             String s = result.toString();
@@ -109,6 +117,8 @@ public class HomeFragment extends Fragment {
                     // Handle item click
                     Bundle bundle = new Bundle();
                     jobPostViewModel.setCurrentJobPost(jobPost);
+                    bundle.putSerializable("jobPost", jobPost);
+                    bundle.putSerializable("user", user);
                     ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
                     nav.navigate(R.id.detailMyJobPostFragment, bundle); // Navigate to DetailJobPostFragment
                 }

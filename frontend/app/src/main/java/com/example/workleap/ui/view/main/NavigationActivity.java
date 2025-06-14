@@ -21,6 +21,7 @@ import com.example.workleap.data.model.entity.Company;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
+import com.example.workleap.ui.viewmodel.CVViewModel;
 import com.example.workleap.ui.viewmodel.CompanyViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -31,6 +32,8 @@ public class NavigationActivity extends AppCompatActivity {
     private ApplicantViewModel applicantViewModel;
 
     private CompanyViewModel companyViewModel;
+
+    private CVViewModel cvViewModel;
     private User user;
     private Company company;
     private Applicant applicant;
@@ -52,6 +55,8 @@ public class NavigationActivity extends AppCompatActivity {
         applicantViewModel.InitiateRepository(getApplicationContext());
         companyViewModel = new ViewModelProvider(this).get(CompanyViewModel.class);
         companyViewModel.InitiateRepository(getApplicationContext());
+        cvViewModel = new ViewModelProvider(this).get(CVViewModel.class);
+        cvViewModel.InitiateRepository(getApplicationContext());
 
         NavController navController = Navigation.findNavController(NavigationActivity.this, R.id.fragment_container);
 
@@ -68,12 +73,16 @@ public class NavigationActivity extends AppCompatActivity {
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("user", user);
+        //chuyen den trang mac dinh la home
+        //khong mac dinh home bang nav nua, vi lam vay bundle truyen vao se null do chua kip truyen du lieu
+        //them fragment loading lam mac dinh cho nav roi chuyen den home sau khi load put user vao bundle
+        navController.navigate(R.id.menu_home, bundle);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
             if (itemId == R.id.menu_home) {
-                navController.navigate(R.id.menu_home);
+                navController.navigate(R.id.menu_home, bundle);
                 return true;
 
             } else if (itemId == R.id.menu_cv_jobpost) {

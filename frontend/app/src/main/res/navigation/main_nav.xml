@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav"
-    app:startDestination="@id/menu_home">
+    app:startDestination="@id/loadingFragment">
 
     <fragment
         android:id="@+id/cvFragment"
@@ -65,5 +65,15 @@
         android:name="com.example.workleap.ui.view.main.DetailCompanyFragment"
         android:label="fragment_detailmycompany"
         tools:layout="@layout/fragment_detail_company"/>
+    <fragment
+        android:id="@+id/loadingFragment"
+        android:name="com.example.workleap.ui.view.main.LoadingFragment"
+        android:label="fragment_loading"
+        tools:layout="@layout/fragment_loading" />
+    <fragment
+        android:id="@+id/chooseCVFragment"
+        android:name="com.example.workleap.ui.view.main.ChooseCVFragment"
+        android:label="Choose CV" >
+    </fragment>
 
 </navigation>

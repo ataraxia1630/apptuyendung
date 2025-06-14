@@ -1,9 +1,10 @@
 package com.example.workleap.data.model.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class CV {
+public class CV implements Serializable {
     private String id;
     private String applicantId;
     private String title;

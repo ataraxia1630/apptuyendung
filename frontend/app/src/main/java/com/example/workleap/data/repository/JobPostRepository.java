@@ -8,6 +8,7 @@ import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
+import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
 import com.example.workleap.data.model.response.ListJobCategoryResponse;
@@ -99,7 +100,7 @@ public class JobPostRepository {
     public Call<ListJobAppliedResponse> getJobApplied(String applicantId) {
         return apiService.getJobApplied(applicantId);
     }
-    public Call<MessageResponse> applyAJob(JobApplied request) {
+    public Call<MessageResponse> applyAJob(ApplyAJobRequest request) {
         return apiService.applyAJob(request);
     }
 }
