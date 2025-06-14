@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view;
+package com.example.workleap.ui.view.main;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,8 +31,8 @@ public class DetailCompanyFragment extends Fragment {
     private JobPostViewModel jobPostViewModel;
 
     private TextView txtJobName, txtCompanyName, txtSalary, txtLocation, txtAboutUs, txtContactInfor;
-    private Button btnApply;
-    private ImageButton btnOption;
+    private Button btnApply, btnDescription;
+    private ImageButton btnOption, btnBack;
     private NavController nav;
     private Bundle bundle;
     private boolean isJobPostSubmitted = false; // Biến trạng thái đảm bảo chỉ trở về khi đã tạo thành công
@@ -77,6 +77,8 @@ public class DetailCompanyFragment extends Fragment {
 
         btnApply = view.findViewById(R.id.btnApply);
         btnOption = view.findViewById(R.id.btnOption);
+        btnBack = view.findViewById(R.id.btnBack);
+        btnDescription = view.findViewById(R.id.btnDescription);
 
         //Get current jobpost from jobpost fragment
         JobPost jobPost = (JobPost) getArguments().getSerializable("jobPost");
@@ -110,5 +112,23 @@ public class DetailCompanyFragment extends Fragment {
             });
             popupMenu.show();
         });
+
+        //Quay lai
+        btnBack.setOnClickListener(v -> {
+            ((NavigationActivity) getActivity()).showBottomNav(true);
+            NavHostFragment.findNavController(this).navigateUp();
+        });
+
+        //Chuyen qua detail job
+        btnDescription.setOnClickListener(x ->
+                {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("jobPost", jobPost);
+                    bundle.putSerializable("company", jobPost.getCompany());
+                    // Ẩn bottom navigation
+                    ((NavigationActivity) getActivity()).showBottomNav(false);
+                    NavHostFragment.findNavController(this).navigateUp();
+                }
+        );
     }
 }
