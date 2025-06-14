@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,7 +18,9 @@ import android.view.ViewGroup;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
+import com.example.workleap.ui.viewmodel.PostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +32,15 @@ import java.util.List;
  */
 public class HomeFragment extends Fragment {
 
-    private RecyclerView recyclerView;
-    private JobPostAdapter adapter;
+    private RecyclerView recyclerViewJobPost, recyclerViewPost;
+    private MyJobPostAdapter adapterJobPost;
+    private PostAdapter adapterPost;
     private List<JobPost> allJobs = new ArrayList<>();
+    private List<Post> allPosts = new ArrayList<>();
     private JobPostViewModel jobPostViewModel;
+    private PostViewModel postViewModel;
+
+    private NavController nav;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -48,6 +57,9 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        nav = NavHostFragment.findNavController(this);
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
@@ -55,10 +67,10 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.recyclerJobPosts); // ID trong layout
+        //JOBPOST LIST
+        recyclerViewJobPost = view.findViewById(R.id.recyclerJobPosts); // ID trong layout
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
-
 
         jobPostViewModel.getAllJobPostResult().observe(getViewLifecycleOwner(), result ->
         {
@@ -67,14 +79,49 @@ public class HomeFragment extends Fragment {
         });
         jobPostViewModel.getAllJobPostData().observe(getViewLifecycleOwner(), jobPosts ->
         {
-            allJobs.addAll(jobPosts);
+            allJobs.clear();
+            if(jobPosts != null)
+                allJobs.addAll(jobPosts);
             // Setup RecyclerView
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            adapter = new JobPostAdapter(allJobs, jobPostViewModel); // mặc định show tất cả
-            recyclerView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+            recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
+            //adapterJobPost = new JobPostAdapter(allJobs, jobPostViewModel); // mặc định show tất cả
+            adapterJobPost = new MyJobPostAdapter(allJobs, jobPostViewModel, new MyJobPostAdapter.OnJobPostClickListener() {
+                @Override
+                public void onJobPostClick(JobPost jobPost) {
+                    // Handle item click
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("jobPost", jobPost);
+                    ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
+                    nav.navigate(R.id.detailMyJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+                }
+            });
+            recyclerViewJobPost.setAdapter(adapterJobPost);
+            adapterJobPost.notifyDataSetChanged();
         });
         jobPostViewModel.getAllJobPosts();
-    }
 
+
+        //POST LIST
+        recyclerViewPost = view.findViewById(R.id.recyclerViewPosts); // ID trong layout
+        postViewModel = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
+        postViewModel.InitiateRepository(getContext());
+
+        postViewModel.getAllPostResult().observe(getViewLifecycleOwner(), result ->
+        {
+            String s = result.toString();
+            Log.e("HomeFragment", "getAllPostResult: " + s + "");
+        });
+        postViewModel.getAllPostData().observe(getViewLifecycleOwner(), posts ->
+        {
+            allPosts.clear();
+            if(posts != null)
+                allPosts.addAll(posts);
+            // Setup RecyclerView
+            recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
+            adapterPost = new PostAdapter(allPosts, postViewModel); // mặc định show tất cả
+            recyclerViewPost.setAdapter(adapterPost);
+            adapterPost.notifyDataSetChanged();
+        });
+        postViewModel.getAllPost();
+    }
 }

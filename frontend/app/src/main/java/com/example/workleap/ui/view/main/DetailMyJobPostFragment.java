@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view;
+package com.example.workleap.ui.view.main;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,7 +31,7 @@ public class DetailMyJobPostFragment extends Fragment {
 
     private TextView txtJobName, txtCompanyName, txtSalary, txtLocation, txtDescription, txtResponsibilities, txtPosition, txtWorkingAddress, txtEducationRequirement, txtSkillRequirement, txtApplyUntil;
     private Button btnApply, btnCompany;
-    private ImageButton btnOption;
+    private ImageButton btnOption, btnBack;
     private NavController nav;
     private Bundle bundle;
     private boolean isJobPostSubmitted = false; // Biến trạng thái đảm bảo chỉ trở về khi đã tạo thành công
@@ -77,6 +77,7 @@ public class DetailMyJobPostFragment extends Fragment {
         txtApplyUntil = view.findViewById(R.id.txtApplyUntil);
         btnApply = view.findViewById(R.id.btnApply);
         btnOption = view.findViewById(R.id.btnOption);
+        btnBack = view.findViewById(R.id.btnBack);
         btnCompany = view.findViewById(R.id.btnCompany);
 
         //Get current jobpost from jobpost fragment
@@ -115,6 +116,11 @@ public class DetailMyJobPostFragment extends Fragment {
                     return false;
             });
             popupMenu.show();
+        });
+
+        btnBack.setOnClickListener(v -> {
+            ((NavigationActivity) getActivity()).showBottomNav(true);
+            NavHostFragment.findNavController(this).navigateUp();
         });
 
         btnCompany.setOnClickListener(x ->
