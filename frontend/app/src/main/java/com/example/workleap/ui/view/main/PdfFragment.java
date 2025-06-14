@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.ParcelFileDescriptor;
 import android.view.LayoutInflater;
@@ -82,15 +84,11 @@ public class PdfFragment extends Fragment {
         try {
             ParcelFileDescriptor descriptor = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY);
             PdfRenderer renderer = new PdfRenderer(descriptor);
-            if (renderer.getPageCount() > 0) {
-                PdfRenderer.Page page = renderer.openPage(0);
-                Bitmap bitmap = Bitmap.createBitmap(page.getWidth(), page.getHeight(), Bitmap.Config.ARGB_8888);
-                page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
-                ImageView pdfView = getView().findViewById(R.id.pdf_view);
-                pdfView.setImageBitmap(bitmap);
-                page.close();
-            }
-            renderer.close();
+
+            RecyclerView recyclerView = getView().findViewById(R.id.pdfRecyclerView);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setAdapter(new PdfPageAdapter(renderer));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
