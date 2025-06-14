@@ -33,8 +33,8 @@ public class PostRepository {
     }
 
     //Post
-    public Call<ListPostResponse> getAllPosts() {
-        return apiService.getAllPosts();
+    public Call<ListPostResponse> getAllPosts(int page, int pageSize) {
+        return apiService.getAllPosts(page, pageSize);
     }
 
     public Call<PostResponse> getPostById(String id) {

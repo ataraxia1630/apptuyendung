@@ -21,7 +21,6 @@ import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
-import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.utils.Utils;
 import com.google.gson.Gson;
@@ -45,6 +44,9 @@ public class UpdateJobPostFragment extends Fragment {
     private ArrayList<JobCategory> jobCategories = new ArrayList<>();
     private ArrayList<JobType> jobTypes = new ArrayList<>();
     private boolean isJobPostSubmitted = false; // Biến trạng thái đảm bảo chỉ trở về khi đã tạo thành công
+    private JobPost curJobPost;
+
+
     public UpdateJobPostFragment() {
         // Required empty public constructor
     }
@@ -70,10 +72,6 @@ public class UpdateJobPostFragment extends Fragment {
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
 
-        //Nhan current jobpost
-        JobPost currentJobPost = (JobPost) getArguments().getSerializable("jobPost");
-        Log.d("current jobpost", new Gson().toJson(currentJobPost));
-
         //Tim cac thanh phan component
         edtTitle = view.findViewById(R.id.edtTitle);
         autoJobCategory = view.findViewById(R.id.autoJobCategory);
@@ -92,19 +90,24 @@ public class UpdateJobPostFragment extends Fragment {
         btnSaveJob = view.findViewById(R.id.btnSaveJob);
         btnCancel = view.findViewById(R.id.btnCancel);
 
-        //Gan gia tri hien tai cho cac truong
-        edtTitle.setText(currentJobPost.getTitle());
-        edtDescription.setText(currentJobPost.getDescription());
-        edtLocation.setText(currentJobPost.getLocation());
-        edtPosition.setText(currentJobPost.getPosition());
-        edtWorkingAddress.setText(currentJobPost.getWorkingAddress());
-        edtEducation.setText(currentJobPost.getEducationRequirement());
-        edtSkillRequirement.setText(currentJobPost.getSkillRequirement());
-        edtResponsibility.setText(currentJobPost.getResponsibility());
-        edtSalaryStart.setText(currentJobPost.getSalaryStart());
-        edtSalaryEnd.setText(currentJobPost.getSalaryEnd());
-        edtCurrency.setText(currentJobPost.getCurrency());
-        edtApplyUntil.setText(Utils.formatDate(currentJobPost.getApplyUntil()));
+        jobPostViewModel.getCurrentJobPost().observe(getViewLifecycleOwner(), currentJobPost -> {
+            if (currentJobPost != null) {
+                curJobPost = currentJobPost;
+                //Gan gia tri hien tai cho cac truong
+                edtTitle.setText(currentJobPost.getTitle());
+                edtDescription.setText(currentJobPost.getDescription());
+                edtLocation.setText(currentJobPost.getLocation());
+                edtPosition.setText(currentJobPost.getPosition());
+                edtWorkingAddress.setText(currentJobPost.getWorkingAddress());
+                edtEducation.setText(currentJobPost.getEducationRequirement());
+                edtSkillRequirement.setText(currentJobPost.getSkillRequirement());
+                edtResponsibility.setText(currentJobPost.getResponsibility());
+                edtSalaryStart.setText(currentJobPost.getSalaryStart());
+                edtSalaryEnd.setText(currentJobPost.getSalaryEnd());
+                edtCurrency.setText(currentJobPost.getCurrency());
+                edtApplyUntil.setText(Utils.formatDate(currentJobPost.getApplyUntil()));
+            }
+        });
 
         //Lay danh sach jobcategory
         ArrayList<String> jobCategoriesName = new ArrayList<>();
@@ -127,11 +130,11 @@ public class UpdateJobPostFragment extends Fragment {
 
                 //Hien thi category name hien tai tu id trong jobpost
                 String categoryName = null;
-                Log.d("current cate id", currentJobPost.getJobCategoryId());
+                Log.d("current cate id", curJobPost.getJobCategoryId());
 
                 for (JobCategory jobCategory : jobCategories) {
                     Log.d("cate id", jobCategory.getId());
-                    if (jobCategory.getId().equals(currentJobPost.getJobCategoryId())) {
+                    if (jobCategory.getId().equals(curJobPost.getJobCategoryId())) {
                         categoryName = jobCategory.getName(); // Gán vào categorySelected
                         break;
                     }
@@ -182,7 +185,7 @@ public class UpdateJobPostFragment extends Fragment {
                 //Hien thi type name hien tai tu id trong jobpost
                 String typeName = null;
                 for (JobType jobType : jobTypes) {
-                    if (jobType.getId().equals(currentJobPost.getJobTypeId())) {
+                    if (jobType.getId().equals(curJobPost.getJobTypeId())) {
                         typeName = jobType.getName(); // Gán vào typeSelected
                         break;
                     }
@@ -245,7 +248,8 @@ public class UpdateJobPostFragment extends Fragment {
 
             // Handle save logic here
             JobPost jobPost = new JobPost(
-                    getArguments().getString("companyId"),
+                    //getArguments().getString("companyId"),
+                    curJobPost.getCompanyId(),
                     categoryId,
                     typeId,
                     edtTitle.getText().toString(),
@@ -279,8 +283,13 @@ public class UpdateJobPostFragment extends Fragment {
                     "30-06-2024"*/
             );
 
+            //Do update khong truyen company nen can gan lai
+            jobPost.setCompany(curJobPost.getCompany());
+
             Log.d("updated jobpost", new Gson().toJson(jobPost));
-            jobPostViewModel.updateJobPost(currentJobPost.getId(), jobPost);
+
+            jobPostViewModel.updateJobPost(curJobPost.getId(), jobPost);
+            jobPostViewModel.setCurrentJobPost(jobPost);
 
             isJobPostSubmitted = true;
         });

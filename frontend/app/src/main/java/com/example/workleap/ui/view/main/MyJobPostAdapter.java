@@ -42,18 +42,21 @@ public class MyJobPostAdapter extends RecyclerView.Adapter<MyJobPostAdapter.JobP
 
     @Override
     public void onBindViewHolder(@NonNull JobPostViewHolder holder, int position) {
-        JobPost post = jobPostList.get(position);
-        holder.txtTitle.setText(post.getTitle());
-        holder.txtCompany.setText(post.getCompany().getName());
-        holder.txtSalary.setText(post.getSalaryStart() + " - " + post.getSalaryEnd() + " " + post.getCurrency());
-        holder.txtTime.setText(new SimpleDateFormat("dd/MM/yyyy").format(post.getUpdatedAt()));
-        holder.txtLocation.setText(post.getPosition());
+        JobPost jobPost = jobPostList.get(position);
+        holder.txtTitle.setText(jobPost.getTitle());
+        holder.txtCompany.setText(jobPost.getCompany().getName());
+        holder.txtSalary.setText(jobPost.getSalaryStart() + " - " + jobPost.getSalaryEnd() + " " + jobPost.getCurrency());
+        holder.txtTime.setText(new SimpleDateFormat("dd/MM/yyyy").format(jobPost.getUpdatedAt()));
+        holder.txtLocation.setText(jobPost.getPosition());
+        holder.txtTag1.setText(jobPost.getJobCategory().getName());
+        holder.txtTag2.setText(jobPost.getJobType().getName());
+        holder.txtTag3.setText(jobPost.getPosition());
         //holder.imgPost.setImageResource(post.);
 
         // Thêm sự kiện nhấp vào item
         holder.itemView.setOnClickListener(v -> {
             if (clickListener != null) {
-                clickListener.onJobPostClick(post);
+                clickListener.onJobPostClick(jobPost);
             }
         });
 
@@ -70,7 +73,7 @@ public class MyJobPostAdapter extends RecyclerView.Adapter<MyJobPostAdapter.JobP
                     else if(item.getItemId() == R.id.menu_delete)
                     {
                         //Xoa trong csdl
-                        jobPostViewModel.deleteJobPost(post.getId());
+                        jobPostViewModel.deleteJobPost(jobPost.getId());
 
                         //Xoa lap tuc tren danh sach
                         jobPostList.remove(position);
@@ -92,7 +95,7 @@ public class MyJobPostAdapter extends RecyclerView.Adapter<MyJobPostAdapter.JobP
     }
 
     static class JobPostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtTitle, txtCompany, txtSalary, txtLocation, txtTime;
+        TextView txtTitle, txtCompany, txtSalary, txtLocation, txtTime, txtTag1, txtTag2, txtTag3;
         ImageView imgPost;
         ImageButton btnOption;
 
@@ -105,6 +108,9 @@ public class MyJobPostAdapter extends RecyclerView.Adapter<MyJobPostAdapter.JobP
             txtTime = itemView.findViewById(R.id.txtTime);
             imgPost = itemView.findViewById(R.id.imgPost);
             btnOption = itemView.findViewById(R.id.btnOption);
+            txtTag1 = itemView.findViewById(R.id.txtTab1);
+            txtTag2 = itemView.findViewById(R.id.txtTab2);
+            txtTag3 = itemView.findViewById(R.id.txtTab3);
         }
     }
 }

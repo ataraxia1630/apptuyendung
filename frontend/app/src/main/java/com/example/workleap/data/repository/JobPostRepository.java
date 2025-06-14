@@ -34,8 +34,8 @@ public class JobPostRepository {
         apiService = RetrofitClient.getClient(token).create(ApiService.class);
     }
 
-    public Call<ListJobPostResponse> getAllJobPosts() {
-        return apiService.getAllJobPosts();
+    public Call<ListJobPostResponse> getAllJobPosts(int page, int pageSize) {
+        return apiService.getAllJobPosts(page, pageSize);
     }
 
     public Call<ListJobPostResponse> getJobPostsByCompany(String id) {

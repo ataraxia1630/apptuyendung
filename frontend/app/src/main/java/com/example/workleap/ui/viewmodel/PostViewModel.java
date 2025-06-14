@@ -75,8 +75,8 @@ public class PostViewModel extends ViewModel {
     public LiveData<String> removeReactionResult() { return removeReactionResult; }
 
     // Get all post
-    public void getAllPost() {
-        Call<ListPostResponse> call = postRepository.getAllPosts();
+    public void getAllPost(int page, int pageSize) {
+        Call<ListPostResponse> call = postRepository.getAllPosts(page, pageSize);
         call.enqueue(new Callback<ListPostResponse>() {
             @Override
             public void onResponse(Call<ListPostResponse> call, Response<ListPostResponse> response) {

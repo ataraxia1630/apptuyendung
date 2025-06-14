@@ -118,9 +118,19 @@ public class JobPostViewModel  extends ViewModel {
     public LiveData<List<JobApplied>> getJobApplied() { return getJobAppliedData; }
     public LiveData<String> getApplyAJobResult() { return applyAJobResult; }
 
+    //current jobpost for update jobpost sycn
+    private MutableLiveData<JobPost> currentJobPost = new MutableLiveData<>();
+    public LiveData<JobPost> getCurrentJobPost() {
+        return currentJobPost;
+    }
+    public void setCurrentJobPost(JobPost jobPost) {
+        Log.d("JobPostViewModel", "Setting current job post: " + new Gson().toJson(jobPost));
+        currentJobPost.setValue(jobPost);
+    }
+
     // API Calls
-    public void getAllJobPosts() {
-        jobPostRepository.getAllJobPosts().enqueue(new Callback<ListJobPostResponse>() {
+    public void getAllJobPosts(int page, int pageSize) {
+        jobPostRepository.getAllJobPosts(page, pageSize).enqueue(new Callback<ListJobPostResponse>() {
             @Override
             public void onResponse(Call<ListJobPostResponse> call, Response<ListJobPostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -214,6 +224,7 @@ public class JobPostViewModel  extends ViewModel {
             @Override
             public void onResponse(Call<JobPostResponse> call, Response<JobPostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    Log.d("API_RESPONSE_UPDATE_JP", new Gson().toJson(response.body()));
                     updateJobPostData.postValue(response.body().getJobPost());
                     updateJobPostResult.postValue("Success");
                 } else {
