@@ -255,9 +255,9 @@ model JobPost {
   jobTypeId            String
   title                String              @db.VarChar(255)
   description          String?             @db.VarChar(1000)
-  location             String              @default("Unknown") @db.VarChar(255)
+  location             String              @default("Unknown") @db.VarChar(255) //dùng cho thành phố
   position             String              @db.VarChar(255)
-  workingAddress       String //ref
+  workingAddress       String //địa chỉ làm việc cụ thể, có thể là địa chỉ công ty hoặc địa điểm làm việc từ xa      
   educationRequirement String              @db.VarChar(1000)
   skillRequirement     String              @db.VarChar(1000)
   responsibility       String

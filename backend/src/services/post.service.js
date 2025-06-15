@@ -184,22 +184,31 @@ const PostService = {
             throw new Error(`Error fetching posts by company: ${error.message}`);
         }
     },
-    getPostsByStatus: async (status) => {
+    getPostsByStatus: async (status, skip = 0, take = 10) => {
         if (!status) throw new Error('Status is required');
+
         try {
-            const posts = await prisma.post.findMany({
-                where: { approvalStatus: status },
-                orderBy: { created_at: 'desc' },
-                include: {
-                    Company: true,          // lấy thông tin công ty
-                    contents: true,         // lấy mảng PostContent
-                    Comment: true,          // lấy comment nếu cần
-                    Reaction: true,
-                },
-            });
-            return posts;
+            const where = { approvalStatus: status };
+
+            const [posts, total] = await Promise.all([
+                prisma.post.findMany({
+                    where,
+                    skip,
+                    take,
+                    orderBy: { created_at: 'desc' },
+                    include: {
+                        Company: true,
+                        contents: true,
+                        Comment: true,
+                        Reaction: true,
+                    },
+                }),
+                prisma.post.count({ where }),
+            ]);
+
+            return { posts, total };
         } catch (error) {
-            throw new Error(`Error fetching job posts by status: ${error.message}`);
+            throw new Error(`Error fetching posts by status: ${error.message}`);
         }
     },
     updatePostStatus: async (id, status) => {

@@ -9,7 +9,7 @@ const PostController = {
         try {
             const { posts, total } = await PostService.getAllPosts(skip, take);
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ posts: posts, meta });
+            return res.status(200).json({ data: posts, meta });
         } catch (error) {
             return res.status(500).json({ message: 'Error fetching posts', error });
         }
@@ -34,8 +34,8 @@ const PostController = {
             if (!contents || !Array.isArray(contents) || contents.length === 0) {
                 return res.status(400).json({ message: 'Post contents are required' });
             }
-            const newPost = await PostService.createPost({ companyId, title, contents });
-            return res.status(201).json({ post: newPost });
+            const post = await PostService.createPost({ companyId, title, contents });
+            return res.status(201).json({ post: post });
         } catch (error) {
             return res.status(500).json({ message: 'Error creating post', error });
         }
@@ -72,7 +72,7 @@ const PostController = {
         try {
             const { posts, total } = await PostService.searchPosts(filters, skip, take);
             const meta = buildMeta(total, parseInt(page), parseInt(pageSize));
-            return res.status(200).json({ posts: posts, meta });
+            return res.status(200).json({ data: posts, meta });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error searching posts', error });
@@ -96,16 +96,27 @@ const PostController = {
         try {
             const { posts, total } = await PostService.getPostsByCompany(companyId, skip, take);
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ posts: posts, meta });
+            return res.status(200).json({ data: posts, meta });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error fetching posts by company', error });
         }
     },
     getPendingPosts: async (req, res) => {
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 10;
+        const skip = (page - 1) * pageSize;
+        const take = pageSize;
+
         try {
-            const pendingPosts = await PostService.getPostsByStatus('PENDING');
-            res.status(200).json(pendingPosts);
+            const { posts, total } = await PostService.getPostsByStatus('PENDING', skip, take);
+            const meta = {
+                total,
+                page,
+                pageSize,
+                totalPages: Math.ceil(total / pageSize)
+            };
+            res.status(200).json({ data: posts, meta });
         } catch (error) {
             res.status(500).json({ message: 'Failed to fetch pending posts', error: error.message });
         }
@@ -120,8 +131,8 @@ const PostController = {
         }
 
         try {
-            const updated = await PostService.updatePostStatus(id, status);
-            res.status(200).json({ message: 'Status updated', Post: updated });
+            const post = await PostService.updatePostStatus(id, status);
+            res.status(200).json({ post: post });
         } catch (error) {
             res.status(500).json({ message: 'Failed to update status', error: error.message });
         }

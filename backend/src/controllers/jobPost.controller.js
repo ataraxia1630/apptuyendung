@@ -12,7 +12,7 @@ const JobPostController = {
         try {
             const { jobPosts, total } = await JobPostService.getAllJobPosts(skip, take);
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ jobPosts: jobPosts, meta });
+            return res.status(200).json({ data: jobPosts, meta });
         } catch (error) {
             console.error('Error fetching job posts:', error);
             return res
@@ -40,8 +40,8 @@ const JobPostController = {
     // Tạo một bài đăng công việc mới
     createJobPost: async (req, res) => {
         try {
-            const newJobPost = await JobPostService.createJobPost(req.body);
-            return res.status(201).json({ newJobPost: newJobPost });
+            const jobPost = await JobPostService.createJobPost(req.body);
+            return res.status(201).json({ jobPost: jobPost });
         } catch (error) {
             console.log(error);
             return res
@@ -71,6 +71,7 @@ const JobPostController = {
             await JobPostService.deleteJobPost(id);
             return res.status(200).json({ message: 'Delete successfully' });
         } catch (error) {
+            console.error('Error deleting job post:', error);
             return res
                 .status(500)
                 .json({ message: 'Error deleting job post', error });
@@ -82,15 +83,12 @@ const JobPostController = {
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 10;
         const { skip, take } = getPagination(page, pageSize);
-        const { keyword } = req.query;
-        if (!keyword) {
-            return res.status(400).json({ message: 'Keyword is required' });
-        }
+        const filters = req.query;
 
         try {
-            const { jobPosts, total } = await JobPostService.searchJobPosts(keyword, skip, take);
+            const { jobPosts, total } = await JobPostService.searchJobPosts(filters, skip, take);
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ jobPosts, meta });
+            return res.status(200).json({ data: jobPosts, meta });
         } catch (error) {
             return res
                 .status(500)
@@ -114,17 +112,23 @@ const JobPostController = {
         try {
             const { jobPosts, total } = await JobPostService.getJobPostsByCompany(companyId, skip, take);
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ jobPosts, meta });
+            return res.status(200).json({ data: jobPosts, meta });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error fetching job posts by company', error });
         }
     },
     getPendingJobPosts: async (req, res) => {
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 10;
+        const { skip, take } = getPagination(page, pageSize);
+
         try {
-            const pendingPosts = await JobPostService.getJobPostsByStatus('PENDING');
-            res.status(200).json(pendingPosts);
+            const { jobPosts, total } = await JobPostService.getJobPostsByStatus('PENDING', skip, take);
+            const meta = buildMeta(total, page, pageSize);
+            res.status(200).json({ data: jobPosts, meta });
         } catch (error) {
+            console.error(error);
             res.status(500).json({ message: 'Failed to fetch pending posts', error: error.message });
         }
     },
@@ -138,8 +142,8 @@ const JobPostController = {
         }
 
         try {
-            const updated = await JobPostService.updateJobPostStatus(id, status);
-            res.status(200).json({ message: 'Status updated', jobPost: updated });
+            const jobPost = await JobPostService.updateJobPostStatus(id, status);
+            res.status(200).json({ jobPost: jobPost });
         } catch (error) {
             res.status(500).json({ message: 'Failed to update status', error: error.message });
         }
