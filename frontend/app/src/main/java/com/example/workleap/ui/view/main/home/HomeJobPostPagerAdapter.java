@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view.main;
+package com.example.workleap.ui.view.main.home;
 
 import android.os.Bundle;
 
@@ -8,8 +8,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.User;
-
-import kotlinx.coroutines.Job;
 
 public class HomeJobPostPagerAdapter extends FragmentStateAdapter {
 

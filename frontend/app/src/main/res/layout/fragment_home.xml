@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:paddingBottom="100dp"
-    tools:context=".ui.view.main.HomeFragment">
+    tools:context=".ui.view.main.home.HomeFragment">
 
     <!-- Thêm NestedScrollView để cuộn toàn bộ nội dung -->
     <androidx.core.widget.NestedScrollView

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#35504E"
-    tools:context=".ui.view.main.ApplicantProfileFragment"
+    tools:context=".ui.view.main.profile.ApplicantProfileFragment"
     android:clipToPadding="false"
     android:paddingBottom="150dp">
 
