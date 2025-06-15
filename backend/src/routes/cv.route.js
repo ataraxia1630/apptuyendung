@@ -18,7 +18,7 @@ route.post(
 route.get('/download/:id', verifyToken, CVController.downloadCV);
 
 // get all cv
-route.get('/all/:applicantId', verifyToken, cache, CVController.getAllCV);
+route.get('/all/:applicantId', verifyToken, CVController.getAllCV);
 
 // delete all cv
 route.delete('/all/:applicantId', verifyToken, CVController.deleteAllCV);

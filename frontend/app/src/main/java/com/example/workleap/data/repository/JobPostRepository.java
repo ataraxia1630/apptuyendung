@@ -8,6 +8,7 @@ import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
+import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
 import com.example.workleap.data.model.response.ListJobCategoryResponse;
@@ -33,8 +34,12 @@ public class JobPostRepository {
         apiService = RetrofitClient.getClient(token).create(ApiService.class);
     }
 
-    public Call<ListJobPostResponse> getAllJobPosts() {
-        return apiService.getAllJobPosts();
+    public Call<ListJobPostResponse> getAllJobPosts(int page, int pageSize) {
+        return apiService.getAllJobPosts(page, pageSize);
+    }
+
+    public Call<ListJobPostResponse> getJobPostsByCompany(String id) {
+        return apiService.getJobPostsByCompany(id);
     }
 
     public Call<JobPostResponse> getJobPostById(String id) {
@@ -95,7 +100,7 @@ public class JobPostRepository {
     public Call<ListJobAppliedResponse> getJobApplied(String applicantId) {
         return apiService.getJobApplied(applicantId);
     }
-    public Call<MessageResponse> applyAJob(JobApplied request) {
+    public Call<MessageResponse> applyAJob(ApplyAJobRequest request) {
         return apiService.applyAJob(request);
     }
 }

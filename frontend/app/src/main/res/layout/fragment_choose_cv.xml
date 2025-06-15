@@ -1,0 +1,27 @@
+<!-- res/layout/fragment_choose_cv.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Toolbar (AppBar) -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarChooseCV"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="Choose a CV"
+        app:titleTextColor="@android:color/white"
+        app:navigationIcon="@drawable/ic_back_left" />
+
+    <!-- RecyclerView danh sach CV -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewCV"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"/>
+</LinearLayout>

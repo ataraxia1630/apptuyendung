@@ -1,14 +1,20 @@
 package com.example.workleap.data.api;
 
 import com.example.workleap.data.model.entity.CV;
+import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
+import com.example.workleap.data.model.entity.Post;
+import com.example.workleap.data.model.entity.Reaction;
+import com.example.workleap.data.model.request.ApplyAJobRequest;
+import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
 import com.example.workleap.data.model.response.CVResponse;
+import com.example.workleap.data.model.response.CommentResponse;
 import com.example.workleap.data.model.response.CreateApplicantEducationResponse;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
 import com.example.workleap.data.model.request.CreateApplicantSkillRequest;
@@ -22,11 +28,13 @@ import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
+import com.example.workleap.data.model.response.ListCommentResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
 import com.example.workleap.data.model.response.ListInterestedFieldResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
+import com.example.workleap.data.model.response.ListPostResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
@@ -36,6 +44,8 @@ import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.request.RegisterRequest;
+import com.example.workleap.data.model.response.PostResponse;
+import com.example.workleap.data.model.response.ReactionResponse;
 import com.example.workleap.data.model.response.RegisterResponse;
 import com.example.workleap.data.model.response.UpdateApplicantEducationResponse;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
@@ -52,13 +62,18 @@ import com.example.workleap.data.model.response.UpdateUserResponse;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
     //Đăng ký
@@ -158,7 +173,9 @@ public interface ApiService {
 
     //JobPost
     @GET("api/job-posts/all")
-    Call<ListJobPostResponse> getAllJobPosts();
+    Call<ListJobPostResponse> getAllJobPosts(@Query("page") int page, @Query("pageSize") int pageSize);
+    @GET("api/job-posts/company/{id}")
+    Call<ListJobPostResponse> getJobPostsByCompany(@Path ("id") String id);
     @GET("api/job-posts/{id}")
     Call<JobPostResponse> getJobPostById(@Path("id") String id);
     @POST("api/job-posts")
@@ -177,7 +194,7 @@ public interface ApiService {
     Call <ListJobTypeResponse> createJobType(@Body List<JobType> request);
 
     //JobCategory
-    @GET("api/category")
+    @GET("api/category/all")
     Call<ListJobCategoryResponse> getAllJobCategories();
     @POST("api/types/")
     Call <ListJobCategoryResponse> createJobCategory(@Body List<JobCategory> request);
@@ -198,12 +215,19 @@ public interface ApiService {
     @GET("api/apply/{applicantId}/cvs")
     Call<ListJobAppliedResponse> getJobApplied(@Path("applicantId") String applicantId);
     @POST("api/apply/")            //create a job applied
-    Call<MessageResponse> applyAJob(@Body JobApplied request);
+    Call<MessageResponse> applyAJob(@Body ApplyAJobRequest request);
 
 
     //Cv
+    //@POST("api/cv/upload/{applicantId}")
+    //Call<MessageResponse> createCv(@Path("applicantId") String applicantId, @Body CVRequest request);
+    @Multipart
     @POST("api/cv/upload/{applicantId}")
-    Call<MessageResponse> createCv(@Path("applicantId") String applicantId, @Body CV request);
+    Call<MessageResponse> createCv(
+            @Path("applicantId") String applicantId,
+            @Part MultipartBody.Part file,
+            @Part("title") RequestBody title
+    );
     @GET("api/cv/all/{applicantId}")
     Call<ListCVResponse> getAllCv(@Path("applicantId") String applicantId);
     @DELETE("api/cv/all/{applicantId}")
@@ -211,7 +235,36 @@ public interface ApiService {
     @GET("api/cv/{id}")
     Call<CVResponse> getCvById(@Path("id") String id);
     @PUT("api/cv/{id}")
-    Call<MessageResponse> updateCvById(@Path("id") String id);
+    Call<MessageResponse> updateCvById(@Path("id") String id, @Body CVRequest request);
     @DELETE("api/cv/{id}")
     Call<MessageResponse> deleteCvById(@Path("id") String id);
+
+
+    //Post
+    @GET("api/posts/all")
+    Call<ListPostResponse> getAllPosts(@Query("page") int page, @Query("pageSize") int pageSize);
+    @GET("api/posts/{id}")
+    Call<PostResponse> getPostById(@Path("id") String id);
+    @GET("api/posts/company/{id}")
+    Call<ListPostResponse> getPostsByCompany(@Path("id") String id);
+    @POST("api/posts")
+    Call<PostResponse> createPost(@Body Post request);
+    @PUT("api/posts/{id}")
+    Call<PostResponse> updatePost(@Path("id") String id, @Body Post request);
+    @DELETE("api/posts/{id}")
+    Call<MessageResponse> deletePost(@Path("id") String id);
+
+    //Comment
+    @POST("api/comments/")
+    Call<CommentResponse> createComment(@Body Comment request);
+    @GET("api/comments/post/{postId}")
+    Call<ListCommentResponse> getCommentsByPost(@Path("postId") String postId);
+    @DELETE("api/comments/{id}")
+    Call<MessageResponse> deleteComment(@Path("id") String id);
+
+    //Reactions
+    @POST("api/reactions/toggle")
+    Call<ReactionResponse> toggleReaction(@Body Reaction request);
+    @DELETE("api/reactions/{postId}")
+    Call<MessageResponse> removeReaction(@Path("postId") String postId);
 }

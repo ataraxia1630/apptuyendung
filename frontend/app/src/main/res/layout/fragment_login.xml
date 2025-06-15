@@ -7,7 +7,7 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     android:orientation="vertical"
-    tools:context=".ui.view.LoginFragment">
+    tools:context=".ui.view.auth.LoginFragment">
 
     <TextView
         android:layout_width="wrap_content"

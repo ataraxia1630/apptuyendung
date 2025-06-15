@@ -15,7 +15,7 @@ router.put('/:id', verifyToken, checkOwnership('JobPost', 'companyId'), validate
 router.delete('/:id', verifyToken, checkOwnership('JobPost', 'companyId'), JobPostController.deleteJobPost);
 router.post('/', verifyToken, requireRole('COMPANY'), validate(JobPostSchema), JobPostController.createJobPost);
 router.get('/search/query', cache, JobPostController.searchJobPosts);
-router.get('/company/:id', verifyToken, cache, JobPostController.getJobPostsByCompany);
+router.get('/company/:id', verifyToken, JobPostController.getJobPostsByCompany);
 //Danh cho admin
 router.get('/admin/pending', verifyToken, requireRole('ADMIN'), cache, JobPostController.getPendingJobPosts);
 router.put('/admin/toggle/:id', verifyToken, requireRole('ADMIN'), JobPostController.toggleJobPostStatus);

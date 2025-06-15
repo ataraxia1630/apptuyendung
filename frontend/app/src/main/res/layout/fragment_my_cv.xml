@@ -4,22 +4,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    tools:context=".ui.view.JobpostFragment">
+    tools:context=".ui.view.main.JobpostFragment">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:paddingLeft="8dp"
+        android:paddingTop="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="16dp">
 
         <ImageButton
             android:id="@+id/btnRearrange"
-            android:src="@drawable/ic_option"
+            android:src="@drawable/ic_sort"
             android:background="@android:color/transparent"
             android:contentDescription="Rearrange"
             android:layout_width="50dp"
@@ -31,7 +35,7 @@
                 android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/btnAdd"
+            android:id="@+id/btnAddCV"
             android:src="@drawable/ic_add"
             android:background="@android:color/transparent"
             android:contentDescription="Add CV"
@@ -44,7 +48,8 @@
             android:id="@+id/recyclerCvs"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:paddingBottom="100dp"/>
     </LinearLayout>
 
 

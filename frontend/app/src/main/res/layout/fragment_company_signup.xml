@@ -6,7 +6,7 @@
     android:clipToPadding="false"
     android:fillViewport="true"
     android:paddingTop="16dp"
-    tools:context=".ui.view.CompanySignupFragment">
+    tools:context=".ui.view.auth.CompanySignupFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
