@@ -57,15 +57,26 @@
             android:background="?attr/selectableItemBackgroundBorderless"/>
     </LinearLayout>
 
+    <!-- Post title -->
+    <TextView
+        android:id="@+id/tv_post_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="This is the post title"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@id/post_header"/>
+
     <!-- Post content -->
     <TextView
         android:id="@+id/tv_post_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:text="This is the post content..."
         android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/post_header"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_post_title"/>
 
     <!-- Post image -->
     <ImageView

@@ -22,8 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="CREATE JOBPOST"
-            android:textSize="20sp"
+            android:text="POST"
+            android:textSize="30sp"
             android:textStyle="bold"/>
     </RelativeLayout>
 
@@ -40,200 +40,72 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- Job Category -->
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Job Category" android:textSize="16sp" android:textStyle="bold"/>
-            <AutoCompleteTextView
-                android:id="@+id/autoJobCategory"
-                android:textSize="20sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Select job category"
-                android:inputType="text"/>
-
-            <!-- Job Type -->
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Job Type" android:textSize="16sp" android:textStyle="bold"
-                android:paddingTop="8dp"/>
-            <AutoCompleteTextView
-                android:id="@+id/autoJobType"
-                android:textSize="20sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Select job type"
-                android:inputType="text"/>
-
             <!-- Title -->
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Title" android:textSize="16sp" android:textStyle="bold"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 android:paddingTop="8dp"/>
             <EditText
                 android:id="@+id/edtTitle"
                 android:textSize="20sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter job title"/>
+                android:hint="Enter your title here"/>
 
-            <!-- Description -->
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Description" android:textSize="16sp" android:textStyle="bold"
-                android:paddingTop="8dp"/>
-            <EditText
-                android:id="@+id/edtDescription"
+            <!-- Text Content -->
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter job description"
+                android:text="Content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingTop="8dp"/>
+            <EditText
+                android:id="@+id/edtTextContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="What do you think?"
                 android:minLines="4"
                 android:gravity="top"
                 android:inputType="textMultiLine"/>
 
-            <!-- Location -->
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Location" android:textSize="16sp" android:textStyle="bold"
-                android:paddingTop="8dp"/>
-            <EditText
-                android:id="@+id/edtLocation"
+            <!-- Image -->
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:hint="Enter job location"/>
-
-            <!-- Position -->
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Position" android:textSize="16sp" android:textStyle="bold"
-                android:paddingTop="8dp"/>
-            <EditText
-                android:id="@+id/edtPosition"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:hint="Enter job position"/>
-
-            <!-- Working Address -->
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Working Address" android:textSize="16sp" android:textStyle="bold"
-                android:paddingTop="8dp"/>
-            <EditText
-                android:id="@+id/edtWorkingAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="56dp"
-                android:padding="12dp"
+                android:text="Image"
                 android:textSize="16sp"
-                android:hint="Enter working address"/>
-
-            <!-- Education Requirement -->
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Education Requirement" android:textSize="16sp" android:textStyle="bold"
+                android:textStyle="bold"
                 android:paddingTop="8dp"/>
-            <EditText
-                android:id="@+id/edtEducation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="56dp"
-                android:padding="12dp"
-                android:textSize="16sp"
-                android:hint="Enter education requirement"/>
 
-            <!-- Skill Requirement -->
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Skill Requirement" android:textSize="16sp" android:textStyle="bold"
-                android:paddingTop="8dp"/>
-            <EditText
-                android:id="@+id/edtSkillRequirement"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="56dp"
-                android:padding="12dp"
-                android:textSize="16sp"
-                android:hint="Enter skill requirement"/>
+                android:layout_height="wrap_content">
 
-            <!-- Responsibility -->
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Responsibility" android:textSize="16sp" android:textStyle="bold"
-                android:paddingTop="8dp"/>
-            <EditText
-                android:id="@+id/edtResponsibility"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="56dp"
-                android:padding="12dp"
-                android:textSize="16sp"
-                android:hint="Enter responsibility"/>
+                <ImageView
+                    android:id="@+id/imgContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/sample_photo" />
 
-            <!-- Salary Start -->
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Salary Start" android:textSize="16sp" android:textStyle="bold"
-                android:paddingTop="8dp"/>
-            <EditText
-                android:id="@+id/edtSalaryStart"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="56dp"
-                android:padding="12dp"
-                android:textSize="16sp"
-                android:hint="Enter starting salary"
-                android:inputType="numberDecimal"/>
+                <Button
+                    android:id="@+id/btnLoadImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Load Image"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="8dp"/>
+            </FrameLayout>
 
-            <!-- Salary End -->
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Salary End" android:textSize="16sp" android:textStyle="bold"
-                android:paddingTop="8dp"/>
-            <EditText
-                android:id="@+id/edtSalaryEnd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="56dp"
-                android:padding="12dp"
-                android:textSize="16sp"
-                android:hint="Enter ending salary"
-                android:inputType="numberDecimal"/>
-
-            <!-- Currency -->
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Currency" android:textSize="16sp" android:textStyle="bold"
-                android:paddingTop="8dp"/>
-            <EditText
-                android:id="@+id/edtCurrency"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="56dp"
-                android:padding="12dp"
-                android:textSize="16sp"
-                android:hint="Enter currency (e.g. USD)"/>
-
-            <!-- Status -->
-            <!-- <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Status" android:textSize="16sp" android:textStyle="bold"
-                android:paddingTop="8dp"/>
-            <EditText
-                android:id="@+id/edtStatus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="56dp"
-                android:padding="12dp"
-                android:textSize="16sp"
-                android:hint="e.g. OPENING"/> -->
-
-            <!-- Apply Until -->
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Apply Until" android:textSize="16sp" android:textStyle="bold"
-                android:paddingTop="8dp"/>
-            <EditText
-                android:id="@+id/edtApplyUntil"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="56dp"
-                android:padding="12dp"
-                android:textSize="16sp"
-                android:hint="Enter deadline (dd-mm-yyyy)"/>
-
-            <!-- Save Button -->
             <Button
-                android:id="@+id/btnSaveJob"
+                android:id="@+id/btnSavePost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Save Job"
+                android:text="Save Post"
                 android:layout_marginTop="24dp"/>
         </LinearLayout>
     </ScrollView>
