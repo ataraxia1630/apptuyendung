@@ -142,6 +142,7 @@ public class PostViewModel extends ViewModel {
                     try {
                         PostResponse error = new Gson().fromJson(response.errorBody().string(), PostResponse.class);
                         createPostResult.setValue("Lỗi: " + error.getMessage());
+                        Log.d("API_RESPONSE_CREATEPOST", new Gson().toJson(response.errorBody()));
                     } catch (Exception e) {
                         createPostResult.setValue("Lỗi không xác định: " + response.code());
                     }

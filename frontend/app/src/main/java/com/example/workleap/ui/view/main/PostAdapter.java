@@ -41,7 +41,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Post post = postList.get(position);
         holder.txtName.setText(post.getCompany().getName());
         holder.txtTime.setText(post.getCreatedAt().toString());
-        //holder.txtContent.setText(post.getContents()[0].getValue());
+        holder.txtTitle.setText(post.getTitle());
+        holder.txtContent.setText(post.getContents().get(0).getValue());
         //holder.txtReactionCount.setText(post.getContents().length);
         //holder.txtShareCount.setText(post.getReaction().length);
         //holder.txtCommentCount.setText(post.getComment().length);
@@ -80,7 +81,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtName, txtTime, txtContent, txtReactionCount, txtCommentCount, txtShareCount;
+        TextView txtName, txtTime, txtTitle, txtContent, txtReactionCount, txtCommentShareCount;
         ImageView imgPost, imgAvatar;
         ImageButton btnOption, btnReact, btnComment, btnShare;
 
@@ -88,10 +89,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             super(itemView);
             txtName = itemView.findViewById(R.id.tv_user_name);
             txtTime = itemView.findViewById(R.id.tv_post_time);
+            txtTitle = itemView.findViewById(R.id.tv_post_title);
             txtContent = itemView.findViewById(R.id.tv_post_content);
-            txtCommentCount = itemView.findViewById(R.id.tv_comment_share_count);
+
+            txtCommentShareCount = itemView.findViewById(R.id.tv_comment_share_count);
             txtReactionCount = itemView.findViewById(R.id.tv_like_count);
-            txtShareCount = itemView.findViewById(R.id.tv_like_count);
 
             imgPost = itemView.findViewById(R.id.imgPost);
             btnOption = itemView.findViewById(R.id.btnOption);
