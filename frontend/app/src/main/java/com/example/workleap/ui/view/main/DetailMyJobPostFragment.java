@@ -49,6 +49,8 @@ public class DetailMyJobPostFragment extends Fragment {
     private Bundle bundle;
     private List<CV> cvList;
 
+    private JobPost selectedJobPost ;
+
     private User user;
     private boolean isJobPostSubmitted = false; // Biến trạng thái đảm bảo chỉ trở về khi đã tạo thành công
 
@@ -103,6 +105,7 @@ public class DetailMyJobPostFragment extends Fragment {
             if (currentJobPost != null) {
                 // Lay ra company cho trang detail company
                 company = currentJobPost.getCompany();
+                this.selectedJobPost  = currentJobPost;
 
                 //Set thong tin
                 txtJobName.setText(currentJobPost.getTitle());
@@ -192,7 +195,7 @@ public class DetailMyJobPostFragment extends Fragment {
         getParentFragmentManager().setFragmentResultListener("choose_cv_result", this, (requestKey, bundle) -> {
             CV selectedCV = (CV) bundle.getSerializable("selected_cv");
             if (selectedCV != null) {
-                //jobPostViewModel.applyAJob(jobPost.getId(), selectedCV.getApplicantId(), selectedCV.getId());
+                jobPostViewModel.applyAJob(selectedJobPost .getId(), selectedCV.getApplicantId(), selectedCV.getId());
                 Toast.makeText(getContext(), "Selected CV: " + selectedCV.getTitle(), Toast.LENGTH_SHORT).show();
             }
         });
