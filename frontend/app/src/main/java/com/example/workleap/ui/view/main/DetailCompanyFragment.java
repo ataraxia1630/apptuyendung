@@ -29,7 +29,8 @@ import com.example.workleap.ui.viewmodel.JobPostViewModel;
  */
 public class DetailCompanyFragment extends Fragment {
     private JobPostViewModel jobPostViewModel;
-
+    private Company currentCompany;
+    private JobPost currentJobPost;
     private TextView txtJobName, txtCompanyName, txtSalary, txtLocation, txtAboutUs, txtContactInfor;
     private Button btnApply, btnDescription;
     private ImageButton btnOption, btnBack;
@@ -64,8 +65,9 @@ public class DetailCompanyFragment extends Fragment {
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
 
-        //Lay company hien tai
-        Company currentCompany = (Company) getArguments().getSerializable("company");
+        //Lay jobpost, company hien tai
+        currentJobPost = (JobPost) getArguments().getSerializable("currentJobPost");
+        currentCompany = currentJobPost.getCompany();
 
         //find component
         txtJobName = view.findViewById(R.id.txtJobName);
@@ -80,20 +82,17 @@ public class DetailCompanyFragment extends Fragment {
         btnBack = view.findViewById(R.id.btnBack);
         btnDescription = view.findViewById(R.id.btnDescription);
 
-        //Get current jobpost from jobpost fragment
-        jobPostViewModel.getCurrentJobPost().observe(getViewLifecycleOwner(), currentJobPost -> {
-                    if (currentJobPost != null) {
-                        //JobPost jobPost = (JobPost) getArguments().getSerializable("jobPost");
-                        txtJobName.setText(currentJobPost.getTitle());
-                        txtCompanyName.setText(currentJobPost.getCompany().getName());
-                        txtSalary.setText(currentJobPost.getSalaryStart() + " - " + currentJobPost.getSalaryEnd() + " " + currentJobPost.getCurrency());
-                        txtLocation.setText(currentJobPost.getLocation());
-                        txtAboutUs.setText(currentCompany.getDescription());
-                        txtContactInfor.setText(currentCompany.getTaxcode());
-                        txtLocation.setText(currentJobPost.getLocation());
-                        // TODO: Add listeners or bind ViewModel here
-                    }
-                });
+        if (currentJobPost != null) {
+            //JobPost jobPost = (JobPost) getArguments().getSerializable("jobPost");
+            txtJobName.setText(currentJobPost.getTitle());
+            txtCompanyName.setText(currentJobPost.getCompany().getName());
+            txtSalary.setText(currentJobPost.getSalaryStart() + " - " + currentJobPost.getSalaryEnd() + " " + currentJobPost.getCurrency());
+            txtLocation.setText(currentJobPost.getLocation());
+            txtAboutUs.setText(currentCompany.getDescription());
+            txtContactInfor.setText(currentCompany.getTaxcode());
+            txtLocation.setText(currentJobPost.getLocation());
+            // TODO: Add listeners or bind ViewModel here
+        }
 
         btnOption.setOnClickListener(v -> {
             // TODO: Handle option button click

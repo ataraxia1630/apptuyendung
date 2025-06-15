@@ -120,7 +120,7 @@ public class HomeFragment extends Fragment {
                     bundle.putSerializable("jobPost", jobPost);
                     bundle.putSerializable("user", user);
                     ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
-                    nav.navigate(R.id.detailMyJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+                    nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
                 }
             });
             recyclerViewJobPost.setAdapter(adapterJobPost);

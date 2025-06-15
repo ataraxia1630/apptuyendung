@@ -129,6 +129,7 @@ public class JobpostFragment extends Fragment{
                 @Override
                 public void onJobPostClick(JobPost jobPost) {
                     // Handle item click
+                    bundle.putSerializable("user", user);
                     jobPostViewModel.setCurrentJobPost(jobPost);
                     ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
                     nav.navigate(R.id.detailMyJobPostFragment, bundle); // Navigate to DetailJobPostFragment
