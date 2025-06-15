@@ -31,21 +31,37 @@ const StatisticService = {
     },
 
     getTopCompanies: async () => {
-        // Nhóm các JobPost theo companyId, đếm số jobApplied cho mỗi company, sắp xếp giảm dần, lấy 10
-        const results = await prisma.jobPost.groupBy({
-            by: ['companyId'],
-            _count: { JobApplied: true },
-            orderBy: { _count: { JobApplied: 'desc' } },
-            take: 10
+        // 1. Lấy tất cả JobApplied kèm theo jobPostId và companyId (nối qua jobPost)
+        const jobApplications = await prisma.jobApplied.findMany({
+            select: {
+                jobpostId: true,
+                JobPost: {
+                    select: { companyId: true }
+                }
+            }
         });
 
-        // Lấy chi tiết Company kèm số lượng ứng tuyển
+        // 2. Tính tổng số ứng tuyển theo companyId (dùng object đếm)
+        const companyCounts = {};
+        for (const app of jobApplications) {
+            const cid = app.jobPost.companyId;
+            if (!companyCounts[cid]) companyCounts[cid] = 0;
+            companyCounts[cid]++;
+        }
+
+        // 3. Sắp xếp và lấy top 10
+        const sorted = Object.entries(companyCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10);
+
+        // 4. Trả về thông tin company + số lượng
         const topCompanies = await Promise.all(
-            results.map(async (r) => {
-                const company = await prisma.company.findUnique({ where: { id: r.companyId } });
-                return { company, applicationCount: r._count.JobApplied };
+            sorted.map(async ([companyId, count]) => {
+                const company = await prisma.company.findUnique({ where: { id: companyId } });
+                return { company, applicationCount: count };
             })
         );
+
         return topCompanies;
     },
 
