@@ -185,6 +185,15 @@ const JobPostService = {
 
         return { jobPosts, total };
     },
+    deleteJobPost: async (id) => {
+        const jobPost = await prisma.jobPost.findUnique({ where: { id: id } });
+        if (!jobPost) {
+            throw new Error('Job post not found');
+        }
+
+        await prisma.jobPost.delete({ where: { id: id } });
+    },
+
     getJobPostsByCompany: async (companyId, skip = 0, take = 10) => {
         if (!companyId) throw new Error('Company ID is required');
         try {
@@ -210,24 +219,33 @@ const JobPostService = {
             throw new Error(`Error fetching job posts by company: ${error.message}`);
         }
     },
-    getJobPostsByStatus: async (status) => {
+    getJobPostsByStatus: async (status, skip = 0, take = 10) => {
         if (!status) throw new Error('Status is required');
 
         const validStatuses = ['PENDING', 'APPROVED', 'REJECTED'];
         if (!validStatuses.includes(status)) {
             throw new Error('Invalid status');
         }
+
         try {
-            const jobPosts = await prisma.jobPost.findMany({
-                where: { approvalStatus: status },
-                orderBy: { created_at: 'desc' },
-                include: {
-                    Company: true,
-                    JobType: true,
-                    JobCategory: true,
-                },
-            });
-            return jobPosts;
+            const where = { approvalStatus: status };
+
+            const [jobPosts, total] = await Promise.all([
+                prisma.jobPost.findMany({
+                    where,
+                    skip,
+                    take,
+                    orderBy: { created_at: 'desc' },
+                    include: {
+                        Company: true,
+                        JobType: true,
+                        JobCategory: true,
+                    },
+                }),
+                prisma.jobPost.count({ where }),
+            ]);
+
+            return { jobPosts, total };
         } catch (error) {
             throw new Error(`Error fetching job posts by status: ${error.message}`);
         }

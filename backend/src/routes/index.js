@@ -26,6 +26,7 @@ const messRoutes = require('./message.route');
 
 const dailyReportRoutes = require('./dailyReport.route');
 const dailyStatisticRoutes = require('./dailyStatistic.route');
+const statisticRoutes = require('./statistic.route');
 const reportRoutes = require('./report.route');
 
 function route(app) {
@@ -58,6 +59,7 @@ function route(app) {
 
   app.use('/api/dailyReport', dailyReportRoutes);
   app.use('/api/dailyStatistic', dailyStatisticRoutes);
+  app.use('/api/statistic', statisticRoutes)
   app.use('/api/reports', reportRoutes);
 }
 
