@@ -192,7 +192,7 @@ public class DetailMyJobPostFragment extends Fragment {
         getParentFragmentManager().setFragmentResultListener("choose_cv_result", this, (requestKey, bundle) -> {
             CV selectedCV = (CV) bundle.getSerializable("selected_cv");
             if (selectedCV != null) {
-                jobPostViewModel.applyAJob(jobPost.getId(), selectedCV.getApplicantId(), selectedCV.getId());
+                //jobPostViewModel.applyAJob(jobPost.getId(), selectedCV.getApplicantId(), selectedCV.getId());
                 Toast.makeText(getContext(), "Selected CV: " + selectedCV.getTitle(), Toast.LENGTH_SHORT).show();
             }
         });

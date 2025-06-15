@@ -12,7 +12,7 @@ const JobPostController = {
         try {
             const { jobPosts, total } = await JobPostService.getAllJobPosts(skip, take);
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ data: jobPosts, meta });
+            return res.status(200).json({ jobPosts: jobPosts, meta });
         } catch (error) {
             console.error('Error fetching job posts:', error);
             return res
@@ -88,7 +88,7 @@ const JobPostController = {
         try {
             const { jobPosts, total } = await JobPostService.searchJobPosts(filters, skip, take);
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ data: jobPosts, meta });
+            return res.status(200).json({ jobPosts: jobPosts, meta });
         } catch (error) {
             return res
                 .status(500)
@@ -112,7 +112,7 @@ const JobPostController = {
         try {
             const { jobPosts, total } = await JobPostService.getJobPostsByCompany(companyId, skip, take);
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ data: jobPosts, meta });
+            return res.status(200).json({ jobPosts: jobPosts, meta });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error fetching job posts by company', error });
@@ -126,7 +126,7 @@ const JobPostController = {
         try {
             const { jobPosts, total } = await JobPostService.getJobPostsByStatus('PENDING', skip, take);
             const meta = buildMeta(total, page, pageSize);
-            res.status(200).json({ data: jobPosts, meta });
+            res.status(200).json({ jobPosts: jobPosts, meta });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Failed to fetch pending posts', error: error.message });
