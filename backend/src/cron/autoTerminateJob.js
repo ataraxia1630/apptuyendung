@@ -27,11 +27,10 @@ const scheduleAutoTerminateJob = () => {
     const cron = require('node-cron');
 
     // Chạy mỗi ngày lúc 0h05 sáng
-    cron.schedule('*/10 * * * *', autoTerminateExpiredJobPosts, {
+    cron.schedule('5 0 * * *', autoTerminateExpiredJobPosts, {
         timezone: 'Asia/Ho_Chi_Minh',
     });
 
-    console.log('[CRON] Auto-terminate job scheduled at 00:05 AM daily.');
 };
 
 module.exports = {

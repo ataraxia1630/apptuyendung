@@ -148,6 +148,23 @@ const JobPostController = {
             res.status(500).json({ message: 'Failed to update status', error: error.message });
         }
     },
+    getMyJobsWithApplications: async (req, res) => {
+        const companyId = req.user.id;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 10;
+        const { skip, take } = getPagination(page, pageSize);
+
+        try {
+            const { jobPosts, total } = await JobPostService.getMyJobsWithApplications(companyId, skip, take);
+            const meta = buildMeta(total, page, pageSize);
+
+            return res.status(200).json({ data: jobPosts, meta });
+        } catch (error) {
+            console.error('Error fetching company job posts with applications:', error);
+            return res.status(500).json({ message: 'Lỗi khi lấy danh sách công việc và ứng tuyển', error });
+        }
+    },
+
 };
 
 module.exports = { JobPostController };

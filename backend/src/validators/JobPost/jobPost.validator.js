@@ -60,6 +60,22 @@ const JobPostSchema = Joi.object({
     apply_until: Joi.string()
         .pattern(/^([0-2][0-9]|(3)[0-1])\-([0][1-9]|1[0-2])\-\d{4}$/)
         .required()
+        .custom((value, helpers) => {
+            const [day, month, year] = value.split("-");
+            const applyDate = new Date(`${year}-${month}-${day}T00:00:00Z`);
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // reset giờ
+
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+
+            if (applyDate < tomorrow) {
+                return helpers.message("Apply until must be at least 1 day after today");
+            }
+
+            return value;
+        })
         .messages({
             'any.required': 'Apply until is required',
             'string.empty': 'Apply until cannot be empty',

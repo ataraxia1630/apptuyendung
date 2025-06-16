@@ -43,11 +43,29 @@ const JobPostUpdateSchema = Joi.object({
         'any.only': 'Currency must be one of: USD, VND, EUR',
     }),
     apply_until: Joi.string()
-        .pattern(/^([0-2][0-9]|(3)[0-1])\-([0][1-9]|1[0-2])\-\d{4}$/)
         .allow(null, '')
+        .pattern(/^([0-2][0-9]|(3)[0-1])\-([0][1-9]|1[0-2])\-\d{4}$/)
+        .custom((value, helpers) => {
+            if (!value) return value; // cho phép null hoặc ''
+
+            const [day, month, year] = value.split('-');
+            const applyDate = new Date(`${year}-${month}-${day}T00:00:00Z`);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+
+            if (applyDate < tomorrow) {
+                return helpers.message('Apply until must be at least 1 day after today');
+            }
+
+            return value;
+        })
         .messages({
             'string.pattern.base': 'Apply until must be in format dd-mm-yyyy',
         }),
+
     jobCategory: Joi.string().allow(null, '').messages({
         'string.base': 'Job Category ID must be a string',
     }),
