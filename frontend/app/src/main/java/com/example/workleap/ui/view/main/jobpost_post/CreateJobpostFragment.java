@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view.main;
+package com.example.workleap.ui.view.main.jobpost_post;
 
 import android.os.Bundle;
 import android.util.Log;

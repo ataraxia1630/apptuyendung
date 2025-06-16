@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view.main;
+package com.example.workleap.ui.view.main.cv_appliedjob;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.CV;
-import com.example.workleap.ui.viewmodel.CVViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
