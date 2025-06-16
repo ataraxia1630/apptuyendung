@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view.main;
+package com.example.workleap.ui.view.main.jobpost_post;
 
 import android.os.Bundle;
 
@@ -22,7 +22,7 @@ import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.User;
-import com.example.workleap.ui.view.main.MyJobPostAdapter;
+import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.PostViewModel;
 import com.google.android.material.tabs.TabLayout;
@@ -129,9 +129,11 @@ public class JobpostFragment extends Fragment{
                 @Override
                 public void onJobPostClick(JobPost jobPost) {
                     // Handle item click
+                    bundle.putSerializable("user", user);
+                    bundle.putSerializable("currentJobPost", jobPost);
                     jobPostViewModel.setCurrentJobPost(jobPost);
                     ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
-                    nav.navigate(R.id.detailMyJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+                    nav.navigate(R.id.overviewJobPostFragment, bundle); // Navigate to DetailJobPostFragment
                 }
             });
             recyclerViewJobPost.setAdapter(adapterJobPost);

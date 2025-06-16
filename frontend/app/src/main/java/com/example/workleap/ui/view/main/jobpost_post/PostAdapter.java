@@ -1,23 +1,19 @@
-package com.example.workleap.ui.view.main;
+package com.example.workleap.ui.view.main.jobpost_post;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workleap.R;
-import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.Post;
-import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.PostViewModel;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
