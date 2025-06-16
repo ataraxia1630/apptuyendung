@@ -28,6 +28,7 @@ const dailyReportRoutes = require('./dailyReport.route');
 const dailyStatisticRoutes = require('./dailyStatistic.route');
 const statisticRoutes = require('./statistic.route');
 const reportRoutes = require('./report.route');
+const postImageRoute = require('./postImage.route')
 
 function route(app) {
   app.use('/api/auth', authRoutes);
@@ -50,6 +51,7 @@ function route(app) {
 
   app.use('/api/save', jobSavedRoutes);
   app.use('/api/posts', PostRoutes);
+  app.use('/api/posts/images', postImageRoute);
   app.use('/api/reactions', reactionRoutes);
   app.use('/api/comments', commentRoutes);
   app.use('/api/apply', jobAppliedRoutes);
