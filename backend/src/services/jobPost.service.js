@@ -12,6 +12,7 @@ const JobPostService = {
                         Company: true,
                         JobType: true,
                         JobCategory: true,
+
                     },
                 }),
                 prisma.jobPost.count(),
@@ -26,7 +27,7 @@ const JobPostService = {
         if (!id) throw new Error('JobPost ID is required');
         try {
             const jobPost = await prisma.jobPost.findUnique({
-                where: { id: Number(id) },
+                where: { id },
                 include: {
                     Company: true,
                     JobType: true,
@@ -269,6 +270,38 @@ const JobPostService = {
             throw new Error(`Error updating job post status: ${error.message}`);
         }
     },
+    // services/jobPost.service.js hoặc .ts
+    getMyJobsWithApplications: async (companyId, skip = 0, take = 10) => {
+        try {
+            const [jobPosts, total] = await Promise.all([
+                prisma.jobPost.findMany({
+                    where: { companyId },
+                    orderBy: { created_at: 'desc' },
+                    skip,
+                    take,
+                    include: {
+                        JobApplied: {
+                            include: {
+                                CV: true,
+                                applicant: true
+                            }
+                        },
+                        JobType: true,
+                        JobCategory: true,
+                    }
+                }),
+                prisma.jobPost.count({
+                    where: { companyId }
+                })
+            ]);
+
+            return { jobPosts, total };
+        } catch (error) {
+            throw new Error(`Error fetching company job posts with applications: ${error.message}`);
+        }
+    },
+
+
 };
 
 module.exports = { JobPostService };
