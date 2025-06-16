@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pdf_multi_reader_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:padding="8dp">
+
+    <!-- Số thứ tự file hiện tại -->
+    <TextView
+        android:id="@+id/tvPdfIndex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1/1"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:padding="8dp" />
+
+    <!-- Khung chứa Fragment đọc PDF -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/pdfViewerContainer"
+        android:name="com.example.workleap.ui.view.main.cv_appliedjob.PdfFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#EEEEEE" />
+
+    <!-- Điều hướng -->
+    <LinearLayout
+        android:id="@+id/navigationBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btnPrevious"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_back_left"
+            android:background="@android:color/transparent"
+            android:contentDescription="Previous PDF" />
+
+        <ImageButton
+            android:id="@+id/btnDismiss"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Dismiss PDF"
+            android:src="@android:drawable/btn_dialog" />
+
+        <ImageButton
+            android:id="@+id/btnApprove"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_reaction"
+            android:background="@android:color/transparent"
+            android:contentDescription="Approve PDF" />
+
+        <ImageButton
+            android:id="@+id/btnNext"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Next PDF"
+            android:src="@android:drawable/ic_media_ff" />
+    </LinearLayout>
+
+</LinearLayout>
