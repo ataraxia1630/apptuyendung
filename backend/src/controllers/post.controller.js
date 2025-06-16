@@ -9,7 +9,7 @@ const PostController = {
         try {
             const { posts, total } = await PostService.getAllPosts(skip, take);
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ data: posts, meta });
+            return res.status(200).json({ posts: posts, meta });
         } catch (error) {
             return res.status(500).json({ message: 'Error fetching posts', error });
         }
@@ -72,7 +72,7 @@ const PostController = {
         try {
             const { posts, total } = await PostService.searchPosts(filters, skip, take);
             const meta = buildMeta(total, parseInt(page), parseInt(pageSize));
-            return res.status(200).json({ data: posts, meta });
+            return res.status(200).json({ posts: posts, meta });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error searching posts', error });
@@ -96,7 +96,7 @@ const PostController = {
         try {
             const { posts, total } = await PostService.getPostsByCompany(companyId, skip, take);
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ data: posts, meta });
+            return res.status(200).json({ posts: posts, meta });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error fetching posts by company', error });
@@ -116,7 +116,7 @@ const PostController = {
                 pageSize,
                 totalPages: Math.ceil(total / pageSize)
             };
-            res.status(200).json({ data: posts, meta });
+            res.status(200).json({ posts: posts, meta });
         } catch (error) {
             res.status(500).json({ message: 'Failed to fetch pending posts', error: error.message });
         }
