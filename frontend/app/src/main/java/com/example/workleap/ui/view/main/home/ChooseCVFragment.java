@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view.main;
+package com.example.workleap.ui.view.main.home;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;

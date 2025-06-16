@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view.main;
+package com.example.workleap.ui.view.main.profile;
 
 import android.app.Dialog;
 import android.os.Bundle;

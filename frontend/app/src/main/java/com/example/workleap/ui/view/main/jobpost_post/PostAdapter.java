@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view.main;
+package com.example.workleap.ui.view.main.jobpost_post;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +16,11 @@ import com.example.workleap.ui.viewmodel.PostViewModel;
 
 import java.util.List;
 
-public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private List<Post> postList;
     private PostViewModel postViewModel;
 
-    public MyPostAdapter(List<Post> postList, PostViewModel postViewModel) {
+    public PostAdapter(List<Post> postList, PostViewModel postViewModel) {
         this.postList = postList;
         this.postViewModel = postViewModel;
     }
@@ -37,7 +37,8 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
         Post post = postList.get(position);
         holder.txtName.setText(post.getCompany().getName());
         holder.txtTime.setText(post.getCreatedAt().toString());
-        //holder.txtContent.setText(post.getContents()[0].getValue());
+        holder.txtTitle.setText(post.getTitle());
+        holder.txtContent.setText(post.getContents().get(0).getValue());
         //holder.txtReactionCount.setText(post.getContents().length);
         //holder.txtShareCount.setText(post.getReaction().length);
         //holder.txtCommentCount.setText(post.getComment().length);
@@ -76,7 +77,7 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
     }
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtName, txtTime, txtContent, txtReactionCount, txtCommentCount, txtShareCount;
+        TextView txtName, txtTime, txtTitle, txtContent, txtReactionCount, txtCommentShareCount;
         ImageView imgPost, imgAvatar;
         ImageButton btnOption, btnReact, btnComment, btnShare;
 
@@ -84,10 +85,11 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
             super(itemView);
             txtName = itemView.findViewById(R.id.tv_user_name);
             txtTime = itemView.findViewById(R.id.tv_post_time);
+            txtTitle = itemView.findViewById(R.id.tv_post_title);
             txtContent = itemView.findViewById(R.id.tv_post_content);
-            txtCommentCount = itemView.findViewById(R.id.tv_comment_share_count);
+
+            txtCommentShareCount = itemView.findViewById(R.id.tv_comment_share_count);
             txtReactionCount = itemView.findViewById(R.id.tv_like_count);
-            txtShareCount = itemView.findViewById(R.id.tv_like_count);
 
             imgPost = itemView.findViewById(R.id.imgPost);
             btnOption = itemView.findViewById(R.id.btnOption);

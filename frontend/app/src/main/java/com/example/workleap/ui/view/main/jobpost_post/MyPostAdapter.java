@@ -1,30 +1,26 @@
-package com.example.workleap.ui.view.main;
+package com.example.workleap.ui.view.main.jobpost_post;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workleap.R;
-import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.Post;
-import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.PostViewModel;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHolder> {
     private List<Post> postList;
     private PostViewModel postViewModel;
 
-    public PostAdapter(List<Post> postList, PostViewModel postViewModel) {
+    public MyPostAdapter(List<Post> postList, PostViewModel postViewModel) {
         this.postList = postList;
         this.postViewModel = postViewModel;
     }
@@ -41,8 +37,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Post post = postList.get(position);
         holder.txtName.setText(post.getCompany().getName());
         holder.txtTime.setText(post.getCreatedAt().toString());
-        holder.txtTitle.setText(post.getTitle());
-        holder.txtContent.setText(post.getContents().get(0).getValue());
+        //holder.txtContent.setText(post.getContents()[0].getValue());
         //holder.txtReactionCount.setText(post.getContents().length);
         //holder.txtShareCount.setText(post.getReaction().length);
         //holder.txtCommentCount.setText(post.getComment().length);
@@ -81,7 +76,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtName, txtTime, txtTitle, txtContent, txtReactionCount, txtCommentShareCount;
+        TextView txtName, txtTime, txtContent, txtReactionCount, txtCommentCount, txtShareCount;
         ImageView imgPost, imgAvatar;
         ImageButton btnOption, btnReact, btnComment, btnShare;
 
@@ -89,11 +84,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             super(itemView);
             txtName = itemView.findViewById(R.id.tv_user_name);
             txtTime = itemView.findViewById(R.id.tv_post_time);
-            txtTitle = itemView.findViewById(R.id.tv_post_title);
             txtContent = itemView.findViewById(R.id.tv_post_content);
-
-            txtCommentShareCount = itemView.findViewById(R.id.tv_comment_share_count);
+            txtCommentCount = itemView.findViewById(R.id.tv_comment_share_count);
             txtReactionCount = itemView.findViewById(R.id.tv_like_count);
+            txtShareCount = itemView.findViewById(R.id.tv_like_count);
 
             imgPost = itemView.findViewById(R.id.imgPost);
             btnOption = itemView.findViewById(R.id.btnOption);

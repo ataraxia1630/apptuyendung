@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view.main;
+package com.example.workleap.ui.view.main.jobpost_post;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +20,11 @@ import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.PostContent;
 import com.example.workleap.ui.viewmodel.PostViewModel;
+import com.example.workleap.data.model.entity.JobCategory;
+import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.JobType;
+import com.example.workleap.ui.view.main.NavigationActivity;
+import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;

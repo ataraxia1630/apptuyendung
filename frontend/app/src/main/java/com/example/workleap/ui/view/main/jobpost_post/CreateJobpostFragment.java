@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view.main;
+package com.example.workleap.ui.view.main.jobpost_post;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -21,18 +21,18 @@ import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
+import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
-import com.example.workleap.utils.Utils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link UpdateJobPostFragment#newInstance} factory method to
+ * Use the {@link CreateJobpostFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UpdateJobPostFragment extends Fragment {
+public class CreateJobpostFragment extends Fragment {
     private JobPostViewModel jobPostViewModel;
 
     private AutoCompleteTextView autoJobCategory, autoJobType;
@@ -44,16 +44,13 @@ public class UpdateJobPostFragment extends Fragment {
     private ArrayList<JobCategory> jobCategories = new ArrayList<>();
     private ArrayList<JobType> jobTypes = new ArrayList<>();
     private boolean isJobPostSubmitted = false; // Biến trạng thái đảm bảo chỉ trở về khi đã tạo thành công
-    private JobPost curJobPost;
-
-
-    public UpdateJobPostFragment() {
+    public CreateJobpostFragment() {
         // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
-    public static UpdateJobPostFragment newInstance(String param1, String param2) {
-        UpdateJobPostFragment fragment = new UpdateJobPostFragment();
+    public static CreateJobpostFragment newInstance(String param1, String param2) {
+        CreateJobpostFragment fragment = new CreateJobpostFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -90,25 +87,6 @@ public class UpdateJobPostFragment extends Fragment {
         btnSaveJob = view.findViewById(R.id.btnSaveJob);
         btnCancel = view.findViewById(R.id.btnCancel);
 
-        jobPostViewModel.getCurrentJobPost().observe(getViewLifecycleOwner(), currentJobPost -> {
-            if (currentJobPost != null) {
-                curJobPost = currentJobPost;
-                //Gan gia tri hien tai cho cac truong
-                edtTitle.setText(currentJobPost.getTitle());
-                edtDescription.setText(currentJobPost.getDescription());
-                edtLocation.setText(currentJobPost.getLocation());
-                edtPosition.setText(currentJobPost.getPosition());
-                edtWorkingAddress.setText(currentJobPost.getWorkingAddress());
-                edtEducation.setText(currentJobPost.getEducationRequirement());
-                edtSkillRequirement.setText(currentJobPost.getSkillRequirement());
-                edtResponsibility.setText(currentJobPost.getResponsibility());
-                edtSalaryStart.setText(currentJobPost.getSalaryStart());
-                edtSalaryEnd.setText(currentJobPost.getSalaryEnd());
-                edtCurrency.setText(currentJobPost.getCurrency());
-                edtApplyUntil.setText(Utils.formatDate(currentJobPost.getApplyUntil()));
-            }
-        });
-
         //Lay danh sach jobcategory
         ArrayList<String> jobCategoriesName = new ArrayList<>();
         jobPostViewModel.getAllJobCategoryResult().observe(getViewLifecycleOwner(), result ->
@@ -116,7 +94,7 @@ public class UpdateJobPostFragment extends Fragment {
             if(result != null)
                 Log.e("Load jobcategory result", result);
             else
-                Log.e("Load jobcategory result", "Jobcategory result null");
+                Log.e("Load jobcategory result", "Create jobcategory result null");
         });
         jobPostViewModel.getAllJobCategoryData().observe(getViewLifecycleOwner(), data ->
         {
@@ -127,19 +105,6 @@ public class UpdateJobPostFragment extends Fragment {
                 jobCategories.addAll(data);
                 for(JobCategory jobCategory : jobCategories)
                     jobCategoriesName.add(jobCategory.getName());
-
-                //Hien thi category name hien tai tu id trong jobpost
-                String categoryName = null;
-                Log.d("current cate id", curJobPost.getJobCategoryId());
-
-                for (JobCategory jobCategory : jobCategories) {
-                    Log.d("cate id", jobCategory.getId());
-                    if (jobCategory.getId().equals(curJobPost.getJobCategoryId())) {
-                        categoryName = jobCategory.getName(); // Gán vào categorySelected
-                        break;
-                    }
-                }
-                autoJobCategory.setText(categoryName);
             }
             else
                 Log.e("Load jobcategory data", "Jobcategory data null");
@@ -170,7 +135,7 @@ public class UpdateJobPostFragment extends Fragment {
             if(result != null)
                 Log.e("Load jobtype result", result);
             else
-                Log.e("Load jobtype result", "JobType result null");
+                Log.e("Load jobtype result", "Create jobType result null");
         });
         jobPostViewModel.getAllJobTypeData().observe(getViewLifecycleOwner(), data ->
         {
@@ -181,16 +146,6 @@ public class UpdateJobPostFragment extends Fragment {
                 jobTypes.addAll(data);
                 for(JobType jobType : jobTypes)
                     jobTypesName.add(jobType.getName());
-
-                //Hien thi type name hien tai tu id trong jobpost
-                String typeName = null;
-                for (JobType jobType : jobTypes) {
-                    if (jobType.getId().equals(curJobPost.getJobTypeId())) {
-                        typeName = jobType.getName(); // Gán vào typeSelected
-                        break;
-                    }
-                }
-                autoJobType.setText(typeName);
             }
             else
                 Log.e("Load jobtype data", "Jobtype data null");
@@ -212,13 +167,15 @@ public class UpdateJobPostFragment extends Fragment {
             }
         });
 
-        //Nhan ket qua update jobpost
-        jobPostViewModel.getUpdateJobPostResult().observe(getViewLifecycleOwner(), result ->
+
+
+        //Nhan ket qua creat jobpost
+        jobPostViewModel.getCreateJobPostResult().observe(getViewLifecycleOwner(), result ->
         {
             if(result != null)
-                Log.e("Update jobpost result:", result);
+                Log.e("Create jobpost result", result);
             else
-                Log.e("Update jobpost result:", "Update jobpost result null");
+                Log.e("Create jobpost result", "Create jobpost result null");
 
             if(isJobPostSubmitted) {
                 // Hien lai bottom navigation va quay ve
@@ -229,6 +186,8 @@ public class UpdateJobPostFragment extends Fragment {
 
         // TODO: Add listeners or bind ViewModel here
         btnSaveJob.setOnClickListener(v -> {
+            Toast.makeText(this.getActivity(), "Create new job post sucessful", Toast.LENGTH_SHORT).show();
+
             // Tìm JobCategory tương ứng
             String categoryId = null;
             for (JobCategory jobCategory : jobCategories) {
@@ -248,8 +207,7 @@ public class UpdateJobPostFragment extends Fragment {
 
             // Handle save logic here
             JobPost jobPost = new JobPost(
-                    //getArguments().getString("companyId"),
-                    curJobPost.getCompanyId(),
+                    getArguments().getString("companyId"),
                     categoryId,
                     typeId,
                     edtTitle.getText().toString(),
@@ -283,13 +241,8 @@ public class UpdateJobPostFragment extends Fragment {
                     "30-06-2024"*/
             );
 
-            //Do update khong truyen company nen can gan lai
-            jobPost.setCompany(curJobPost.getCompany());
-
-            Log.d("updated jobpost", new Gson().toJson(jobPost));
-
-            jobPostViewModel.updateJobPost(curJobPost.getId(), jobPost);
-            jobPostViewModel.setCurrentJobPost(jobPost);
+            Log.d("new jobpost", new Gson().toJson(jobPost));
+            jobPostViewModel.createJobPost(jobPost);
 
             isJobPostSubmitted = true;
         });

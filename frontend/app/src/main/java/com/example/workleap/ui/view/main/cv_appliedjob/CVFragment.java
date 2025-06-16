@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view.main;
+package com.example.workleap.ui.view.main.cv_appliedjob;
 
 import android.os.Bundle;
 

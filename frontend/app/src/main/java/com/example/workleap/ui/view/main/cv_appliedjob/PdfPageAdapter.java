@@ -1,4 +1,4 @@
-package com.example.workleap.ui.view.main;
+package com.example.workleap.ui.view.main.cv_appliedjob;
 
 import android.graphics.Bitmap;
 import android.graphics.pdf.PdfRenderer;
@@ -8,8 +8,6 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.io.IOException;
 
 public class PdfPageAdapter extends RecyclerView.Adapter<PdfPageAdapter.PdfPageViewHolder> {
     private final PdfRenderer renderer;

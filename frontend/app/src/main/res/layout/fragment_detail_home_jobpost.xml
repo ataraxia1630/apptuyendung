@@ -210,4 +210,17 @@
 
     </LinearLayout>
 </ScrollView>
+
+    <!-- Apply Button -->
+    <Button
+        android:id="@+id/btnApply"
+        android:layout_width="500dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:text="Apply Now"
+        android:textSize="25dp"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#0090FF"
+        android:drawableStart="@drawable/ic_bookmark"
+        android:drawablePadding="8dp" />
 </RelativeLayout>
