@@ -26,6 +26,7 @@ import com.example.workleap.data.model.response.GetApplicantResponse;
 import com.example.workleap.data.model.response.GetCompanyResponse;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
+import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListCommentResponse;
@@ -253,6 +254,16 @@ public interface ApiService {
     Call<PostResponse> updatePost(@Path("id") String id, @Body Post request);
     @DELETE("api/posts/{id}")
     Call<MessageResponse> deletePost(@Path("id") String id);
+    @Multipart
+    @POST("api/posts/images/")
+    Call<MessageResponse> uploadImage(
+            @Part MultipartBody.Part file,
+            @Part("postId") RequestBody postId,
+            @Part("order") RequestBody order
+    );
+    @GET("api/posts/images/{filePath}")
+    Call<ImageUrlResponse> getImageUrl(@Path("filePath") String filePath);
+
 
     //Comment
     @POST("api/comments/")

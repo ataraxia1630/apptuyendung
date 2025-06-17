@@ -11,6 +11,7 @@ import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.response.CommentResponse;
+import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.ListCommentResponse;
 import com.example.workleap.data.model.response.PostResponse;
 import com.example.workleap.data.model.response.ListPostResponse;
@@ -21,6 +22,8 @@ import com.google.gson.Gson;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,6 +37,7 @@ public class PostViewModel extends ViewModel {
     private MutableLiveData<String> getAllPostResult = new MutableLiveData<>();
     private MutableLiveData<String> getPostCompanyResult = new MutableLiveData<>();
     private MutableLiveData<String> createPostResult = new MutableLiveData<>();
+    private MutableLiveData<Post> createPostData = new MutableLiveData<>();
     private MutableLiveData<String> deleteAllPostResult = new MutableLiveData<>();
     private MutableLiveData<String> deletePostByIdResult = new MutableLiveData<>();
     private MutableLiveData<String> getPostByIdResult = new MutableLiveData<>();
@@ -47,6 +51,10 @@ public class PostViewModel extends ViewModel {
     private MutableLiveData<String> toggleReactionResult = new MutableLiveData<>();
     private MutableLiveData<String> removeReactionResult = new MutableLiveData<>();
 
+    private MutableLiveData<String> uploadImageResult = new MutableLiveData<>();
+    private MutableLiveData<String> getImageUrlData = new MutableLiveData<>();
+    private MutableLiveData<String> getImageUrlResult = new MutableLiveData<>();
+
     public PostViewModel(){}
     public void InitiateRepository(Context context) {
         postRepository = new PostRepository(context);
@@ -59,6 +67,7 @@ public class PostViewModel extends ViewModel {
     public LiveData<String> getAllPostResult() { return getAllPostResult; }
     public LiveData<String> getPostCompanyResult() { return getPostCompanyResult; }
     public LiveData<String> createPostResult() { return createPostResult; }
+    public LiveData<Post> createPostData() { return createPostData; }
     public LiveData<String> deleteAllPostResult() { return deleteAllPostResult; }
     public LiveData<String> deletePostByIdResult() { return deletePostByIdResult; }
     public LiveData<String> getPostByIdResult() { return getPostByIdResult; }
@@ -73,6 +82,13 @@ public class PostViewModel extends ViewModel {
     //reaction
     public LiveData<String> toggleReactionResult() { return toggleReactionResult; }
     public LiveData<String> removeReactionResult() { return removeReactionResult; }
+
+    //image
+    public LiveData<String> uploadImageResult() { return uploadImageResult; }
+    public LiveData<String> getImageUrlResult() { return getImageUrlResult; }
+    public LiveData<String> getImageUrlData() { return getImageUrlData; }
+
+
 
     // Get all post
     public void getAllPost(int page, int pageSize) {
@@ -138,6 +154,8 @@ public class PostViewModel extends ViewModel {
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful()) {
                     createPostResult.setValue("Create post success");
+                    PostResponse postResponse = response.body();
+                    createPostData.setValue(postResponse.getPost());
                 } else {
                     try {
                         PostResponse error = new Gson().fromJson(response.errorBody().string(), PostResponse.class);
@@ -363,4 +381,53 @@ public class PostViewModel extends ViewModel {
         });
     }
 
+    //upload image
+    public void uploadImage(MultipartBody.Part file, RequestBody postId, RequestBody order) {
+        Log.d("uploadImage", "uploadImage is called");
+        Call<MessageResponse> call = postRepository.uploadImage(file, postId, order);
+        call.enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (response.isSuccessful()) {
+                    uploadImageResult.setValue("Upload image success");
+                } else {
+                    try {
+                        MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
+                        uploadImageResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        uploadImageResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
+                uploadImageResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getImageUrl(String filePath) {
+        Call<ImageUrlResponse> call = postRepository.getImageUrl(filePath);
+        call.enqueue(new Callback<ImageUrlResponse>() {
+            @Override
+            public void onResponse(Call<ImageUrlResponse> call, Response<ImageUrlResponse> response) {
+                if (response.isSuccessful()) {
+                    uploadImageResult.setValue("Get url image success");
+                } else {
+                    try {
+                        ImageUrlResponse error = new Gson().fromJson(response.errorBody().string(), ImageUrlResponse.class);
+                        uploadImageResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        uploadImageResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ImageUrlResponse> call, Throwable t) {
+                uploadImageResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
 }

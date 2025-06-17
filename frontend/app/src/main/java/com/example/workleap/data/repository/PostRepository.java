@@ -8,12 +8,15 @@ import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.response.CommentResponse;
+import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.ListCommentResponse;
 import com.example.workleap.data.model.response.ListPostResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.response.PostResponse;
 import com.example.workleap.data.model.response.ReactionResponse;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -77,5 +80,15 @@ public class PostRepository {
 
     public Call<MessageResponse> removeReaction(String postId) {
         return apiService.removeReaction(postId);
+    }
+
+    //Image
+    public Call<MessageResponse> uploadImage(MultipartBody.Part file, RequestBody postId, RequestBody order)
+    {
+        return apiService.uploadImage(file, postId, order);
+    }
+    public Call<ImageUrlResponse> getImageUrl(String filePath)
+    {
+        return apiService.getImageUrl(filePath);
     }
 }
