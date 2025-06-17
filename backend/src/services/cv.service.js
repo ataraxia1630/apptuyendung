@@ -20,6 +20,9 @@ const CVService = {
     try {
       const cv = await prisma.cV.findUnique({
         where: { id },
+        include: {
+          Applicant: true,
+        },
       });
       if (!cv) {
         throw new Error('CV not found');
@@ -51,6 +54,10 @@ const CVService = {
     try {
       const cvs = await prisma.cV.findMany({
         where: { applicantId },
+        include:
+        {
+          Applicant: true
+        }
       });
       return cvs;
     } catch (error) {
