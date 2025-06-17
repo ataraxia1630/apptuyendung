@@ -176,6 +176,25 @@ public class ApplicantProfileFragment extends Fragment {
             listEducation = allEducation;
         });
 
+        //applicant education
+        applicantViewModel.getDeleteApplicantEducationResult().observe(getViewLifecycleOwner(), result ->{
+            ReloadEducation();
+            if(result != null)
+                Log.e("ApplicantProfile", "getDeleteApplicantEducationResult " + result);
+            else
+                Log.e("ApplicantProfile", "getDeleteApplicantEducationResult null");
+
+        });
+
+        //applicant experience
+        applicantViewModel.getDeleteApplicantExperienceResult().observe(getViewLifecycleOwner(), result ->{
+            ReloadExperience();
+            if(result != null)
+                Log.e("ApplicantProfile", "getDeleteApplicantExperienceResult " + result);
+            else
+                Log.e("ApplicantProfile", "getDeleteApplicantExperienceResult null");
+        });
+
         //get all fields for interested fields
         applicantViewModel.getAllFields();
         applicantViewModel.getGetAllFieldResult().observe(getViewLifecycleOwner(), result ->

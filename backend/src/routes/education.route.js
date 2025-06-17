@@ -18,7 +18,7 @@ route.post(
 );
 
 // thao tac tren applicantEdu
-route.get('/:applicantId', verifyToken, cache, EducationController.getAll);
+route.get('/:applicantId', verifyToken, EducationController.getAll);
 route.post(
   '/:applicantId',
   verifyToken,

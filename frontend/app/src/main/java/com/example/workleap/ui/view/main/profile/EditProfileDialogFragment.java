@@ -273,6 +273,7 @@ public class EditProfileDialogFragment extends DialogFragment {
                     {
                         Experience deleteExperience = (Experience) getArguments().getSerializable("deleteApplicantExperience");
                         applicantViewModel.deleteApplicantExperience(deleteExperience.getId());
+                        Log.e("dialog", "delete applicant exp");
                     })
 
                     .setNegativeButton("Cancel", null);

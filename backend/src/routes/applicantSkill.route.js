@@ -6,7 +6,7 @@ const { validate } = require('../middlewares/validate.middleware');
 const { SkillSchema } = require('../validators/Skill/skillSchema');
 const route = new Router();
 
-route.get('/:applicantId', verifyToken, cache, SkillController.getAll);
+route.get('/:applicantId', verifyToken, SkillController.getAll);
 route.post(
   '/:applicantId',
   verifyToken,
