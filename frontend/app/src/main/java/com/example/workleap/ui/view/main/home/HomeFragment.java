@@ -11,12 +11,14 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +57,7 @@ public class HomeFragment extends Fragment {
     private ImageButton btnPrev, btnNext;
     private Button btnMorePost;
     private TextView tvPageNumber;
+    
 
     private boolean isMorePost = false; // Kiểm tra đang tải lại fragment hay tải thêm bài đăng
     private NavController nav;
@@ -198,6 +201,77 @@ public class HomeFragment extends Fragment {
             pagePost++;
             isMorePost = true;
             postViewModel.getAllPost(pagePost, pageSizePost);
+        });
+        
+        
+        //Search
+        SearchView searchView = view.findViewById(R.id.searchView);
+        //Debounce chống spam API khi gõ
+        Handler handler = new Handler();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String title) {
+                // Tim theo title neu search thong thuong
+                jobPostViewModel.getSearchJobPostResult().observe(getViewLifecycleOwner(), result -> {
+                    if(result != null)
+                        Log.e("HomeFragment", "getSearchJobPostResult: " + result + "");
+                    else
+                        Log.e("HomeFragment", "getSearchJobPostResult: null");
+                });
+                jobPostViewModel.getSearchJobPostData().observe(getViewLifecycleOwner(), data -> {
+                if(data != null)
+                    {
+                    allJobs.clear();
+                    allJobs.addAll(data);
+                    }
+                adapterJobPost.notifyDataSetChanged();
+                });
+                jobPostViewModel.searchJobPosts(title, "", "", "", "");
+
+                //search post
+                postViewModel.searchPostResult().observe(getViewLifecycleOwner(), result -> {
+                    if(result != null)
+                        Log.e("HomeFragment", "getSearchPostResult: " + result + "");
+                    else
+                        Log.e("HomeFragment", "getSearchPostResult: null");
+                });
+                postViewModel.searchPostData().observe(getViewLifecycleOwner(), post -> {
+                    if(post != null)
+                    {
+                        allPosts.clear();
+                        allPosts.addAll(post);
+                    }
+                    adapterPost.notifyDataSetChanged();
+                });
+                postViewModel.searchPosts(title, "");
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.isEmpty()) {
+                    // Khi người dùng xóa hết chữ (bấm X)
+                    pageJobPost = 1;
+                    pagePost = 1;
+                    jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
+                    postViewModel.getAllPost(pagePost, pageSizePost);
+                }
+                return true;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                // HÀM NÀY SẼ CHẠY KHI NGƯỜI DÙNG ĐÓNG SEARCHVIEW
+                // reset kết quả tìm kiếm
+                pageJobPost = 1;
+                pagePost = 1;
+                jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
+                postViewModel.getAllPost(pagePost, pageSizePost);
+                return false; // trả về true nếu ông đã xử lý hành vi đóng
+            }
         });
     }
 }

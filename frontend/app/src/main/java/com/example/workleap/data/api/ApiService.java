@@ -186,7 +186,13 @@ public interface ApiService {
     @DELETE("api/job-posts/{id}")
     Call<MessageResponse> deleteJobPost(@Path("id") String id);
     @GET("api/job-posts/search/query")
-    Call<ListJobPostResponse> searchJobPosts();
+    Call<ListJobPostResponse> searchJobPosts(
+            @Query("title") String query,
+            @Query("location") String location,
+            @Query("position") String position,
+            @Query("educationRequirement") String educationRequirement,
+            @Query("companyName") String companyName
+    );
 
     //JobType
     @GET("api/types/all")
@@ -263,7 +269,10 @@ public interface ApiService {
     );
     @GET("api/posts/images/{filePath}")
     Call<ImageUrlResponse> getImageUrl(@Path("filePath") String filePath);
-
+    @GET("api/posts/search/query")
+    Call<ListPostResponse> searchPost(
+            @Query("title") String query,
+            @Query("companyName") String companyName);
 
     //Comment
     @POST("api/comments/")
