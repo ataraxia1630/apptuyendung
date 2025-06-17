@@ -112,22 +112,25 @@ public class CreatePostFragment extends Fragment {
                 });
 
                 //Tao file de gui
-                File imageFile = uriToFile(imageUri);
-                // Tạo RequestBody từ file
-                RequestBody requestFile = RequestBody.create(
-                        MediaType.parse("image/*"),
-                        imageFile
-                );
-                RequestBody postIdBody = RequestBody.create(
-                        MediaType.parse("text/plain"), post.getId()
-                );
-                RequestBody orderBody = RequestBody.create(
-                        MediaType.parse("text/plain"), String.valueOf(1)
-                );
+                if(imageUri != null)
+                {
+                    File imageFile = uriToFile(imageUri);
+                    // Tạo RequestBody từ file
+                    RequestBody requestFile = RequestBody.create(
+                            MediaType.parse("image/*"),
+                            imageFile
+                    );
+                    RequestBody postIdBody = RequestBody.create(
+                            MediaType.parse("text/plain"), post.getId()
+                    );
+                    RequestBody orderBody = RequestBody.create(
+                            MediaType.parse("text/plain"), String.valueOf(2) //Hinh luon co thu tu la 2
+                    );
 
-                // Tạo MultipartBody.Part
-                MultipartBody.Part body = MultipartBody.Part.createFormData("file", imageFile.getName(), requestFile);
-                postViewModel.uploadImage(body, postIdBody, orderBody);
+                    // Tạo MultipartBody.Part
+                    MultipartBody.Part body = MultipartBody.Part.createFormData("file", imageFile.getName(), requestFile);
+                    postViewModel.uploadImage(body, postIdBody, orderBody);
+                }
             }
             else
                 Log.e("Create post data", "Create post data null");
@@ -155,8 +158,8 @@ public class CreatePostFragment extends Fragment {
             //Xu li content
             PostContent textContent = new PostContent("TEXT", edtTextContent.getText().toString(), 1);
             contents.add(textContent);
-            PostContent imageContent = new PostContent("IMAGE", "image_url", 2);
-            contents.add(imageContent);
+            /*PostContent imageContent = new PostContent("IMAGE", "image_url", 2);
+            contents.add(imageContent);*/
 
             //Handle save logic here
             Post post = new Post(

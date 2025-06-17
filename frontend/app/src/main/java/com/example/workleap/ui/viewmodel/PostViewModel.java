@@ -20,7 +20,9 @@ import com.example.workleap.data.model.response.ReactionResponse;
 import com.example.workleap.data.repository.PostRepository;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -54,6 +56,7 @@ public class PostViewModel extends ViewModel {
     private MutableLiveData<String> uploadImageResult = new MutableLiveData<>();
     private MutableLiveData<String> getImageUrlData = new MutableLiveData<>();
     private MutableLiveData<String> getImageUrlResult = new MutableLiveData<>();
+    private MutableLiveData<Map<String, String>> imageUrlMap = new MutableLiveData<>(new HashMap<>());
 
     public PostViewModel(){}
     public void InitiateRepository(Context context) {
@@ -87,7 +90,9 @@ public class PostViewModel extends ViewModel {
     public LiveData<String> uploadImageResult() { return uploadImageResult; }
     public LiveData<String> getImageUrlResult() { return getImageUrlResult; }
     public LiveData<String> getImageUrlData() { return getImageUrlData; }
-
+    public LiveData<Map<String, String>> getImageUrlMap() {
+        return imageUrlMap;
+    }
 
 
     // Get all post
@@ -412,21 +417,29 @@ public class PostViewModel extends ViewModel {
         call.enqueue(new Callback<ImageUrlResponse>() {
             @Override
             public void onResponse(Call<ImageUrlResponse> call, Response<ImageUrlResponse> response) {
-                if (response.isSuccessful()) {
-                    uploadImageResult.setValue("Get url image success");
+                if (response.isSuccessful() && response.body() != null) {
+                    String url = response.body().getUrl();
+
+                    Map<String, String> currentMap = imageUrlMap.getValue();
+                    if (currentMap != null) {
+                        currentMap.put(filePath, url);
+                        imageUrlMap.postValue(new HashMap<>(currentMap)); // post bản copy mới
+                    }
+
+                    getImageUrlResult.setValue("Get url image success");
                 } else {
                     try {
                         ImageUrlResponse error = new Gson().fromJson(response.errorBody().string(), ImageUrlResponse.class);
-                        uploadImageResult.setValue("Lỗi: " + error.getMessage());
+                        getImageUrlResult.setValue("Lỗi: " + error.getMessage());
                     } catch (Exception e) {
-                        uploadImageResult.setValue("Lỗi không xác định: " + response.code());
+                        getImageUrlResult.setValue("Lỗi không xác định: " + response.code());
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<ImageUrlResponse> call, Throwable t) {
-                uploadImageResult.setValue("Lỗi kết nối: " + t.getMessage());
+                getImageUrlResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }

@@ -168,9 +168,26 @@ public class HomeFragment extends Fragment {
             else
                 Toast.makeText(this.getContext(), "No more posts", Toast.LENGTH_SHORT).show();
 
+
             // Setup RecyclerView
             recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
             adapterPost = new PostAdapter(allPosts, postViewModel); // mặc định show tất cả
+
+            //Xu li anh cua post
+            postViewModel.getImageUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterPost.setImageUrlMap(map);  // Truyền map xuống adapter
+                Log.d("getImageUrlMap", map.toString());
+            });
+            for (Post post : posts) {
+                if(post.getContents().size() > 1)
+                {
+                    String filePath = post.getContents().get(1).getValue();  // hoặc chỗ chứa đường dẫn ảnh
+                    Log.d("filePath", filePath);
+                    postViewModel.getImageUrl(filePath); // dùng filePath làm key
+                }
+            }
+
+            //Hien thi
             recyclerViewPost.setAdapter(adapterPost);
             adapterPost.notifyDataSetChanged();
         });

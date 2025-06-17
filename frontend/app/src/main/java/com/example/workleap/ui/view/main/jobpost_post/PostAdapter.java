@@ -1,5 +1,6 @@
 package com.example.workleap.ui.view.main.jobpost_post;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +11,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.ui.viewmodel.PostViewModel;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private List<Post> postList;
     private PostViewModel postViewModel;
+    private Map<String, String> imageUrlMap = new HashMap<>();
+    private String filePath;
 
     public PostAdapter(List<Post> postList, PostViewModel postViewModel) {
         this.postList = postList;
@@ -42,6 +48,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         //holder.txtReactionCount.setText(post.getContents().length);
         //holder.txtShareCount.setText(post.getReaction().length);
         //holder.txtCommentCount.setText(post.getComment().length);
+
+
+        //Xu li anh jobpost
+        if(post.getContents().size() > 1)
+            filePath = post.getContents().get(1).getValue(); // dùng làm key
+        if(filePath != null)
+        {
+            String imageUrl = imageUrlMap.get(filePath);
+            Log.d("MyPostAdapter", "Image URL: " + imageUrl);
+            if(holder.imgPost == null)
+                Log.d("MyPostAdapter", "imgPost is null");
+            if (imageUrl != null && holder.itemView.getContext() != null && holder.imgPost != null) {
+                Log.d("MyPostAdapter", "Loading image from URL: " + imageUrl);
+                Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.imgPost);
+            }
+        }
 
         // Thêm PopupMenu cho btnOption
         /*holder.btnOption.setOnClickListener(v -> {
@@ -94,5 +116,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             imgPost = itemView.findViewById(R.id.imgPost);
             btnOption = itemView.findViewById(R.id.btnOption);
         }
+    }
+
+    public void setImageUrlMap(Map<String, String> map) {
+        this.imageUrlMap = map;
+        notifyDataSetChanged(); // hoặc chỉ update item cụ thể nếu muốn tối ưu
     }
 }
