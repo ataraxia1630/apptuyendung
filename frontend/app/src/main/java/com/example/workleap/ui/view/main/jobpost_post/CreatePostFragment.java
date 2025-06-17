@@ -1,31 +1,49 @@
 package com.example.workleap.ui.view.main.jobpost_post;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.Manifest;
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.Post;
+import com.example.workleap.data.model.entity.PostContent;
+import com.example.workleap.ui.viewmodel.PostViewModel;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.google.gson.Gson;
+import static android.app.Activity.RESULT_OK;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,17 +51,16 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class CreatePostFragment extends Fragment {
-    private JobPostViewModel jobPostViewModel;
+    private PostViewModel postViewModel;
 
     private AutoCompleteTextView autoJobCategory, autoJobType;
-    private EditText edtTitle, edtDescription, edtLocation, edtPosition, edtWorkingAddress;
-    private EditText edtEducation, edtSkillRequirement, edtResponsibility;
-    private EditText edtSalaryStart, edtSalaryEnd, edtCurrency, edtApplyUntil;
-    private Button btnSaveJob, btnCancel;
+    private EditText edtTitle, edtTextContent;
+    private Button btnSavePost, btnLoadImage, btnCancel;
+    private ImageView imgContent;
+    private static final int PICK_IMAGE_REQUEST = 1001;
+    private boolean isPostSubmitted = false; // Biến trạng thái đảm bảo chỉ trở về khi đã tạo thành công
+    private Uri imageUri;
 
-    private ArrayList<JobCategory> jobCategories = new ArrayList<>();
-    private ArrayList<JobType> jobTypes = new ArrayList<>();
-    private boolean isJobPostSubmitted = false; // Biến trạng thái đảm bảo chỉ trở về khi đã tạo thành công
     public CreatePostFragment() {
         // Required empty public constructor
     }
@@ -60,124 +77,72 @@ public class CreatePostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_jobpost, container, false);
+        return inflater.inflate(R.layout.fragment_create_post, container, false);
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
-        jobPostViewModel.InitiateRepository(getContext());
+        postViewModel = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
+        postViewModel.InitiateRepository(getContext());
 
         //Tim cac thanh phan component
         edtTitle = view.findViewById(R.id.edtTitle);
-        autoJobCategory = view.findViewById(R.id.autoJobCategory);
-        autoJobType = view.findViewById(R.id.autoJobType);
-        edtDescription = view.findViewById(R.id.edtDescription);
-        edtLocation = view.findViewById(R.id.edtLocation);
-        edtPosition = view.findViewById(R.id.edtPosition);
-        edtWorkingAddress = view.findViewById(R.id.edtWorkingAddress);
-        edtEducation = view.findViewById(R.id.edtEducation);
-        edtSkillRequirement = view.findViewById(R.id.edtSkillRequirement);
-        edtResponsibility = view.findViewById(R.id.edtResponsibility);
-        edtSalaryStart = view.findViewById(R.id.edtSalaryStart);
-        edtSalaryEnd = view.findViewById(R.id.edtSalaryEnd);
-        edtCurrency = view.findViewById(R.id.edtCurrency);
-        edtApplyUntil = view.findViewById(R.id.edtApplyUntil);
-        btnSaveJob = view.findViewById(R.id.btnSaveJob);
+        edtTextContent = view.findViewById(R.id.edtTextContent);
+        imgContent = view.findViewById(R.id.imgContent);
+        btnSavePost = view.findViewById(R.id.btnSavePost);
         btnCancel = view.findViewById(R.id.btnCancel);
+        btnLoadImage = view.findViewById(R.id.btnLoadImage);
 
-        //Lay danh sach jobcategory
-        ArrayList<String> jobCategoriesName = new ArrayList<>();
-        jobPostViewModel.getAllJobCategoryResult().observe(getViewLifecycleOwner(), result ->
+        //Nhan ket qua creat post .
+        postViewModel.createPostData().observe(getViewLifecycleOwner(), post ->
         {
-            if(result != null)
-                Log.e("Load jobcategory result", result);
-            else
-                Log.e("Load jobcategory result", "Create jobcategory result null");
-        });
-        jobPostViewModel.getAllJobCategoryData().observe(getViewLifecycleOwner(), data ->
-        {
-            if(data != null)
+            if(post != null)
             {
-                jobCategories.clear();
-                jobCategoriesName.clear();
-                jobCategories.addAll(data);
-                for(JobCategory jobCategory : jobCategories)
-                    jobCategoriesName.add(jobCategory.getName());
+                Log.e("Create post data", new Gson().toJson(post));
+
+                //Upload anh dang hien thi len csdl
+                //Ket qua
+                postViewModel.uploadImageResult().observe(getViewLifecycleOwner(), result ->
+                {
+                    if(result != null)
+                        Log.e("Upload image result", result);
+                    else
+                        Log.e("Upload image result", "Upload image result null");
+                });
+
+                //Tao file de gui
+                if(imageUri != null)
+                {
+                    File imageFile = uriToFile(imageUri);
+                    // Tạo RequestBody từ file
+                    RequestBody requestFile = RequestBody.create(
+                            MediaType.parse("image/*"),
+                            imageFile
+                    );
+                    RequestBody postIdBody = RequestBody.create(
+                            MediaType.parse("text/plain"), post.getId()
+                    );
+                    RequestBody orderBody = RequestBody.create(
+                            MediaType.parse("text/plain"), String.valueOf(2) //Hinh luon co thu tu la 2
+                    );
+
+                    // Tạo MultipartBody.Part
+                    MultipartBody.Part body = MultipartBody.Part.createFormData("file", imageFile.getName(), requestFile);
+                    postViewModel.uploadImage(body, postIdBody, orderBody);
+                }
             }
             else
-                Log.e("Load jobcategory data", "Jobcategory data null");
+                Log.e("Create post data", "Create post data null");
         });
-        jobPostViewModel.getAllJobCategory();
-
-        //Xu li Auto complete textview jobcategory
-        ArrayAdapter<String> adapterCategory = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, jobCategoriesName);
-        autoJobCategory.setAdapter(adapterCategory);
-        // Hiển thị danh sách khi nhận focus hoac click, kiem tra ton tai
-        autoJobCategory.setThreshold(0); // Hiển thị danh sách ngay khi click, không cần nhập ký tự
-        autoJobCategory.setOnClickListener(v -> autoJobCategory.showDropDown()); // Hiển thị danh sách khi click
-        autoJobCategory.setOnFocusChangeListener((v, hasFocus) -> {
-            if(hasFocus)
-                autoJobCategory.showDropDown();
-            else if (!hasFocus && !jobCategoriesName.contains(autoJobCategory.getText().toString())) {
-                Toast.makeText(this.getActivity(), "Please select an available category", Toast.LENGTH_SHORT).show();
-                autoJobCategory.setText(""); // Xóa nếu nhập không hợp lệ
-            }
-        });
-
-
-
-        //Lay danh sach jobtype
-        ArrayList<String> jobTypesName = new ArrayList<>();
-        jobPostViewModel.getAllJobTypeResult().observe(getViewLifecycleOwner(), result ->
+        postViewModel.createPostResult().observe(getViewLifecycleOwner(), result ->
         {
             if(result != null)
-                Log.e("Load jobtype result", result);
+                Log.e("Create post result", result);
             else
-                Log.e("Load jobtype result", "Create jobType result null");
-        });
-        jobPostViewModel.getAllJobTypeData().observe(getViewLifecycleOwner(), data ->
-        {
-            if(data != null)
-            {
-                jobTypes.clear();
-                jobTypesName.clear();
-                jobTypes.addAll(data);
-                for(JobType jobType : jobTypes)
-                    jobTypesName.add(jobType.getName());
-            }
-            else
-                Log.e("Load jobtype data", "Jobtype data null");
-        });
-        jobPostViewModel.getAllJobType();
+                Log.e("Create post result", "Create post result null");
 
-        //Xu li Auto complete textview jobtype
-        ArrayAdapter<String> adapterType = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, jobTypesName);
-        autoJobType.setAdapter(adapterType);
-        // Hiển thị danh sách khi nhận focus hoac click, kiem tra ton tai
-        autoJobType.setThreshold(0); // Hiển thị danh sách ngay khi click, không cần nhập ký tự
-        autoJobType.setOnClickListener(v -> autoJobType.showDropDown()); // Hiển thị danh sách khi click
-        autoJobType.setOnFocusChangeListener((v, hasFocus) -> {
-            if(hasFocus)
-                autoJobType.showDropDown();
-            else if (!hasFocus && !jobTypesName.contains(autoJobType.getText().toString())) {
-                Toast.makeText(this.getActivity(), "Please select an available Type", Toast.LENGTH_SHORT).show();
-                autoJobType.setText(""); // Xóa nếu nhập không hợp lệ
-            }
-        });
-
-
-
-        //Nhan ket qua creat jobpost
-        jobPostViewModel.getCreateJobPostResult().observe(getViewLifecycleOwner(), result ->
-        {
-            if(result != null)
-                Log.e("Create jobpost result", result);
-            else
-                Log.e("Create jobpost result", "Create jobpost result null");
-
-            if(isJobPostSubmitted) {
+            if(isPostSubmitted) {
                 // Hien lai bottom navigation va quay ve
                 ((NavigationActivity) getActivity()).showBottomNav(true);
                 NavHostFragment.findNavController(this).navigateUp();
@@ -185,71 +150,100 @@ public class CreatePostFragment extends Fragment {
         });
 
         // TODO: Add listeners or bind ViewModel here
-        btnSaveJob.setOnClickListener(v -> {
-            Toast.makeText(this.getActivity(), "Create new job post sucessful", Toast.LENGTH_SHORT).show();
 
-            // Tìm JobCategory tương ứng
-            String categoryId = null;
-            for (JobCategory jobCategory : jobCategories) {
-                if (jobCategory.getName().equals(autoJobCategory.getText().toString())) {
-                    categoryId = jobCategory.getId(); // Gán vào categorySelected
-                    break;
-                }
-            }
-            // Tìm JobType tương ứng
-            String typeId = null;
-            for (JobType jobType : jobTypes) {
-                if (jobType.getName().equals(autoJobType.getText().toString())) {
-                    typeId = jobType.getId(); // Gán vào typeSelected
-                    break;
-                }
-            }
+        btnSavePost.setOnClickListener(v -> {
+            ArrayList<PostContent> contents = new ArrayList<PostContent>();
+            String companyId = getArguments().getString("companyId");
 
-            // Handle save logic here
-            JobPost jobPost = new JobPost(
-                    getArguments().getString("companyId"),
-                    categoryId,
-                    typeId,
+            //Xu li content
+            PostContent textContent = new PostContent("TEXT", edtTextContent.getText().toString(), 1);
+            contents.add(textContent);
+            /*PostContent imageContent = new PostContent("IMAGE", "image_url", 2);
+            contents.add(imageContent);*/
+
+            //Handle save logic here
+            Post post = new Post(
+                    companyId,
                     edtTitle.getText().toString(),
-                    edtDescription.getText().toString(),
-                    edtLocation.getText().toString(),
-                    edtPosition.getText().toString(),
-                    edtWorkingAddress.getText().toString(),
-                    edtEducation.getText().toString(),
-                    edtSkillRequirement.getText().toString(),
-                    edtResponsibility.getText().toString(),
-                    edtSalaryStart.getText().toString(),
-                    edtSalaryEnd.getText().toString(),
-                    edtCurrency.getText().toString(),
-                    "OPENING", //Defalue value is OPENING with new jobpost
-                    edtApplyUntil.getText().toString()
-                    /*"aa2a80cb-e710-4df3-b9db-724919ee3393",
-                    "5773bc80-417f-4356-b144-4749d8528fe5",
-                    "24fc4e66-d391-4cc8-beca-41110bf612e1",
-                    "Khoa tao android studio ne",
-                    "Tham gia phát triển các ứng dụng web cho doanh nghiệp.",
-                    "HCM",
-                    "Lập trình viên",
-                    "Tầng 3, tòa nhà ABC, Quận 1, TP.HCM",
-                    "Đại học",
-                    "Thành thạo Java, Spring Boot, Git",
-                    "Viết code, sửa lỗi, làm việc nhóm",
-                    "1500",
-                    "2500",
-                    "USD",
-                    "OPENING",
-                    "30-06-2024"*/
+                    contents
             );
 
-            Log.d("new jobpost", new Gson().toJson(jobPost));
-            jobPostViewModel.createJobPost(jobPost);
-
-            isJobPostSubmitted = true;
+            Log.d("new post", new Gson().toJson(post));
+            postViewModel.createPost(post);
+            isPostSubmitted = true;
         });
 
         btnCancel.setOnClickListener(v -> {
             ((NavigationActivity) getActivity()).showBottomNav(true);
             NavHostFragment.findNavController(this).navigateUp();
         });
+
+        btnLoadImage.setOnClickListener(v -> {
+            Log.d("btnLoadImage", "btnLoadImage clicked");
+            // Yêu cầu quyền (nếu chưa có)
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                Log.d("btnLoadImage", "xin quyen");
+            } else {
+                // Mở bộ chọn ảnh
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                Log.d("btnLoadImage", "mo bo chon anh");
+            }
+        });
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            imageUri = data.getData();
+
+            //Hien thi anh duoc chon len
+            imgContent.setImageURI(imageUri);
+        }
+    }
+
+    private File uriToFile(Uri uri) {
+        File file = new File(requireContext().getCacheDir(), "avatar.jpg");
+        try (InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
+             OutputStream outputStream = new FileOutputStream(file)) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_MEDIA_IMAGES}, 1);
+            } else {
+                openImagePicker();
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            } else {
+                openImagePicker();
+            }
+        }
+    }
+
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
 }

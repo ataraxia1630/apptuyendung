@@ -169,6 +169,21 @@ public class JobpostFragment extends Fragment{
                     nav.navigate(R.id.DetailMyPostFragment, bundle); // Navigate to DetailPostFragment
                 }
             });*/
+
+            //Xu li anh cua post
+            postViewModel.getImageUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterPost.setImageUrlMap(map);  // Truyền map xuống adapter
+                Log.d("getImageUrlMap", map.toString());
+            });
+            for (Post post : posts) {
+                if(post.getContents().size() > 1)
+                {
+                    String filePath = post.getContents().get(1).getValue();  // hoặc chỗ chứa đường dẫn ảnh
+                    Log.d("filePath", filePath);
+                    postViewModel.getImageUrl(filePath); // dùng filePath làm key
+                }
+            }
+
             recyclerViewPost.setAdapter(adapterPost);
             adapterPost.notifyDataSetChanged();
         });

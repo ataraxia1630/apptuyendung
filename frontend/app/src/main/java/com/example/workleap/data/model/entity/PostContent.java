@@ -12,9 +12,7 @@ public class PostContent {
     }
 
     // Full constructor
-    public PostContent(String id, String postId, String type, String value, int order) {
-        this.id = id;
-        this.postId = postId;
+    public PostContent(String type, String value, int order) {
         this.type = type;
         this.value = value;
         this.order = order;

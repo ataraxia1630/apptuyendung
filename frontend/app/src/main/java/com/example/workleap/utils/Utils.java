@@ -1,7 +1,16 @@
 package com.example.workleap.utils;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
+import android.content.Context;
+import android.net.Uri;
 import android.widget.EditText;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
