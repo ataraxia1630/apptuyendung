@@ -20,6 +20,7 @@ import com.example.workleap.ui.view.auth.MainActivity;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.CompanyViewModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -135,12 +136,12 @@ public class CompanyProfileFragment extends Fragment {
                     if ("CompanyInfo".equalsIgnoreCase(cardType) && values != null) {
                         tvCompanyNameInfo.setText(values.get(0));
                         tvEstablishedYear.setText(values.get(1));
-                        tvPhoneInfo.setText(values.get(2));
-                        tvMailInfo.setText(values.get(3));
-                        tvTaxCode.setText(values.get(4));
+                        //tvPhoneInfo.setText(values.get(2));
+                        //tvMailInfo.setText(values.get(3));
+                        tvTaxCode.setText(values.get(2));
                         Log.e("khoa", "khoa");
 
-                        companyViewModel.updateCompany(user.getCompanyId(), values.get(0), tvAboutCompany.getText().toString(), Integer.parseInt(values.get(1)), values.get(4) );
+                        companyViewModel.updateCompany(user.getCompanyId(), values.get(0), tvAboutCompany.getText().toString(), Integer.parseInt(values.get(1)), values.get(2) );
 
                         //companyViewModel.updateCompany(user.getCompanyId(), tvCompanyNameInfo.getText().toString(), values.get(0), Integer.parseInt(tvEstablishedYear.getText().toString()), tvTaxCode.getText().toString());
                     }
@@ -181,10 +182,20 @@ public class CompanyProfileFragment extends Fragment {
         });
         btnEditAboutCompany.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("AboutCompany");
+
+            Bundle args = dialog.getArguments();
+            args.putString("aboutCompany", String.valueOf(tvAboutCompany.getText()));
+            dialog.setArguments(args);
             dialog.show(getParentFragmentManager(), "EditCompanyAboutCompanyDialog");
         });
         btnEditCompanyInfo.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("CompanyInfo");
+
+            Bundle args = dialog.getArguments();
+            args.putString("companyName", String.valueOf(tvCompanyName.getText()));
+            args.putString("establishedYear", String.valueOf(tvEstablishedYear.getText()));
+            args.putString("taxCode", String.valueOf(tvTaxCode.getText()));
+            dialog.setArguments(args);
             dialog.show(getParentFragmentManager(), "EditCompanyInfoDialog");
         });
 
