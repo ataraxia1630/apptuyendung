@@ -91,4 +91,9 @@ public class PostRepository {
     {
         return apiService.getImageUrl(filePath);
     }
+
+    //search
+    public Call<ListPostResponse> searchPosts(String title, String companyName) {
+        return apiService.searchPost(title, companyName);
+    }
 }

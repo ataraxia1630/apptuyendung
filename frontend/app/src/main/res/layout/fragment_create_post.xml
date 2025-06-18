@@ -94,11 +94,11 @@
 
                 <Button
                     android:id="@+id/btnLoadImage"
-                    android:layout_width="wrap_content"
+                    android:layout_width="95dp"
                     android:layout_height="wrap_content"
-                    android:text="Load Image"
                     android:layout_gravity="bottom|end"
-                    android:layout_margin="8dp"/>
+                    android:layout_margin="8dp"
+                    android:text="Load Image" />
             </FrameLayout>
 
             <Button

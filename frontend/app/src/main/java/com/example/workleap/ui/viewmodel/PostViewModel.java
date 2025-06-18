@@ -58,6 +58,9 @@ public class PostViewModel extends ViewModel {
     private MutableLiveData<String> getImageUrlResult = new MutableLiveData<>();
     private MutableLiveData<Map<String, String>> imageUrlMap = new MutableLiveData<>(new HashMap<>());
 
+    private MutableLiveData<List<Post>> searchPostData = new MutableLiveData<>();
+    private MutableLiveData<String> searchPostResult = new MutableLiveData<>();
+
     public PostViewModel(){}
     public void InitiateRepository(Context context) {
         postRepository = new PostRepository(context);
@@ -94,6 +97,9 @@ public class PostViewModel extends ViewModel {
         return imageUrlMap;
     }
 
+    //search
+    public LiveData<List<Post>> searchPostData() { return searchPostData; }
+    public LiveData<String> searchPostResult() { return searchPostResult; }
 
     // Get all post
     public void getAllPost(int page, int pageSize) {
@@ -440,6 +446,33 @@ public class PostViewModel extends ViewModel {
             @Override
             public void onFailure(Call<ImageUrlResponse> call, Throwable t) {
                 getImageUrlResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Search
+    public void searchPosts(String title, String companyName) {
+        Call<ListPostResponse> call = postRepository.searchPosts(title, companyName);
+        call.enqueue(new Callback<ListPostResponse>() {
+            @Override
+            public void onResponse(Call<ListPostResponse> call, Response<ListPostResponse> response) {
+                if (response.isSuccessful()) {
+                    ListPostResponse listPostResponse = response.body();
+                    searchPostData.setValue(listPostResponse.getAllPost());
+                    searchPostResult.setValue("Tìm danh sách Post thành công");
+                } else {
+                    try {
+                        ListPostResponse error = new Gson().fromJson(response.errorBody().string(), ListPostResponse.class);
+                        searchPostResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        searchPostResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ListPostResponse> call, Throwable t) {
+                searchPostResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }
