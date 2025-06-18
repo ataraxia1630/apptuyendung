@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -244,135 +245,175 @@ public class EditProfileDialogFragment extends DialogFragment {
 
         if("UpdateApplicantEducation".equalsIgnoreCase(cardType))
         {
-            builder.setView(view)
+            AlertDialog dialog = builder
+                    .setView(view)
                     .setTitle("Update Applicant Education")
-
-                    .setPositiveButton("Save", (dialog, which) -> {
-                        ArrayList<String> updated = new ArrayList<>();
-                        for (EditText et : editTexts) {
-                            updated.add(et.getText().toString());
-                        }
-                        ArrayList<Date> dates= new ArrayList<>();
-
-                        //applicant edu
-                        if("UpdateApplicantEducation".equalsIgnoreCase(cardType))
-                        {
-                            //Edu level
-                            if (spinnerEduLevel != null && spinnerEduLevel.getSelectedItem() != null && !spinnerEduLevel.getSelectedItem().toString().trim().isEmpty()) {
-                                int position = spinnerEduLevel.getSelectedItemPosition();
-                                String major = eduLevels[position];
-                                updated.add(major);
-                            }
-
-                            //list education
-                            if (spinnerSchool != null && spinnerSchool.getSelectedItem() != null && !spinnerSchool.getSelectedItem().toString().trim().isEmpty()) {
-                                int position = spinnerSchool.getSelectedItemPosition();
-                                String eduId = listEducation.get(position).getId();
-                                updated.add(eduId);
-                            }
-                        }
-
-                        // Tạo Bundle và đẩy kết quả
-                        Bundle result = new Bundle();
-                        result.putString("cardType", cardType);
-                        result.putStringArrayList("values", updated);
-                        ApplicantEducation updateApplicantEducation = (ApplicantEducation) getArguments().getSerializable("deleteApplicantEducation");
-                        result.putString("deleteApplicantEducationId", updateApplicantEducation.getId());
-
-                        getParentFragmentManager()
-                                .setFragmentResult("editProfile", result);
-                    })
-                    .setNeutralButton("Delete", (dialog, which)->
-                    {
+                    .setPositiveButton("Save", null) // tam de null
+                    .setNeutralButton("Delete", (dialog1, which) -> {
                         ApplicantEducation deleteEducation = (ApplicantEducation) getArguments().getSerializable("deleteApplicantEducation");
                         applicantViewModel.deleteApplicantEducation(deleteEducation.getId());
                     })
+                    .setNegativeButton("Cancel", null)
+                    .create();
 
-                    .setNegativeButton("Cancel", null);
+            dialog.setOnShowListener(dlg -> {
+                Button saveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                saveButton.setOnClickListener(v -> {
+                    ArrayList<String> updated = new ArrayList<>();
+                    boolean isValid = true;
 
-            return builder.create();
+                    for (EditText et : editTexts) {
+                        String input = et.getText().toString().trim();
+                        if (input.isEmpty()) {
+                            et.setError("This field is required");
+                            et.requestFocus();
+                            isValid = false;
+                            break;
+                        }
+                        updated.add(input);
+                    }
+
+                    if (!isValid) return;
+
+                    // spinnerEduLevel
+                    if (spinnerEduLevel != null && spinnerEduLevel.getSelectedItem() != null) {
+                        int position = spinnerEduLevel.getSelectedItemPosition();
+                        updated.add(eduLevels[position]);
+                    }
+
+                    // spinnerSchool
+                    if (spinnerSchool != null && spinnerSchool.getSelectedItem() != null) {
+                        int position = spinnerSchool.getSelectedItemPosition();
+                        updated.add(listEducation.get(position).getId());
+                    }
+
+                    Bundle result = new Bundle();
+                    result.putString("cardType", cardType);
+                    result.putStringArrayList("values", updated);
+                    ApplicantEducation updateApplicantEducation = (ApplicantEducation) getArguments().getSerializable("deleteApplicantEducation");
+                    result.putString("deleteApplicantEducationId", updateApplicantEducation.getId());
+
+                    getParentFragmentManager().setFragmentResult("editProfile", result);
+                    dialog.dismiss(); // chi dong neu hop le
+                });
+            });
+
+            return dialog;
         }
         else if("UpdateApplicantExperience".equalsIgnoreCase(cardType))
         {
             builder.setView(view)
                     .setTitle("Update Applicant Experience")
-
-                    .setPositiveButton("Save", (dialog, which) -> {
-                        ArrayList<String> updated = new ArrayList<>();
-                        for (EditText et : editTexts) {
-                            updated.add(et.getText().toString());
-                        }
-                        ArrayList<Date> dates= new ArrayList<>();
-
-
-                        // Tạo Bundle và đẩy kết quả
-                        Bundle result = new Bundle();
-                        result.putString("cardType", cardType);
-                        result.putStringArrayList("values", updated);
-                        Experience deleteApplicantExperience = (Experience) getArguments().getSerializable("deleteApplicantExperience");
-                        result.putString("deleteApplicantExperience", deleteApplicantExperience.getId());
-
-                        getParentFragmentManager()
-                                .setFragmentResult("editProfile", result);
-                    })
-                    .setNeutralButton("Delete", (dialog, which)->
-                    {
+                    .setPositiveButton("Save", null) // để xử lý riêng
+                    .setNeutralButton("Delete", (dialog, which) -> {
                         Experience deleteExperience = (Experience) getArguments().getSerializable("deleteApplicantExperience");
                         applicantViewModel.deleteApplicantExperience(deleteExperience.getId());
                         Log.e("dialog", "delete applicant exp");
                     })
-
                     .setNegativeButton("Cancel", null);
 
-            return builder.create();
+            AlertDialog dialog = builder.create();
+
+            dialog.setOnShowListener(d -> {
+                Button saveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                saveButton.setOnClickListener(v -> {
+                    ArrayList<String> updated = new ArrayList<>();
+                    boolean hasEmptyField = false;
+
+                    for (EditText et : editTexts) {
+                        String input = et.getText().toString().trim();
+                        if (input.isEmpty()) {
+                            et.setError("This field is required");
+                            et.requestFocus();
+                            hasEmptyField = true;
+                            break;
+                        }
+                        updated.add(input);
+                    }
+
+                    if (hasEmptyField) return; // khong dong neu co loi
+
+                    // Tạo Bundle và đẩy kết quả
+                    Bundle result = new Bundle();
+                    result.putString("cardType", cardType);
+                    result.putStringArrayList("values", updated);
+
+                    Experience deleteApplicantExperience = (Experience) getArguments().getSerializable("deleteApplicantExperience");
+                    result.putString("deleteApplicantExperience", deleteApplicantExperience.getId());
+
+                    getParentFragmentManager()
+                            .setFragmentResult("editProfile", result);
+
+                    dialog.dismiss(); // chi dong khi hop le
+                });
+            });
+
+            return dialog;
         }
         else {
             builder.setView(view)
                     .setTitle("Edit")
-
-                    .setPositiveButton("Save", (dialog, which) -> {
-                        ArrayList<String> updated = new ArrayList<>();
-                        for (EditText et : editTexts) {
-                            updated.add(et.getText().toString());
-                        }
-                        ArrayList<Date> dates = new ArrayList<>();
-
-                        //applicant edu
-                        if ("ApplicantEdu".equalsIgnoreCase(cardType)) {
-                            //Edu level
-                            if (spinnerEduLevel != null && spinnerEduLevel.getSelectedItem() != null && !spinnerEduLevel.getSelectedItem().toString().trim().isEmpty()) {
-                                int position = spinnerEduLevel.getSelectedItemPosition();
-                                String major = eduLevels[position];
-                                updated.add(major);
-                            }
-
-                            //list education
-                            if (spinnerSchool != null && spinnerSchool.getSelectedItem() != null && !spinnerSchool.getSelectedItem().toString().trim().isEmpty()) {
-                                int position = spinnerSchool.getSelectedItemPosition();
-                                String eduId = listEducation.get(position).getId();
-                                updated.add(eduId);
-                            }
-                        }
-                        if ("ApplicantInterestedField".equalsIgnoreCase(cardType)) {
-                            if (spinnerInterestedField != null && spinnerInterestedField.getSelectedItem() != null && !spinnerInterestedField.getSelectedItem().toString().trim().isEmpty()) {
-                                int position = spinnerInterestedField.getSelectedItemPosition();
-                                Field field = listField.get(position);
-                                updated.add(field.getId());
-                            }
-                        }
-
-                        // Tạo Bundle và đẩy kết quả
-                        Bundle result = new Bundle();
-                        result.putString("cardType", cardType);
-                        result.putStringArrayList("values", updated);
-
-                        getParentFragmentManager()
-                                .setFragmentResult("editProfile", result);
-                    })
-
+                    .setPositiveButton("Save", null) // ngăn auto-dismiss
                     .setNegativeButton("Cancel", null);
 
-            return builder.create();
+            AlertDialog dialog = builder.create();
+
+            dialog.setOnShowListener(d -> {
+                Button saveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                saveButton.setOnClickListener(v -> {
+                    ArrayList<String> updated = new ArrayList<>();
+                    boolean hasEmptyField = false;
+
+                    for (EditText et : editTexts) {
+                        String input = et.getText().toString().trim();
+                        if (input.isEmpty()) {
+                            et.setError("This field is required");
+                            et.requestFocus();
+                            hasEmptyField = true;
+                            break;
+                        }
+                        updated.add(input);
+                    }
+
+                    if (hasEmptyField) return; // khong gui va khong dong dialog
+
+                    // ApplicantEdu
+                    if ("ApplicantEdu".equalsIgnoreCase(cardType)) {
+                        if (spinnerEduLevel != null && spinnerEduLevel.getSelectedItem() != null && !spinnerEduLevel.getSelectedItem().toString().trim().isEmpty()) {
+                            int position = spinnerEduLevel.getSelectedItemPosition();
+                            String major = eduLevels[position];
+                            updated.add(major);
+                        }
+
+                        if (spinnerSchool != null && spinnerSchool.getSelectedItem() != null && !spinnerSchool.getSelectedItem().toString().trim().isEmpty()) {
+                            int position = spinnerSchool.getSelectedItemPosition();
+                            String eduId = listEducation.get(position).getId();
+                            updated.add(eduId);
+                        }
+                    }
+
+                    // ApplicantInterestedField
+                    if ("ApplicantInterestedField".equalsIgnoreCase(cardType)) {
+                        if (spinnerInterestedField != null && spinnerInterestedField.getSelectedItem() != null && !spinnerInterestedField.getSelectedItem().toString().trim().isEmpty()) {
+                            int position = spinnerInterestedField.getSelectedItemPosition();
+                            Field field = listField.get(position);
+                            updated.add(field.getId());
+                        }
+                    }
+
+                    Bundle result = new Bundle();
+                    result.putString("cardType", cardType);
+                    result.putStringArrayList("values", updated);
+
+                    getParentFragmentManager()
+                            .setFragmentResult("editProfile", result);
+
+                    dialog.dismiss();
+                });
+            });
+
+            return dialog;
+
         }
     }
 
