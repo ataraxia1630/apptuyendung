@@ -52,17 +52,17 @@
         tools:layout="@layout/fragment_home_job_post"/>
     <fragment
         android:id="@+id/createJobpostFragment"
-        android:name="com.example.workleap.ui.view.main.CreateJobpostFragment"
+        android:name="com.example.workleap.ui.view.main.jobpost_post.CreateJobpostFragment"
         android:label="fragment_createjobpost"
         tools:layout="@layout/fragment_create_jobpost" />
     <fragment
         android:id="@+id/createPostFragment"
-        android:name="com.example.workleap.ui.view.main.CreatePostFragment"
+        android:name="com.example.workleap.ui.view.main.jobpost_post.CreatePostFragment"
         android:label="fragment_createpost"
         tools:layout="@layout/fragment_create_post" />
     <fragment
         android:id="@+id/updateJobPostFragment"
-        android:name="com.example.workleap.ui.view.main.UpdateJobPostFragment"
+        android:name="com.example.workleap.ui.view.main.jobpost_post.UpdateJobPostFragment"
         android:label="fragment_detailmyjobpost"
         tools:layout="@layout/fragment_create_jobpost"/>
     <fragment
@@ -82,7 +82,7 @@
         tools:layout="@layout/fragment_loading" />
     <fragment
         android:id="@+id/chooseCVFragment"
-        android:name="com.example.workleap.ui.view.main.ChooseCVFragment"
+        android:name="com.example.workleap.ui.view.main.home.ChooseCVFragment"
         android:label="Choose CV" >
     </fragment>
 
