@@ -10,11 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Post;
+import com.example.workleap.ui.view.main.home.CommentBottomSheet;
 import com.example.workleap.ui.viewmodel.PostViewModel;
 
 import java.util.HashMap;
@@ -26,10 +29,14 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
     private PostViewModel postViewModel;
     private Map<String, String> imageUrlMap = new HashMap<>();
     private String filePath;
+    private LifecycleOwner lifecycleOwner;
+    private FragmentManager fragmentManager;
 
-    public MyPostAdapter(List<Post> postList, PostViewModel postViewModel) {
+    public MyPostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager) {
         this.postList = postList;
         this.postViewModel = postViewModel;
+        this.lifecycleOwner = lifecycleOwner;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -65,6 +72,12 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
                 Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.imgPost);
             }
         }
+
+        //Comment
+        holder.btnComment.setOnClickListener(v -> {
+            CommentBottomSheet bottomSheet = CommentBottomSheet.newInstance(post.getId());
+            bottomSheet.show(fragmentManager, "commentSheet");
+        });
 
         // Thêm PopupMenu cho btnOption
         /*holder.btnOption.setOnClickListener(v -> {
@@ -116,6 +129,7 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
 
             imgPost = itemView.findViewById(R.id.imgPost);
             btnOption = itemView.findViewById(R.id.btnOption);
+            btnComment = itemView.findViewById(R.id.btnComment);
         }
     }
 

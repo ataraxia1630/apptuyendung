@@ -6,14 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.Post;
+import com.example.workleap.ui.view.main.home.CommentBottomSheet;
 import com.example.workleap.ui.viewmodel.PostViewModel;
 
 import java.util.HashMap;
@@ -25,10 +31,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private PostViewModel postViewModel;
     private Map<String, String> imageUrlMap = new HashMap<>();
     private String filePath;
-
-    public PostAdapter(List<Post> postList, PostViewModel postViewModel) {
+    private LifecycleOwner lifecycleOwner;
+    private FragmentManager fragmentManager;
+    public PostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager) {
         this.postList = postList;
         this.postViewModel = postViewModel;
+        this.lifecycleOwner = lifecycleOwner;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -49,21 +58,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         //holder.txtShareCount.setText(post.getReaction().length);
         //holder.txtCommentCount.setText(post.getComment().length);
 
-
         //Xu li anh jobpost
         if(post.getContents().size() > 1)
             filePath = post.getContents().get(1).getValue(); // dùng làm key
         if(filePath != null)
         {
             String imageUrl = imageUrlMap.get(filePath);
-            Log.d("MyPostAdapter", "Image URL: " + imageUrl);
             if(holder.imgPost == null)
                 Log.d("MyPostAdapter", "imgPost is null");
             if (imageUrl != null && holder.itemView.getContext() != null && holder.imgPost != null) {
-                Log.d("MyPostAdapter", "Loading image from URL: " + imageUrl);
                 Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.imgPost);
             }
         }
+
+        holder.btnComment.setOnClickListener(v -> {
+            CommentBottomSheet bottomSheet = CommentBottomSheet.newInstance(post.getId());
+            bottomSheet.show(fragmentManager, "commentSheet");
+        });
+
 
         // Thêm PopupMenu cho btnOption
         /*holder.btnOption.setOnClickListener(v -> {
@@ -100,7 +112,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView txtName, txtTime, txtTitle, txtContent, txtReactionCount, txtCommentShareCount;
-        ImageView imgPost, imgAvatar;
+        ImageView imgPost;
         ImageButton btnOption, btnReact, btnComment, btnShare;
 
         public PostViewHolder(@NonNull View itemView) {
@@ -115,6 +127,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             imgPost = itemView.findViewById(R.id.imgPost);
             btnOption = itemView.findViewById(R.id.btnOption);
+            btnComment= itemView.findViewById(R.id.btnComment);
         }
     }
 

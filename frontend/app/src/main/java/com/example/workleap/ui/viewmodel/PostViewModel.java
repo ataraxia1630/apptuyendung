@@ -297,6 +297,7 @@ public class PostViewModel extends ViewModel {
             public void onResponse(Call<ListCommentResponse> call, Response<ListCommentResponse> response) {
                 if (response.isSuccessful()) {
                     getCommentByPostData.setValue(response.body().getAllComment());
+                    Log.d("API_RESPONSE_GETCOMMENT", new Gson().toJson(response.body()));
                     getCommentByPostResult.setValue("Get comments success");
                 } else {
                     try {
