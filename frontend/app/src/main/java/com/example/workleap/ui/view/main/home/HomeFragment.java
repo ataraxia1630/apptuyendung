@@ -179,12 +179,11 @@ public class HomeFragment extends Fragment {
 
             // Setup RecyclerView
             recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
-            adapterPost = new PostAdapter(allPosts, postViewModel); // mặc định show tất cả
+            adapterPost = new PostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager()); // mặc định show tất cả
 
             //Xu li anh cua post
             postViewModel.getImageUrlMap().observe(getViewLifecycleOwner(), map -> {
                 adapterPost.setImageUrlMap(map);  // Truyền map xuống adapter
-                Log.d("getImageUrlMap", map.toString());
             });
             for (Post post : posts) {
                 if(post.getContents().size() > 1)
@@ -275,7 +274,7 @@ public class HomeFragment extends Fragment {
                 pagePost = 1;
                 jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
                 postViewModel.getAllPost(pagePost, pageSizePost);
-                return false; // trả về true nếu ông đã xử lý hành vi đóng
+                return false; // trả về true nếu đã xử lý hành vi đóng
             }
         });
 
