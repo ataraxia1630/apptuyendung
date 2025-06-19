@@ -22,6 +22,13 @@ public class Comment {
     }
 
     // Full constructor
+    public Comment(String userId, String postId, String commentDetail) {
+        this.userId = userId;
+        this.postId = postId;
+        this.CommentDetail = commentDetail;
+    }
+
+    //Child Comment
     public Comment(String userId, String postId, String commentId, String commentDetail) {
         this.userId = userId;
         this.postId = postId;
@@ -96,5 +103,11 @@ public class Comment {
     }
     public Post getPost() {
         return Post;
+    }
+    public void setUser(User user) {
+        this.User = user;
+    }
+    public void setPost(Post post) {
+        this.Post = post;
     }
 }

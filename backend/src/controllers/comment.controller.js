@@ -8,7 +8,7 @@ const CommentController = {
             const comment = await CommentService.createComment({ ...req.body, userId });
             sendToPostRoom(comment.postId, 'comment.new', { comment });
 
-            res.status(201).json(comment);
+            res.status(201).json({comment: comment});
         } catch (err) {
             res.status(500).json({ message: err.message });
         }

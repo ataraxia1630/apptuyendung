@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Post;
+import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.home.CommentBottomSheet;
 import com.example.workleap.ui.viewmodel.PostViewModel;
 
@@ -31,12 +32,13 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
     private String filePath;
     private LifecycleOwner lifecycleOwner;
     private FragmentManager fragmentManager;
-
-    public MyPostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager) {
+    private User user;
+    public MyPostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager, User user) {
         this.postList = postList;
         this.postViewModel = postViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.fragmentManager = fragmentManager;
+        this.user = user;
     }
 
     @NonNull
@@ -75,7 +77,7 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
 
         //Comment
         holder.btnComment.setOnClickListener(v -> {
-            CommentBottomSheet bottomSheet = CommentBottomSheet.newInstance(post.getId());
+            CommentBottomSheet bottomSheet = CommentBottomSheet.newInstance(post.getId(), user);
             bottomSheet.show(fragmentManager, "commentSheet");
         });
 
