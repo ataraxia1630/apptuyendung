@@ -45,6 +45,7 @@ import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.request.RegisterRequest;
+import com.example.workleap.data.model.response.OverviewResponse;
 import com.example.workleap.data.model.response.PostResponse;
 import com.example.workleap.data.model.response.ReactionResponse;
 import com.example.workleap.data.model.response.RegisterResponse;
@@ -287,4 +288,10 @@ public interface ApiService {
     Call<ReactionResponse> toggleReaction(@Body Reaction request);
     @DELETE("api/reactions/{postId}")
     Call<MessageResponse> removeReaction(@Path("postId") String postId);
+
+    //Statistic
+    @GET("api/statistic/top-companies")
+    Call<OverviewResponse> getOverview();
+    @GET("api/statistic/top-jobposts")
+    Call<OverviewResponse> getTopJobpost();
 }

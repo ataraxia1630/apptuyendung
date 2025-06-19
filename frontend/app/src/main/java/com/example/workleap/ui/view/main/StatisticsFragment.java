@@ -4,13 +4,22 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.workleap.R;
+import com.example.workleap.ui.viewmodel.CompanyViewModel;
+import com.example.workleap.ui.viewmodel.StatisticViewModel;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
@@ -25,23 +34,57 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StatisticsFragment extends Fragment {
-
+    TextView tvUserCount, tvJobPostCount, tvReportCount, tvApplicationCount;
     PieChart pieChart;
 
     LineChart lineChart;
 
+    StatisticViewModel statisticViewModel;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistics, container, false);
-        pieChart = view.findViewById(R.id.pieChart);
+        pieChart = view.findViewById(R.id.pieChartCategory);
 
         setupPieChart();
         loadPieChartData();
 
-        lineChart = view.findViewById(R.id.lineChart);
+        lineChart = view.findViewById(R.id.lineChartGrowth);
         setupLineChart();
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        statisticViewModel = new ViewModelProvider(requireActivity()).get(StatisticViewModel.class);
+        statisticViewModel.InitiateRepository(getContext());
+
+        ViewGroup itemUserCount = view.findViewById(R.id.userCount);
+        ViewGroup itemJobPostCount = view.findViewById(R.id.jobPostCount);
+        ViewGroup itemReportCount = view.findViewById(R.id.reportCount);
+        ViewGroup itemApplicationCount = view.findViewById(R.id.applicationCount);
+
+        tvUserCount = itemUserCount.findViewById(R.id.txtCount);
+        tvJobPostCount = itemJobPostCount.findViewById(R.id.txtCount);
+        tvReportCount = itemReportCount.findViewById(R.id.txtCount);
+        tvApplicationCount = itemApplicationCount.findViewById(R.id.txtCount);
+
+        statisticViewModel.getOverview();
+        statisticViewModel.getGetOverviewResult().observe(getViewLifecycleOwner(), result -> {
+            if(!isAdded() || getView()==null) return;
+
+            if(result!=null)
+                Log.e("StatisticsFragment", "getGetOverviewResult " + result);
+            else
+                Log.e("StatisticsFragment", "getGetOverviewResult result NULL" );
+
+        });
+        statisticViewModel.getGetOverviewData().observe(getViewLifecycleOwner(), dailyStatistic -> {
+
+        });
     }
 
     private void setupPieChart() {
