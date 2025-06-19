@@ -21,13 +21,19 @@ import com.google.gson.Gson;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
+    public interface OnCommentClickListener {
+        void onCommentClick(Comment comment);
+    }
     private List<Comment> commentList;
     private PostViewModel commentViewModel;
+    private OnCommentClickListener listener;
 
-    public CommentAdapter(List<Comment> commentList, PostViewModel commentViewModel) {
+    public CommentAdapter(List<Comment> commentList, PostViewModel commentViewModel, OnCommentClickListener listener) {
         this.commentList = commentList;
         this.commentViewModel = commentViewModel;
+        this.listener = listener;
     }
 
     @NonNull
@@ -40,11 +46,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         Comment comment = commentList.get(position);
-        Log.d("CommentAdapter", new Gson().toJson(comment));
         holder.txtUsername.setText(comment.getUser().getUsername());
         holder.txtDateTime.setText(new SimpleDateFormat("dd/MM/yyyy").format(comment.getCreatedAt()));
         holder.txtCommentDetail.setText(comment.getCommentDetail());
         //holder.imgPost.setImageResource();
+
+        //Xu li su kien click item
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onCommentClick(comment);
+            }
+        });
 
         //ChildComment
         // Xóa các reply cũ nếu có (tránh bị lặp lại do ViewHolder được tái sử dụng)

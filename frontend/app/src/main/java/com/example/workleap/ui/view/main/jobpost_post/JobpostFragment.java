@@ -158,7 +158,7 @@ public class JobpostFragment extends Fragment{
             // Setup RecyclerView
             recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
             //show tat ca jobpost va vao detail fragment khi click vao item
-            adapterPost = new MyPostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager());
+            adapterPost = new MyPostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager(), user);
             /*adapter = new MyPostAdapter(allPosts, postViewModel, new MyPostAdapter.OnPostClickListener() {
                 @Override
                 public void onPostClick(JobPost post) {

@@ -46,6 +46,7 @@ public class PostViewModel extends ViewModel {
     private MutableLiveData<String> updatePostByIdResult = new MutableLiveData<>();
 
     private MutableLiveData<String> creatCommentResult = new MutableLiveData<>();
+    private MutableLiveData<Comment> creatCommentData = new MutableLiveData<>();
     private MutableLiveData<String> getCommentByPostResult = new MutableLiveData<>();
     private MutableLiveData<List<Comment>> getCommentByPostData = new MutableLiveData<>();
     private MutableLiveData<String> deleteCommentByIdResult = new MutableLiveData<>();
@@ -81,6 +82,7 @@ public class PostViewModel extends ViewModel {
 
     //comment
     public LiveData<String> creatCommentResult() { return creatCommentResult; }
+    public LiveData<Comment> creatCommentData() { return creatCommentData; }
     public LiveData<String> getCommentByPostResult() { return getCommentByPostResult; }
     public LiveData<List<Comment>> getCommentByPostData() { return getCommentByPostData; }
     public LiveData<String> deleteCommentByIdResult() { return deleteCommentByIdResult; }
@@ -272,6 +274,8 @@ public class PostViewModel extends ViewModel {
             public void onResponse(Call<CommentResponse> call, Response<CommentResponse> response) {
                 if (response.isSuccessful()) {
                     creatCommentResult.setValue("Create comment success");
+                    Comment newComment = response.body().getComment();
+                    creatCommentData.setValue(newComment);
                 } else {
                     try {
                         CommentResponse error = new Gson().fromJson(response.errorBody().string(), CommentResponse.class);
