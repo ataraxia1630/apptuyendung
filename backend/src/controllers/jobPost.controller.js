@@ -164,7 +164,20 @@ const JobPostController = {
             return res.status(500).json({ message: 'Lỗi khi lấy danh sách công việc và ứng tuyển', error });
         }
     },
+    getMyJobPostById: async (req, res) => {
+        const jobPostId = req.params.id;
 
+        try {
+            const companyId = req.user?.companyId;
+            const jobPost = await JobPostService.getJobPostByIdForCompany(jobPostId, companyId);
+            if (!jobPost) {
+                return res.status(404).json({ message: 'Job post not found' });
+            }
+            return res.status(200).json({ jobPost: jobPost });
+        } catch (error) {
+            return res.status(500).json({ message: 'Error fetching job post', error: error.message });
+        }
+    },
 };
 
 module.exports = { JobPostController };
