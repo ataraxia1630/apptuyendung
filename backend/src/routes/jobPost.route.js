@@ -21,4 +21,5 @@ router.put('/admin/toggle/:id', verifyToken, requireRole('ADMIN'), JobPostContro
 //Danh cho company
 router.get('/company/me/jobs-applications', verifyToken, requireRole('COMPANY'), JobPostController.getMyJobsWithApplications);
 router.post('/', verifyToken, requireRole('COMPANY'), validate(JobPostSchema), JobPostController.createJobPost);
+router.get('/company/me/:id', verifyToken, requireRole('COMPANY'), checkOwnership('JobPost', 'companyId'), JobPostController.getMyJobPostById);
 module.exports = router;
