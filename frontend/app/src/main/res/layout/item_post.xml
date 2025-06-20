@@ -102,7 +102,7 @@
             android:id="@+id/tv_like_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="100 Likes"
+            android:text="0 Reactions"
             android:textSize="12sp"/>
 
         <TextView
@@ -110,7 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="20 Comments • 10 Shares"
+            android:text="0 Comments • 0 Shares"
             android:textSize="12sp"/>
     </LinearLayout>
 

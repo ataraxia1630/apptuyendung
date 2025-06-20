@@ -58,9 +58,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.txtTime.setText(post.getCreatedAt().toString());
         holder.txtTitle.setText(post.getTitle());
         holder.txtContent.setText(post.getContents().get(0).getValue());
-        //holder.txtReactionCount.setText(post.getContents().length);
-        //holder.txtShareCount.setText(post.getReaction().length);
-        //holder.txtCommentCount.setText(post.getComment().length);
+        holder.txtReactionCount.setText(post.getReaction().size() + " Reactions    •");
+        holder.txtCommentShareCount.setText(post.getComment().size() + " Comments");
+
 
         //Xu li anh jobpost
         if(post.getContents().size() > 1)
