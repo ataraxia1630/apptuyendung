@@ -66,7 +66,7 @@ public class OverviewMyJobPostFragment extends Fragment {
 
         // Tab xử lý
         tabLayout.addTab(tabLayout.newTab().setText("Descriptions"));
-        tabLayout.addTab(tabLayout.newTab().setText("Company"));
+        tabLayout.addTab(tabLayout.newTab().setText("Candidates"));
 
         // Load tab đầu
         loadTabFragment(0);
