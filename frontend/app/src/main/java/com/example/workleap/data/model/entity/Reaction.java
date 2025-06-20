@@ -14,12 +14,10 @@ public class Reaction {
     }
 
     // Full constructor
-    public Reaction(String postId, String userId, String reactionType, Date created_at, Date updated_at) {
+    public Reaction(String postId, String userId, String reactionType) {
         this.postId = postId;
         this.userId = userId;
         this.reactionType = reactionType;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
     }
 
     // Getters and Setters

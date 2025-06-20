@@ -1,6 +1,7 @@
 package com.example.workleap.data.model.entity;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Post {
@@ -8,9 +9,9 @@ public class Post {
     private String companyId;
     private String title;
     private Company Company;
-    private PostContent[] contents;
-    private Reaction[] Reaction;
-    private Comment[] Comment;
+    private ArrayList<PostContent> contents;
+    private ArrayList<Reaction> Reaction;
+    private ArrayList<Comment> Comment;
     private Date created_at;
     private Date updated_at;
 
@@ -19,12 +20,10 @@ public class Post {
     }
 
     // Full constructor
-    public Post(String id, String companyId, String title, Date created_at, Date updated_at) {
-        this.id = id;
+    public Post(String companyId, String title, ArrayList<PostContent> contents) {
         this.companyId = companyId;
         this.title = title;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
+        this.contents = contents;
     }
 
     // Getters and Setters
@@ -72,15 +71,15 @@ public class Post {
         return Company;
     }
 
-    public PostContent[] getContents() {
+    public ArrayList<PostContent> getContents() {
         return contents;
     }
 
-    public Reaction[] getReaction() {
+    public ArrayList<Reaction> getReaction() {
         return Reaction;
     }
 
-    public Comment[] getComment() {
+    public ArrayList<Comment> getComment() {
         return Comment;
     }
 

@@ -158,7 +158,7 @@ public class JobpostFragment extends Fragment{
             // Setup RecyclerView
             recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
             //show tat ca jobpost va vao detail fragment khi click vao item
-            adapterPost = new MyPostAdapter(allPosts, postViewModel);
+            adapterPost = new MyPostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager(), user);
             /*adapter = new MyPostAdapter(allPosts, postViewModel, new MyPostAdapter.OnPostClickListener() {
                 @Override
                 public void onPostClick(JobPost post) {
@@ -169,6 +169,21 @@ public class JobpostFragment extends Fragment{
                     nav.navigate(R.id.DetailMyPostFragment, bundle); // Navigate to DetailPostFragment
                 }
             });*/
+
+            //Xu li anh cua post
+            postViewModel.getImageUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterPost.setImageUrlMap(map);  // Truyền map xuống adapter
+                Log.d("getImageUrlMap", map.toString());
+            });
+            for (Post post : posts) {
+                if(post.getContents().size() > 1)
+                {
+                    String filePath = post.getContents().get(1).getValue();  // hoặc chỗ chứa đường dẫn ảnh
+                    Log.d("filePath", filePath);
+                    postViewModel.getImageUrl(filePath); // dùng filePath làm key
+                }
+            }
+
             recyclerViewPost.setAdapter(adapterPost);
             adapterPost.notifyDataSetChanged();
         });

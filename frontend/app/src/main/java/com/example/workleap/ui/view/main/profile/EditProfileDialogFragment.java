@@ -1,6 +1,8 @@
 package com.example.workleap.ui.view.main.profile;
 
 import android.app.Dialog;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -8,10 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -65,15 +71,20 @@ public class EditProfileDialogFragment extends DialogFragment {
             addField(container, "Status");
         } else if ("AboutMe".equals(cardType)) {
             addField(container, "About me");
+            editTexts.get(0).setText(getArguments().getString("aboutMe"));
+
         } else if ("ApplicantInfo".equals(cardType)) {
             addField(container, "First Name");
+            editTexts.get(0).setText(getArguments().getString("firstName"));
             addField(container, "Last Name");
+            editTexts.get(1).setText(getArguments().getString("lastName"));
             //addField(container, "Gender");
             //addField(container, "Age");
             //addField(container, "Date of birth");
             //addField(container, "Mobile");
             //addField(container, "Email");
             addField(container, "Address");
+            editTexts.get(2).setText(getArguments().getString("address"));
         }
         else if("ApplicantSkill".equalsIgnoreCase(cardType))
         {
@@ -83,6 +94,7 @@ public class EditProfileDialogFragment extends DialogFragment {
         {
             //list school name
             listEducation = (ArrayList<Education>) getArguments().getSerializable("listEducation");
+            spinnerSchool = addSchoolField(container, listEducation, "School");
             /*ArrayList<String> schoolNames = new ArrayList<>();
             if(listEducation != null)
             {
@@ -111,8 +123,8 @@ public class EditProfileDialogFragment extends DialogFragment {
             //editTexts.add(autoCompleteSchool);
             container.addView(autoCompleteSchool);*/
 
+
             //eduStart, eduEnd, major, eduLevel, achievement
-            spinnerSchool = addSchoolField(container, listEducation, "School");
             addDateField(container, "Year Start");
             addDateField(container, "Year End");
             //addField(container, "Major");
@@ -125,13 +137,38 @@ public class EditProfileDialogFragment extends DialogFragment {
             //list school name
             listEducation = (ArrayList<Education>) getArguments().getSerializable("listEducation");
             if(listEducation==null) Log.e("EditProfileDialog", "list Education null");
+            spinnerSchool = addSchoolField(container, listEducation, "School");
+            int selectedPosition = 0;
+            String oldSchoolName = getArguments().getString("schoolName");
+            for (int i = 0; i < listEducation.size(); i++) {
+                Education edu = listEducation.get(i);
+                if (edu.getUniName().equalsIgnoreCase(oldSchoolName)) {
+                    selectedPosition = i;
+                    break;
+                }
+            }
+            spinnerSchool.setSelection(selectedPosition);
 
             //eduStart, eduEnd, major, eduLevel, achievement
-            spinnerSchool = addSchoolField(container, listEducation, "School");
+
             addDateField(container, "Year Start");
+            editTexts.get(0).setText(getArguments().getString("yearStart"));
             addDateField(container, "Year End");
+            editTexts.get(1).setText(getArguments().getString("yearEnd"));
+
             spinnerEduLevel = addSpinnerField(container, eduLevels, "Edu level");
+            int index = 0;
+            String oldEduLevel = getArguments().getString("eduLevel");
+            for (int i = 0; i < eduLevels.length; i++) {
+                if (eduLevels[i].equals(oldEduLevel)) {
+                    index = i;
+                    break;
+                }
+            }
+            spinnerEduLevel.setSelection(index);
+
             addField(container, "Major");
+            editTexts.get(2).setText(getArguments().getString("major"));
         }
         else if("ApplicantInterestedField".equalsIgnoreCase(cardType))
         {
@@ -175,164 +212,225 @@ public class EditProfileDialogFragment extends DialogFragment {
         else if("UpdateApplicantExperience".equalsIgnoreCase(cardType))
         {
             addField(container, "Company name");
+            editTexts.get(0).setText(getArguments().getString("companyName"));
             addField(container, "Company link");
+            editTexts.get(1).setText(getArguments().getString("companyLink"));
             addField(container, "Position");
+            editTexts.get(2).setText(getArguments().getString("position"));
             addDateField(container, "Work start");
+            editTexts.get(3).setText(getArguments().getString("yearStart"));
             addDateField(container, "Work end");
+            editTexts.get(4).setText(getArguments().getString("yearEnd"));
             addField(container, "Job Responsibility");
+            editTexts.get(5).setText(getArguments().getString("jobResponsibility"));
         }
         //company
         else if ("AboutCompany".equalsIgnoreCase(cardType))
         {
             addField(container, "AboutCompany");
+            editTexts.get(0).setText(getArguments().getString("aboutCompany"));
         }
         else if ("CompanyInfo".equalsIgnoreCase(cardType))
         {
             addField(container, "Name");
+            editTexts.get(0).setText(getArguments().getString("companyName"));
             addField(container, "EstablishedYear");
-            addField(container, "Phone");
-            addField(container, "Email");
+            editTexts.get(1).setText(getArguments().getString("establishedYear"));
+            //addField(container, "Phone");
+            //addField(container, "Email");
             addField(container, "Tax code");
+            editTexts.get(2).setText(getArguments().getString("taxCode"));
         }
 
 
         if("UpdateApplicantEducation".equalsIgnoreCase(cardType))
         {
-            builder.setView(view)
+            AlertDialog dialog = builder
+                    .setView(view)
                     .setTitle("Update Applicant Education")
-
-                    .setPositiveButton("Save", (dialog, which) -> {
-                        ArrayList<String> updated = new ArrayList<>();
-                        for (EditText et : editTexts) {
-                            updated.add(et.getText().toString());
-                        }
-                        ArrayList<Date> dates= new ArrayList<>();
-
-                        //applicant edu
-                        if("UpdateApplicantEducation".equalsIgnoreCase(cardType))
-                        {
-                            //Edu level
-                            if (spinnerEduLevel != null && spinnerEduLevel.getSelectedItem() != null && !spinnerEduLevel.getSelectedItem().toString().trim().isEmpty()) {
-                                int position = spinnerEduLevel.getSelectedItemPosition();
-                                String major = eduLevels[position];
-                                updated.add(major);
-                            }
-
-                            //list education
-                            if (spinnerSchool != null && spinnerSchool.getSelectedItem() != null && !spinnerSchool.getSelectedItem().toString().trim().isEmpty()) {
-                                int position = spinnerSchool.getSelectedItemPosition();
-                                String eduId = listEducation.get(position).getId();
-                                updated.add(eduId);
-                            }
-                        }
-
-                        // Tạo Bundle và đẩy kết quả
-                        Bundle result = new Bundle();
-                        result.putString("cardType", cardType);
-                        result.putStringArrayList("values", updated);
-                        ApplicantEducation updateApplicantEducation = (ApplicantEducation) getArguments().getSerializable("deleteApplicantEducation");
-                        result.putString("deleteApplicantEducationId", updateApplicantEducation.getId());
-
-                        getParentFragmentManager()
-                                .setFragmentResult("editProfile", result);
-                    })
-                    .setNeutralButton("Delete", (dialog, which)->
-                    {
+                    .setPositiveButton("Save", null) // tam de null
+                    .setNeutralButton("Delete", (dialog1, which) -> {
                         ApplicantEducation deleteEducation = (ApplicantEducation) getArguments().getSerializable("deleteApplicantEducation");
                         applicantViewModel.deleteApplicantEducation(deleteEducation.getId());
                     })
+                    .setNegativeButton("Cancel", null)
+                    .create();
 
-                    .setNegativeButton("Cancel", null);
+            dialog.setOnShowListener(dlg -> {
+                Button saveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                saveButton.setOnClickListener(v -> {
+                    ArrayList<String> updated = new ArrayList<>();
+                    boolean isValid = true;
 
-            return builder.create();
+                    for (EditText et : editTexts) {
+                        String input = et.getText().toString().trim();
+                        if (input.isEmpty()) {
+                            et.setError("This field is required");
+                            et.requestFocus();
+                            isValid = false;
+                            break;
+                        }
+                        updated.add(input);
+                    }
+
+                    if (!isValid) return;
+
+                    // spinnerEduLevel
+                    if (spinnerEduLevel != null && spinnerEduLevel.getSelectedItem() != null) {
+                        int position = spinnerEduLevel.getSelectedItemPosition();
+                        updated.add(eduLevels[position]);
+                    }
+
+                    // spinnerSchool
+                    if (spinnerSchool != null && spinnerSchool.getSelectedItem() != null) {
+                        int position = spinnerSchool.getSelectedItemPosition();
+                        updated.add(listEducation.get(position).getId());
+                    }
+
+                    Bundle result = new Bundle();
+                    result.putString("cardType", cardType);
+                    result.putStringArrayList("values", updated);
+                    ApplicantEducation updateApplicantEducation = (ApplicantEducation) getArguments().getSerializable("deleteApplicantEducation");
+                    result.putString("deleteApplicantEducationId", updateApplicantEducation.getId());
+
+                    getParentFragmentManager().setFragmentResult("editProfile", result);
+                    dialog.dismiss(); // chi dong neu hop le
+                });
+            });
+
+            return dialog;
         }
         else if("UpdateApplicantExperience".equalsIgnoreCase(cardType))
         {
             builder.setView(view)
                     .setTitle("Update Applicant Experience")
-
-                    .setPositiveButton("Save", (dialog, which) -> {
-                        ArrayList<String> updated = new ArrayList<>();
-                        for (EditText et : editTexts) {
-                            updated.add(et.getText().toString());
-                        }
-                        ArrayList<Date> dates= new ArrayList<>();
-
-
-                        // Tạo Bundle và đẩy kết quả
-                        Bundle result = new Bundle();
-                        result.putString("cardType", cardType);
-                        result.putStringArrayList("values", updated);
-                        Experience deleteApplicantExperience = (Experience) getArguments().getSerializable("deleteApplicantExperience");
-                        result.putString("deleteApplicantExperience", deleteApplicantExperience.getId());
-
-                        getParentFragmentManager()
-                                .setFragmentResult("editProfile", result);
-                    })
-                    .setNeutralButton("Delete", (dialog, which)->
-                    {
+                    .setPositiveButton("Save", null) // để xử lý riêng
+                    .setNeutralButton("Delete", (dialog, which) -> {
                         Experience deleteExperience = (Experience) getArguments().getSerializable("deleteApplicantExperience");
                         applicantViewModel.deleteApplicantExperience(deleteExperience.getId());
+                        Log.e("dialog", "delete applicant exp");
                     })
-
                     .setNegativeButton("Cancel", null);
 
-            return builder.create();
+            AlertDialog dialog = builder.create();
+
+            dialog.setOnShowListener(d -> {
+                Button saveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                saveButton.setOnClickListener(v -> {
+                    ArrayList<String> updated = new ArrayList<>();
+                    boolean hasEmptyField = false;
+
+                    for (EditText et : editTexts) {
+                        String input = et.getText().toString().trim();
+                        if (input.isEmpty()) {
+                            et.setError("This field is required");
+                            et.requestFocus();
+                            hasEmptyField = true;
+                            break;
+                        }
+                        updated.add(input);
+                    }
+
+                    if (hasEmptyField) return; // khong dong neu co loi
+
+                    // Tạo Bundle và đẩy kết quả
+                    Bundle result = new Bundle();
+                    result.putString("cardType", cardType);
+                    result.putStringArrayList("values", updated);
+
+                    Experience deleteApplicantExperience = (Experience) getArguments().getSerializable("deleteApplicantExperience");
+                    result.putString("deleteApplicantExperience", deleteApplicantExperience.getId());
+
+                    getParentFragmentManager()
+                            .setFragmentResult("editProfile", result);
+
+                    dialog.dismiss(); // chi dong khi hop le
+                });
+            });
+
+            return dialog;
         }
         else {
             builder.setView(view)
                     .setTitle("Edit")
-
-                    .setPositiveButton("Save", (dialog, which) -> {
-                        ArrayList<String> updated = new ArrayList<>();
-                        for (EditText et : editTexts) {
-                            updated.add(et.getText().toString());
-                        }
-                        ArrayList<Date> dates = new ArrayList<>();
-
-                        //applicant edu
-                        if ("ApplicantEdu".equalsIgnoreCase(cardType)) {
-                            //Edu level
-                            if (spinnerEduLevel != null && spinnerEduLevel.getSelectedItem() != null && !spinnerEduLevel.getSelectedItem().toString().trim().isEmpty()) {
-                                int position = spinnerEduLevel.getSelectedItemPosition();
-                                String major = eduLevels[position];
-                                updated.add(major);
-                            }
-
-                            //list education
-                            if (spinnerSchool != null && spinnerSchool.getSelectedItem() != null && !spinnerSchool.getSelectedItem().toString().trim().isEmpty()) {
-                                int position = spinnerSchool.getSelectedItemPosition();
-                                String eduId = listEducation.get(position).getId();
-                                updated.add(eduId);
-                            }
-                        }
-                        if ("ApplicantInterestedField".equalsIgnoreCase(cardType)) {
-                            if (spinnerInterestedField != null && spinnerInterestedField.getSelectedItem() != null && !spinnerInterestedField.getSelectedItem().toString().trim().isEmpty()) {
-                                int position = spinnerInterestedField.getSelectedItemPosition();
-                                Field field = listField.get(position);
-                                updated.add(field.getId());
-                            }
-                        }
-
-                        // Tạo Bundle và đẩy kết quả
-                        Bundle result = new Bundle();
-                        result.putString("cardType", cardType);
-                        result.putStringArrayList("values", updated);
-
-                        getParentFragmentManager()
-                                .setFragmentResult("editProfile", result);
-                    })
-
+                    .setPositiveButton("Save", null) // ngăn auto-dismiss
                     .setNegativeButton("Cancel", null);
 
-            return builder.create();
+            AlertDialog dialog = builder.create();
+
+            dialog.setOnShowListener(d -> {
+                Button saveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                saveButton.setOnClickListener(v -> {
+                    ArrayList<String> updated = new ArrayList<>();
+                    boolean hasEmptyField = false;
+
+                    for (EditText et : editTexts) {
+                        String input = et.getText().toString().trim();
+                        if (input.isEmpty()) {
+                            et.setError("This field is required");
+                            et.requestFocus();
+                            hasEmptyField = true;
+                            break;
+                        }
+                        updated.add(input);
+                    }
+
+                    if (hasEmptyField) return; // khong gui va khong dong dialog
+
+                    // ApplicantEdu
+                    if ("ApplicantEdu".equalsIgnoreCase(cardType)) {
+                        if (spinnerEduLevel != null && spinnerEduLevel.getSelectedItem() != null && !spinnerEduLevel.getSelectedItem().toString().trim().isEmpty()) {
+                            int position = spinnerEduLevel.getSelectedItemPosition();
+                            String major = eduLevels[position];
+                            updated.add(major);
+                        }
+
+                        if (spinnerSchool != null && spinnerSchool.getSelectedItem() != null && !spinnerSchool.getSelectedItem().toString().trim().isEmpty()) {
+                            int position = spinnerSchool.getSelectedItemPosition();
+                            String eduId = listEducation.get(position).getId();
+                            updated.add(eduId);
+                        }
+                    }
+
+                    // ApplicantInterestedField
+                    if ("ApplicantInterestedField".equalsIgnoreCase(cardType)) {
+                        if (spinnerInterestedField != null && spinnerInterestedField.getSelectedItem() != null && !spinnerInterestedField.getSelectedItem().toString().trim().isEmpty()) {
+                            int position = spinnerInterestedField.getSelectedItemPosition();
+                            Field field = listField.get(position);
+                            updated.add(field.getId());
+                        }
+                    }
+
+                    Bundle result = new Bundle();
+                    result.putString("cardType", cardType);
+                    result.putStringArrayList("values", updated);
+
+                    getParentFragmentManager()
+                            .setFragmentResult("editProfile", result);
+
+                    dialog.dismiss();
+                });
+            });
+
+            return dialog;
+
         }
     }
 
     private void addField(LinearLayout container, String hint) {
         EditText editText = new EditText(getContext());
-        editText.setHint(hint);
+        //editText.setHint(hint);
         editText.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
+        editText.setTextSize(16);
+
+        TextView textView = new TextView(getContext());
+        textView.setText(hint);
+        textView.setTextSize(18);
+        textView.setPadding(8, 32, 0,0);
+        textView.setTypeface(null, Typeface.BOLD);
+
+
+        container.addView(textView);
         container.addView(editText);
 
         editTexts.add(editText);
@@ -341,6 +439,14 @@ public class EditProfileDialogFragment extends DialogFragment {
         EditText editText = new EditText(getContext());
         editText.setHint(hint);
         editText.setInputType(InputType.TYPE_CLASS_DATETIME);
+
+        TextView textView = new TextView(getContext());
+        textView.setText(hint);
+        textView.setTextSize(18);
+        textView.setPadding(8, 32, 0,8);
+        textView.setTypeface(null, Typeface.BOLD);
+
+        container.addView(textView);
         container.addView(editText);
 
         editTexts.add(editText);
@@ -358,7 +464,15 @@ public class EditProfileDialogFragment extends DialogFragment {
         );
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
+        spinner.setPadding(0, 8, 0, 16);
 
+        TextView textView = new TextView(getContext());
+        textView.setText(hint);
+        textView.setTextSize(18);
+        textView.setPadding(8, 32, 0,8);
+        textView.setTypeface(null, Typeface.BOLD);
+
+        container.addView(textView);
         container.addView(spinner);
         return spinner;
     }
@@ -382,7 +496,15 @@ public class EditProfileDialogFragment extends DialogFragment {
         );
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
+        spinner.setPadding(0, 8, 0, 16);
 
+        TextView textView = new TextView(getContext());
+        textView.setText(hint);
+        textView.setTextSize(18);
+        textView.setPadding(8, 32, 0,8);
+        textView.setTypeface(null, Typeface.BOLD);
+
+        container.addView(textView);
         container.addView(spinner);
         return spinner;
     }
