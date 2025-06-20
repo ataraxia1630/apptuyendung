@@ -21,11 +21,12 @@ import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SubmittedProfilesFragment extends Fragment {
     private JobPostViewModel jobPostViewModel;
-    List<JobApplied> submittedProfiles;
+    ArrayList<JobApplied> submittedProfiles;
     private JobPost currentJobPost;
     private TextView tvProfileCount, tvExport, tvStatus;
     private EditText etSearch;
@@ -57,45 +58,57 @@ public class SubmittedProfilesFragment extends Fragment {
         currentJobPost = (JobPost) getArguments().getSerializable("currentJobPost");
 
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
-        jobPostViewModel.getApplicantsJobApplied(currentJobPost.getId());
-        jobPostViewModel.getApplicantsJobApplied().observe(getViewLifecycleOwner(), jobAppliedList -> {
-            if(jobAppliedList==null)
+        jobPostViewModel.getMyJobPostById(currentJobPost.getId());
+        jobPostViewModel.getMyJobPostByIdData().observe(getViewLifecycleOwner(), jobpost -> {
+            if(jobpost==null)
             {
-                Log.e("SubProfileFragment", "getApplicantsJobApplied NULL");
+                Log.e("SubProfileFragment", "getMyJobPostByIdData NULL");
                 return;
             }
 
-            this.submittedProfiles = jobAppliedList;
 
-            SubmittedProfilesAdapter adapter = new SubmittedProfilesAdapter(
-                    submittedProfiles,
-                    new SubmittedProfilesAdapter.OnSubmittedProfilesMenuClickListener() {
-                        @Override
-                        public void onOpen(JobApplied jobApplied) {
-                            // TODO: Implement open logic
+            this.submittedProfiles = jobpost.getJobApplied();
+            if(submittedProfiles==null)
+            {
+                Log.e("eeeeee", currentJobPost.getId());
+                Log.e("SubmitProfileFragment", "submittedProfiles NULL");
+                return;
+            }
+            else
+            {
+                SubmittedProfilesAdapter adapter = new SubmittedProfilesAdapter(
+                        submittedProfiles,
+                        new SubmittedProfilesAdapter.OnSubmittedProfilesMenuClickListener() {
+                            @Override
+                            public void onOpen(JobApplied jobApplied) {
+                                // TODO: Implement open logic
+                            }
+
+                            @Override
+                            public void onDownload(JobApplied jobApplied) {
+                                // TODO: Implement download logic
+                            }
+
+                            @Override
+                            public void onApprove(JobApplied jobApplied) {
+                                // TODO: Implement approve logic
+                            }
+
+                            @Override
+                            public void onDismiss(JobApplied jobApplied) {
+                                // TODO: Implement dismiss logic
+                            }
                         }
+                );
 
-                        @Override
-                        public void onDownload(JobApplied jobApplied) {
-                            // TODO: Implement download logic
-                        }
+                rvSubmittedCVs.setLayoutManager(new LinearLayoutManager(requireContext()));
+                rvSubmittedCVs.setAdapter(adapter);
 
-                        @Override
-                        public void onApprove(JobApplied jobApplied) {
-                            // TODO: Implement approve logic
-                        }
+                tvProfileCount.setText(String.valueOf(submittedProfiles.size()));
+                Log.e("SubmitProfileFragment", "submitted profiles NOT null");
+            }
 
-                        @Override
-                        public void onDismiss(JobApplied jobApplied) {
-                            // TODO: Implement dismiss logic
-                        }
-                    }
-            );
 
-            rvSubmittedCVs.setLayoutManager(new LinearLayoutManager(requireContext()));
-            rvSubmittedCVs.setAdapter(adapter);
-
-            tvProfileCount.setText(String.valueOf(submittedProfiles.size()));
         });
     }
 

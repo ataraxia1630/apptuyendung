@@ -73,10 +73,11 @@ public class SubmittedProfilesAdapter extends RecyclerView.Adapter<SubmittedProf
             super(itemView);
             imgAvatar = itemView.findViewById(R.id.imgAvatar);
             txtApplicantName = itemView.findViewById(R.id.txtApplicantName);
-            txtTitle = itemView.findViewById(R.id.txtTitle);
+            txtTitle = itemView.findViewById(R.id.txtCVTitle);
             txtStatus = itemView.findViewById(R.id.txtStatus);
-            btnOption = itemView.findViewById(R.id.btnOptions);
+            btnOption = itemView.findViewById(R.id.imgOptions);
         }
+
 
         void showPopupMenu(View view, JobApplied jobApplied) {
             PopupMenu popup = new PopupMenu(view.getContext(), view);

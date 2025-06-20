@@ -3,8 +3,11 @@ package com.example.workleap.data.model.entity;
 // JobPost.java
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import kotlinx.coroutines.Job;
 
 public class JobPost implements Serializable {
     private String id;
@@ -24,7 +27,7 @@ public class JobPost implements Serializable {
     private String currency;
     private String status;  // OPENING or other values
     private String apply_until;
-    private List<JobApplied> jobApplied; // Assuming you use this in your API response
+    private ArrayList<JobApplied> JobApplied; // Assuming you use this in your API response
     private Date created_at;
     private Date updated_at;
     private Company Company;
@@ -33,6 +36,8 @@ public class JobPost implements Serializable {
     private List<JobSaved> jobSaved;
 
     //Constructor
+    public JobPost(){}
+
     public JobPost(String companyId,
                    String jobCategoryId,
                    String jobTypeId,
@@ -205,12 +210,12 @@ public class JobPost implements Serializable {
         this.apply_until = apply_until;
     }
 
-    public List<JobApplied> getJobApplied() {
-        return jobApplied;
+    public ArrayList<JobApplied> getJobApplied() {
+        return JobApplied;
     }
 
-    public void setJobApplied(List<JobApplied> jobApplied) {
-        this.jobApplied = jobApplied;
+    public void setJobApplied(ArrayList<JobApplied> jobApplied) {
+        this.JobApplied = jobApplied;
     }
 
     public Date getCreatedAt() {

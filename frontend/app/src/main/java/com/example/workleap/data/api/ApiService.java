@@ -193,6 +193,8 @@ public interface ApiService {
             @Query("educationRequirement") String educationRequirement,
             @Query("companyName") String companyName
     );
+    @GET("api/job-posts/company/me/{id}")
+    Call<JobPostResponse> getMyJobPostById( @Path("id") String id);
 
     //JobType
     @GET("api/types/all")

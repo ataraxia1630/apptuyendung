@@ -62,6 +62,7 @@ public class JobPostRepository {
         return apiService.searchJobPosts(title, location, position, educationRequirement, companyName);
     }
 
+    public Call<JobPostResponse> getMyJobPostById(String id) {return apiService.getMyJobPostById(id);}
 
     //JobType
     public Call<ListJobTypeResponse> getAllJobTypes() {
