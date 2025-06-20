@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -80,6 +81,45 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             bottomSheet.show(fragmentManager, "commentSheet");
         });
 
+        //React
+        holder.btnReaction.setOnClickListener(v -> {
+            View popupView = LayoutInflater.from(v.getContext()).inflate(R.layout.layout_popup_reaction, null);
+            PopupWindow popupWindow = new PopupWindow(popupView,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    true);
+
+            // Hiển thị ngay phía trên nút
+            popupWindow.showAsDropDown(v, 0, -v.getHeight() * 2);
+
+            // Gắn sự kiện cho từng reaction
+            popupView.findViewById(R.id.img_like).setOnClickListener(rv -> {
+                Log.d("Reaction", "LIKE");
+                popupWindow.dismiss();
+            });
+
+            popupView.findViewById(R.id.img_love).setOnClickListener(rv -> {
+                Log.d("Reaction", "LOVE");
+                popupWindow.dismiss();
+            });
+
+            popupView.findViewById(R.id.img_wow).setOnClickListener(rv -> {
+                Log.d("Reaction", "WOW");
+                popupWindow.dismiss();
+            });
+
+            popupView.findViewById(R.id.img_sad).setOnClickListener(rv -> {
+                Log.d("Reaction", "SAD");
+                popupWindow.dismiss();
+            });
+
+            popupView.findViewById(R.id.img_idea).setOnClickListener(rv -> {
+                Log.d("Reaction", "IDEA");
+                popupWindow.dismiss();
+            });
+        });
+
+
         // Thêm PopupMenu cho btnOption
         /*holder.btnOption.setOnClickListener(v -> {
 
@@ -116,7 +156,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView txtName, txtTime, txtTitle, txtContent, txtReactionCount, txtCommentShareCount;
         ImageView imgPost;
-        ImageButton btnOption, btnReact, btnComment, btnShare;
+        ImageButton btnOption;
+        LinearLayout btnComment, btnReaction, btnShare;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -130,7 +171,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             imgPost = itemView.findViewById(R.id.imgPost);
             btnOption = itemView.findViewById(R.id.btnOption);
-            btnComment= itemView.findViewById(R.id.btnComment);
+            btnComment = itemView.findViewById(R.id.btnComment);
+            btnReaction = itemView.findViewById(R.id.btn_like);
+            btnShare= itemView.findViewById(R.id.btn_share);
         }
     }
 
