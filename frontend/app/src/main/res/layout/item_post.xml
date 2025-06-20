@@ -102,7 +102,7 @@
             android:id="@+id/tv_like_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="100 Likes"
+            android:text="0 Reactions"
             android:textSize="12sp"/>
 
         <TextView
@@ -110,7 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="20 Comments • 10 Shares"
+            android:text="0 Comments • 0 Shares"
             android:textSize="12sp"/>
     </LinearLayout>
 
@@ -158,6 +158,7 @@
 
         <!-- Comment button -->
         <LinearLayout
+            android:id="@+id/btnComment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -167,8 +168,7 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackground">
 
-           <ImageButton
-                android:id="@+id/btnComment"
+           <ImageView
                 android:layout_width="30dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_comment"/>
