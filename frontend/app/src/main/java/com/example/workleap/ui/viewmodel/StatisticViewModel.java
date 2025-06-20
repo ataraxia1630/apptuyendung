@@ -6,9 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.workleap.data.model.entity.Company;
 import com.example.workleap.data.model.entity.DailyStatistic;
-import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.response.OverviewResponse;
 import com.example.workleap.data.repository.StatisticRepository;
 import com.google.gson.Gson;
@@ -39,7 +37,7 @@ public class StatisticViewModel extends ViewModel {
                 if (response.isSuccessful()) {
                     OverviewResponse getResponse = response.body();
                     getOverviewResult.setValue(getResponse.getMessage());
-                    getOverviewData.setValue(getResponse.getDailyStatistic());
+                    getOverviewData.setValue(getResponse.getData());
                 } else {
                     try {
                         OverviewResponse error = new Gson().fromJson(response.errorBody().string(), OverviewResponse.class);

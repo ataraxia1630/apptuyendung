@@ -33,18 +33,24 @@
         <!-- 1. Tổng quan -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:weightSum="4"
-            android:gravity="center"
-            android:layout_marginBottom="16dp">
+            android:gravity="center">
 
             <include
                 android:id="@+id/userCount"
-                layout="@layout/item_stat_overview" />
+                layout="@layout/item_stat_overview"/>
             <include
                 android:id="@+id/jobPostCount"
                 layout="@layout/item_stat_overview" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+
             <include
                 android:id="@+id/reportCount"
                 layout="@layout/item_stat_overview" />

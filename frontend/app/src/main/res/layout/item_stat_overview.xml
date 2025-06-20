@@ -1,22 +1,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="0dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_weight="1"
     android:orientation="vertical"
     android:padding="8dp"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:background="@drawable/button_lightblue">
 
     <ImageView
         android:id="@+id/imgIcon"
-        android:layout_width="22dp"
-        android:layout_height="21dp"
-        android:src="@drawable/sample_avatar" />
+        android:layout_width="100dp"
+        android:layout_height="99dp"
+        android:src="@drawable/ic_group_users" />
 
     <TextView
         android:id="@+id/txtCount"
         android:text="Loading..."
-        android:textSize="18sp"
+        android:textSize="36sp"
         android:textStyle="bold"
         android:layout_marginTop="4dp"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
     <TextView
         android:id="@+id/txtLabel"
         android:text="Loading..."
-        android:textSize="12sp"
+        android:textSize="24sp"
         android:textColor="#555555"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"/>

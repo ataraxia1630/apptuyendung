@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.workleap.R;
@@ -34,12 +35,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StatisticsFragment extends Fragment {
-    TextView tvUserCount, tvJobPostCount, tvReportCount, tvApplicationCount;
+    TextView tvUserCount, tvJobPostCount, tvReportCount, tvApplicationCount, tvUserLabel, tvJobPostLabel, tvReportLabel, tvApplicationLabel;
     PieChart pieChart;
 
     LineChart lineChart;
 
     StatisticViewModel statisticViewModel;
+    ViewGroup itemUserCount, itemJobPostCount, itemReportCount, itemApplicationCount;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +54,30 @@ public class StatisticsFragment extends Fragment {
         lineChart = view.findViewById(R.id.lineChartGrowth);
         setupLineChart();
 
+        itemUserCount = view.findViewById(R.id.userCount);
+        itemJobPostCount = view.findViewById(R.id.jobPostCount);
+        itemReportCount = view.findViewById(R.id.reportCount);
+        itemApplicationCount = view.findViewById(R.id.applicationCount);
+
+        tvUserLabel  = itemUserCount.findViewById(R.id.txtLabel);
+        tvUserLabel.setText("User");
+        tvJobPostLabel  = itemJobPostCount.findViewById(R.id.txtLabel);
+        tvJobPostLabel.setText("Job Post");
+        tvReportLabel  = itemReportCount.findViewById(R.id.txtLabel);
+        tvReportLabel.setText("Report");
+        tvApplicationLabel = itemApplicationCount.findViewById(R.id.txtLabel);
+        tvApplicationLabel.setText("Application");
+
+        ImageView imgUser = itemUserCount.findViewById(R.id.imgIcon);
+        ImageView imgJob = itemJobPostCount.findViewById(R.id.imgIcon);
+        ImageView imgReport = itemReportCount.findViewById(R.id.imgIcon);
+        ImageView imgApp = itemApplicationCount.findViewById(R.id.imgIcon);
+
+        imgUser.setImageResource(R.drawable.ic_group_users);
+        imgJob.setImageResource(R.drawable.job_post_photo);
+        imgReport.setImageResource(R.drawable.ic_report);
+        imgApp.setImageResource(R.drawable.ic_cv);
+
         return view;
     }
 
@@ -62,15 +88,11 @@ public class StatisticsFragment extends Fragment {
         statisticViewModel = new ViewModelProvider(requireActivity()).get(StatisticViewModel.class);
         statisticViewModel.InitiateRepository(getContext());
 
-        ViewGroup itemUserCount = view.findViewById(R.id.userCount);
-        ViewGroup itemJobPostCount = view.findViewById(R.id.jobPostCount);
-        ViewGroup itemReportCount = view.findViewById(R.id.reportCount);
-        ViewGroup itemApplicationCount = view.findViewById(R.id.applicationCount);
-
         tvUserCount = itemUserCount.findViewById(R.id.txtCount);
         tvJobPostCount = itemJobPostCount.findViewById(R.id.txtCount);
         tvReportCount = itemReportCount.findViewById(R.id.txtCount);
         tvApplicationCount = itemApplicationCount.findViewById(R.id.txtCount);
+
 
         statisticViewModel.getOverview();
         statisticViewModel.getGetOverviewResult().observe(getViewLifecycleOwner(), result -> {
@@ -83,7 +105,15 @@ public class StatisticsFragment extends Fragment {
 
         });
         statisticViewModel.getGetOverviewData().observe(getViewLifecycleOwner(), dailyStatistic -> {
-
+            if(dailyStatistic==null)
+            {
+                Log.e("StatisticFragment", "getGetOverviewData NULL");
+                return;
+            }
+            tvUserCount.setText(String.valueOf(dailyStatistic.getUserCount()));
+            tvJobPostCount.setText(String.valueOf(dailyStatistic.getJobPostCount()));
+            tvReportCount.setText(String.valueOf(dailyStatistic.getReportCount()));
+            tvApplicationCount.setText(String.valueOf(dailyStatistic.getApplicationCount()));
         });
     }
 

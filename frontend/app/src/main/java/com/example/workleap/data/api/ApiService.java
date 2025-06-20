@@ -290,7 +290,7 @@ public interface ApiService {
     Call<MessageResponse> removeReaction(@Path("postId") String postId);
 
     //Statistic
-    @GET("api/statistic/top-companies")
+    @GET("api/statistic/overview")
     Call<OverviewResponse> getOverview();
     @GET("api/statistic/top-jobposts")
     Call<OverviewResponse> getTopJobpost();
