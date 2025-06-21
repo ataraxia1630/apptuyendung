@@ -54,6 +54,7 @@ import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.request.RegisterRequest;
+import com.example.workleap.data.model.response.OverviewResponse;
 import com.example.workleap.data.model.response.PostResponse;
 import com.example.workleap.data.model.response.ReactionResponse;
 import com.example.workleap.data.model.response.RegisterResponse;
@@ -302,6 +303,12 @@ public interface ApiService {
     @DELETE("api/reactions/{postId}")
     Call<MessageResponse> removeReaction(@Path("postId") String postId);
 
+    //Statistic
+    @GET("api/statistic/overview")
+    Call<OverviewResponse> getOverview();
+    @GET("api/statistic/top-jobposts")
+    Call<OverviewResponse> getTopJobpost();
+
     //Chat-Conversation
     // Lấy tất cả các cuộc trò chuyện của user
     @GET("api/chat/all")
@@ -375,4 +382,5 @@ public interface ApiService {
     // Lấy danh sách tin nhắn của một cuộc trò chuyện
     @GET("api/message/{chatId}")
     Call<ListMessageResponse> getMessagesByChatId(@Path("chatId") String chatId);
+
 }
