@@ -2,8 +2,6 @@ package com.example.workleap.ui.viewmodel;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.View;
-import android.widget.MultiAutoCompleteTextView;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -14,7 +12,8 @@ import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
-import com.example.workleap.data.model.response.GetApplicantResponse;
+import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
+import com.example.workleap.data.model.response.JobAppliedResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
 import com.example.workleap.data.model.response.ListJobCategoryResponse;
@@ -22,16 +21,9 @@ import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListJobTypeResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.repository.JobPostRepository;
-import com.example.workleap.data.repository.UserRepository;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -55,6 +47,7 @@ public class JobPostViewModel  extends ViewModel {
     private MutableLiveData<JobPost> createJobPostData = new MutableLiveData<>();
     private MutableLiveData<JobPost> updateJobPostData = new MutableLiveData<>();
     private MutableLiveData<List<JobPost>> searchJobPostData = new MutableLiveData<>();
+    private MutableLiveData<JobApplied> processCvAppliedData = new MutableLiveData<>();
 
     private MutableLiveData<String> getAllJobPostResult = new MutableLiveData<>();
     private MutableLiveData<String> getJobPostsByCompanyResult = new MutableLiveData<>();
@@ -64,6 +57,7 @@ public class JobPostViewModel  extends ViewModel {
     private MutableLiveData<String> deleteJobPostResult = new MutableLiveData<>();
     private MutableLiveData<String> searchJobPostResult = new MutableLiveData<>();
     private MutableLiveData<String> getMyJobPostByIdResult = new MutableLiveData<>();
+    private MutableLiveData<String> processCvAppliedResult = new MutableLiveData<>();
 
     //jobcategory, jobcategory, jobsave
     private MutableLiveData<List<JobType>> getAllJobTypeData = new MutableLiveData<>();
@@ -94,6 +88,8 @@ public class JobPostViewModel  extends ViewModel {
     public LiveData<JobPost> getJobPostData() { return getJobPostData; }
     public LiveData<JobPost> getMyJobPostByIdData() { return getMyJobPostByIdData; }
     public LiveData<String> getMyJobPostByIdResult() { return getMyJobPostByIdResult; }
+    public LiveData<String> getProcessCvAppliedResult() { return processCvAppliedResult; }
+    public LiveData<JobApplied> getProcessCvAppliedData() { return processCvAppliedData; }
 
     public LiveData<String> getAllJobPostResult() { return getAllJobPostResult; }
     public LiveData<String> getJobPostsByCompanyResult() { return getJobPostsByCompanyResult; }
@@ -506,5 +502,24 @@ public class JobPostViewModel  extends ViewModel {
     });
     }
 
+    public void processCvApplied(String jobpostId, String applicantId, String status) {
+        ProcessCvAppliedRequest request = new ProcessCvAppliedRequest(jobpostId, applicantId, status);
+        jobPostRepository.processCvApplied(request).enqueue(new Callback<JobAppliedResponse>() {
+            @Override
+            public void onResponse(Call<JobAppliedResponse> call, Response<JobAppliedResponse> response) {
+                if(response.isSuccessful() && response.body() != null) {
+                    processCvAppliedData.postValue(response.body().getJobApplied());
+                    processCvAppliedResult.postValue("Success");
+                } else {
+                    processCvAppliedResult.postValue("Failed: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JobAppliedResponse> call, Throwable t) {
+                Log.e("API_ERROR", t.getMessage());
+            }
+        });
+    }
 
 }

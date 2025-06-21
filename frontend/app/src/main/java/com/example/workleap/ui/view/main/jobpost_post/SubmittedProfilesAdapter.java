@@ -1,5 +1,6 @@
 package com.example.workleap.ui.view.main.jobpost_post;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,6 +50,12 @@ public class SubmittedProfilesAdapter extends RecyclerView.Adapter<SubmittedProf
         holder.txtApplicantName.setText("dang");
         holder.txtTitle.setText("cv cua dang");
         holder.txtStatus.setText(jobApplied.getStatus());
+
+        //set color for status
+        if(jobApplied.getStatus().equalsIgnoreCase("SUCCESS"))
+            holder.txtStatus.setTextColor(Color.GREEN);
+        if(jobApplied.getStatus().equalsIgnoreCase("FAILURE"))
+            holder.txtStatus.setTextColor(Color.RED);
 
         holder.itemView.setOnClickListener(v -> menuClickListener.onOpen(jobApplied));
         holder.btnOption.setOnClickListener(v -> holder.showPopupMenu(v, jobApplied));

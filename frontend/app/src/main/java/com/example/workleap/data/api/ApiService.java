@@ -1,6 +1,5 @@
 package com.example.workleap.data.api;
 
-import com.example.workleap.data.model.entity.CV;
 import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
@@ -13,6 +12,7 @@ import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
+import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
 import com.example.workleap.data.model.response.CVResponse;
 import com.example.workleap.data.model.response.CommentResponse;
 import com.example.workleap.data.model.response.CreateApplicantEducationResponse;
@@ -27,13 +27,13 @@ import com.example.workleap.data.model.response.GetCompanyResponse;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.ImageUrlResponse;
+import com.example.workleap.data.model.response.JobAppliedResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListCommentResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
-import com.example.workleap.data.model.response.ListInterestedFieldResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListPostResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
@@ -225,7 +225,8 @@ public interface ApiService {
     Call<ListJobAppliedResponse> getJobApplied(@Path("applicantId") String applicantId);
     @POST("api/apply/")            //create a job applied
     Call<MessageResponse> applyAJob(@Body ApplyAJobRequest request);
-
+    @PUT("api/apply/process-cv")            //process cv applied
+    Call<JobAppliedResponse> processCvApplied(@Body ProcessCvAppliedRequest request);
 
     //Cv
     //@POST("api/cv/upload/{applicantId}")
