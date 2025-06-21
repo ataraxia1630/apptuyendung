@@ -301,75 +301,75 @@ public interface ApiService {
 
     //Chat-Conversation
     // Lấy tất cả các cuộc trò chuyện của user
-    @GET("/chat/all")
+    @GET("api/chat/all")
     Call<ListConversationResponse> getAllChats();
     // Lấy tất cả đoạn chat có tin nhắn chưa đọc
-    @GET("/chat/unread")
+    @GET("api/chat/unread")
     Call<ListConversationResponse> getAllUnreadChats();
     // Lấy tất cả các nhóm chat
-    @GET("/chat/group")
+    @GET("api/chat/group")
     Call<ListConversationResponse> getAllGroupChats();
     // Lấy thông tin một đoạn chat cụ thể theo ID
-    @GET("/chat/{chatId}")
+    @GET("api/chat/{chatId}")
     Call<ListConversationResponse> getChatById(@Path("chatId") String chatId);
     // Lấy tất cả tin nhắn trong một cuộc trò chuyện
-    @GET("/chat/{chatId}/mess")
+    @GET("api/chat/{chatId}/mess")
     Call<ListConversationResponse> getAllMessages(@Path("chatId") String chatId);
 
     // Tạo một cuộc trò chuyện mới (chat cá nhân)
-    @POST("/chat/")
+    @POST("api/chat/")
     Call<ConversationResponse> createChat(@Body FriendIdRequest request);
 
     // Tạo một group chat mới
-    @POST("/chat/group")
+    @POST("api/chat/group")
     Call<ConversationResponse> createGroupChat(@Body GroupChatRequest request);
 
     // Cập nhật thông tin của một cuộc trò chuyện (đổi tên nhóm)
-    @PUT("/chat/{chatId}")
+    @PUT("api/chat/{chatId}")
     Call<MessageResponse> updateChat(@Path("chatId") String chatId, @Body Conversation request);
 
     // Xoá một cuộc trò chuyện
-    @DELETE("/chat/{chatId}")
+    @DELETE("api/chat/{chatId}")
     Call<MessageResponse> deleteChat(@Path("chatId") String chatId);
 
     // Thêm thành viên vào nhóm (chỉ admin)
-    @POST("/chat/add-member/{chatId}")
+    @POST("api/chat/add-member/{chatId}")
     Call<MessageResponse> addMemberToGroupChat(@Path("chatId") String chatId, @Body ListMemberIdRequest members);
 
     // Xoá thành viên khỏi nhóm (chỉ admin)
-    @PUT("/chat/remove-member/{chatId}")
+    @PUT("api/chat/remove-member/{chatId}")
     Call<Void> removeMemberFromGroupChat(@Path("chatId") String chatId, @Body UserIdRequest request);
 
     // Tham gia vào nhóm chat
-    @POST("/chat/join")
+    @POST("api/chat/join")
     Call<Void> joinGroupChat(@Body UserIdRequest request);
 
     // Rời khỏi nhóm chat
-    @PUT("/chat/leave")
+    @PUT("api/chat/leave")
     Call<Void> leaveGroupChat(@Body UserIdRequest request);
 
     // Tắt thông báo nhóm chat
-    @PUT("/chat/mute")
+    @PUT("api/chat/mute")
     Call<Void> muteGroupChat(@Body UserIdRequest request);
 
     // Bật thông báo nhóm chat
-    @PUT("/chat/unmute")
+    @PUT("api/chat/unmute")
     Call<Void> unmuteGroupChat(@Body UserIdRequest request);
 
     //Chat
     // Gửi tin nhắn mới
-    @POST("/message/")
+    @POST("api/message/")
     Call<MessageResponse> sendMessage(@Body Message request);
 
     // Xoá tin nhắn theo ID
-    @DELETE("/message/{id}")
+    @DELETE("api/message/{id}")
     Call<MessageResponse> deleteMessage(@Path("id") String messageId);
 
     // Sửa tin nhắn
-    @PUT("/message/{id}")
+    @PUT("api/message/{id}")
     Call<MessageResponse> editMessage(@Path("id") String messageId, @Body Message request);
 
     // Lấy danh sách tin nhắn của một cuộc trò chuyện
-    @GET("/message/{chatId}")
+    @GET("api/message/{chatId}")
     Call<ListMessageResponse> getMessagesByChatId(@Path("chatId") String chatId);
 }

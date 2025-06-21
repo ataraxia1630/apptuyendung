@@ -1,13 +1,13 @@
 package com.example.workleap.ui.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.workleap.data.model.entity.Conversation;
-import com.example.workleap.data.model.request.ConversationRequest;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.data.model.request.GroupChatRequest;
 import com.example.workleap.data.model.request.ListMemberIdRequest;
@@ -18,12 +18,8 @@ import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.repository.ConversationRepository;
 import com.google.gson.Gson;
 
-import java.io.File;
 import java.util.List;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,6 +48,7 @@ public class ConversationViewModel extends ViewModel {
             @Override
             public void onResponse(Call<ListConversationResponse> call, Response<ListConversationResponse> response) {
                 if (response.isSuccessful()) {
+                    Log.d("API_RESPONSE_CHAT", new Gson().toJson(response.body()));
                     allChats.setValue(response.body().getAllConversation());
                     messageResult.setValue("Lấy tất cả cuộc trò chuyện thành công");
                 } else handleError(response);

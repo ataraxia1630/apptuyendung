@@ -1,18 +1,20 @@
 package com.example.workleap.data.model.response;
 
 import com.example.workleap.data.model.entity.Conversation;
+import com.example.workleap.data.model.entity.ConversationUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListConversationResponse {
     String message;
 
-    List<Conversation> chats;
+    ArrayList<Conversation> chats;
 
     public ListConversationResponse() {
     }
 
-    public ListConversationResponse(String message, List<Conversation> chats) {
+    public ListConversationResponse(String message, ArrayList<Conversation> chats) {
         this.message = message;
         this.chats = chats;
     }
@@ -21,7 +23,7 @@ public class ListConversationResponse {
         return message;
     }
 
-    public List<Conversation> getAllConversation() {
+    public ArrayList<Conversation> getAllConversation() {
         return chats;
     }
 }
