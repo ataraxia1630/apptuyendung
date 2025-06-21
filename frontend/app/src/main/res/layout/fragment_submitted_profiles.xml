@@ -67,10 +67,22 @@
         <TextView
             android:id="@+id/tvExport"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="30dp"
             android:clickable="true"
             android:focusable="true"
             android:text="Export data"
+            android:textAllCaps="false"
+            android:textColor="@color/design_default_color_secondary"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvStartReviewing"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_below="@+id/tvExport"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Start Reviewing"
             android:textAllCaps="false"
             android:textColor="@color/design_default_color_secondary"
             android:textStyle="bold" />
@@ -83,9 +95,11 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Sort"
             android:src="@drawable/ic_filter" />
+
     </RelativeLayout>
 
     <!-- Danh sách -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSubmittedCVs"
         android:layout_width="match_parent"

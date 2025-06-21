@@ -52,7 +52,6 @@
     <!-- Khung chứa Fragment đọc PDF -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/pdfViewerContainer"
-        android:name="com.example.workleap.ui.view.main.cv_appliedjob.PdfFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

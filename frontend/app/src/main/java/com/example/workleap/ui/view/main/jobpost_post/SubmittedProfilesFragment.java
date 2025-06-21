@@ -50,7 +50,7 @@ public class SubmittedProfilesFragment extends Fragment {
     private JobPostViewModel jobPostViewModel;
     ArrayList<JobApplied> submittedProfiles;
     private JobPost currentJobPost;
-    private TextView tvProfileCount, tvExport, tvStatus;
+    private TextView tvProfileCount, tvExport, tvStartReviewing;
     private EditText etSearch;
     private ImageButton btnFilter;
     private RecyclerView rvSubmittedCVs;
@@ -80,6 +80,7 @@ public class SubmittedProfilesFragment extends Fragment {
         tvProfileCount = view.findViewById(R.id.tvProfileCount);
         etSearch = view.findViewById(R.id.etSearch);
         tvExport = view.findViewById(R.id.tvExport);
+        tvStartReviewing = view.findViewById(R.id.tvStartReviewing);
         btnFilter = view.findViewById(R.id.btnFilter);
         rvSubmittedCVs = view.findViewById(R.id.rvSubmittedCVs);
 
@@ -165,6 +166,18 @@ public class SubmittedProfilesFragment extends Fragment {
         });
 
 
+        tvStartReviewing.setOnClickListener(v -> {
+            MultiPdfFragment multiPdfFragment = new MultiPdfFragment();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("jobApplieds", submittedProfiles);
+            multiPdfFragment.setArguments(bundle);
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fullscreenFragmentContainer, multiPdfFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
         createFileLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {

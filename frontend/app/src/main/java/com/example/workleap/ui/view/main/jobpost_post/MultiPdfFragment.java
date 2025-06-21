@@ -13,9 +13,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.JobApplied;
+import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.ui.view.main.cv_appliedjob.PdfFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MultiPdfFragment extends Fragment {
 
@@ -25,6 +28,11 @@ public class MultiPdfFragment extends Fragment {
 
     private TextView tvApplicantName, tvPdfIndex;
     private ImageButton btnPrevious, btnNext, btnDismiss, btnApprove, btnBack;
+
+    private ArrayList<JobApplied> jobApplieds;
+
+    private String urlSupabase = "https://epuxazakjgtmjuhuwkza.supabase.co/storage/v1/object/public/cv-storage/";
+
 
     public static MultiPdfFragment newInstance(ArrayList<String> pdfUrls, ArrayList<String> applicantNames) {
         MultiPdfFragment fragment = new MultiPdfFragment();
@@ -45,8 +53,14 @@ public class MultiPdfFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        pdfUrls = getArguments().getStringArrayList("pdf_urls");
-        applicantNames = getArguments().getStringArrayList("applicant_names");
+        jobApplieds = (ArrayList<JobApplied>) getArguments().getSerializable("jobApplieds");
+        pdfUrls = new ArrayList<>();
+        applicantNames = new ArrayList<>();
+
+        for (JobApplied item : jobApplieds) {
+            pdfUrls.add(item.getCV().getFilePath());
+            applicantNames.add(item.getApplicant().getFirstName() +" "+ item.getApplicant().getLastName());
+        }
 
         tvApplicantName = view.findViewById(R.id.tvApplicantName);
         tvPdfIndex = view.findViewById(R.id.tvPdfIndex);
@@ -77,7 +91,7 @@ public class MultiPdfFragment extends Fragment {
 
         PdfFragment pdfFragment = new PdfFragment();
         Bundle args = new Bundle();
-        args.putString("pdf_url", url);
+        args.putString("pdf_url", urlSupabase + url);
         args.putString("pdf_title", applicant);
         pdfFragment.setArguments(args);
 
