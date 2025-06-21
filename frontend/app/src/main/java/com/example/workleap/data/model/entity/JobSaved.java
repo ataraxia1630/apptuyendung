@@ -2,6 +2,7 @@ package com.example.workleap.data.model.entity;
 
 // JobSaved.java
 
+import java.io.Serializable;
 import java.util.Date;
 
 public class JobSaved {

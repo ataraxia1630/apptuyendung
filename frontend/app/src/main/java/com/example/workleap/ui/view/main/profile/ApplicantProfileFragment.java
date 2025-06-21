@@ -176,6 +176,25 @@ public class ApplicantProfileFragment extends Fragment {
             listEducation = allEducation;
         });
 
+        //applicant education
+        applicantViewModel.getDeleteApplicantEducationResult().observe(getViewLifecycleOwner(), result ->{
+            ReloadEducation();
+            if(result != null)
+                Log.e("ApplicantProfile", "getDeleteApplicantEducationResult " + result);
+            else
+                Log.e("ApplicantProfile", "getDeleteApplicantEducationResult null");
+
+        });
+
+        //applicant experience
+        applicantViewModel.getDeleteApplicantExperienceResult().observe(getViewLifecycleOwner(), result ->{
+            ReloadExperience();
+            if(result != null)
+                Log.e("ApplicantProfile", "getDeleteApplicantExperienceResult " + result);
+            else
+                Log.e("ApplicantProfile", "getDeleteApplicantExperienceResult null");
+        });
+
         //get all fields for interested fields
         applicantViewModel.getAllFields();
         applicantViewModel.getGetAllFieldResult().observe(getViewLifecycleOwner(), result ->
@@ -393,10 +412,25 @@ public class ApplicantProfileFragment extends Fragment {
         });
         btnEditAboutMe.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("AboutMe");
+
+            Bundle args = dialog.getArguments();
+            args.putString("aboutMe", String.valueOf(tvAboutMe.getText()));
+            dialog.setArguments(args);
+
             dialog.show(getParentFragmentManager(), "EditApplicantAboutMeDialog");
         });
         btnEditApplicantInfo.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantInfo");
+
+            Bundle args = dialog.getArguments();
+            args.putString("firstName", applicantFirstName);
+            args.putString("lastName", applicantLastName);
+            //args.putString("gender", );
+            //args.putString("age", );
+            //args.putString("dateOfBirth", );
+            args.putString("address", String.valueOf(tvAddressInfo.getText()));
+            dialog.setArguments(args);
+
             dialog.show(getParentFragmentManager(), "EditApplicantInfoDialog");
         });
 
@@ -479,6 +513,11 @@ public class ApplicantProfileFragment extends Fragment {
                     Bundle args = dialog.getArguments();
                     args.putSerializable("deleteApplicantEducation", (Serializable) applicantEdu);
                     args.putSerializable("listEducation", (Serializable) listEducation);
+                    args.putString("schoolName", String.valueOf(tvSchoolName.getText()));
+                    args.putString("eduLevel", String.valueOf(tvEduLevel.getText()));
+                    args.putString("major", String.valueOf(tvMajor.getText()));
+                    args.putString("yearStart", start);
+                    args.putString("yearEnd", end);
                     dialog.setArguments(args);
                     dialog.show(getParentFragmentManager(), "UpdateApplicantEducation");
                 });
@@ -575,6 +614,12 @@ public class ApplicantProfileFragment extends Fragment {
                     Bundle args = dialog.getArguments();
                     args.putSerializable("deleteApplicantExperience", (Serializable) experience);
                     args.putSerializable("listField", (Serializable) listField);
+                    args.putString("companyName", String.valueOf(tvCompanyName.getText()));
+                    args.putString("companyLink", String.valueOf(tvCompanyLink.getText()));
+                    args.putString("position", String.valueOf(tvPosition.getText()));
+                    args.putString("yearStart", start);
+                    args.putString("yearEnd", end);
+                    args.putString("jobResponsibility", String.valueOf(tvJobResponsibility.getText()));
                     dialog.setArguments(args);
                     dialog.show(getParentFragmentManager(), "UpdateApplicantExperienceDialog");
                 });

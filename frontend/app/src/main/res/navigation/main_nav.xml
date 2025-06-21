@@ -17,9 +17,9 @@
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/menu_notifications"
-        android:name="com.example.workleap.ui.view.main.NotificationFragment"
+        android:name="com.example.workleap.ui.view.main.message_notification.MessageFragment"
         android:label="fragment_notification"
-        tools:layout="@layout/fragment_notification" />
+        tools:layout="@layout/fragment_message" />
     <fragment
         android:id="@+id/applicantProfileFragment"
         android:name="com.example.workleap.ui.view.main.profile.ApplicantProfileFragment"
@@ -45,6 +45,11 @@
         android:name="com.example.workleap.ui.view.main.jobpost_post.OverviewMyJobPostFragment"
         android:label="fragment_overview_my_jobpost"
         tools:layout="@layout/fragment_overview_my_jobpost" />
+    <fragment
+        android:id="@+id/submittedProfilesFragment"
+        android:name="com.example.workleap.ui.view.main.jobpost_post.SubmittedProfilesFragment"
+        android:label="fragment_submitted_profiles"
+        tools:layout="@layout/fragment_submitted_profiles" />
     <fragment
         android:id="@+id/HomeJobPostFragment"
         android:name="com.example.workleap.ui.view.main.home.HomeJobPostFragment"
@@ -85,5 +90,15 @@
         android:name="com.example.workleap.ui.view.main.home.ChooseCVFragment"
         android:label="Choose CV" >
     </fragment>
-
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.example.workleap.ui.view.main.message_notification.NotificationFragment"
+        android:label="Notification" />
+    <action
+        android:id="@+id/action_messageFragment_to_notificationFragment"
+        app:destination="@id/notificationFragment"
+        app:enterAnim="@anim/fade_in"
+        app:exitAnim="@anim/fade_out"
+        app:popEnterAnim="@anim/fade_in"
+        app:popExitAnim="@anim/fade_out" />
 </navigation>

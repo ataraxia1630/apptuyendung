@@ -9,6 +9,8 @@ import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
+import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
+import com.example.workleap.data.model.response.JobAppliedResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
 import com.example.workleap.data.model.response.ListJobCategoryResponse;
@@ -19,10 +21,6 @@ import com.example.workleap.data.model.response.MessageResponse;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Path;
 
 public class JobPostRepository {
     private ApiService apiService;
@@ -62,6 +60,7 @@ public class JobPostRepository {
         return apiService.searchJobPosts(title, location, position, educationRequirement, companyName);
     }
 
+    public Call<JobPostResponse> getMyJobPostById(String id) {return apiService.getMyJobPostById(id);}
 
     //JobType
     public Call<ListJobTypeResponse> getAllJobTypes() {
@@ -102,5 +101,8 @@ public class JobPostRepository {
     }
     public Call<MessageResponse> applyAJob(ApplyAJobRequest request) {
         return apiService.applyAJob(request);
+    }
+    public Call<JobAppliedResponse> processCvApplied(ProcessCvAppliedRequest request) {
+        return apiService.processCvApplied(request);
     }
 }

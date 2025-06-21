@@ -9,8 +9,8 @@ public class ApplicantEducation implements Serializable {
     private String eduId;
     private Education education;
     private String applicantId;
-    private Date eduStart;
-    private Date eduEnd;
+    private Date edu_start;
+    private Date edu_end;
     private String major;
     private String eduLevel; // Enum: HIGH_SCHOOL, BACHELOR, MASTER, DOCTORATE
     private String moreInfo;
@@ -25,8 +25,8 @@ public class ApplicantEducation implements Serializable {
         this.id = id;
         this.eduId = eduId;
         this.applicantId = applicantId;
-        this.eduStart = eduStart;
-        this.eduEnd = eduEnd;
+        this.edu_start = eduStart;
+        this.edu_end = eduEnd;
         this.major = major;
         this.eduLevel = eduLevel;
         this.moreInfo = moreInfo;
@@ -42,10 +42,10 @@ public class ApplicantEducation implements Serializable {
     public void setEduId(String eduId) { this.eduId = eduId; }
     public String getApplicantId() { return applicantId; }
     public void setApplicantId(String applicantId) { this.applicantId = applicantId; }
-    public Date getEduStart() { return eduStart; }
-    public void setEduStart(Date eduStart) { this.eduStart = eduStart; }
-    public Date getEduEnd() { return eduEnd; }
-    public void setEduEnd(Date eduEnd) { this.eduEnd = eduEnd; }
+    public Date getEduStart() { return edu_start; }
+    public void setEduStart(Date eduStart) { this.edu_start = eduStart; }
+    public Date getEduEnd() { return edu_end; }
+    public void setEduEnd(Date eduEnd) { this.edu_end = eduEnd; }
     public String getMajor() { return major; }
     public void setMajor(String major) { this.major = major; }
     public String getEduLevel() { return eduLevel; }

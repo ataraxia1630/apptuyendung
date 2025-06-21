@@ -22,7 +22,7 @@ route.get(
 );
 
 // lấy 1 người dùng theo id / username
-route.get('/:id', verifyToken, cache, ApplicantController.getApplicantById);
+route.get('/:id', verifyToken, ApplicantController.getApplicantById);
 route.put(
   '/:id',
   verifyToken,

@@ -300,6 +300,34 @@ const JobPostService = {
             throw new Error(`Error fetching company job posts with applications: ${error.message}`);
         }
     },
+    getJobPostByIdForCompany: async (jobPostId, companyId) => {
+        if (!jobPostId || !companyId) throw new Error('JobPost ID and Company ID are required');
+
+        try {
+            const jobPost = await prisma.jobPost.findFirst({
+                where: {
+                    id: jobPostId,
+                    companyId,
+                },
+                include: {
+                    JobApplied: {
+                        include: {
+                            applicant: true,
+                            CV: true
+                        }
+                    },
+                    JobType: true,
+                    JobCategory: true,
+                }
+            });
+
+            if (!jobPost) throw new Error('Job post not found or not owned by your company');
+
+            return jobPost;
+        } catch (error) {
+            throw new Error(`Error fetching job post for company: ${error.message}`);
+        }
+    }
 
 
 };
