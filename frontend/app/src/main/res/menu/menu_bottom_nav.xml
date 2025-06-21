@@ -13,8 +13,8 @@
         android:icon="@drawable/ic_chart"
         android:id="@+id/menu_statistics"/>
 
-    <item android:title="notifications"
-        android:icon="@drawable/ic_bell"
+    <item android:title="messages"
+        android:icon="@drawable/ic_chat"
         android:id="@+id/menu_notifications"/>
 
     <item android:title="profile"
