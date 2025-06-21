@@ -30,6 +30,7 @@ const statisticRoutes = require('./statistic.route');
 const reportRoutes = require('./report.route');
 const postImageRoute = require('./postImage.route')
 const reviewRoutes = require('./review.route');
+const followerRoutes = require('./follower.route');
 
 function route(app) {
   app.use('/api/auth', authRoutes);
@@ -65,6 +66,7 @@ function route(app) {
   app.use('/api/statistic', statisticRoutes)
   app.use('/api/reports', reportRoutes);
   app.use('/api/reviews', reviewRoutes);
+  app.use('/api/followers', followerRoutes);
 }
 
 module.exports = route;
