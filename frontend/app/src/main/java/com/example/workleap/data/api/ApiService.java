@@ -1,20 +1,27 @@
 package com.example.workleap.data.api;
 
-import com.example.workleap.data.model.entity.CV;
 import com.example.workleap.data.model.entity.Comment;
+import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
+import com.example.workleap.data.model.entity.Message;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
+import com.example.workleap.data.model.request.FriendIdRequest;
+import com.example.workleap.data.model.request.GroupChatRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
+import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
+import com.example.workleap.data.model.request.ListMemberIdRequest;
+import com.example.workleap.data.model.request.UserIdRequest;
 import com.example.workleap.data.model.response.CVResponse;
 import com.example.workleap.data.model.response.CommentResponse;
+import com.example.workleap.data.model.response.ConversationResponse;
 import com.example.workleap.data.model.response.CreateApplicantEducationResponse;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
 import com.example.workleap.data.model.request.CreateApplicantSkillRequest;
@@ -27,14 +34,16 @@ import com.example.workleap.data.model.response.GetCompanyResponse;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.ImageUrlResponse;
+import com.example.workleap.data.model.response.JobAppliedResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListCommentResponse;
+import com.example.workleap.data.model.response.ListConversationResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
-import com.example.workleap.data.model.response.ListInterestedFieldResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
+import com.example.workleap.data.model.response.ListMessageResponse;
 import com.example.workleap.data.model.response.ListPostResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
@@ -45,6 +54,7 @@ import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.request.RegisterRequest;
+import com.example.workleap.data.model.response.OverviewResponse;
 import com.example.workleap.data.model.response.PostResponse;
 import com.example.workleap.data.model.response.ReactionResponse;
 import com.example.workleap.data.model.response.RegisterResponse;
@@ -61,6 +71,8 @@ import com.example.workleap.data.model.response.UpdateCompanyResponse;
 import com.example.workleap.data.model.request.UpdateUserRequest;
 import com.example.workleap.data.model.response.UpdateUserResponse;
 
+import java.lang.reflect.Member;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -193,6 +205,8 @@ public interface ApiService {
             @Query("educationRequirement") String educationRequirement,
             @Query("companyName") String companyName
     );
+    @GET("api/job-posts/company/me/{id}")
+    Call<JobPostResponse> getMyJobPostById( @Path("id") String id);
 
     //JobType
     @GET("api/types/all")
@@ -223,7 +237,8 @@ public interface ApiService {
     Call<ListJobAppliedResponse> getJobApplied(@Path("applicantId") String applicantId);
     @POST("api/apply/")            //create a job applied
     Call<MessageResponse> applyAJob(@Body ApplyAJobRequest request);
-
+    @PUT("api/apply/process-cv")            //process cv applied
+    Call<JobAppliedResponse> processCvApplied(@Body ProcessCvAppliedRequest request);
 
     //Cv
     //@POST("api/cv/upload/{applicantId}")
@@ -287,4 +302,85 @@ public interface ApiService {
     Call<ReactionResponse> toggleReaction(@Body Reaction request);
     @DELETE("api/reactions/{postId}")
     Call<MessageResponse> removeReaction(@Path("postId") String postId);
+
+    //Statistic
+    @GET("api/statistic/overview")
+    Call<OverviewResponse> getOverview();
+    @GET("api/statistic/top-jobposts")
+    Call<OverviewResponse> getTopJobpost();
+
+    //Chat-Conversation
+    // Lấy tất cả các cuộc trò chuyện của user
+    @GET("api/chat/all")
+    Call<ListConversationResponse> getAllChats();
+    // Lấy tất cả đoạn chat có tin nhắn chưa đọc
+    @GET("api/chat/unread")
+    Call<ListConversationResponse> getAllUnreadChats();
+    // Lấy tất cả các nhóm chat
+    @GET("api/chat/group")
+    Call<ListConversationResponse> getAllGroupChats();
+    // Lấy thông tin một đoạn chat cụ thể theo ID
+    @GET("api/chat/{chatId}")
+    Call<ListConversationResponse> getChatById(@Path("chatId") String chatId);
+    // Lấy tất cả tin nhắn trong một cuộc trò chuyện
+    @GET("api/chat/{chatId}/mess")
+    Call<ListConversationResponse> getAllMessages(@Path("chatId") String chatId);
+
+    // Tạo một cuộc trò chuyện mới (chat cá nhân)
+    @POST("api/chat/")
+    Call<ConversationResponse> createChat(@Body FriendIdRequest request);
+
+    // Tạo một group chat mới
+    @POST("api/chat/group")
+    Call<ConversationResponse> createGroupChat(@Body GroupChatRequest request);
+
+    // Cập nhật thông tin của một cuộc trò chuyện (đổi tên nhóm)
+    @PUT("api/chat/{chatId}")
+    Call<MessageResponse> updateChat(@Path("chatId") String chatId, @Body Conversation request);
+
+    // Xoá một cuộc trò chuyện
+    @DELETE("api/chat/{chatId}")
+    Call<MessageResponse> deleteChat(@Path("chatId") String chatId);
+
+    // Thêm thành viên vào nhóm (chỉ admin)
+    @POST("api/chat/add-member/{chatId}")
+    Call<MessageResponse> addMemberToGroupChat(@Path("chatId") String chatId, @Body ListMemberIdRequest members);
+
+    // Xoá thành viên khỏi nhóm (chỉ admin)
+    @PUT("api/chat/remove-member/{chatId}")
+    Call<Void> removeMemberFromGroupChat(@Path("chatId") String chatId, @Body UserIdRequest request);
+
+    // Tham gia vào nhóm chat
+    @POST("api/chat/join")
+    Call<Void> joinGroupChat(@Body UserIdRequest request);
+
+    // Rời khỏi nhóm chat
+    @PUT("api/chat/leave")
+    Call<Void> leaveGroupChat(@Body UserIdRequest request);
+
+    // Tắt thông báo nhóm chat
+    @PUT("api/chat/mute")
+    Call<Void> muteGroupChat(@Body UserIdRequest request);
+
+    // Bật thông báo nhóm chat
+    @PUT("api/chat/unmute")
+    Call<Void> unmuteGroupChat(@Body UserIdRequest request);
+
+    //Chat
+    // Gửi tin nhắn mới
+    @POST("api/message/")
+    Call<MessageResponse> sendMessage(@Body Message request);
+
+    // Xoá tin nhắn theo ID
+    @DELETE("api/message/{id}")
+    Call<MessageResponse> deleteMessage(@Path("id") String messageId);
+
+    // Sửa tin nhắn
+    @PUT("api/message/{id}")
+    Call<MessageResponse> editMessage(@Path("id") String messageId, @Body Message request);
+
+    // Lấy danh sách tin nhắn của một cuộc trò chuyện
+    @GET("api/message/{chatId}")
+    Call<ListMessageResponse> getMessagesByChatId(@Path("chatId") String chatId);
+
 }
