@@ -14,7 +14,7 @@ public class JobApplied {
     private Date updated_at;
     private JobPost jobPost;
     private Applicant applicant;
-    private CV cv;
+    private CV CV;
 
     // Getters and Setters
 
@@ -90,11 +90,11 @@ public class JobApplied {
         this.applicant = applicant;
     }
 
-    public CV getCv() {
-        return cv;
+    public CV getCV() {
+        return CV;
     }
 
-    public void setCv(CV cv) {
-        this.cv = cv;
+    public void setCV(CV CV) {
+        this.CV = CV;
     }
 }

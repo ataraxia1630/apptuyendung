@@ -8,8 +8,8 @@
         android:title="Download"/>
     <item
         android:id="@+id/action_approve"
-        android:title="Rename"/>
+        android:title="Approve"/>
     <item
         android:id="@+id/action_dismiss"
-        android:title="Delete" />
+        android:title="Dismiss" />
 </menu>

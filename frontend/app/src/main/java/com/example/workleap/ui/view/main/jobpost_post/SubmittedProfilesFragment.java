@@ -19,10 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.ui.view.main.cv_appliedjob.PdfFragment;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SubmittedProfilesFragment extends Fragment {
     private JobPostViewModel jobPostViewModel;
@@ -32,6 +32,9 @@ public class SubmittedProfilesFragment extends Fragment {
     private EditText etSearch;
     private ImageButton btnFilter;
     private RecyclerView rvSubmittedCVs;
+
+    private String urlSupabase = "https://epuxazakjgtmjuhuwkza.supabase.co/storage/v1/object/public/cv-storage/";
+
 
     public SubmittedProfilesFragment() {
         // Required empty public constructor
@@ -81,7 +84,17 @@ public class SubmittedProfilesFragment extends Fragment {
                         new SubmittedProfilesAdapter.OnSubmittedProfilesMenuClickListener() {
                             @Override
                             public void onOpen(JobApplied jobApplied) {
-                                // TODO: Implement open logic
+                                PdfFragment pdfFragment = new PdfFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putString("pdf_title", jobApplied.getApplicant().getFirstName()+jobApplied.getApplicant().getLastName());
+                                bundle.putString("pdf_url", urlSupabase + jobApplied.getCV().getFilePath());
+                                pdfFragment.setArguments(bundle);
+
+                                requireActivity().getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.fullscreenFragmentContainer, pdfFragment)
+                                        .addToBackStack(null)
+                                        .commit();
                             }
 
                             @Override
