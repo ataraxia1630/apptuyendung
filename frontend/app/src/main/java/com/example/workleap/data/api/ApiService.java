@@ -1,6 +1,5 @@
 package com.example.workleap.data.api;
 
-import com.example.workleap.data.model.entity.CV;
 import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.JobApplied;
@@ -17,6 +16,7 @@ import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.data.model.request.GroupChatRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
+import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
 import com.example.workleap.data.model.request.ListMemberIdRequest;
 import com.example.workleap.data.model.request.UserIdRequest;
 import com.example.workleap.data.model.response.CVResponse;
@@ -34,6 +34,7 @@ import com.example.workleap.data.model.response.GetCompanyResponse;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.ImageUrlResponse;
+import com.example.workleap.data.model.response.JobAppliedResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListCommentResponse;
@@ -41,7 +42,6 @@ import com.example.workleap.data.model.response.ListConversationResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
-import com.example.workleap.data.model.response.ListInterestedFieldResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListMessageResponse;
 import com.example.workleap.data.model.response.ListPostResponse;
@@ -204,6 +204,8 @@ public interface ApiService {
             @Query("educationRequirement") String educationRequirement,
             @Query("companyName") String companyName
     );
+    @GET("api/job-posts/company/me/{id}")
+    Call<JobPostResponse> getMyJobPostById( @Path("id") String id);
 
     //JobType
     @GET("api/types/all")
@@ -234,7 +236,8 @@ public interface ApiService {
     Call<ListJobAppliedResponse> getJobApplied(@Path("applicantId") String applicantId);
     @POST("api/apply/")            //create a job applied
     Call<MessageResponse> applyAJob(@Body ApplyAJobRequest request);
-
+    @PUT("api/apply/process-cv")            //process cv applied
+    Call<JobAppliedResponse> processCvApplied(@Body ProcessCvAppliedRequest request);
 
     //Cv
     //@POST("api/cv/upload/{applicantId}")

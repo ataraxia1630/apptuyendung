@@ -97,5 +97,12 @@ public class PdfFragment extends Fragment {
         File tempFile = new File(getActivity().getCacheDir(), "temp.pdf");
         if (tempFile.exists()) tempFile.delete();
     }
-
+    public void hideToolbar() {
+        if (getView() != null) {
+            View toolbar = getView().findViewById(R.id.toolbar);
+            if (toolbar != null) {
+                toolbar.setVisibility(View.GONE);
+            }
+        }
+    }
 }

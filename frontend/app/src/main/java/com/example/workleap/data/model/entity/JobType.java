@@ -2,10 +2,11 @@ package com.example.workleap.data.model.entity;
 
 // JobType.java
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class JobType {
+public class JobType implements Serializable {
     private String id;
     private String name;
     private Date created_at;

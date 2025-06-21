@@ -11,16 +11,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.home.DetailCompanyFragment;
+import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.google.android.material.tabs.TabLayout;
 
-public class OverviewMyJobPostFragment extends Fragment {
+import java.util.List;
 
+public class OverviewMyJobPostFragment extends Fragment {
     private TabLayout tabLayout;
     private FrameLayout fragmentContainer;
     private TextView txtJobName, txtCompanyName, txtSalary, txtLocation;
@@ -40,7 +44,6 @@ public class OverviewMyJobPostFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         user = (User) getArguments().getSerializable("user");
-
         currentJobPost = (JobPost) getArguments().getSerializable("currentJobPost");
 
         // Bind view
@@ -63,7 +66,7 @@ public class OverviewMyJobPostFragment extends Fragment {
 
         // Tab xử lý
         tabLayout.addTab(tabLayout.newTab().setText("Descriptions"));
-        tabLayout.addTab(tabLayout.newTab().setText("Company"));
+        tabLayout.addTab(tabLayout.newTab().setText("Candidates"));
 
         // Load tab đầu
         loadTabFragment(0);
@@ -85,7 +88,7 @@ public class OverviewMyJobPostFragment extends Fragment {
         bundle.putSerializable("currentJobPost", currentJobPost);
 
         if (position == 1) {
-            fragment = new DetailCompanyFragment();
+            fragment = new SubmittedProfilesFragment();
         } else {
             fragment = new DetailMyJobPostFragment();
         }
