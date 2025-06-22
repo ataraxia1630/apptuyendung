@@ -43,7 +43,9 @@ public class PdfFragment extends Fragment {
         new Thread(() -> {
             try {
                 File pdfFile = downloadPdfFromUrl(pdfUrl);
-                getActivity().runOnUiThread(() -> renderPdf(pdfFile));
+                if (isAdded() && getView() != null && getActivity() != null) {
+                    getActivity().runOnUiThread(() -> renderPdf(pdfFile));
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

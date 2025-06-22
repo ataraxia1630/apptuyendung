@@ -167,6 +167,16 @@ public class SubmittedProfilesFragment extends Fragment {
 
 
         tvStartReviewing.setOnClickListener(v -> {
+            if(submittedProfiles==null)
+            {
+                Toast.makeText(this.getActivity(), "No profiles have been submitted yet.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(submittedProfiles.size()==0)
+            {
+                Toast.makeText(this.getActivity(), "No profiles have been submitted yet.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             MultiPdfFragment multiPdfFragment = new MultiPdfFragment();
             Bundle bundle = new Bundle();
             bundle.putSerializable("jobApplieds", submittedProfiles);
@@ -301,6 +311,13 @@ public class SubmittedProfilesFragment extends Fragment {
             }
         }).start();
 
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (submittedProfiles != null) {
+            submittedProfiles.clear();  //tranh mo lai o jobpost khac khi chua kip load du lieu moi
+        }
     }
 
 }
