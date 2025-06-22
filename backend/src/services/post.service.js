@@ -7,6 +7,7 @@ const PostService = {
                 skip,
                 take,
                 orderBy: { created_at: 'desc' },
+                where: { status: 'OPENING' },
                 include: {
                     Company: true,
                     contents: true,
@@ -107,7 +108,7 @@ const PostService = {
             orConditions.push({
                 contents: {
                     some: {
-                        content: {
+                        value: {
                             contains: filters.contents.trim(),
                             mode: 'insensitive',
                         },
@@ -137,7 +138,10 @@ const PostService = {
             }
         }
 
-        const where = orConditions.length > 0 ? { OR: orConditions } : {};
+        const where = orConditions.length > 0
+            ? { AND: [{ status: 'OPENING' }, { OR: orConditions }] }
+            : { status: 'OPENING' };
+
 
         const [posts, total] = await Promise.all([
             prisma.post.findMany({
@@ -164,7 +168,7 @@ const PostService = {
         try {
             const [posts, total] = await Promise.all([
                 prisma.post.findMany({
-                    where: { companyId },
+                    where: { companyId, status: 'OPENING' },
                     skip,
                     take,
                     orderBy: { created_at: 'desc' },
@@ -188,7 +192,7 @@ const PostService = {
         if (!status) throw new Error('Status is required');
 
         try {
-            const where = { approvalStatus: status };
+            const where = { status: status };
 
             const [posts, total] = await Promise.all([
                 prisma.post.findMany({
@@ -212,9 +216,10 @@ const PostService = {
         }
     },
     updatePostStatus: async (id, status) => {
-        if (!id) throw new Error('JobPost ID is required');
+        if (!id) throw new Error('Post ID is required');
         if (!status) throw new Error('Status is required');
-        const validStatuses = ['PENDING', 'APPROVED', 'REJECTED'];
+
+        const validStatuses = ['OPENING', 'TERMINATED', 'CANCELLED', 'NOT_EXIST'];
         if (!validStatuses.includes(status)) {
             throw new Error('Invalid status');
         }
@@ -222,17 +227,18 @@ const PostService = {
         try {
             const updatedPost = await prisma.post.update({
                 where: { id },
-                data: { approvalStatus: status },
+                data: { status: status },   // cập nhật trường status
                 include: {
-                    Company: true,          // nếu cần trả về luôn thông tin Company
+                    Company: true,
                     contents: true,
                 },
             });
             return updatedPost;
         } catch (error) {
-            throw new Error(`Error updating job post status: ${error.message}`);
+            throw new Error(`Error updating post status: ${error.message}`);
         }
     },
+
 };
 
 module.exports = { PostService };

@@ -2,13 +2,13 @@ const prisma = require('../config/db/prismaClient');
 
 const StatisticService = {
     getOverview: async () => {
-        const [userCount, jobPostCount, reportCount, applicationCount] = await Promise.all([
+        const [userCount, jobPostCount, companyCount, applicationCount] = await Promise.all([
             prisma.user.count(),
             prisma.jobPost.count(),
-            prisma.report.count(),
+            prisma.company.count(),
             prisma.jobApplied.count()
         ]);
-        return { userCount, jobPostCount, reportCount, applicationCount };
+        return { userCount, jobPostCount, companyCount, applicationCount };
     },
 
     getTopJobposts: async (skip, take) => {

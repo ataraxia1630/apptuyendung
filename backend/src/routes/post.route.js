@@ -14,7 +14,8 @@ router.delete('/:id', verifyToken, checkOwnership('Post', 'companyId'), PostCont
 router.get('/search/query', cache, PostController.searchPosts);
 router.get('/company/:companyId', verifyToken, cache, PostController.getPostsByCompany);
 
-router.get('/admin/pending', verifyToken, requireRole('ADMIN'), cache, PostController.getPendingPosts);
-router.put('/admin/toggle/:id', verifyToken, requireRole('ADMIN'), PostController.togglePostStatus);
+router.get('/status/:status', verifyToken, requireRole('ADMIN'), PostController.getPostsByStatus);
+router.put('/status/:id', verifyToken, requireRole('ADMIN'), PostController.updatePostStatus);
+
 
 module.exports = router;

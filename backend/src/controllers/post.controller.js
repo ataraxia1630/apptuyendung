@@ -102,29 +102,32 @@ const PostController = {
             return res.status(500).json({ message: 'Error fetching posts by company', error });
         }
     },
-    getPendingPosts: async (req, res) => {
+    getPostsByStatus: async (req, res) => {
+        const { status } = req.params;
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 10;
-        const skip = (page - 1) * pageSize;
-        const take = pageSize;
+        const { skip, take } = getPagination(page, pageSize);
+
+        const validStatuses = ['OPENING', 'TERMINATED', 'CANCELLED', 'NOT_EXIST'];
+
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ message: 'Invalid status' });
+        }
 
         try {
-            const { posts, total } = await PostService.getPostsByStatus('PENDING', skip, take);
-            const meta = {
-                total,
-                page,
-                pageSize,
-                totalPages: Math.ceil(total / pageSize)
-            };
-            res.status(200).json({ posts: posts, meta });
+            const { posts, total } = await PostService.getPostsByStatus(status, skip, take);
+            const meta = buildMeta(total, page, pageSize);
+            return res.status(200).json({ posts, meta });
         } catch (error) {
-            res.status(500).json({ message: 'Failed to fetch pending posts', error: error.message });
+            return res.status(500).json({ message: 'Error fetching posts by status', error });
         }
     },
-    togglePostStatus: async (req, res) => {
+
+    updatePostStatus: async (req, res) => {
         const { id } = req.params;
         const { status } = req.body;
-        const validStatuses = ['PENDING', 'APPROVED', 'REJECTED'];
+
+        const validStatuses = ['OPENING', 'TERMINATED', 'CANCELLED', 'NOT_EXIST'];
 
         if (!validStatuses.includes(status)) {
             return res.status(400).json({ message: 'Invalid status' });
@@ -132,9 +135,9 @@ const PostController = {
 
         try {
             const post = await PostService.updatePostStatus(id, status);
-            res.status(200).json({ post: post });
+            return res.status(200).json({ post });
         } catch (error) {
-            res.status(500).json({ message: 'Failed to update status', error: error.message });
+            return res.status(500).json({ message: 'Failed to update post status', error: error.message });
         }
     },
 };
