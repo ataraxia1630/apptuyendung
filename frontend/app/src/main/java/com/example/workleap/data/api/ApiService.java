@@ -15,6 +15,7 @@ import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.data.model.request.GroupChatRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
+import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
 import com.example.workleap.data.model.request.ListMemberIdRequest;
 import com.example.workleap.data.model.request.UserIdRequest;
 import com.example.workleap.data.model.response.CVResponse;
@@ -32,6 +33,7 @@ import com.example.workleap.data.model.response.GetCompanyResponse;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.ImageUrlResponse;
+import com.example.workleap.data.model.response.JobAppliedResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListCommentResponse;
@@ -52,6 +54,7 @@ import com.example.workleap.data.model.request.LogoutRequest;
 import com.example.workleap.data.model.response.MessageChatResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.request.RegisterRequest;
+import com.example.workleap.data.model.response.OverviewResponse;
 import com.example.workleap.data.model.response.PostResponse;
 import com.example.workleap.data.model.response.ReactionResponse;
 import com.example.workleap.data.model.response.RegisterResponse;
@@ -200,6 +203,8 @@ public interface ApiService {
             @Query("educationRequirement") String educationRequirement,
             @Query("companyName") String companyName
     );
+    @GET("api/job-posts/company/me/{id}")
+    Call<JobPostResponse> getMyJobPostById( @Path("id") String id);
 
     //JobType
     @GET("api/types/all")
@@ -230,7 +235,8 @@ public interface ApiService {
     Call<ListJobAppliedResponse> getJobApplied(@Path("applicantId") String applicantId);
     @POST("api/apply/")            //create a job applied
     Call<MessageResponse> applyAJob(@Body ApplyAJobRequest request);
-
+    @PUT("api/apply/process-cv")            //process cv applied
+    Call<JobAppliedResponse> processCvApplied(@Body ProcessCvAppliedRequest request);
 
     //Cv
     //@POST("api/cv/upload/{applicantId}")
@@ -294,6 +300,12 @@ public interface ApiService {
     Call<ReactionResponse> toggleReaction(@Body Reaction request);
     @DELETE("api/reactions/{postId}")
     Call<MessageResponse> removeReaction(@Path("postId") String postId);
+
+    //Statistic
+    @GET("api/statistic/overview")
+    Call<OverviewResponse> getOverview();
+    @GET("api/statistic/top-jobposts")
+    Call<OverviewResponse> getTopJobpost();
 
     //Chat-Conversation
     // Lấy tất cả các cuộc trò chuyện của user
@@ -368,4 +380,5 @@ public interface ApiService {
     // Lấy danh sách tin nhắn của một cuộc trò chuyện
     @GET("api/mess/{chatId}")
     Call<ListMessageResponse> getMessagesByChatId(@Path("chatId") String chatId);
+
 }

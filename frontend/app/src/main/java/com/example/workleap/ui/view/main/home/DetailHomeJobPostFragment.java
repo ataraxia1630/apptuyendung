@@ -1,5 +1,7 @@
 package com.example.workleap.ui.view.main.home;
 
+import static android.view.View.GONE;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -75,6 +77,8 @@ public class DetailHomeJobPostFragment extends Fragment {
         // Lấy jobPost và user từ arguments
         currentJobPost = (JobPost) getArguments().getSerializable("currentJobPost");
         user = (User) getArguments().getSerializable("user");
+        //tat nut apply doi voi company
+        if(user.getApplicantId()==null) btnApply.setVisibility(GONE);
 
         if (currentJobPost != null) {
             company = currentJobPost.getCompany();

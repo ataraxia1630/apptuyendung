@@ -16,7 +16,14 @@ router.delete('/:id', verifyToken, checkOwnership('JobPost', 'companyId'), JobPo
 router.get('/search/query', cache, JobPostController.searchJobPosts);
 router.get('/company/:id', verifyToken, JobPostController.getJobPostsByCompany);
 //Danh cho admin
-router.get('/admin/pending', verifyToken, requireRole('ADMIN'), cache, JobPostController.getPendingJobPosts);
+router.get(
+    '/admin/by-status',
+    verifyToken,
+    requireRole('ADMIN'),
+    cache,
+    JobPostController.getJobPostsByStatus
+);
+
 router.put('/admin/toggle/:id', verifyToken, requireRole('ADMIN'), JobPostController.toggleJobPostStatus);
 //Danh cho company
 router.get('/company/me/jobs-applications', verifyToken, requireRole('COMPANY'), JobPostController.getMyJobsWithApplications);

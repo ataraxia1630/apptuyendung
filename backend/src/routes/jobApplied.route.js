@@ -36,7 +36,6 @@ route.put(
   verifyToken,
   requireRole('COMPANY'),
   validate(ProcessSchema),
-  cache,
   JobAppliedController.processCV
 );
 
