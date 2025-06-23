@@ -41,6 +41,7 @@ import com.example.workleap.data.model.response.ListConversationUserResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
+import com.example.workleap.data.model.response.ListFollowerResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListMessageResponse;
 import com.example.workleap.data.model.response.ListPostResponse;
@@ -109,7 +110,13 @@ public interface ApiService {
     Call<UpdateUserResponse> updateUser(@Path("id") String id, @Body UpdateUserRequest request);
     @PUT("api/users/setting/{id}")
     Call<UpdateUserResponse> updateUserSetting(@Path("id") String id, @Body UpdateUserRequest request);
-
+    //Follower
+    @POST("api/followers/toggle/:followedId")
+    Call<MessageResponse> toggleFollow(@Path("followedId") String followedId);
+    @GET("api/followers/list/following/:userId")
+    Call<ListFollowerResponse> getFollowing(@Path("userId") String userId);
+    @GET("api/followers/list/followers/:userId")
+    Call<ListFollowerResponse> getFollowers(@Path("userId") String userId);
 
     //Applicant
     @GET("api/users/applicant/{id}")

@@ -7,12 +7,17 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.workleap.data.model.entity.Follower;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.UpdateUserRequest;
+import com.example.workleap.data.model.response.ListFollowerResponse;
+import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.response.UpdateUserResponse;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.data.repository.UserRepository;
 import com.google.gson.Gson;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,6 +28,11 @@ public class UserViewModel extends ViewModel {
     private MutableLiveData<User> getUserData = new MutableLiveData<>();
     private MutableLiveData<String> getUserResult = new MutableLiveData<>();
     private MutableLiveData<String> updateUserResult = new MutableLiveData<>();
+    private MutableLiveData<String> toggleFollowResult = new MutableLiveData<>();
+    private MutableLiveData<String> getFollowingResult = new MutableLiveData<>();
+    private MutableLiveData<String> getFollowerResult = new MutableLiveData<>();
+    private MutableLiveData<List<Follower>> getFollowingData = new MutableLiveData<>();
+    private MutableLiveData<List<Follower>> getFollowerData = new MutableLiveData<>();
 
     public UserViewModel() {}
     public void InitiateRepository(Context context) {
@@ -39,6 +49,12 @@ public class UserViewModel extends ViewModel {
     public LiveData<String> getUpdateUserResult() {
         return updateUserResult;
     }
+    public LiveData<String> getToggleFollowResult() { return toggleFollowResult; }
+    public LiveData<String> getGetFollowingResult() { return getFollowingResult; }
+    public LiveData<String> getGetFollowerResult() { return getFollowerResult; }
+    public LiveData<List<Follower>> getGetFollowingData() { return getFollowingData; }
+    public LiveData<List<Follower>> getGetFollowerData() { return getFollowerData; }
+
 
     //Get user
     public void getUser(String id) {
@@ -122,6 +138,86 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onFailure(Call<UpdateUserResponse> call, Throwable t) {
                 updateUserResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Follower
+    public void toggleFollow(String userId) {
+        Call<MessageResponse> call = userRepository.toggleFollow(userId);
+        call.enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (response.isSuccessful()) {
+                    MessageResponse toggleResponse = response.body();
+                    toggleFollowResult.setValue(toggleResponse.getMessage());
+                } else {
+                    try {
+                        MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
+                        toggleFollowResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        toggleFollowResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
+                toggleFollowResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Get following
+    public void getFollowing(String userId) {
+        Call<ListFollowerResponse> call = userRepository.getFollowing(userId);
+        call.enqueue(new Callback<ListFollowerResponse>() {
+            @Override
+            public void onResponse(Call<ListFollowerResponse> call, Response<ListFollowerResponse> response) {
+                if (response.isSuccessful()) {
+                    ListFollowerResponse toggleResponse = response.body();
+                    getFollowingData.setValue(toggleResponse.getAllFollower());
+                    getFollowingResult.setValue("Get Following Success");
+                } else {
+                    try {
+                        ListFollowerResponse error = new Gson().fromJson(response.errorBody().string(), ListFollowerResponse.class);
+                        getFollowingResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getFollowingResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ListFollowerResponse> call, Throwable t) {
+                getFollowingResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Get follower
+    public void getFollower(String userId) {
+        Call<ListFollowerResponse> call = userRepository.getFollowers(userId);
+        call.enqueue(new Callback<ListFollowerResponse>() {
+            @Override
+            public void onResponse(Call<ListFollowerResponse> call, Response<ListFollowerResponse> response) {
+                if (response.isSuccessful()) {
+                    ListFollowerResponse toggleResponse = response.body();
+                    getFollowerData.setValue(toggleResponse.getAllFollower());
+                    getFollowerResult.setValue("Get Follower Success");
+                } else {
+                    try {
+                        ListFollowerResponse error = new Gson().fromJson(response.errorBody().string(), ListFollowerResponse.class);
+                        getFollowerResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getFollowerResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ListFollowerResponse> call, Throwable t) {
+                getFollowerResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }
