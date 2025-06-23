@@ -1,5 +1,3 @@
-const { AdminApprovalStatus } = require('@prisma/client');
-const { user } = require('../config/db/prismaClient');
 const { JobPostService } = require('../services/jobPost.service');
 const { getPagination, buildMeta } = require('../utils/paginate');
 
@@ -118,34 +116,40 @@ const JobPostController = {
             return res.status(500).json({ message: 'Error fetching job posts by company', error });
         }
     },
-    getPendingJobPosts: async (req, res) => {
+    getJobPostsByStatus: async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 10;
         const { skip, take } = getPagination(page, pageSize);
+        const { status } = req.query;
+
+        const validStatuses = ['OPENING', 'TERMINATED', 'CANCELLED', 'NOT_EXIST'];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ message: 'Invalid post status' });
+        }
 
         try {
-            const { jobPosts, total } = await JobPostService.getJobPostsByStatus('PENDING', skip, take);
+            const { jobPosts, total } = await JobPostService.getJobPostsByStatus(status, skip, take);
             const meta = buildMeta(total, page, pageSize);
-            res.status(200).json({ jobPosts: jobPosts, meta });
+            return res.status(200).json({ jobPosts, meta });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Failed to fetch pending posts', error: error.message });
+            return res.status(500).json({ message: 'Failed to fetch job posts by status', error: error.message });
         }
     },
     toggleJobPostStatus: async (req, res) => {
         const { id } = req.params;
         const { status } = req.body;
-        const validStatuses = ['PENDING', 'APPROVED', 'REJECTED'];
 
+        const validStatuses = ['OPENING', 'TERMINATED', 'CANCELLED', 'NOT_EXIST'];
         if (!validStatuses.includes(status)) {
-            return res.status(400).json({ message: 'Invalid status' });
+            return res.status(400).json({ message: 'Invalid post status' });
         }
 
         try {
             const jobPost = await JobPostService.updateJobPostStatus(id, status);
-            res.status(200).json({ jobPost: jobPost });
+            return res.status(200).json({ jobPost });
         } catch (error) {
-            res.status(500).json({ message: 'Failed to update status', error: error.message });
+            return res.status(500).json({ message: 'Failed to update post status', error: error.message });
         }
     },
     getMyJobsWithApplications: async (req, res) => {

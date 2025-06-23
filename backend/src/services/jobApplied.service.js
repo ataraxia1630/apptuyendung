@@ -41,7 +41,8 @@ const JobAppliedService = {
         where: { applicantId },
         include: {
           JobPost: true,
-          applicant: true
+          applicant: true,
+          CV: true,
         },
       });
       return jobApplieds.map((applied) => applied.JobPost);

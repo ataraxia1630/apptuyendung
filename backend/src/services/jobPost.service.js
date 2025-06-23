@@ -5,6 +5,9 @@ const JobPostService = {
         try {
             const [jobPosts, total] = await Promise.all([
                 prisma.jobPost.findMany({
+                    where: {
+                        status: { notIn: ['CANCELLED', 'NOT_EXIST'] },
+                    },
                     skip,
                     take,
                     orderBy: { created_at: 'desc' },
@@ -15,7 +18,11 @@ const JobPostService = {
 
                     },
                 }),
-                prisma.jobPost.count(),
+                prisma.jobPost.count({
+                    where: {
+                        status: { notIn: ['CANCELLED', 'NOT_EXIST'] },
+                    }
+                }),
             ]);
             return { jobPosts, total };
         } catch (error) {
@@ -26,14 +33,18 @@ const JobPostService = {
     getJobPostById: async (id) => {
         if (!id) throw new Error('JobPost ID is required');
         try {
-            const jobPost = await prisma.jobPost.findUnique({
-                where: { id },
+            const jobPost = await prisma.jobPost.findFirst({
+                where: {
+                    id,
+                    status: { notIn: ['CANCELLED', 'NOT_EXIST'] },
+                },
                 include: {
                     Company: true,
                     JobType: true,
                     JobCategory: true,
                 },
             });
+
             if (!jobPost) throw new Error('Job post not found');
             return jobPost;
         } catch (error) {
@@ -148,7 +159,9 @@ const JobPostService = {
         // filters là object chứa các trường có thể search, ví dụ:
         // { title, location, position, companyName, educationRequirement }
 
-        const where = {};
+        const where = {
+            status: { notIn: ['CANCELLED', 'NOT_EXIST'] } // 👈 Thêm điều kiện này
+        };
 
         if (filters.title) {
             where.title = { contains: filters.title.trim(), mode: 'insensitive' };
@@ -187,12 +200,17 @@ const JobPostService = {
         return { jobPosts, total };
     },
     deleteJobPost: async (id) => {
-        const jobPost = await prisma.jobPost.findUnique({ where: { id: id } });
+        const jobPost = await prisma.jobPost.findUnique({ where: { id } });
         if (!jobPost) {
             throw new Error('Job post not found');
         }
 
-        await prisma.jobPost.delete({ where: { id: id } });
+        await prisma.jobPost.update({
+            where: { id },
+            data: {
+                status: 'CANCELLED', // Hoặc 'TERMINATED' tùy theo logic của bạn
+            },
+        });
     },
 
     getJobPostsByCompany: async (companyId, skip = 0, take = 10) => {
@@ -200,7 +218,7 @@ const JobPostService = {
         try {
             const [jobPosts, total] = await Promise.all([
                 prisma.jobPost.findMany({
-                    where: { companyId },
+                    where: { companyId, status: { notIn: ['CANCELLED', 'NOT_EXIST'] } },
                     skip,
                     take,
                     orderBy: { created_at: 'desc' },
@@ -211,7 +229,10 @@ const JobPostService = {
                     },
                 }),
                 prisma.jobPost.count({
-                    where: { companyId },
+                    where: {
+                        companyId,
+                        status: { notIn: ['CANCELLED', 'NOT_EXIST'] },
+                    },
                 }),
             ]);
 
@@ -221,35 +242,27 @@ const JobPostService = {
         }
     },
     getJobPostsByStatus: async (status, skip = 0, take = 10) => {
-        if (!status) throw new Error('Status is required');
-
-        const validStatuses = ['PENDING', 'APPROVED', 'REJECTED'];
+        const validStatuses = ['OPENING', 'TERMINATED', 'CANCELLED', 'NOT_EXIST'];
         if (!validStatuses.includes(status)) {
-            throw new Error('Invalid status');
+            throw new Error('Invalid post status');
         }
 
-        try {
-            const where = { approvalStatus: status };
+        const [jobPosts, total] = await Promise.all([
+            prisma.jobPost.findMany({
+                where: { status: status },
+                skip,
+                take,
+                orderBy: { created_at: 'desc' },
+                include: {
+                    Company: true,
+                    JobType: true,
+                    JobCategory: true,
+                },
+            }),
+            prisma.jobPost.count({ where: { status: status } }),
+        ]);
 
-            const [jobPosts, total] = await Promise.all([
-                prisma.jobPost.findMany({
-                    where,
-                    skip,
-                    take,
-                    orderBy: { created_at: 'desc' },
-                    include: {
-                        Company: true,
-                        JobType: true,
-                        JobCategory: true,
-                    },
-                }),
-                prisma.jobPost.count({ where }),
-            ]);
-
-            return { jobPosts, total };
-        } catch (error) {
-            throw new Error(`Error fetching job posts by status: ${error.message}`);
-        }
+        return { jobPosts, total };
     },
     updateJobPostStatus: async (id, status) => {
         if (!id) throw new Error('JobPost ID is required');
@@ -258,7 +271,7 @@ const JobPostService = {
         try {
             const updatedJobPost = await prisma.jobPost.update({
                 where: { id },
-                data: { approvalStatus: status },
+                data: { status: status },
                 include: {
                     Company: true,
                     JobType: true,
@@ -275,7 +288,7 @@ const JobPostService = {
         try {
             const [jobPosts, total] = await Promise.all([
                 prisma.jobPost.findMany({
-                    where: { companyId },
+                    where: { companyId, status: { notIn: ['CANCELLED', 'NOT_EXIST'] } },
                     orderBy: { created_at: 'desc' },
                     skip,
                     take,
@@ -291,7 +304,10 @@ const JobPostService = {
                     }
                 }),
                 prisma.jobPost.count({
-                    where: { companyId }
+                    where: {
+                        companyId,
+                        status: { notIn: ['CANCELLED', 'NOT_EXIST'] } // 👈 thêm dòng này
+                    }
                 })
             ]);
 
@@ -308,6 +324,7 @@ const JobPostService = {
                 where: {
                     id: jobPostId,
                     companyId,
+                    status: { notIn: ['CANCELLED', 'NOT_EXIST'] },
                 },
                 include: {
                     JobApplied: {
