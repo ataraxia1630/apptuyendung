@@ -9,25 +9,84 @@ const PostService = {
                 orderBy: { created_at: 'desc' },
                 where: { status: 'OPENING' },
                 include: {
-                    Company: true,
+                    Company: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                }
+                            }
+                        }
+                    },
                     contents: true,
-                    Reaction: true,
-                    Comment: true,
+                    Reaction: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                    username: true,
+                                    avatar: true
+                                }
+                            }
+                        }
+                    },
+                    Comment: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                    username: true,
+                                    avatar: true
+                                }
+                            }
+                        }
+                    }
                 },
             }),
-            prisma.post.count(),
+            prisma.post.count({
+                where: { status: 'OPENING' }
+            }),
         ]);
         return { posts, total };
     },
+
 
     getPostById: async (id) => {
         return prisma.post.findUnique({
             where: { id },
             include: {
-                Company: true,
+                Company: {
+                    include: {
+                        User: {
+                            select: {
+                                id: true,
+                            }
+                        }
+                    }
+                },
                 contents: true,
-                Reaction: true,
-                Comment: true,
+                Reaction: {
+                    include: {
+                        User: {
+                            select: {
+                                id: true,
+                                username: true,
+                                avatar: true
+                            }
+                        }
+                    }
+                },
+                Comment: {
+                    include: {
+                        User: {
+                            select: {
+                                id: true,
+                                username: true,
+                                avatar: true
+                            }
+                        }
+                    }
+                }
             },
         });
     },
@@ -150,10 +209,38 @@ const PostService = {
                 take,
                 orderBy: { created_at: 'desc' },
                 include: {
-                    Company: true,
+                    Company: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                }
+                            }
+                        }
+                    },
                     contents: true,
-                    Reaction: true,
-                    Comment: true,
+                    Reaction: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                    username: true,
+                                    avatar: true
+                                }
+                            }
+                        }
+                    },
+                    Comment: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                    username: true,
+                                    avatar: true
+                                }
+                            }
+                        }
+                    }
                 },
             }),
             prisma.post.count({ where }),
@@ -173,10 +260,38 @@ const PostService = {
                     take,
                     orderBy: { created_at: 'desc' },
                     include: {
-                        Company: true,
+                        Company: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                    }
+                                }
+                            }
+                        },
                         contents: true,
-                        Reaction: true,
-                        Comment: true,
+                        Reaction: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                        username: true,
+                                        avatar: true
+                                    }
+                                }
+                            }
+                        },
+                        Comment: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                        username: true,
+                                        avatar: true
+                                    }
+                                }
+                            }
+                        }
                     },
                 }),
                 prisma.post.count({
@@ -201,10 +316,38 @@ const PostService = {
                     take,
                     orderBy: { created_at: 'desc' },
                     include: {
-                        Company: true,
+                        Company: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                    }
+                                }
+                            }
+                        },
                         contents: true,
-                        Comment: true,
-                        Reaction: true,
+                        Reaction: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                        username: true,
+                                        avatar: true
+                                    }
+                                }
+                            }
+                        },
+                        Comment: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                        username: true,
+                                        avatar: true
+                                    }
+                                }
+                            }
+                        }
                     },
                 }),
                 prisma.post.count({ where }),
