@@ -1,6 +1,7 @@
 package com.example.workleap.ui.view.main.message_notification;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,46 +11,46 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Conversation;
+import com.example.workleap.data.model.entity.ConversationUser;
 
 import java.util.List;
 
-public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapter.ConversationViewHolder> {
+public class ConversationUserAdapter extends RecyclerView.Adapter<ConversationUserAdapter.ConversationUserViewHolder> {
 
     private final Context context;
-    private List<Conversation> conversationList;
+    private List<ConversationUser> conversationUserList;
     private final OnConversationClickListener listener;
 
     public interface OnConversationClickListener {
-        void onConversationClick(Conversation conversation);
+        void onConversationClick(ConversationUser conversationUser);
     }
 
-    public ConversationAdapter(Context context, List<Conversation> conversationList, OnConversationClickListener listener) {
+    public ConversationUserAdapter(Context context, List<ConversationUser> conversationUserList, OnConversationClickListener listener) {
         this.context = context;
-        this.conversationList = conversationList;
+        this.conversationUserList = conversationUserList;
         this.listener = listener;
     }
 
-    public void setConversationList(List<Conversation> conversationList) {
-        this.conversationList = conversationList;
+    public void setConversationList(List<ConversationUser> conversationUserList) {
+        this.conversationUserList = conversationUserList;
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public ConversationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ConversationUserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_chat, parent, false);
-        return new ConversationViewHolder(view);
+        return new ConversationUserViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ConversationViewHolder holder, int position) {
-        Conversation conversation = conversationList.get(position);
+    public void onBindViewHolder(@NonNull ConversationUserViewHolder holder, int position) {
+        ConversationUser conversationUser = conversationUserList.get(position);
 
         // Set tên đoạn chat
-        String displayName = conversation.getName() != null ? conversation.getName() : "Đoạn chat";
+        String displayName = conversationUser.getConversation().getMembers().get(1).getUser().getUsername() != null ? conversationUser.getConversation().getMembers().get(1).getUser().getUsername() : "Đoạn chat";
         holder.txtName.setText(displayName);
 
         // Set tin nhắn gần nhất (chỉ placeholder nếu backend chưa có)
@@ -64,7 +65,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         }*/
 
         // Avatar: nhóm thì icon nhóm, cá nhân thì có thể load ảnh từ user (placeholder ở đây)
-        if (conversation.isGroup()) {
+        if (conversationUser.getConversation().isGroup()) {
             //holder.imgAvatar.setImageResource(R.drawable.ic_group_avatar);
         } else {
             // Tạm thời dùng icon người
@@ -74,19 +75,19 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         }
 
         // Bắt sự kiện click
-        holder.itemView.setOnClickListener(v -> listener.onConversationClick(conversation));
+        holder.itemView.setOnClickListener(v -> listener.onConversationClick(conversationUser));
     }
 
     @Override
     public int getItemCount() {
-        return conversationList != null ? conversationList.size() : 0;
+        return conversationUserList != null ? conversationUserList.size() : 0;
     }
 
-    public static class ConversationViewHolder extends RecyclerView.ViewHolder {
+    public static class ConversationUserViewHolder extends RecyclerView.ViewHolder {
         ImageView imgAvatar;
         TextView txtName, txtLastMessage, txtUnreadCount;
 
-        public ConversationViewHolder(@NonNull View itemView) {
+        public ConversationUserViewHolder(@NonNull View itemView) {
             super(itemView);
             imgAvatar = itemView.findViewById(R.id.imgAvatar);
             txtName = itemView.findViewById(R.id.txtConversationName);

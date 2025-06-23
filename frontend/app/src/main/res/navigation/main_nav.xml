@@ -83,12 +83,15 @@
     <fragment
         android:id="@+id/chooseCVFragment"
         android:name="com.example.workleap.ui.view.main.home.ChooseCVFragment"
-        android:label="Choose CV" >
-    </fragment>
+        android:label="Choose CV" />
     <fragment
         android:id="@+id/notificationFragment"
         android:name="com.example.workleap.ui.view.main.message_notification.NotificationFragment"
         android:label="Notification" />
+    <fragment
+        android:id="@+id/messageDetailFragment"
+        android:name="com.example.workleap.ui.view.main.message_notification.MessageDetailFragment"
+        android:label="Message" />
     <action
         android:id="@+id/action_messageFragment_to_notificationFragment"
         app:destination="@id/notificationFragment"
@@ -96,4 +99,5 @@
         app:exitAnim="@anim/fade_out"
         app:popEnterAnim="@anim/fade_in"
         app:popExitAnim="@anim/fade_out" />
+
 </navigation>

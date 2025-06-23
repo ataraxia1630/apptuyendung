@@ -1,9 +1,7 @@
 package com.example.workleap.data.api;
 
-import com.example.workleap.data.model.entity.CV;
 import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.Conversation;
-import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
@@ -37,11 +35,10 @@ import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListCommentResponse;
-import com.example.workleap.data.model.response.ListConversationResponse;
+import com.example.workleap.data.model.response.ListConversationUserResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
-import com.example.workleap.data.model.response.ListInterestedFieldResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListMessageResponse;
 import com.example.workleap.data.model.response.ListPostResponse;
@@ -52,6 +49,7 @@ import com.example.workleap.data.model.response.ListJobCategoryResponse;
 import com.example.workleap.data.model.response.ListJobTypeResponse;
 import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
+import com.example.workleap.data.model.response.MessageChatResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.request.RegisterRequest;
 import com.example.workleap.data.model.response.PostResponse;
@@ -70,8 +68,6 @@ import com.example.workleap.data.model.response.UpdateCompanyResponse;
 import com.example.workleap.data.model.request.UpdateUserRequest;
 import com.example.workleap.data.model.response.UpdateUserResponse;
 
-import java.lang.reflect.Member;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -302,19 +298,19 @@ public interface ApiService {
     //Chat-Conversation
     // Lấy tất cả các cuộc trò chuyện của user
     @GET("api/chat/all")
-    Call<ListConversationResponse> getAllChats();
+    Call<ListConversationUserResponse> getAllChats();
     // Lấy tất cả đoạn chat có tin nhắn chưa đọc
     @GET("api/chat/unread")
-    Call<ListConversationResponse> getAllUnreadChats();
+    Call<ListConversationUserResponse> getAllUnreadChats();
     // Lấy tất cả các nhóm chat
     @GET("api/chat/group")
-    Call<ListConversationResponse> getAllGroupChats();
+    Call<ListConversationUserResponse> getAllGroupChats();
     // Lấy thông tin một đoạn chat cụ thể theo ID
     @GET("api/chat/{chatId}")
-    Call<ListConversationResponse> getChatById(@Path("chatId") String chatId);
+    Call<ListConversationUserResponse> getChatById(@Path("chatId") String chatId);
     // Lấy tất cả tin nhắn trong một cuộc trò chuyện
     @GET("api/chat/{chatId}/mess")
-    Call<ListConversationResponse> getAllMessages(@Path("chatId") String chatId);
+    Call<ListConversationUserResponse> getAllMessages(@Path("chatId") String chatId);
 
     // Tạo một cuộc trò chuyện mới (chat cá nhân)
     @POST("api/chat/")
@@ -358,18 +354,18 @@ public interface ApiService {
 
     //Chat
     // Gửi tin nhắn mới
-    @POST("api/message/")
-    Call<MessageResponse> sendMessage(@Body Message request);
+    @POST("api/mess/")
+    Call<MessageChatResponse> sendMessage(@Body Message request);
 
     // Xoá tin nhắn theo ID
-    @DELETE("api/message/{id}")
+    @DELETE("api/mess/{id}")
     Call<MessageResponse> deleteMessage(@Path("id") String messageId);
 
     // Sửa tin nhắn
-    @PUT("api/message/{id}")
+    @PUT("api/mess/{id}")
     Call<MessageResponse> editMessage(@Path("id") String messageId, @Body Message request);
 
     // Lấy danh sách tin nhắn của một cuộc trò chuyện
-    @GET("api/message/{chatId}")
+    @GET("api/mess/{chatId}")
     Call<ListMessageResponse> getMessagesByChatId(@Path("chatId") String chatId);
 }

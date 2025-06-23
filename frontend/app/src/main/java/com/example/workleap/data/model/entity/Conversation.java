@@ -1,5 +1,7 @@
 package com.example.workleap.data.model.entity;
 
+import java.util.ArrayList;
+
 public class Conversation {
     private String id;
     private String name;
@@ -7,7 +9,7 @@ public class Conversation {
     private String created_at;
     private String updated_at;
     private Message[] Message;
-    private Conversation[] members;
+    private ArrayList<ConversationUser> members;
     private ConversationLabel[] labels;
     public Conversation() {}
 
@@ -34,8 +36,8 @@ public class Conversation {
     public void setUpdated_at(String updated_at) { this.updated_at = updated_at; }
     public Message[] getMessage() { return Message; }
     public void setMessage(Message[] message) { Message = message; }
-    public Conversation[] getMembers() { return members; }
-    public void setMembers(Conversation[] members) { this.members = members; }
+    public ArrayList<ConversationUser> getMembers() { return members; }
+    public void setMembers(ArrayList<ConversationUser> members) { this.members = members; }
 
     public ConversationLabel[] getLabels() { return labels; }
     public void setLabels(ConversationLabel[] labels) { this.labels = labels; }
