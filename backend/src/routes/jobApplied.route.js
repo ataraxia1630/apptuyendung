@@ -44,7 +44,6 @@ route.get(
   '/:applicantId',
   verifyToken,
   requireRole('APPLICANT'),
-  cache,
   JobAppliedController.getAllJobAppliedOfApplicant
 );
 

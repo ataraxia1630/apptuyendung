@@ -224,4 +224,51 @@
         android:backgroundTint="#0090FF"
         android:drawableStart="@drawable/ic_bookmark"
         android:drawablePadding="8dp" />
+
+    <LinearLayout
+        android:id="@+id/layoutSubmittedCV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/button_lightviolet"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="63dp"
+            android:src="@drawable/ic_pdf" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingStart="8dp">
+
+            <TextView
+                android:id="@+id/txtCvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="pdf"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Submitted"
+                android:textColor="@android:color/holo_green_dark"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnChangeCV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change CV" />
+    </LinearLayout>
 </RelativeLayout>

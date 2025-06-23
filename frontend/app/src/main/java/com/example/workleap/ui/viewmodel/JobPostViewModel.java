@@ -58,6 +58,7 @@ public class JobPostViewModel  extends ViewModel {
     private MutableLiveData<String> searchJobPostResult = new MutableLiveData<>();
     private MutableLiveData<String> getMyJobPostByIdResult = new MutableLiveData<>();
     private MutableLiveData<String> processCvAppliedResult = new MutableLiveData<>();
+    private MutableLiveData<String> withDrawCvResult = new MutableLiveData<>();
 
     //jobcategory, jobcategory, jobsave
     private MutableLiveData<List<JobType>> getAllJobTypeData = new MutableLiveData<>();
@@ -90,6 +91,7 @@ public class JobPostViewModel  extends ViewModel {
     public LiveData<String> getMyJobPostByIdResult() { return getMyJobPostByIdResult; }
     public LiveData<String> getProcessCvAppliedResult() { return processCvAppliedResult; }
     public LiveData<JobApplied> getProcessCvAppliedData() { return processCvAppliedData; }
+    public LiveData<String> getWithDrawCvResult() { return withDrawCvResult; }
 
     public LiveData<String> getAllJobPostResult() { return getAllJobPostResult; }
     public LiveData<String> getJobPostsByCompanyResult() { return getJobPostsByCompanyResult; }
@@ -116,7 +118,8 @@ public class JobPostViewModel  extends ViewModel {
 
     public LiveData<List<JobApplied>> getCvsJobApplied() { return getCvsJobAppliedData; }
     public LiveData<List<JobApplied>> getApplicantsJobApplied() { return getApplicantsJobAppliedData; }
-    public LiveData<List<JobApplied>> getJobApplied() { return getJobAppliedData; }
+    public LiveData<List<JobApplied>> getJobAppliedData() { return getJobAppliedData; }
+    public LiveData<String> getJobAppliedResult() { return getJobAppliedResult; }
     public LiveData<String> getApplyAJobResult() { return applyAJobResult; }
 
     //current jobpost for update jobpost sycn
@@ -472,6 +475,7 @@ public class JobPostViewModel  extends ViewModel {
         public void onResponse(Call<ListJobAppliedResponse> call, Response<ListJobAppliedResponse> response) {
             if (response.isSuccessful() && response.body() != null) {
                 getJobAppliedData.postValue(response.body().getAllJobApplies());
+                getJobAppliedResult.setValue(response.body().getMessage());
             } else {
                 getJobAppliedResult.postValue("Failed: " + response.message());
             }
@@ -521,5 +525,24 @@ public class JobPostViewModel  extends ViewModel {
             }
         });
     }
+    public void withDrawCv(String applicantId, String jobpostId) {
+        jobPostRepository.withDrawCv(applicantId, jobpostId).enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (response.isSuccessful()) {
+                    withDrawCvResult.postValue("Success");
+                } else {
+                    withDrawCvResult.postValue("Failed: " + response.message());
+                    Log.e("eeee", "tai sao " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
+                withDrawCvResult.postValue("Error: " + t.getMessage());
+            }
+        });
+    }
+
 
 }
