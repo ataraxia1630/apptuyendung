@@ -77,6 +77,13 @@ public class JobPostViewModel  extends ViewModel {
     private MutableLiveData<List<JobApplied>> getCvsJobAppliedData = new MutableLiveData<>();
     private MutableLiveData<List<JobApplied>> getApplicantsJobAppliedData = new MutableLiveData<>();
     private MutableLiveData<List<JobApplied>> getJobAppliedData = new MutableLiveData<>();
+    public void resetGetJobAppliedResultData() {
+        getJobAppliedResult.postValue(null);
+        getJobAppliedData.postValue(null);
+    }
+    public void resetApplyAJobResult() {
+        applyAJobResult.postValue(null);
+    }
     private MutableLiveData<String> getCvsJobAppliedResult = new MutableLiveData<>();
     private MutableLiveData<String> getApplicantsJobAppliedResult = new MutableLiveData<>();
     private MutableLiveData<String> getJobAppliedResult = new MutableLiveData<>();
@@ -529,11 +536,11 @@ public class JobPostViewModel  extends ViewModel {
         jobPostRepository.withDrawCv(applicantId, jobpostId).enqueue(new Callback<MessageResponse>() {
             @Override
             public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                Log.e("eeee", "keu quai di" + response.message());
                 if (response.isSuccessful()) {
                     withDrawCvResult.postValue("Success");
                 } else {
                     withDrawCvResult.postValue("Failed: " + response.message());
-                    Log.e("eeee", "tai sao " + response.message());
                 }
             }
 

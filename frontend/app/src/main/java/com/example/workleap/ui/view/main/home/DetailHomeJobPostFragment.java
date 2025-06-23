@@ -48,6 +48,10 @@ public class DetailHomeJobPostFragment extends Fragment {
     private boolean hasSubmitted=false;
     private LinearLayout layoutSubmittedCV;
 
+    //getWithDrawCvResult goi lai moi lan quay ve fragment nen can bien flag de ngan viec choose cv fragment bi goi nhieu lan
+    boolean hasHandledWithdrawResult = false;
+    private boolean shouldRefreshJobAppliedAfterApply = false;
+
     public DetailHomeJobPostFragment() {}
 
     public static DetailHomeJobPostFragment newInstance(String param1, String param2) {
@@ -107,18 +111,30 @@ public class DetailHomeJobPostFragment extends Fragment {
 
         jobPostViewModel.getApplyAJobResult().observe(getViewLifecycleOwner(), result -> {
             if (!isAdded() || getView() == null) return;
-            Log.e("DetailMyJobPostFragment", "getApplyAJobResult: " + result);
-            Toast.makeText(getContext(), "Your CV has been submitted successfully.", Toast.LENGTH_SHORT).show();
-
-            //reload button apply
-            jobPostViewModel.getJobApplied(user.getApplicantId());
+            if(result==null)
+            {
+                Log.e("DetailHomeJobPost", "getApplyAJobResult NULL");
+                return;
+            }
+            if(result.equalsIgnoreCase("Success"))
+            {
+                Log.e("DetailMyJobPostFragment", "getApplyAJobResult: " + result);
+                //bi goi lai nhieu lan
+                //Toast.makeText(getContext(), "Your CV has been submitted successfully.", Toast.LENGTH_SHORT).show();
+                shouldRefreshJobAppliedAfterApply = true;
+                //reload button change
+                jobPostViewModel.getJobApplied(user.getApplicantId());
+            }
         });
         jobPostViewModel.getWithDrawCvResult().observe(getViewLifecycleOwner(), result->{
-            if (!isAdded() || getView() == null) return;
+            if (!isAdded() || getView() == null || !hasHandledWithdrawResult) return;
             Log.e("ooooo", "day day");
+            hasHandledWithdrawResult = false;
 
             if(result.equalsIgnoreCase("Success"))
             {
+                //van reload trong truong hop nguoi dung khong chon cv moi sau khi xoa
+                //jobPostViewModel.getJobApplied(user.getApplicantId());
                 //You have successfully changed your CV.
                 //CV removed successfully.
                 Toast.makeText(getContext(), "CV removed successfully.", Toast.LENGTH_SHORT).show();
@@ -128,6 +144,10 @@ public class DetailHomeJobPostFragment extends Fragment {
                     Toast.makeText(getContext(), "Please upload a CV to apply", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                jobPostViewModel.resetGetJobAppliedResultData();
+                jobPostViewModel.resetApplyAJobResult();
+
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("cv_list", new ArrayList<>(cvList));
                 nav.navigate(R.id.chooseCVFragment, bundle);
@@ -145,10 +165,19 @@ public class DetailHomeJobPostFragment extends Fragment {
         });
         jobPostViewModel.getJobAppliedData().observe(getViewLifecycleOwner(), jobApplieds->
         {
+            hasSubmitted=false;
             if (jobApplieds == null) {
                 Log.e("DetailHomeJPFragment", "JobApplieds NULL");
                 return;
             }
+
+            //kiem tra co du lieu moi tu apply a job khong, nhung van cho phep getjobapplied goi lan dau vao fragment
+            if (shouldRefreshJobAppliedAfterApply) {
+                shouldRefreshJobAppliedAfterApply = false; // tat doi den khi co apply a job moi
+                jobPostViewModel.getJobApplied(user.getApplicantId()); // goi lai getJobAppliedData voi jobapplieds moi
+                return; //ket thuc neu co ket qua moi tu apply a job
+            }
+
             for (JobApplied applied : jobApplieds) {
                 if (applied.getJobpostId().equals(currentJobPost.getId())) {
                     hasSubmitted = true;
@@ -160,6 +189,7 @@ public class DetailHomeJobPostFragment extends Fragment {
                     txtCvName.setText(applied.getCV().getTitle());
 
                     btnChangeCv.setOnClickListener(v ->{
+                        hasHandledWithdrawResult=true;
                         jobPostViewModel.withDrawCv(user.getApplicantId(), currentJobPost.getId());
                     });
 
@@ -175,6 +205,10 @@ public class DetailHomeJobPostFragment extends Fragment {
                         Toast.makeText(getContext(), "Please upload a CV to apply", Toast.LENGTH_SHORT).show();
                         return;
                     }
+                    //reset tranh goi lai lan hai khi load fragment luc quay ve
+                    jobPostViewModel.resetGetJobAppliedResultData();
+                    jobPostViewModel.resetApplyAJobResult();
+
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("cv_list", new ArrayList<>(cvList));
                     nav.navigate(R.id.chooseCVFragment, bundle);
@@ -190,6 +224,7 @@ public class DetailHomeJobPostFragment extends Fragment {
                 CV cv = (CV) selectedCV;
                 jobPostViewModel.applyAJob(currentJobPost.getId(), cv.getApplicantId(), cv.getId());
                 Toast.makeText(getContext(), "Selected CV: " + cv.getTitle(), Toast.LENGTH_SHORT).show();
+                //tat btnApply khi quay ve
                 btnApply.setVisibility(View.GONE);
                 // xoa sau khi dung
                 savedStateHandle.remove("selected_cv");
