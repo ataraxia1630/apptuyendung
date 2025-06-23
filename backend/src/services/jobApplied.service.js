@@ -45,7 +45,7 @@ const JobAppliedService = {
           CV: true,
         },
       });
-      return jobApplieds.map((applied) => applied.JobPost);
+      return jobApplieds;
     } catch (error) {
       throw new Error(
         'Error fetching jobposts applied by applicant (service): ' +
