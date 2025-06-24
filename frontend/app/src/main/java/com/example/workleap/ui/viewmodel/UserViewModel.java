@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.workleap.data.model.entity.Follower;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.UpdateUserRequest;
+import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.ListFollowerResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.response.UpdateUserResponse;
@@ -19,6 +20,7 @@ import com.google.gson.Gson;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,6 +35,9 @@ public class UserViewModel extends ViewModel {
     private MutableLiveData<String> getFollowerResult = new MutableLiveData<>();
     private MutableLiveData<List<Follower>> getFollowingData = new MutableLiveData<>();
     private MutableLiveData<List<Follower>> getFollowerData = new MutableLiveData<>();
+    private MutableLiveData<String> upLoadAvatarResult = new MutableLiveData<>();
+    private MutableLiveData<String> getUrlAvatarResult = new MutableLiveData<>();
+    private MutableLiveData<String> getUrlAvatarData = new MutableLiveData<>();
 
     public UserViewModel() {}
     public void InitiateRepository(Context context) {
@@ -55,6 +60,9 @@ public class UserViewModel extends ViewModel {
     public LiveData<List<Follower>> getGetFollowingData() { return getFollowingData; }
     public LiveData<List<Follower>> getGetFollowerData() { return getFollowerData; }
 
+    public LiveData<String> getUpLoadAvatarResult() { return upLoadAvatarResult; };
+    public LiveData<String> getUrlAvatarResult() { return getUrlAvatarResult; }
+    public LiveData<String> getUrlAvatarData() { return getUrlAvatarData; }
 
     //Get user
     public void getUser(String id) {
@@ -217,6 +225,56 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onFailure(Call<ListFollowerResponse> call, Throwable t) {
                 getFollowerResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    //Avatar
+    public void loadAvatar(MultipartBody.Part file) {
+        Call<MessageResponse> call = userRepository.loadAvatar(file);
+        call.enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (response.isSuccessful()) {
+                    upLoadAvatarResult.setValue("Upload success");
+                } else {
+                    try {
+                        MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
+                        upLoadAvatarResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        upLoadAvatarResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
+                upLoadAvatarResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getAvatarUrl(String path) {
+        Call<ImageUrlResponse> call = userRepository.getAvatarUrl(path);
+        call.enqueue(new Callback<ImageUrlResponse>() {
+            @Override
+            public void onResponse(Call<ImageUrlResponse> call, Response<ImageUrlResponse> response) {
+                if (response.isSuccessful()) {
+                    getUrlAvatarData.setValue(response.body().getUrl());
+                    getUrlAvatarResult.setValue("Upload success");
+                } else {
+                    try {
+                        ImageUrlResponse error = new Gson().fromJson(response.errorBody().string(), ImageUrlResponse.class);
+                        getUrlAvatarResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getUrlAvatarResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ImageUrlResponse> call, Throwable t) {
+                getUrlAvatarResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }
