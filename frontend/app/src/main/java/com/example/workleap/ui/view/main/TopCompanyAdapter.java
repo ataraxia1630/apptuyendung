@@ -1,4 +1,4 @@
-package com.example.workleap.ui.adapter;
+package com.example.workleap.ui.view.main;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,17 +13,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Company;
+import com.example.workleap.data.model.response.TopCompanyResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TopCompanyAdapter extends RecyclerView.Adapter<TopCompanyAdapter.TopCompanyViewHolder> {
 
     private final Context context;
-    private final List<Company> companyList;
+    private final List<TopCompanyResponse> topCompanyList;
 
-    public TopCompanyAdapter(Context context, List<Company> companyList) {
+    public TopCompanyAdapter(Context context, List<TopCompanyResponse> topCompanyList) {
         this.context = context;
-        this.companyList = companyList;
+        this.topCompanyList = new ArrayList<>(topCompanyList);
     }
 
     @NonNull
@@ -35,30 +37,27 @@ public class TopCompanyAdapter extends RecyclerView.Adapter<TopCompanyAdapter.To
 
     @Override
     public void onBindViewHolder(@NonNull TopCompanyViewHolder holder, int position) {
-        Company company = companyList.get(position);
+        TopCompanyResponse company = topCompanyList.get(position);
 
         // Set rank
         holder.txtRank.setText(String.valueOf(position + 1));
 
         // Set company name
-        holder.txtCompanyName.setText(company.getName());
+        holder.txtCompanyName.setText(company.getCompany().getName());
 
         // Set application count
-        /*holder.txtApplicationCount.setText(company.getApplicationCount() + " ứng tuyển");
-
-        // Load logo (nếu có URL logo)
-        if (company.getLogoUrl() != null && !company.getLogoUrl().isEmpty()) {
-            Picasso.get().load(company.getLogoUrl()).into(holder.imgCompanyLogo);
-        } else {
-            holder.imgCompanyLogo.setImageResource(R.drawable.sample_logo); // fallback
-        }*/
+        holder.txtApplicationCount.setText("Total: "+company.getApplicationCount() + " applications");
     }
 
     @Override
     public int getItemCount() {
-        return companyList.size();
+        return topCompanyList.size();
     }
-
+    public void setData(List<TopCompanyResponse> newList) {
+        topCompanyList.clear();
+        topCompanyList.addAll(newList);
+        notifyDataSetChanged();
+    }
     public static class TopCompanyViewHolder extends RecyclerView.ViewHolder {
         TextView txtRank, txtCompanyName, txtApplicationCount;
         ImageView imgCompanyLogo;

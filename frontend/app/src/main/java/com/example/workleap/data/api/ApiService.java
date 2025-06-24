@@ -49,6 +49,7 @@ import com.example.workleap.data.model.response.ListCVResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
 import com.example.workleap.data.model.response.ListJobCategoryResponse;
 import com.example.workleap.data.model.response.ListJobTypeResponse;
+import com.example.workleap.data.model.response.ListTopCompanyResponse;
 import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
 import com.example.workleap.data.model.response.MessageResponse;
@@ -308,7 +309,7 @@ public interface ApiService {
     @GET("api/statistic/overview")
     Call<OverviewResponse> getOverview();
     @GET("api/statistic/top-companies")
-    Call<TopCompanyResponse> getTopCompany();
+    Call<ListTopCompanyResponse> getTopCompany(@Query("page") int page, @Query("pageSize") int pageSize);
 
     //Chat-Conversation
     // Lấy tất cả các cuộc trò chuyện của user

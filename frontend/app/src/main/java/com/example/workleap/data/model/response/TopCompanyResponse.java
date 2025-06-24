@@ -3,9 +3,9 @@ package com.example.workleap.data.model.response;
 import com.example.workleap.data.model.entity.Company;
 
 public class TopCompanyResponse {
-    Company company;
+    private Company company;
 
-    int applicationCount;
+    private int applicationCount;
 
     public TopCompanyResponse() {
     }

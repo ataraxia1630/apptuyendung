@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +36,8 @@ public class StatisticsFragment extends Fragment {
     TextView tvUserCount, tvJobPostCount, tvReportCount, tvApplicationCount, tvUserLabel, tvJobPostLabel, tvReportLabel, tvApplicationLabel;
     PieChart pieChart;
 
+    RecyclerView recyclerTopCompanies, recyclerTopJobs;
+
     LineChart lineChart;
 
     StatisticViewModel statisticViewModel;
@@ -54,6 +58,8 @@ public class StatisticsFragment extends Fragment {
         itemJobPostCount = view.findViewById(R.id.jobPostCount);
         itemReportCount = view.findViewById(R.id.companyCount);
         itemApplicationCount = view.findViewById(R.id.applicationCount);
+        recyclerTopCompanies = view.findViewById(R.id.recyclerTopCompanies);
+        recyclerTopJobs = view.findViewById(R.id.recyclerTopJobs);
 
         tvUserLabel  = itemUserCount.findViewById(R.id.txtLabel);
         tvUserLabel.setText("User");
@@ -110,6 +116,30 @@ public class StatisticsFragment extends Fragment {
             tvJobPostCount.setText(String.valueOf(dailyStatistic.getJobPostCount()));
             tvReportCount.setText(String.valueOf(dailyStatistic.getCompanyCount()));
             tvApplicationCount.setText(String.valueOf(dailyStatistic.getApplicationCount()));
+        });
+
+        statisticViewModel.getTopCompany(1, 10);
+        statisticViewModel.getTopCompanyResult().observe(getViewLifecycleOwner(), result ->{
+            if(!isAdded() || getView()==null) return;
+
+            if(result!=null)
+                Log.e("StatisticFragment", "getTopCompanyResult " + result);
+            else
+                Log.e("StatisticFragment", "getTopCompanyResult result NULL" );
+        });
+
+        TopCompanyAdapter adapter = new TopCompanyAdapter(requireContext(), new ArrayList<>());
+        recyclerTopCompanies.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerTopCompanies.setAdapter(adapter);
+
+        statisticViewModel.getTopCompanyData().observe(getViewLifecycleOwner(), topCompanyList -> {
+            if (topCompanyList != null) {
+                adapter.setData(topCompanyList);
+            }
+            else
+            {
+                Log.e("StatisticFragment", "getTopCompanyData topCompanyList NULL");
+            }
         });
     }
 

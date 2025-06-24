@@ -7,6 +7,7 @@ import com.example.workleap.data.api.RetrofitClient;
 import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.response.CVResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
+import com.example.workleap.data.model.response.ListTopCompanyResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.response.OverviewResponse;
 import com.example.workleap.data.model.response.TopCompanyResponse;
@@ -14,6 +15,7 @@ import com.example.workleap.data.model.response.TopCompanyResponse;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Query;
 
 public class StatisticRepository {
     private ApiService apiService;
@@ -29,7 +31,7 @@ public class StatisticRepository {
     public Call<OverviewResponse> getOverview() {
         return apiService.getOverview();
     }
-    public Call<TopCompanyResponse> getTopCompany() {
-        return apiService.getTopCompany();
+    public Call<ListTopCompanyResponse> getTopCompany(int page, int pageSize) {
+        return apiService.getTopCompany(page, pageSize);
     }
 }
