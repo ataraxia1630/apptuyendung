@@ -26,6 +26,11 @@
         android:label="fragment_profile"
         tools:layout="@layout/fragment_applicant_profile" />
     <fragment
+        android:id="@+id/watchApplicantProfileFragment"
+        android:name="com.example.workleap.ui.view.main.profile.WatchApplicantProfileFragment"
+        android:label="fragment_watch_profile"
+        tools:layout="@layout/fragment_watch_applicant_profile" />
+    <fragment
         android:id="@+id/menu_statistics"
         android:name="com.example.workleap.ui.view.main.StatisticsFragment"
         android:label="fragment_statistics"
@@ -35,6 +40,11 @@
         android:name="com.example.workleap.ui.view.main.profile.CompanyProfileFragment"
         android:label="fragment_company_profile"
         tools:layout="@layout/fragment_company_profile" />
+    <fragment
+        android:id="@+id/watchCompanyProfileFragment"
+        android:name="com.example.workleap.ui.view.main.profile.WatchCompanyProfileFragment"
+        android:label="fragment_watch_company_profile"
+        tools:layout="@layout/fragment_watch_company_profile" />
     <fragment
         android:id="@+id/jobpostFragment"
         android:name="com.example.workleap.ui.view.main.jobpost_post.JobpostFragment"
@@ -88,12 +98,15 @@
     <fragment
         android:id="@+id/chooseCVFragment"
         android:name="com.example.workleap.ui.view.main.home.ChooseCVFragment"
-        android:label="Choose CV" >
-    </fragment>
+        android:label="Choose CV" />
     <fragment
         android:id="@+id/notificationFragment"
         android:name="com.example.workleap.ui.view.main.message_notification.NotificationFragment"
         android:label="Notification" />
+    <fragment
+        android:id="@+id/messageDetailFragment"
+        android:name="com.example.workleap.ui.view.main.message_notification.MessageDetailFragment"
+        android:label="Message" />
     <action
         android:id="@+id/action_messageFragment_to_notificationFragment"
         app:destination="@id/notificationFragment"
@@ -101,4 +114,5 @@
         app:exitAnim="@anim/fade_out"
         app:popEnterAnim="@anim/fade_in"
         app:popExitAnim="@anim/fade_out" />
+
 </navigation>

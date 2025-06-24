@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Conversation;
+import com.example.workleap.data.model.entity.ConversationUser;
+import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.ConversationViewModel;
 import com.google.gson.Gson;
 
@@ -30,11 +32,12 @@ import java.util.ArrayList;
  */
 public class MessageFragment extends Fragment {
 
-    private ArrayList<Conversation> conversations = new ArrayList<Conversation>();;
+    private ArrayList<ConversationUser> conversationUsers = new ArrayList<ConversationUser>();;
     private ConversationViewModel conversationViewModel;
-    private ConversationAdapter conversationAdapter;
+    private ConversationUserAdapter conversationUserAdapter;
     private RecyclerView conversationRecyclerView;
     private ImageButton btnNotification;
+    private NavController nav;
 
     public MessageFragment() {
         // Required empty public constructor
@@ -58,6 +61,9 @@ public class MessageFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        nav = NavHostFragment.findNavController(this);
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_message, container, false);
     }
@@ -76,27 +82,25 @@ public class MessageFragment extends Fragment {
         btnNotification = view.findViewById(R.id.btnNotification);
 
         //Get all conversations
-        conversationViewModel.getAllChatsData().observe(getViewLifecycleOwner(), conversations -> {
-            if(conversations != null) {
-                this.conversations.clear();
-                this.conversations.addAll(conversations);
-                conversationAdapter = new ConversationAdapter(getContext(),this.conversations, new ConversationAdapter.OnConversationClickListener() {
+        conversationViewModel.getAllChatsData().observe(getViewLifecycleOwner(), data -> {
+            if(conversationUsers != null) {
+                this.conversationUsers.clear();
+                this.conversationUsers.addAll(data);
+                conversationUserAdapter = new ConversationUserAdapter(getContext(), conversationUsers, new ConversationUserAdapter.OnConversationClickListener() {
                     @Override
-                    public void onConversationClick(Conversation conversation) {
+                    public void onConversationClick(ConversationUser conversationUser) {
                         // Xử lý khi click vào đoạn chat
-                        /*Bundle bundle = new Bundle();
-                        conversationViewModel.(jobPost);
-                        bundle.putSerializable("jobPost", jobPost);
-                        bundle.putSerializable("user", user);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("conversationUser", conversationUser);
                         ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
-                        nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment*/
-                            }
-                        }
+                        nav.navigate(R.id.messageDetailFragment, bundle); // Navigate to DetailJobPostFragment*/
+                    }
+                }
                 );
-                conversationRecyclerView.setAdapter(conversationAdapter);
-                conversationAdapter.notifyDataSetChanged();
+                conversationRecyclerView.setAdapter(conversationUserAdapter);
+                conversationUserAdapter.notifyDataSetChanged();
 
-                Log.d("conversations", new Gson().toJson(conversations));
+                Log.d("conversationUsers", new Gson().toJson(conversationUsers));
             }
         });
         conversationViewModel.getErrorResult().observe(getViewLifecycleOwner(), message -> {

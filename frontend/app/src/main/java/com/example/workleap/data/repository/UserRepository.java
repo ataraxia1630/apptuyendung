@@ -7,6 +7,7 @@ import com.example.workleap.data.api.RetrofitClient;
 import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
+import com.example.workleap.data.model.response.ListFollowerResponse;
 import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
 import com.example.workleap.data.model.response.MessageResponse;
@@ -18,6 +19,9 @@ import com.example.workleap.data.model.response.UpdateUserResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public class UserRepository {
     private ApiService apiService;
@@ -85,6 +89,17 @@ public class UserRepository {
     //Update Setting
     public Call<UpdateUserResponse> updateUserSetting(String id, UpdateUserRequest request) {
         return apiService.updateUserSetting(id, request);
+    }
+
+    //Follower
+    public Call<MessageResponse> toggleFollow(String followedId) {
+        return apiService.toggleFollow(followedId);
+    }
+    public Call<ListFollowerResponse> getFollowing(String userId) {
+        return apiService.getFollowing(userId);
+    }
+    public Call<ListFollowerResponse> getFollowers(String userId) {
+        return apiService.getFollowers(userId);
     }
 }
 

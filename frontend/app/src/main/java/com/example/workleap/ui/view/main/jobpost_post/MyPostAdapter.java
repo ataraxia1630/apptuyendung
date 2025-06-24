@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -117,7 +118,8 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
     static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView txtName, txtTime, txtTitle, txtContent, txtReactionCount, txtCommentCount, txtShareCount;
         ImageView imgPost, imgAvatar;
-        ImageButton btnOption, btnReact, btnComment, btnShare;
+        ImageButton btnOption, btnReact, btnShare;
+        LinearLayout btnComment;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);

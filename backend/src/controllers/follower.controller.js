@@ -28,7 +28,7 @@ const FollowerController = {
 
         try {
             const followers = await FollowerService.getFollowers(userId);
-            return res.status(200).json(followers);
+            return res.status(200).json({followers});
         } catch (err) {
             return res.status(500).json({ message: err.message });
         }
@@ -38,8 +38,8 @@ const FollowerController = {
         const { userId } = req.params;
 
         try {
-            const following = await FollowerService.getFollowing(userId);
-            return res.status(200).json(following);
+            const followers = await FollowerService.getFollowing(userId);
+            return res.status(200).json({followers});
         } catch (err) {
             return res.status(500).json({ message: err.message });
         }
