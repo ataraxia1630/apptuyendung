@@ -42,15 +42,15 @@ public class DetailHomeJobPostFragment extends Fragment {
 
     private JobPost currentJobPost;
     private User user;
-    private boolean isJobPostSubmitted = false;
     private Company company;
 
-    private boolean hasSubmitted=false;
     private LinearLayout layoutSubmittedCV;
 
     //getWithDrawCvResult goi lai moi lan quay ve fragment nen can bien flag de ngan viec choose cv fragment bi goi nhieu lan
     boolean hasHandledWithdrawResult = false;
     private boolean shouldRefreshJobAppliedAfterApply = false;
+
+    private boolean hasSubmitted=false;
 
     public DetailHomeJobPostFragment() {}
 
@@ -201,7 +201,7 @@ public class DetailHomeJobPostFragment extends Fragment {
                 btnApply.setVisibility(View.VISIBLE);
                 btnApply.setOnClickListener(v -> {
                     Log.e("DetailHomeJPHome", "btnapply");
-                    if (cvList == null || cvList.isEmpty()) {
+                    if (cvList == null || cvList.isEmpty() || shouldRefreshJobAppliedAfterApply) {
                         Toast.makeText(getContext(), "Please upload a CV to apply", Toast.LENGTH_SHORT).show();
                         return;
                     }
