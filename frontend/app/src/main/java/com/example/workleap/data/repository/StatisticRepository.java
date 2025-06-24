@@ -8,6 +8,7 @@ import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.response.CVResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
 import com.example.workleap.data.model.response.ListTopCompanyResponse;
+import com.example.workleap.data.model.response.ListTopJobPostResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.response.OverviewResponse;
 import com.example.workleap.data.model.response.TopCompanyResponse;
@@ -33,5 +34,8 @@ public class StatisticRepository {
     }
     public Call<ListTopCompanyResponse> getTopCompany(int page, int pageSize) {
         return apiService.getTopCompany(page, pageSize);
+    }
+    public Call<ListTopJobPostResponse> getTopJobPost(int page, int pageSize) {
+        return apiService.getTopJobPost(page, pageSize);
     }
 }

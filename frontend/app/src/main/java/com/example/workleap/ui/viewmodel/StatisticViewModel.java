@@ -1,7 +1,6 @@
 package com.example.workleap.ui.viewmodel;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -9,8 +8,10 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.workleap.data.model.entity.DailyStatistic;
 import com.example.workleap.data.model.response.ListTopCompanyResponse;
+import com.example.workleap.data.model.response.ListTopJobPostResponse;
 import com.example.workleap.data.model.response.OverviewResponse;
 import com.example.workleap.data.model.response.TopCompanyResponse;
+import com.example.workleap.data.model.response.TopJobPostResponse;
 import com.example.workleap.data.repository.StatisticRepository;
 import com.google.gson.Gson;
 
@@ -25,7 +26,9 @@ public class StatisticViewModel extends ViewModel {
     private MutableLiveData<String> getOverviewResult = new MutableLiveData<>();
     private MutableLiveData<DailyStatistic> getOverviewData = new MutableLiveData<>();
     private MutableLiveData<List<TopCompanyResponse>> getTopCompanyData = new MutableLiveData<>();
+    private MutableLiveData<List<TopJobPostResponse>> topJobPostData = new MutableLiveData<>();
     private MutableLiveData<String> getTopCompanyResult = new MutableLiveData<>();
+    private MutableLiveData<String> topJobPostResult = new MutableLiveData<>();
 
     public StatisticViewModel(){}
     public void InitiateRepository(Context context) {
@@ -36,7 +39,9 @@ public class StatisticViewModel extends ViewModel {
     public LiveData<String> getGetOverviewResult() { return getOverviewResult; }
     public LiveData<DailyStatistic> getGetOverviewData() { return getOverviewData; }
     public LiveData<String> getTopCompanyResult() { return getTopCompanyResult; }
+    public LiveData<String> getTopJobPostResult() { return topJobPostResult; }
     public LiveData<List<TopCompanyResponse>> getTopCompanyData() { return getTopCompanyData; }
+    public LiveData<List<TopJobPostResponse>> getTopJobPostData() { return topJobPostData; }
     // Get company
     public void getOverview() {
         Call<OverviewResponse> call = overviewRepository.getOverview();
@@ -86,4 +91,29 @@ public class StatisticViewModel extends ViewModel {
             }
         });
     }
+    public void getTopJobPost(int page, int pageSize) {
+        Call<ListTopJobPostResponse> call = overviewRepository.getTopJobPost(page, pageSize);
+        call.enqueue(new Callback<ListTopJobPostResponse>() {
+            @Override
+            public void onResponse(Call<ListTopJobPostResponse> call, Response<ListTopJobPostResponse> response) {
+                if (response.isSuccessful()) {
+                    ListTopJobPostResponse getResponse = response.body();
+                    topJobPostData.setValue(getResponse.getListJobPost());
+                    topJobPostResult.setValue("Success");
+                } else {
+                    try {
+                        ListTopJobPostResponse error = new Gson().fromJson(response.errorBody().string(), ListTopJobPostResponse.class);
+                        topJobPostResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        topJobPostResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ListTopJobPostResponse> call, Throwable t) {
+                topJobPostResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
 }

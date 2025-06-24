@@ -18,6 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.response.TopJobPostResponse;
+import com.example.workleap.ui.view.main.jobpost_post.JobPostAdapter;
 import com.example.workleap.ui.viewmodel.StatisticViewModel;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -42,6 +45,8 @@ public class StatisticsFragment extends Fragment {
 
     StatisticViewModel statisticViewModel;
     ViewGroup itemUserCount, itemJobPostCount, itemReportCount, itemApplicationCount;
+
+    private JobPostAdapter adapterTopJobPosts;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -131,7 +136,6 @@ public class StatisticsFragment extends Fragment {
         TopCompanyAdapter adapter = new TopCompanyAdapter(requireContext(), new ArrayList<>());
         recyclerTopCompanies.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerTopCompanies.setAdapter(adapter);
-
         statisticViewModel.getTopCompanyData().observe(getViewLifecycleOwner(), topCompanyList -> {
             if (topCompanyList != null) {
                 adapter.setData(topCompanyList);
@@ -139,6 +143,34 @@ public class StatisticsFragment extends Fragment {
             else
             {
                 Log.e("StatisticFragment", "getTopCompanyData topCompanyList NULL");
+            }
+        });
+
+        statisticViewModel.getTopJobPost(1, 10);
+        statisticViewModel.getTopJobPostResult().observe(getViewLifecycleOwner(), result->{
+            if(!isAdded() || getView()==null) return;
+
+            if(result!=null)
+                Log.e("StatisticFragment", "getTopJobPostResult " + result);
+            else
+                Log.e("StatisticFragment", "getTopJobPostResult result NULL" );
+        });
+
+        adapterTopJobPosts = new JobPostAdapter(new ArrayList<>());
+        recyclerTopJobs.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerTopJobs.setAdapter(adapterTopJobPosts);
+        statisticViewModel.getTopJobPostData().observe(getViewLifecycleOwner(), topJobPostList->{
+            if (topJobPostList != null) {
+                //lay danh sach jobpost tu danh sach topjobpost
+                List<JobPost> jobPosts = new ArrayList<>();
+                for (TopJobPostResponse item : topJobPostList) {
+                    if (item.getJob() != null) {
+                        jobPosts.add(item.getJob());
+                    }
+                }
+                adapterTopJobPosts.setData(jobPosts);
+            } else {
+                Log.e("StatisticFragment", "getTopJobPostData jobPostList NULL");
             }
         });
     }
