@@ -90,6 +90,21 @@ const StatisticController = {
             });
         }
     },
+    getByField: async (req, res) => {
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 10;
+        const { skip, take } = getPagination(page, pageSize);
+
+        try {
+            const { items: data, total } = await StatisticService.getByField(skip, take);
+            const meta = buildMeta(total, page, pageSize);
+            return res.status(200).json({ data, meta });
+        } catch (error) {
+            return res
+                .status(500)
+                .json({ message: 'Error fetching statistics by field', error: error.message });
+        }
+    },
 };
 
 module.exports = { StatisticController };
