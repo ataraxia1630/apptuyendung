@@ -41,15 +41,19 @@ import com.example.workleap.data.model.response.ListConversationUserResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
+import com.example.workleap.data.model.response.ListFieldStatResponse;
 import com.example.workleap.data.model.response.ListFollowerResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListMessageResponse;
+import com.example.workleap.data.model.response.ListMonthlyStatResponse;
 import com.example.workleap.data.model.response.ListPostResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
 import com.example.workleap.data.model.response.ListJobCategoryResponse;
 import com.example.workleap.data.model.response.ListJobTypeResponse;
+import com.example.workleap.data.model.response.ListTopCompanyResponse;
+import com.example.workleap.data.model.response.ListTopJobPostResponse;
 import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
 import com.example.workleap.data.model.response.MessageChatResponse;
@@ -59,6 +63,7 @@ import com.example.workleap.data.model.response.OverviewResponse;
 import com.example.workleap.data.model.response.PostResponse;
 import com.example.workleap.data.model.response.ReactionResponse;
 import com.example.workleap.data.model.response.RegisterResponse;
+import com.example.workleap.data.model.response.TopCompanyResponse;
 import com.example.workleap.data.model.response.UpdateApplicantEducationResponse;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
@@ -314,8 +319,16 @@ public interface ApiService {
     //Statistic
     @GET("api/statistic/overview")
     Call<OverviewResponse> getOverview();
+    @GET("api/statistic/top-companies")
+    Call<ListTopCompanyResponse> getTopCompany(@Query("page") int page, @Query("pageSize") int pageSize);
     @GET("api/statistic/top-jobposts")
-    Call<OverviewResponse> getTopJobpost();
+    Call<ListTopJobPostResponse> getTopJobPost(@Query("page") int page, @Query("pageSize") int pageSize);
+
+    @GET("api/statistic/monthly-growth")
+    Call<ListMonthlyStatResponse> getMonthlyGrowth();
+    @GET("api/statistic/by-field")
+    Call<ListFieldStatResponse> getByField(@Query("page") int page, @Query("pageSize") int pageSize);
+
 
     //Chat-Conversation
     // Lấy tất cả các cuộc trò chuyện của user

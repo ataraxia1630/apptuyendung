@@ -28,7 +28,6 @@ router.get(
 router.get(
     '/by-field',
     verifyToken,
-    requireRole('ADMIN'),
     cache,
     StatisticController.getByField
 );
