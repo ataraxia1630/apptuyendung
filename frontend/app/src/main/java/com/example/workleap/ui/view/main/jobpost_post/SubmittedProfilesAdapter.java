@@ -14,6 +14,7 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.Applicant;
 import com.example.workleap.data.model.entity.JobApplied;
 
 import java.util.List;
@@ -47,8 +48,9 @@ public class SubmittedProfilesAdapter extends RecyclerView.Adapter<SubmittedProf
         JobApplied jobApplied = jobAppliedList.get(position);
 
         holder.imgAvatar.setImageResource(R.drawable.sample_avatar);
-        holder.txtApplicantName.setText("dang");
-        holder.txtTitle.setText("cv cua dang");
+        Applicant applicant = jobApplied.getApplicant();
+        holder.txtApplicantName.setText(applicant.getFirstName()+" "+ applicant.getLastName());
+        holder.txtTitle.setText(jobApplied.getCV().getTitle());
         holder.txtStatus.setText(jobApplied.getStatus());
 
         //set color for status

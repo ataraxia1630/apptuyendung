@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,12 +52,12 @@ public class ChooseCVFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewCV);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(new ChooseCVAdapter(cvList, selectedCV -> {
-            // tra ket qua ve fragment goi den
-            Bundle result = new Bundle();
-            result.putSerializable("selected_cv", selectedCV);
-            getParentFragmentManager().setFragmentResult("choose_cv_result", result);
+            NavController navController = NavHostFragment.findNavController(this);
+            navController.getPreviousBackStackEntry()
+                    .getSavedStateHandle()
+                    .set("selected_cv", selectedCV);
 
-            NavHostFragment.findNavController(this).navigateUp();
+            navController.popBackStack();
         }));
     }
 }

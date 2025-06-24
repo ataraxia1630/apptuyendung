@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.workleap.R;
@@ -43,7 +44,9 @@ public class PdfFragment extends Fragment {
         new Thread(() -> {
             try {
                 File pdfFile = downloadPdfFromUrl(pdfUrl);
-                getActivity().runOnUiThread(() -> renderPdf(pdfFile));
+                if (isAdded() && getView() != null && getActivity() != null) {
+                    getActivity().runOnUiThread(() -> renderPdf(pdfFile));
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -60,6 +63,10 @@ public class PdfFragment extends Fragment {
 
         btnBack.setOnClickListener( v ->requireActivity().getOnBackPressedDispatcher().onBackPressed());
         tvPdfTitle.setText(getArguments().getString("pdf_title"));
+
+        if (getArguments() != null && getArguments().getBoolean("hide_toolbar", false)) {
+            hideToolbar();
+        }
     }
 
     private File downloadPdfFromUrl(String url) throws IOException {

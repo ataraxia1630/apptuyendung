@@ -233,12 +233,15 @@ public interface ApiService {
     Call<ListJobAppliedResponse> getCvsJobApplied(@Path("jobpostId") String jobpostId);
     @GET("api/apply/{jobpostId}/applicants") //Get all applicant in job applied
     Call<ListJobAppliedResponse> getApplicantsJobApplied(@Path("jobpostId") String jobpostId);
-    @GET("api/apply/{applicantId}/cvs")
+    @GET("api/apply/{applicantId}")
     Call<ListJobAppliedResponse> getJobApplied(@Path("applicantId") String applicantId);
     @POST("api/apply/")            //create a job applied
     Call<MessageResponse> applyAJob(@Body ApplyAJobRequest request);
     @PUT("api/apply/process-cv")            //process cv applied
     Call<JobAppliedResponse> processCvApplied(@Body ProcessCvAppliedRequest request);
+
+    @DELETE("api/apply/{applicantId}/{jobpostId}")
+    Call<MessageResponse> withDrawCv(@Path("applicantId") String applicantId, @Path("jobpostId") String jobPostId);
 
     //Cv
     //@POST("api/cv/upload/{applicantId}")
