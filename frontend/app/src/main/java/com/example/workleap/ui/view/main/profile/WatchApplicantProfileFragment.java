@@ -16,6 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.ApplicantEducation;
@@ -68,33 +70,14 @@ public class WatchApplicantProfileFragment extends Fragment {
     List<Education> listEducation;
     List<Experience> applicantExperience;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public WatchApplicantProfileFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static WatchApplicantProfileFragment newInstance(String param1, String param2) {
         WatchApplicantProfileFragment fragment = new WatchApplicantProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -103,8 +86,7 @@ public class WatchApplicantProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            user = (User) getArguments().getSerializable("user");
         }
     }
 
@@ -119,7 +101,6 @@ public class WatchApplicantProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        user = (User) getArguments().getSerializable("user");
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         userViewModel.InitiateRepository(getContext());
         applicantViewModel = new ViewModelProvider(requireActivity()).get(ApplicantViewModel.class);
@@ -146,7 +127,6 @@ public class WatchApplicantProfileFragment extends Fragment {
 
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
-
         //load
         LoadSkill();
         LoadEducation();
@@ -230,7 +210,6 @@ public class WatchApplicantProfileFragment extends Fragment {
                 Log.e("applicantprofile", result);
             else
                 Log.e("applicantprofile", "updateresult null");
-
         });
 
         //user
@@ -378,6 +357,7 @@ public class WatchApplicantProfileFragment extends Fragment {
                 }
         );
 
+        //button options
         btnOptions.setOnClickListener( v -> {
             PopupMenu popupMenu = new PopupMenu(getContext(), btnOptions);
             popupMenu.getMenuInflater().inflate(R.menu.menu_options, popupMenu.getMenu());
@@ -401,7 +381,30 @@ public class WatchApplicantProfileFragment extends Fragment {
             popupMenu.show();
         });
 
+        //Follow observe and click handle
+        userViewModel.getToggleFollowResult().observe(getViewLifecycleOwner(), result -> {
+            if(result!=null)
+                Log.e("follow", result);
+            else
+                Log.e("follow", "follow result null" );
+        });
+
+        btnFollow.setOnClickListener(v -> {
+            userViewModel.toggleFollow(user.getId());
+        });
+
+        //Back
+        btnBack.setOnClickListener(v ->
+        {
+            NavController nav = NavHostFragment.findNavController(this);
+            nav.navigateUp();
+        });
+
+        //Chat
+
     }
+
+
     private void LoadEducation()
     {
         applicantViewModel.getAllApplicantEducation(user.getApplicantId());

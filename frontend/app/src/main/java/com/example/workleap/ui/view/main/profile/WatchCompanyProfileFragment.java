@@ -67,7 +67,6 @@ public class WatchCompanyProfileFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             userId = getArguments().getString("userId");
-            companyId = getArguments().getString("companyId");
             Log.d("WatchCpnProfileFragment", "onCreate: " + userId + " " + companyId);
         }
     }
@@ -105,6 +104,7 @@ public class WatchCompanyProfileFragment extends Fragment {
             {
                 tvMailInfo.setText(user.getEmail());
                 tvPhoneInfo.setText(user.getPhoneNumber());
+                companyId = data.getCompanyId();
             }
             else
                 Log.d("WatchCpnProfileFragment", "user null");

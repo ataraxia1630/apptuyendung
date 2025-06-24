@@ -12,20 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Comment;
+import com.example.workleap.ui.view.main.home.CommentBottomSheet;
 import com.example.workleap.ui.viewmodel.PostViewModel;
-import com.example.workleap.ui.viewmodel.PostViewModel;
-import com.google.gson.Gson;
-
-import org.w3c.dom.Text;
+import com.example.workleap.ui.viewmodel.UserViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -34,20 +28,25 @@ import java.util.List;
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
     public interface OnCommentClickListener {
         void onCommentClick(Comment comment);
+        void onAvatarClick(Comment comment);
     }
+
     private List<Comment> commentList;
     private PostViewModel commentViewModel;
     private OnCommentClickListener listener;
     private TextView txtUsername, txtDateTime, txtCommentDetail;
     private ImageView imgAvatar;
     private ImageButton btnOptions;
-    private Fragment fragment;
+    private NavController nav;
+    private CommentBottomSheet commentBottomSheet;
+    private UserViewModel userViewModel;
 
-    public CommentAdapter(List<Comment> commentList, PostViewModel commentViewModel, Fragment fragment, OnCommentClickListener listener) {
+    public CommentAdapter(List<Comment> commentList, PostViewModel commentViewModel, UserViewModel userViewModel, CommentBottomSheet commentBottomSheet, OnCommentClickListener listener) {
         this.commentList = commentList;
         this.commentViewModel = commentViewModel;
+        this.userViewModel = userViewModel;
         this.listener = listener;
-        this.fragment = fragment;
+        this.commentBottomSheet = commentBottomSheet;
     }
 
     @NonNull
@@ -71,6 +70,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                 listener.onCommentClick(comment);
             }
         });
+        //Watch profile
+        holder.imgAvatar.setOnClickListener(v -> {
+            Log.d("click", "avatar");
+            if (listener != null) {
+                listener.onAvatarClick(comment);
+            }
+        });
 
         //ChildComment
         // Xóa các reply cũ nếu có (tránh bị lặp lại do ViewHolder được tái sử dụng)
@@ -83,7 +89,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             holder.layoutReplies.removeAllViews();
             holder.layoutReplies.setVisibility(View.VISIBLE);
 
-            Log.d("Child comment", childComments.get(0).getCommentDetail());
             for (Comment child : childComments) {
                 View childView = LayoutInflater.from(holder.itemView.getContext())
                         .inflate(R.layout.item_comment, holder.layoutReplies, false);
@@ -98,6 +103,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                 txtUsername.setText(child.getUser().getUsername());
                 txtDateTime.setText(new SimpleDateFormat("dd/MM/yyyy").format(child.getCreatedAt()));
                 txtCommentDetail.setText(child.getCommentDetail());
+
+                imgAvatar.setOnClickListener(v -> {
+                    Log.d("click", "avatar");
+                    if (listener != null) {
+                        listener.onAvatarClick((Comment) child);
+                    }
+                });
 
                 // Ẩn các thành phần không cần thiết
                 LinearLayout childReplies = childView.findViewById(R.id.layoutReplies);
@@ -116,14 +128,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         }
         else
             Log.d("COMMENT_ADAPTER", "No childComment");
-
-        //Watch profile
-        holder.imgAvatar.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            NavController navController = NavHostFragment.findNavController(fragment);
-            bundle.putSerializable("user", comment.getUser());
-            navController.navigate(R.id.watchApplicantProfileFragment, bundle);
-        });
 
         // Thêm PopupMenu cho btnOption
         /*holder.btnOption.setOnClickListener(v -> {

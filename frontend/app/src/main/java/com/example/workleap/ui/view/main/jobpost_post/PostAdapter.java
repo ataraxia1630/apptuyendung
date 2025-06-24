@@ -40,13 +40,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private LifecycleOwner lifecycleOwner;
     private FragmentManager fragmentManager;
     private User user;
+    private NavController nav;
 
-    public PostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager, User user) {
+    public PostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager, User user, NavController nav) {
         this.postList = postList;
         this.postViewModel = postViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.fragmentManager = fragmentManager;
         this.user = user;
+        this.nav = nav;
     }
 
     @NonNull
@@ -83,6 +85,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         //Comment
         holder.btnComment.setOnClickListener(v -> {
             CommentBottomSheet bottomSheet = CommentBottomSheet.newInstance(post.getId(), user);
+            bottomSheet.setNavController(nav);
             bottomSheet.show(fragmentManager, "commentSheet");
         });
 
@@ -129,7 +132,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             NavController navController = Navigation.findNavController(v);
             Bundle bundle = new Bundle();
             bundle.putSerializable("userId", post.getCompany().getUser().get(0).getId());
-            bundle.putSerializable("companyId", post.getCompanyId());
             navController.navigate(R.id.watchCompanyProfileFragment, bundle);
         });
 
