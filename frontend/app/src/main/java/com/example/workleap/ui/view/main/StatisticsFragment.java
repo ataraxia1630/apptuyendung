@@ -5,9 +5,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -19,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.workleap.R;
-import com.example.workleap.ui.viewmodel.CompanyViewModel;
 import com.example.workleap.ui.viewmodel.StatisticViewModel;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -56,7 +52,7 @@ public class StatisticsFragment extends Fragment {
 
         itemUserCount = view.findViewById(R.id.userCount);
         itemJobPostCount = view.findViewById(R.id.jobPostCount);
-        itemReportCount = view.findViewById(R.id.reportCount);
+        itemReportCount = view.findViewById(R.id.companyCount);
         itemApplicationCount = view.findViewById(R.id.applicationCount);
 
         tvUserLabel  = itemUserCount.findViewById(R.id.txtLabel);
@@ -64,7 +60,7 @@ public class StatisticsFragment extends Fragment {
         tvJobPostLabel  = itemJobPostCount.findViewById(R.id.txtLabel);
         tvJobPostLabel.setText("Job Post");
         tvReportLabel  = itemReportCount.findViewById(R.id.txtLabel);
-        tvReportLabel.setText("Report");
+        tvReportLabel.setText("Company");
         tvApplicationLabel = itemApplicationCount.findViewById(R.id.txtLabel);
         tvApplicationLabel.setText("Application");
 
@@ -112,7 +108,7 @@ public class StatisticsFragment extends Fragment {
             }
             tvUserCount.setText(String.valueOf(dailyStatistic.getUserCount()));
             tvJobPostCount.setText(String.valueOf(dailyStatistic.getJobPostCount()));
-            tvReportCount.setText(String.valueOf(dailyStatistic.getReportCount()));
+            tvReportCount.setText(String.valueOf(dailyStatistic.getCompanyCount()));
             tvApplicationCount.setText(String.valueOf(dailyStatistic.getApplicationCount()));
         });
     }

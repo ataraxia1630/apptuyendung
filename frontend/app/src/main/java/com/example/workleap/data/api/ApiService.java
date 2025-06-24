@@ -2,7 +2,6 @@ package com.example.workleap.data.api;
 
 import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.Conversation;
-import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
@@ -58,6 +57,7 @@ import com.example.workleap.data.model.response.OverviewResponse;
 import com.example.workleap.data.model.response.PostResponse;
 import com.example.workleap.data.model.response.ReactionResponse;
 import com.example.workleap.data.model.response.RegisterResponse;
+import com.example.workleap.data.model.response.TopCompanyResponse;
 import com.example.workleap.data.model.response.UpdateApplicantEducationResponse;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
@@ -71,8 +71,6 @@ import com.example.workleap.data.model.response.UpdateCompanyResponse;
 import com.example.workleap.data.model.request.UpdateUserRequest;
 import com.example.workleap.data.model.response.UpdateUserResponse;
 
-import java.lang.reflect.Member;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -306,8 +304,8 @@ public interface ApiService {
     //Statistic
     @GET("api/statistic/overview")
     Call<OverviewResponse> getOverview();
-    @GET("api/statistic/top-jobposts")
-    Call<OverviewResponse> getTopJobpost();
+    @GET("api/statistic/top-companies")
+    Call<TopCompanyResponse> getTopCompany();
 
     //Chat-Conversation
     // Lấy tất cả các cuộc trò chuyện của user

@@ -7,19 +7,19 @@ public class DailyStatistic {
     private Date date;
     private int userCount;
     private int jobPostCount;
-    private int reportCount;
+    private int companyCount;
     private int applicationCount;
     private Date created_at;
     private Date updated_at;
 
     public DailyStatistic() {}
 
-    public DailyStatistic(String id, Date date, int userCount, int jobPostCount, int reportCount, int applicationCount, Date created_at, Date updated_at) {
+    public DailyStatistic(String id, Date date, int userCount, int jobPostCount, int companyCount, int applicationCount, Date created_at, Date updated_at) {
         this.id = id;
         this.date = date;
         this.userCount = userCount;
         this.jobPostCount = jobPostCount;
-        this.reportCount = reportCount;
+        this.companyCount = companyCount;
         this.applicationCount = applicationCount;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -58,12 +58,12 @@ public class DailyStatistic {
         this.jobPostCount = jobPostCount;
     }
 
-    public int getReportCount() {
-        return reportCount;
+    public int getCompanyCount() {
+        return companyCount;
     }
 
-    public void setReportCount(int reportCount) {
-        this.reportCount = reportCount;
+    public void setCompanyCount(int companyCount) {
+        this.companyCount = companyCount;
     }
 
     public int getApplicationCount() {

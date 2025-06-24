@@ -9,6 +9,7 @@ import com.example.workleap.data.model.response.CVResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.response.OverviewResponse;
+import com.example.workleap.data.model.response.TopCompanyResponse;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -27,5 +28,8 @@ public class StatisticRepository {
 
     public Call<OverviewResponse> getOverview() {
         return apiService.getOverview();
+    }
+    public Call<TopCompanyResponse> getTopCompany() {
+        return apiService.getTopCompany();
     }
 }
