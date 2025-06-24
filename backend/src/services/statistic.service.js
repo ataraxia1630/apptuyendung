@@ -25,7 +25,24 @@ const StatisticService = {
         // Lấy chi tiết JobPost
         const items = await Promise.all(
             paginated.map(async (r) => {
-                const job = await prisma.jobPost.findUnique({ where: { id: r.jobpostId } });
+                const job = await prisma.jobPost.findUnique({
+                    where: { id: r.jobpostId },
+                    include: {
+                        Company: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                        avatar: true,
+                                    },
+                                },
+                            },
+                        },
+                        JobType: true,
+                        JobCategory: true,
+                    }
+                });
+                if (!job) return null; // Nếu không tìm thấy JobPost thì trả về null
                 return { job, applicationCount: r._count.jobpostId };
             })
         );
@@ -62,7 +79,15 @@ const StatisticService = {
         const companyIds = sorted.map(([id]) => id);
 
         const companies = await prisma.company.findMany({
-            where: { id: { in: companyIds } }
+            where: { id: { in: companyIds } },
+            include: {
+                User: {
+                    select: {
+                        id: true,
+                        avatar: true,
+                    },
+                },
+            },
         });
 
         const topCompanies = sorted.map(([id, count]) => {
