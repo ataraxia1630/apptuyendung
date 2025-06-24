@@ -41,6 +41,7 @@ import com.example.workleap.data.model.response.ListConversationResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
+import com.example.workleap.data.model.response.ListFieldStatResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListMessageResponse;
 import com.example.workleap.data.model.response.ListMonthlyStatResponse;
@@ -317,6 +318,9 @@ public interface ApiService {
 
     @GET("api/statistic/monthly-growth")
     Call<ListMonthlyStatResponse> getMonthlyGrowth();
+    @GET("api/statistic/by-field")
+    Call<ListFieldStatResponse> getByField(@Query("page") int page, @Query("pageSize") int pageSize);
+
 
     //Chat-Conversation
     // Lấy tất cả các cuộc trò chuyện của user

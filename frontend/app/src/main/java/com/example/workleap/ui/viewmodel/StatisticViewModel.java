@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.workleap.data.model.entity.DailyStatistic;
+import com.example.workleap.data.model.response.FieldStat;
+import com.example.workleap.data.model.response.ListFieldStatResponse;
 import com.example.workleap.data.model.response.ListMonthlyStatResponse;
 import com.example.workleap.data.model.response.ListTopCompanyResponse;
 import com.example.workleap.data.model.response.ListTopJobPostResponse;
@@ -29,7 +31,9 @@ public class StatisticViewModel extends ViewModel {
     private MutableLiveData<List<TopCompanyResponse>> getTopCompanyData = new MutableLiveData<>();
     private MutableLiveData<List<TopJobPostResponse>> topJobPostData = new MutableLiveData<>();
     private MutableLiveData<ListMonthlyStatResponse> listMonthlyStatData = new MutableLiveData<>();
+    private MutableLiveData<List<FieldStat>> listFieldStatData = new MutableLiveData<>();
     private MutableLiveData<String> listMonthlyStatResult = new MutableLiveData<>();
+    private MutableLiveData<String> listFieldStatResult = new MutableLiveData<>();
     private MutableLiveData<String> getTopCompanyResult = new MutableLiveData<>();
     private MutableLiveData<String> topJobPostResult = new MutableLiveData<>();
 
@@ -46,7 +50,9 @@ public class StatisticViewModel extends ViewModel {
     public LiveData<List<TopCompanyResponse>> getTopCompanyData() { return getTopCompanyData; }
     public LiveData<List<TopJobPostResponse>> getTopJobPostData() { return topJobPostData; }
     public LiveData<ListMonthlyStatResponse> getListMonthlyStatData() { return listMonthlyStatData; }
+    public LiveData<List<FieldStat>> getListFieldStatData() { return listFieldStatData; }
     public LiveData<String> getListMonthlyStatResult() { return listMonthlyStatResult; }
+    public LiveData<String> getListFieldStatResult() { return listFieldStatResult; }
     // Get company
     public void getOverview() {
         Call<OverviewResponse> call = overviewRepository.getOverview();
@@ -141,6 +147,30 @@ public class StatisticViewModel extends ViewModel {
             @Override
             public void onFailure(Call<ListMonthlyStatResponse> call, Throwable t) {
                 listMonthlyStatResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+    public void getByField(int page, int pageSize) {
+        Call<ListFieldStatResponse> call = overviewRepository.getByField(page, pageSize);
+        call.enqueue(new Callback<ListFieldStatResponse>() {
+            @Override
+            public void onResponse(Call<ListFieldStatResponse> call, Response<ListFieldStatResponse> response) {
+                if (response.isSuccessful()) {
+                    ListFieldStatResponse getResponse = response.body();
+                    listFieldStatData.setValue(getResponse.getListFieldStat());
+                    listFieldStatResult.setValue("Success");
+                } else {
+                    try {
+                        ListFieldStatResponse error = new Gson().fromJson(response.errorBody().string(), ListFieldStatResponse.class);
+                        listFieldStatResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        listFieldStatResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ListFieldStatResponse> call, Throwable t) {
+                listFieldStatResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }

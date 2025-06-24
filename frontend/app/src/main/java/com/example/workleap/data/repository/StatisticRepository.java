@@ -7,6 +7,7 @@ import com.example.workleap.data.api.RetrofitClient;
 import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.response.CVResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
+import com.example.workleap.data.model.response.ListFieldStatResponse;
 import com.example.workleap.data.model.response.ListMonthlyStatResponse;
 import com.example.workleap.data.model.response.ListTopCompanyResponse;
 import com.example.workleap.data.model.response.ListTopJobPostResponse;
@@ -41,5 +42,8 @@ public class StatisticRepository {
     }
     public Call<ListMonthlyStatResponse> getMonthlyGrowth() {
         return apiService.getMonthlyGrowth();
+    }
+    public Call<ListFieldStatResponse> getByField(int page, int pageSize) {
+        return apiService.getByField(page, pageSize);
     }
 }

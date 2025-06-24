@@ -19,12 +19,14 @@ import android.widget.TextView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.response.FieldStat;
 import com.example.workleap.data.model.response.MonthlyStat;
 import com.example.workleap.data.model.response.TopJobPostResponse;
 import com.example.workleap.ui.view.main.jobpost_post.JobPostAdapter;
 import com.example.workleap.ui.viewmodel.StatisticViewModel;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -36,6 +38,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class StatisticsFragment extends Fragment {
@@ -54,14 +57,15 @@ public class StatisticsFragment extends Fragment {
     List<String> monthLabels;
 
     List<MonthlyStat> userGrowth, jobGrowth;
+    List<Integer> colors;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistics, container, false);
         pieChart = view.findViewById(R.id.pieChartCategory);
 
-        setupPieChart();
-        loadPieChartData();
+        //setupPieChart();
+        //loadPieChartData();
 
         lineChart = view.findViewById(R.id.lineChartGrowth);
 
@@ -94,6 +98,18 @@ public class StatisticsFragment extends Fragment {
         userEntries = new ArrayList<>();
         jobEntries = new ArrayList<>();
         monthLabels = new ArrayList<>();
+
+        //tao mang nhieu mau hon 4 mau co ban cho pie chart
+        colors = new ArrayList<>();
+        for (int color : ColorTemplate.MATERIAL_COLORS) {
+            colors.add(color);
+        }
+        for (int color : ColorTemplate.COLORFUL_COLORS) {
+            colors.add(color);
+        }
+        for (int color : ColorTemplate.JOYFUL_COLORS) {
+            colors.add(color);
+        }
 
         return view;
     }
@@ -136,7 +152,7 @@ public class StatisticsFragment extends Fragment {
 
 
         //top company
-        statisticViewModel.getTopCompany(1, 10);
+        statisticViewModel.getTopCompany(1, 5);
         statisticViewModel.getTopCompanyResult().observe(getViewLifecycleOwner(), result ->{
             if(!isAdded() || getView()==null) return;
 
@@ -160,7 +176,7 @@ public class StatisticsFragment extends Fragment {
         });
 
         //top jobpost
-        statisticViewModel.getTopJobPost(1, 10);
+        statisticViewModel.getTopJobPost(1, 4);
         statisticViewModel.getTopJobPostResult().observe(getViewLifecycleOwner(), result->{
             if(!isAdded() || getView()==null) return;
 
@@ -229,18 +245,46 @@ public class StatisticsFragment extends Fragment {
             setupLineChart();
         });
 
+
+        //by field
+        statisticViewModel.getByField(1, 10);
+        statisticViewModel.getListFieldStatData().observe(getViewLifecycleOwner(), listFieldStat->{
+            if (listFieldStat == null || listFieldStat.isEmpty()) return;
+
+            List<PieEntry> entries = new ArrayList<>();
+
+            for (FieldStat stat : listFieldStat) {
+                entries.add(new PieEntry(stat.getCount(), stat.getName()));
+            }
+
+            PieDataSet dataSet = new PieDataSet(entries, "");
+            dataSet.setColors(colors);
+            dataSet.setSliceSpace(3f);
+            dataSet.setSelectionShift(5f);
+
+            PieData pieData = new PieData(dataSet);
+            pieData.setValueTextSize(14f);
+            pieData.setValueTextColor(Color.BLACK);
+
+            Legend legend = pieChart.getLegend();
+            legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+            legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+            legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            legend.setDrawInside(false); // khong ve ben trong, ve ngoai bieu do
+            legend.setWordWrapEnabled(true); // cho phep xuong dong
+
+            pieChart.setData(pieData);
+            pieChart.setUsePercentValues(true); // nếu muốn dùng %
+            pieChart.getDescription().setEnabled(false);
+            pieChart.setDrawHoleEnabled(true);
+            pieChart.setHoleColor(Color.WHITE);
+            pieChart.setTransparentCircleAlpha(110);
+            pieChart.animateY(1000);
+            pieChart.invalidate(); // refresh
+        });
+
     }
 
-    private void setupPieChart() {
-        pieChart.setUsePercentValues(true);
-        pieChart.getDescription().setEnabled(false);
-        pieChart.setExtraOffsets(5, 10, 5, 5);
-
-        pieChart.setDragDecelerationFrictionCoef(0.95f);
-        pieChart.setDrawHoleEnabled(true);
-        pieChart.setHoleColor(Color.WHITE);
-        pieChart.setTransparentCircleRadius(61f);
-    }
     private void setupLineChart() {
         LineDataSet userDataSet = new LineDataSet(userEntries, "User Growth");
         userDataSet.setColor(Color.BLUE);
@@ -265,25 +309,6 @@ public class StatisticsFragment extends Fragment {
         lineChart.animateX(1000);
         lineChart.invalidate(); // refresh chart
 
-    }
-
-    private void loadPieChartData() {
-        List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(40f, "Đã duyệt"));
-        entries.add(new PieEntry(30f, "Chờ duyệt"));
-        entries.add(new PieEntry(30f, "Từ chối"));
-
-        PieDataSet dataSet = new PieDataSet(entries, "Trạng thái hồ sơ");
-        dataSet.setSliceSpace(3f);
-        dataSet.setSelectionShift(5f);
-        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-
-        PieData data = new PieData(dataSet);
-        data.setValueTextSize(15f);
-        data.setValueTextColor(Color.BLACK);
-
-        pieChart.setData(data);
-        pieChart.invalidate(); // refresh
     }
 
 }
