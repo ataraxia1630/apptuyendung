@@ -12,7 +12,15 @@ const JobPostService = {
                     take,
                     orderBy: { created_at: 'desc' },
                     include: {
-                        Company: true,
+                        Company: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                    }
+                                }
+                            }
+                        },
                         JobType: true,
                         JobCategory: true,
 
@@ -39,7 +47,15 @@ const JobPostService = {
                     status: { notIn: ['CANCELLED', 'NOT_EXIST'] },
                 },
                 include: {
-                    Company: true,
+                    Company: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                }
+                            }
+                        }
+                    },
                     JobType: true,
                     JobCategory: true,
                 },
@@ -189,7 +205,15 @@ const JobPostService = {
                 take,
                 orderBy: { created_at: 'desc' },
                 include: {
-                    Company: true,
+                    Company: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                }
+                            }
+                        }
+                    },
                     JobType: true,
                     JobCategory: true,
                 }
@@ -223,7 +247,15 @@ const JobPostService = {
                     take,
                     orderBy: { created_at: 'desc' },
                     include: {
-                        Company: true,
+                        Company: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                    }
+                                }
+                            }
+                        },
                         JobType: true,
                         JobCategory: true,
                     },
@@ -254,7 +286,15 @@ const JobPostService = {
                 take,
                 orderBy: { created_at: 'desc' },
                 include: {
-                    Company: true,
+                    Company: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                }
+                            }
+                        }
+                    },
                     JobType: true,
                     JobCategory: true,
                 },
