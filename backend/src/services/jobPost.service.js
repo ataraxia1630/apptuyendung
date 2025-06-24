@@ -3,35 +3,35 @@ const prisma = require('../config/db/prismaClient');
 const JobPostService = {
     getAllJobPosts: async (skip = 0, take = 10) => {
         try {
-            const [jobPosts, total] = await Promise.all([
-                prisma.jobPost.findMany({
-                    where: {
-                        status: { notIn: ['CANCELLED', 'NOT_EXIST'] },
-                    },
-                    skip,
-                    take,
-                    orderBy: { created_at: 'desc' },
-                    include: {
-                        Company: {
-                            include: {
-                                User: {
-                                    select: {
-                                        id: true,
-                                    }
-                                }
-                            }
+            const jobPosts = await prisma.jobPost.findMany({
+                where: {
+                    status: { notIn: ['CANCELLED', 'NOT_EXIST'] },
+                },
+                skip,
+                take,
+                orderBy: { created_at: 'desc' },
+                include: {
+                    Company: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                    avatar: true,
+                                },
+                            },
                         },
-                        JobType: true,
-                        JobCategory: true,
-
                     },
-                }),
-                prisma.jobPost.count({
-                    where: {
-                        status: { notIn: ['CANCELLED', 'NOT_EXIST'] },
-                    }
-                }),
-            ]);
+                    JobType: true,
+                    JobCategory: true,
+                },
+            });
+
+            const total = await prisma.jobPost.count({
+                where: {
+                    status: { notIn: ['CANCELLED', 'NOT_EXIST'] },
+                },
+            });
+
             return { jobPosts, total };
         } catch (error) {
             throw new Error(`Error fetching job posts: ${error.message}`);
@@ -52,6 +52,7 @@ const JobPostService = {
                             User: {
                                 select: {
                                     id: true,
+                                    avatar: true, // Thêm trường avatar nếu cần
                                 }
                             }
                         }
@@ -210,6 +211,7 @@ const JobPostService = {
                             User: {
                                 select: {
                                     id: true,
+                                    avatar: true, // Thêm trường avatar nếu cần
                                 }
                             }
                         }
@@ -252,6 +254,7 @@ const JobPostService = {
                                 User: {
                                     select: {
                                         id: true,
+                                        avatar: true, // Thêm trường avatar nếu cần
                                     }
                                 }
                             }
@@ -291,6 +294,7 @@ const JobPostService = {
                             User: {
                                 select: {
                                     id: true,
+                                    avatar: true, // Thêm trường avatar nếu cần
                                 }
                             }
                         }

@@ -122,24 +122,82 @@ const StatisticService = {
             _count: { id: true }
         });
 
+        const total = results.reduce((sum, r) => sum + r._count.id, 0);
+
         const data = await Promise.all(
             results.map(async (r) => {
                 const category = await prisma.jobCategory.findUnique({ where: { id: r.jobCategoryId } });
                 return {
                     category: category?.name || 'Unknown',
-                    count: r._count.id
+                    count: r._count.id,
+                    percentage: ((r._count.id / total) * 100).toFixed(2) // thêm tỉ lệ phần trăm
                 };
             })
         );
 
-        // Thêm paginate ở đây
         const paginated = data.slice(skip, skip + take);
 
         return {
             items: paginated,
-            total: data.length // ← bạn quên dòng này là sẽ lỗi totalPages
+            total: data.length
         };
     },
+    getByField: async (skip, take) => {
+        // Lấy tất cả các JobPost có liên kết JobCategory → Field
+        const results = await prisma.jobPost.findMany({
+            where: {
+                status: 'OPENING',
+                jobCategoryId: { not: null }
+            },
+            include: {
+                JobCategory: {
+                    include: {
+                        Field: true
+                    }
+                }
+            }
+        });
+
+        // Gom nhóm theo Field ID
+        const fieldMap = new Map();
+
+        results.forEach((job) => {
+            const field = job.JobCategory?.Field;
+            if (!field) return;
+
+            const key = field.id;
+            if (!fieldMap.has(key)) {
+                fieldMap.set(key, {
+                    fieldId: field.id,
+                    name: field.name,
+                    count: 0
+                });
+            }
+            fieldMap.get(key).count++;
+        });
+
+        const total = Array.from(fieldMap.values()).reduce((sum, item) => sum + item.count, 0);
+
+        const fieldData = Array.from(fieldMap.values()).map((item) => ({
+            fieldId: item.fieldId,
+            name: item.name,
+            count: item.count,
+            percentage: ((item.count / total) * 100).toFixed(2)
+        }));
+
+        // Sắp xếp giảm dần theo số lượng
+        fieldData.sort((a, b) => b.count - a.count);
+
+        // Paginate
+        const paginated = fieldData.slice(skip, skip + take);
+
+        return {
+            items: paginated,
+            total: fieldData.length
+        };
+    },
+
+
 
 
     getApplicationSummaryForCompany: async (companyId) => {
