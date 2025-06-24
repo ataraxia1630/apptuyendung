@@ -19,17 +19,20 @@ import android.widget.TextView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.response.MonthlyStat;
 import com.example.workleap.data.model.response.TopJobPostResponse;
 import com.example.workleap.ui.view.main.jobpost_post.JobPostAdapter;
 import com.example.workleap.ui.viewmodel.StatisticViewModel;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
@@ -47,6 +50,10 @@ public class StatisticsFragment extends Fragment {
     ViewGroup itemUserCount, itemJobPostCount, itemReportCount, itemApplicationCount;
 
     private JobPostAdapter adapterTopJobPosts;
+    List<Entry> userEntries, jobEntries;
+    List<String> monthLabels;
+
+    List<MonthlyStat> userGrowth, jobGrowth;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,7 +64,6 @@ public class StatisticsFragment extends Fragment {
         loadPieChartData();
 
         lineChart = view.findViewById(R.id.lineChartGrowth);
-        setupLineChart();
 
         itemUserCount = view.findViewById(R.id.userCount);
         itemJobPostCount = view.findViewById(R.id.jobPostCount);
@@ -85,6 +91,10 @@ public class StatisticsFragment extends Fragment {
         imgReport.setImageResource(R.drawable.ic_report);
         imgApp.setImageResource(R.drawable.ic_cv);
 
+        userEntries = new ArrayList<>();
+        jobEntries = new ArrayList<>();
+        monthLabels = new ArrayList<>();
+
         return view;
     }
 
@@ -101,6 +111,7 @@ public class StatisticsFragment extends Fragment {
         tvApplicationCount = itemApplicationCount.findViewById(R.id.txtCount);
 
 
+        //over view
         statisticViewModel.getOverview();
         statisticViewModel.getGetOverviewResult().observe(getViewLifecycleOwner(), result -> {
             if(!isAdded() || getView()==null) return;
@@ -123,6 +134,8 @@ public class StatisticsFragment extends Fragment {
             tvApplicationCount.setText(String.valueOf(dailyStatistic.getApplicationCount()));
         });
 
+
+        //top company
         statisticViewModel.getTopCompany(1, 10);
         statisticViewModel.getTopCompanyResult().observe(getViewLifecycleOwner(), result ->{
             if(!isAdded() || getView()==null) return;
@@ -146,6 +159,7 @@ public class StatisticsFragment extends Fragment {
             }
         });
 
+        //top jobpost
         statisticViewModel.getTopJobPost(1, 10);
         statisticViewModel.getTopJobPostResult().observe(getViewLifecycleOwner(), result->{
             if(!isAdded() || getView()==null) return;
@@ -164,7 +178,7 @@ public class StatisticsFragment extends Fragment {
                 //lay danh sach jobpost tu danh sach topjobpost
                 List<JobPost> jobPosts = new ArrayList<>();
                 for (TopJobPostResponse item : topJobPostList) {
-                    if (item.getJob() != null) {
+                    if (item.getJob() != null && item.getJob().getCompany() != null) {
                         jobPosts.add(item.getJob());
                     }
                 }
@@ -173,6 +187,48 @@ public class StatisticsFragment extends Fragment {
                 Log.e("StatisticFragment", "getTopJobPostData jobPostList NULL");
             }
         });
+
+        //monthly growth
+        statisticViewModel.getMonthlyGrowth();
+        statisticViewModel.getListMonthlyStatResult().observe(getViewLifecycleOwner(), result->{
+            if(!isAdded() || getView()==null) return;
+
+            if(result!=null)
+                Log.e("StatisticFragment", "getListMonthlyStatResult " + result);
+            else
+                Log.e("StatisticFragment", "getListMonthlyStatResult result NULL" );
+        });
+        statisticViewModel.getListMonthlyStatData().observe(getViewLifecycleOwner(), listMonthlyStat->{
+            userEntries.clear();
+            jobEntries.clear();
+            monthLabels.clear();
+
+            userGrowth = listMonthlyStat.getUserGrowth();
+            jobGrowth = listMonthlyStat.getJobGrowth();
+
+            if (listMonthlyStat.getUserGrowth().isEmpty() && listMonthlyStat.getJobGrowth().isEmpty()) {
+                Log.e("StatisticFragment", "LineChart khong co du lieu hien thi");
+                return;
+            }
+
+            // duyet qua userGrowth va gan vi tri x bang index
+            for (int i = 0; i < userGrowth.size(); i++) {
+                MonthlyStat stat = userGrowth.get(i);
+                userEntries.add(new Entry(i, stat.getCount()));
+                monthLabels.add(stat.getMonth()); // lam label truc x
+            }
+
+            // jobGrowth can map dung thang voi chi so x tuong ung
+            for (MonthlyStat stat : jobGrowth) {
+                int index = monthLabels.indexOf(stat.getMonth());
+                if (index != -1) {
+                    jobEntries.add(new Entry(index, stat.getCount()));
+                }
+            }
+
+            setupLineChart();
+        });
+
     }
 
     private void setupPieChart() {
@@ -186,25 +242,29 @@ public class StatisticsFragment extends Fragment {
         pieChart.setTransparentCircleRadius(61f);
     }
     private void setupLineChart() {
-        // Dữ liệu mẫu (VD: số CV theo từng ngày)
-        List<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(1, 5));   // Ngày 1: 5 CV
-        entries.add(new Entry(2, 9));   // Ngày 2: 9 CV
-        entries.add(new Entry(3, 6));   // Ngày 3: 6 CV
+        LineDataSet userDataSet = new LineDataSet(userEntries, "User Growth");
+        userDataSet.setColor(Color.BLUE);
+        userDataSet.setCircleColor(Color.BLUE);
+        userDataSet.setLineWidth(2f);
 
-        LineDataSet dataSet = new LineDataSet(entries, "Số lượng CV mỗi ngày");
-        dataSet.setColor(Color.BLUE);
-        dataSet.setCircleColor(Color.RED);
-        dataSet.setLineWidth(2f);
-        dataSet.setValueTextSize(12f);
+        LineDataSet jobDataSet = new LineDataSet(jobEntries, "Job Growth");
+        jobDataSet.setColor(Color.GREEN);
+        jobDataSet.setCircleColor(Color.GREEN);
+        jobDataSet.setLineWidth(2f);
 
-        LineData lineData = new LineData(dataSet);
+        LineData lineData = new LineData(userDataSet, jobDataSet);
         lineChart.setData(lineData);
 
-        // Tuỳ chỉnh trục, hiệu ứng
-        lineChart.getDescription().setText("Thống kê CV theo ngày");
+        // cai dat nhan truc x bang thang
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1f);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(monthLabels));
+
+        lineChart.getDescription().setText("Monthly Growth");
         lineChart.animateX(1000);
-        lineChart.invalidate(); // refresh
+        lineChart.invalidate(); // refresh chart
+
     }
 
     private void loadPieChartData() {

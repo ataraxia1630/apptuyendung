@@ -43,6 +43,7 @@ import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListMessageResponse;
+import com.example.workleap.data.model.response.ListMonthlyStatResponse;
 import com.example.workleap.data.model.response.ListPostResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
@@ -313,6 +314,9 @@ public interface ApiService {
     Call<ListTopCompanyResponse> getTopCompany(@Query("page") int page, @Query("pageSize") int pageSize);
     @GET("api/statistic/top-jobposts")
     Call<ListTopJobPostResponse> getTopJobPost(@Query("page") int page, @Query("pageSize") int pageSize);
+
+    @GET("api/statistic/monthly-growth")
+    Call<ListMonthlyStatResponse> getMonthlyGrowth();
 
     //Chat-Conversation
     // Lấy tất cả các cuộc trò chuyện của user

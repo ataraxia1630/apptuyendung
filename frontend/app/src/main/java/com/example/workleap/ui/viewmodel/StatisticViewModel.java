@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.workleap.data.model.entity.DailyStatistic;
+import com.example.workleap.data.model.response.ListMonthlyStatResponse;
 import com.example.workleap.data.model.response.ListTopCompanyResponse;
 import com.example.workleap.data.model.response.ListTopJobPostResponse;
 import com.example.workleap.data.model.response.OverviewResponse;
@@ -27,6 +28,8 @@ public class StatisticViewModel extends ViewModel {
     private MutableLiveData<DailyStatistic> getOverviewData = new MutableLiveData<>();
     private MutableLiveData<List<TopCompanyResponse>> getTopCompanyData = new MutableLiveData<>();
     private MutableLiveData<List<TopJobPostResponse>> topJobPostData = new MutableLiveData<>();
+    private MutableLiveData<ListMonthlyStatResponse> listMonthlyStatData = new MutableLiveData<>();
+    private MutableLiveData<String> listMonthlyStatResult = new MutableLiveData<>();
     private MutableLiveData<String> getTopCompanyResult = new MutableLiveData<>();
     private MutableLiveData<String> topJobPostResult = new MutableLiveData<>();
 
@@ -42,6 +45,8 @@ public class StatisticViewModel extends ViewModel {
     public LiveData<String> getTopJobPostResult() { return topJobPostResult; }
     public LiveData<List<TopCompanyResponse>> getTopCompanyData() { return getTopCompanyData; }
     public LiveData<List<TopJobPostResponse>> getTopJobPostData() { return topJobPostData; }
+    public LiveData<ListMonthlyStatResponse> getListMonthlyStatData() { return listMonthlyStatData; }
+    public LiveData<String> getListMonthlyStatResult() { return listMonthlyStatResult; }
     // Get company
     public void getOverview() {
         Call<OverviewResponse> call = overviewRepository.getOverview();
@@ -112,6 +117,30 @@ public class StatisticViewModel extends ViewModel {
             @Override
             public void onFailure(Call<ListTopJobPostResponse> call, Throwable t) {
                 topJobPostResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+    public void getMonthlyGrowth() {
+        Call<ListMonthlyStatResponse> call = overviewRepository.getMonthlyGrowth();
+        call.enqueue(new Callback<ListMonthlyStatResponse>() {
+            @Override
+            public void onResponse(Call<ListMonthlyStatResponse> call, Response<ListMonthlyStatResponse> response) {
+                if (response.isSuccessful()) {
+                    ListMonthlyStatResponse getResponse = response.body();
+                    listMonthlyStatResult.setValue("Success");
+                    listMonthlyStatData.setValue(getResponse);
+                } else {
+                    try {
+                        ListMonthlyStatResponse error = new Gson().fromJson(response.errorBody().string(), ListMonthlyStatResponse.class);
+                        listMonthlyStatResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        listMonthlyStatResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ListMonthlyStatResponse> call, Throwable t) {
+                listMonthlyStatResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }
