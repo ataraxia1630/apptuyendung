@@ -105,4 +105,8 @@ public class JobPostRepository {
     public Call<JobAppliedResponse> processCvApplied(ProcessCvAppliedRequest request) {
         return apiService.processCvApplied(request);
     }
+    public Call<MessageResponse> withDrawCv(String applicantId, String jobPostId) {
+        return apiService.withDrawCv(applicantId, jobPostId);
+    }
+
 }

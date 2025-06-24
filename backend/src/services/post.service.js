@@ -14,6 +14,7 @@ const PostService = {
                             User: {
                                 select: {
                                     id: true,
+                                    avatar: true,
                                 }
                             }
                         }
@@ -60,6 +61,7 @@ const PostService = {
                         User: {
                             select: {
                                 id: true,
+                                avatar: true,
                             }
                         }
                     }
@@ -214,6 +216,7 @@ const PostService = {
                             User: {
                                 select: {
                                     id: true,
+                                    avatar: true,
                                 }
                             }
                         }
@@ -265,6 +268,7 @@ const PostService = {
                                 User: {
                                     select: {
                                         id: true,
+                                        avatar: true,
                                     }
                                 }
                             }
@@ -321,6 +325,7 @@ const PostService = {
                                 User: {
                                     select: {
                                         id: true,
+                                        avatar: true,
                                     }
                                 }
                             }
