@@ -19,6 +19,8 @@
             android:src="@drawable/sample_avatar"
             android:scaleType="centerCrop"
             android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:focusable="true"
             android:contentDescription="Avatar" />
 
         <LinearLayout
@@ -59,7 +61,7 @@
         </LinearLayout>
 
         <ImageButton
-            android:id="@+id/btnOptions"
+            android:id="@+id/btnOption"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_show_more"

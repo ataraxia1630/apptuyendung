@@ -5,34 +5,18 @@ import android.content.Context;
 import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.api.RetrofitClient;
 import com.example.workleap.data.model.entity.Conversation;
-import com.example.workleap.data.model.entity.JobCategory;
-import com.example.workleap.data.model.entity.JobPost;
-import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.entity.Message;
-import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.data.model.request.GroupChatRequest;
 import com.example.workleap.data.model.request.ListMemberIdRequest;
 import com.example.workleap.data.model.request.UserIdRequest;
 import com.example.workleap.data.model.response.ConversationResponse;
-import com.example.workleap.data.model.response.JobPostResponse;
-import com.example.workleap.data.model.response.ListConversationResponse;
-import com.example.workleap.data.model.response.ListJobAppliedResponse;
-import com.example.workleap.data.model.response.ListJobCategoryResponse;
-import com.example.workleap.data.model.response.ListJobPostResponse;
-import com.example.workleap.data.model.response.ListJobTypeResponse;
+import com.example.workleap.data.model.response.ListConversationUserResponse;
 import com.example.workleap.data.model.response.ListMessageResponse;
+import com.example.workleap.data.model.response.MessageChatResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 
-import java.util.List;
-
 import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.DELETE;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.PUT;
-import retrofit2.http.Path;
 
 public class ConversationRepository {
     private ApiService apiService;
@@ -46,23 +30,23 @@ public class ConversationRepository {
 
 // ======= GET =======
 
-    public Call<ListConversationResponse> getAllChats() {
+    public Call<ListConversationUserResponse> getAllChats() {
         return apiService.getAllChats();
     }
 
-    public Call<ListConversationResponse> getAllUnreadChats() {
+    public Call<ListConversationUserResponse> getAllUnreadChats() {
         return apiService.getAllUnreadChats();
     }
 
-    public Call<ListConversationResponse> getAllGroupChats() {
+    public Call<ListConversationUserResponse> getAllGroupChats() {
         return apiService.getAllGroupChats();
     }
 
-    public Call<ListConversationResponse> getChatById(String chatId) {
+    public Call<ConversationResponse> getChatById(String chatId) {
         return apiService.getChatById(chatId);
     }
 
-    public Call<ListConversationResponse> getAllMessages(String chatId) {
+    public Call<ListConversationUserResponse> getAllMessages(String chatId) {
         return apiService.getAllMessages(chatId);
     }
 
@@ -88,7 +72,7 @@ public class ConversationRepository {
         return apiService.joinGroupChat(request);
     }
 
-    public Call<MessageResponse> sendMessage(Message request) {
+    public Call<MessageChatResponse> sendMessage(Message request) {
         return apiService.sendMessage(request);
     }
 
