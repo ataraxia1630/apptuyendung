@@ -33,6 +33,7 @@ public class ConversationViewModel extends ViewModel {
     private ConversationRepository conversationRepository;
     private final MutableLiveData<List<ConversationUser>> allChats = new MutableLiveData<>();
     private final MutableLiveData<Conversation> singleChat = new MutableLiveData<>();
+    private final MutableLiveData<Conversation> createdChat = new MutableLiveData<>();
     private final MutableLiveData<String> messageResult = new MutableLiveData<>();
     private final MutableLiveData<List<Message>> getMessageOfChatData = new MutableLiveData<>();
     private final MutableLiveData<Message> sendMessageData = new MutableLiveData<>();
@@ -45,6 +46,7 @@ public class ConversationViewModel extends ViewModel {
     // ===== Getter =====
     public LiveData<List<ConversationUser>> getAllChatsData() { return allChats; }
     public LiveData<Conversation> getSingleChatData() { return singleChat; }
+    public LiveData<Conversation> getCreatedChatData() { return createdChat; }
     public LiveData<String> getMessageResult() { return messageResult; }
     public LiveData<List<Message>> getGetMessageOfChatData() { return getMessageOfChatData; }
     public LiveData<Message> getSendMessageData() { return sendMessageData; }
@@ -78,8 +80,21 @@ public class ConversationViewModel extends ViewModel {
         conversationRepository.getAllGroupChats().enqueue(getListCallback("Lấy danh sách nhóm conversation thành công"));
     }
 
-    public void getChatById(String conversationId) {
-        conversationRepository.getChatById(conversationId).enqueue(getListCallback("Lấy thông tin đoạn conversation thành công"));
+    public void getChatById(String id) {
+        conversationRepository.getChatById(id).enqueue(new Callback<ConversationResponse>() {
+            @Override
+            public void onResponse(Call<ConversationResponse> call, Response<ConversationResponse> response) {
+                if (response.isSuccessful()) {
+                    createdChat.setValue(response.body().getConversation());
+                    messageResult.setValue("Tạo đoạn conversation cá nhân thành công");
+                } else handleError(response);
+            }
+
+            @Override
+            public void onFailure(Call<ConversationResponse> call, Throwable t) {
+                errorResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
     }
 
     public void createChat(FriendIdRequest request) {

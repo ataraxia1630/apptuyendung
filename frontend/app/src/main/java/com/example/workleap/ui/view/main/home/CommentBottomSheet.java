@@ -47,7 +47,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
     }
 
     private String postId;
-    private User user;
+    private User myUser;
     private CommentAdapter adapter;
     private ArrayList<Comment> comments = new ArrayList<Comment>();
     private String commentReplyId;
@@ -74,7 +74,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
 
         if (getArguments() != null) {
             postId = getArguments().getString(ARG_POST_ID);
-            user = (User) getArguments().getSerializable("user");
+            myUser = (User) getArguments().getSerializable("user");
         }
 
         // Setup adapter RecyclerView hiển thị comment theo postId
@@ -101,12 +101,18 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
                             {
                                 Bundle bundle = new Bundle();
                                 bundle.putSerializable("user", data);
+                                bundle.putSerializable("userId", data.getId());
+                                bundle.putSerializable("myUser", myUser);
 
                                 //Check company or applicant
                                 if(data.getCompanyId() == null)
                                     navController.navigate(R.id.watchApplicantProfileFragment, bundle);
                                 else
+                                {
+                                    bundle.putString("companyId", data.getCompanyId());
+                                    Log.d("cmt bottsh", data.getId());
                                     navController.navigate(R.id.watchCompanyProfileFragment, bundle);
+                                }
 
                                 //Show off the bottomsheet
                                 dismiss();
@@ -151,9 +157,9 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
 
             Comment newComment = null;
             if(commentReplyId != null)
-                newComment = new Comment(user.getId(), postId, commentReplyId, commentDetail);
+                newComment = new Comment(myUser.getId(), postId, commentReplyId, commentDetail);
             else
-                newComment = new Comment(user.getId(), postId, commentDetail);
+                newComment = new Comment(myUser.getId(), postId, commentDetail);
 
             postViewmodel.createComment(newComment);
             edtComment.setText("");

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -24,14 +25,18 @@ import com.example.workleap.data.model.entity.ApplicantEducation;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.Experience;
 import com.example.workleap.data.model.entity.Field;
+import com.example.workleap.data.model.entity.Follower;
 import com.example.workleap.data.model.entity.Skill;
 import com.example.workleap.data.model.entity.User;
+import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.ui.view.auth.MainActivity;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
+import com.example.workleap.ui.viewmodel.ConversationViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.chip.Chip;
+import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -54,12 +59,13 @@ public class WatchApplicantProfileFragment extends Fragment {
 
     TextView tvAboutMe;
     TextView tvApplicantName, tvApplicantNameInfo, tvMailInfo, tvPhoneInfo, tvAddressInfo;
-    User user;
+    User user, myUser;
 
     ImageButton btnOptions, btnChat, btnFollow, btnBack;
 
     ApplicantViewModel applicantViewModel;
     UserViewModel userViewModel;
+    ConversationViewModel conversationViewModel;
 
     AuthViewModel authViewModel;
     FlexboxLayout skillContainer, fieldContainer ;
@@ -69,7 +75,7 @@ public class WatchApplicantProfileFragment extends Fragment {
     List<Field> applicantInterestedField;
     List<Education> listEducation;
     List<Experience> applicantExperience;
-
+    private NavController nav;
 
     public WatchApplicantProfileFragment() {
         // Required empty public constructor
@@ -87,12 +93,14 @@ public class WatchApplicantProfileFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             user = (User) getArguments().getSerializable("user");
+            myUser = (User) getArguments().getSerializable("myUser");
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        nav = NavHostFragment.findNavController(this);
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_watch_applicant_profile, container, false);
         return view;
@@ -107,6 +115,8 @@ public class WatchApplicantProfileFragment extends Fragment {
         applicantViewModel.InitiateRepository(getContext());
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
         authViewModel.InitiateRepository(getContext());
+        conversationViewModel = new ViewModelProvider(requireActivity()).get(ConversationViewModel.class);
+        conversationViewModel.initiateRepository(getContext());
 
         tvApplicantName = (TextView) view.findViewById(R.id.tvApplicantName);
         tvAboutMe = (TextView) view.findViewById(R.id.textViewAboutMe);
@@ -220,6 +230,46 @@ public class WatchApplicantProfileFragment extends Fragment {
             else
                 Log.e("applicantprofile", "update user result null" );
         });
+
+
+        //Check following to set button follow
+        //Get following
+        userViewModel.getGetFollowingData().observe(getViewLifecycleOwner(), data -> {
+            if(data != null)
+            {
+                // Nếu data chứa userIdOfCompany thì đặt btnFollow text thành "Followed" và vô hiệu hóa nó
+                boolean isFollowing = false;
+                for (Follower following : data) {
+                    String followedUserId = following.getFollowedId();
+                    if (followedUserId.equals(user.getId())) {
+                        isFollowing = true;
+                        break;
+                    }
+                }
+                if (isFollowing) {
+                    //dat lai scr image
+                    btnFollow.setImageResource(R.drawable.ic_followed);
+                    btnFollow.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue_light));
+                } else {
+                    //Dat lai scr image
+                    btnFollow.setImageResource(R.drawable.ic_follow);
+                    btnFollow.setBackgroundColor(Color.TRANSPARENT);
+                }
+            }
+            else
+            {
+                Log.d("getFollowing", "null");
+            }
+        });
+        userViewModel.getGetFollowingResult().observe(getViewLifecycleOwner(), result -> {
+            if(result != null)
+                Log.d("result get following ", result.toString());
+            else
+                Log.d("result get following ", "null");
+        });
+        //Lay following to check button status
+        userViewModel.getFollowing(myUser.getId());
+
 
         getParentFragmentManager().setFragmentResultListener("editProfile",
                 getViewLifecycleOwner(),
@@ -384,7 +434,11 @@ public class WatchApplicantProfileFragment extends Fragment {
         //Follow observe and click handle
         userViewModel.getToggleFollowResult().observe(getViewLifecycleOwner(), result -> {
             if(result!=null)
+            {
                 Log.e("follow", result);
+                //Lay following to update button status
+                userViewModel.getFollowing(myUser.getId());
+            }
             else
                 Log.e("follow", "follow result null" );
         });
@@ -401,7 +455,30 @@ public class WatchApplicantProfileFragment extends Fragment {
         });
 
         //Chat
+        btnChat.setOnClickListener(v -> {
+            //Nhan id created chat
+            conversationViewModel.getSingleChatData().observe(getViewLifecycleOwner(), data -> {
+                if (data != null) {
+                    conversationViewModel.getChatById(data.getId());
+                }
+                else
+                    Log.d("conversation", "null");
+            });
+            conversationViewModel.getCreatedChatData().observe(getViewLifecycleOwner(), data -> {
+                if (data != null) {
+                    Bundle bundle = new Bundle();
+                    Log.d("Chat company detail", new Gson().toJson(data));
+                    bundle.putSerializable("conversationUser", data.getMembers().get(1));
+                    bundle.putSerializable("conversation", data);
+                    nav.navigate(R.id.messageDetailFragment, bundle);
+                }
+                else
+                    Log.d("conversation", "null");
+            });
+            //Tim thong tin day du created chat de cho vao bundle
+            conversationViewModel.createChat(new FriendIdRequest(user.getId()));
 
+        });
     }
 
 

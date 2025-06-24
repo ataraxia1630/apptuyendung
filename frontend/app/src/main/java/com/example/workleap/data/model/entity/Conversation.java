@@ -1,8 +1,9 @@
 package com.example.workleap.data.model.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Conversation {
+public class Conversation implements Serializable {
     private String id;
     private String name;
     private boolean isGroup;

@@ -42,7 +42,7 @@ public class ConversationRepository {
         return apiService.getAllGroupChats();
     }
 
-    public Call<ListConversationUserResponse> getChatById(String chatId) {
+    public Call<ConversationResponse> getChatById(String chatId) {
         return apiService.getChatById(chatId);
     }
 

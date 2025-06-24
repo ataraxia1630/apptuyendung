@@ -132,6 +132,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             NavController navController = Navigation.findNavController(v);
             Bundle bundle = new Bundle();
             bundle.putSerializable("userId", post.getCompany().getUser().get(0).getId());
+            bundle.putSerializable("myUser", user);
             navController.navigate(R.id.watchCompanyProfileFragment, bundle);
         });
 

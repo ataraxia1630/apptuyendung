@@ -326,7 +326,7 @@ public interface ApiService {
     Call<ListConversationUserResponse> getAllGroupChats();
     // Lấy thông tin một đoạn chat cụ thể theo ID
     @GET("api/chat/{chatId}")
-    Call<ListConversationUserResponse> getChatById(@Path("chatId") String chatId);
+    Call<ConversationResponse> getChatById(@Path("chatId") String chatId);
     // Lấy tất cả tin nhắn trong một cuộc trò chuyện
     @GET("api/chat/{chatId}/mess")
     Call<ListConversationUserResponse> getAllMessages(@Path("chatId") String chatId);

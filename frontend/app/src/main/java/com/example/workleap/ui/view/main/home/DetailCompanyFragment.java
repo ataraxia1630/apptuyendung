@@ -7,11 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -19,11 +19,15 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Company;
+import com.example.workleap.data.model.entity.Follower;
 import com.example.workleap.data.model.entity.JobPost;
-import com.example.workleap.ui.view.main.NavigationActivity;
+import com.example.workleap.data.model.entity.User;
+import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.ui.viewmodel.CompanyViewModel;
+import com.example.workleap.ui.viewmodel.ConversationViewModel;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
+import com.google.gson.Gson;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +38,7 @@ public class DetailCompanyFragment extends Fragment {
     private JobPostViewModel jobPostViewModel;
     private UserViewModel userViewmodel;
     private CompanyViewModel companyViewmodel;
+    private ConversationViewModel conversationViewModel;
     private Company currentCompany;
     private JobPost currentJobPost;
     private TextView txtAboutUs, txtContactInfor;
@@ -74,10 +79,13 @@ public class DetailCompanyFragment extends Fragment {
         userViewmodel.InitiateRepository(getContext());
         companyViewmodel = new ViewModelProvider(requireActivity()).get(CompanyViewModel.class);
         companyViewmodel.InitiateRepository(getContext());
+        conversationViewModel = new ConversationViewModel();
+        conversationViewModel.initiateRepository(getContext());
 
         //Lay jobpost, company hien tai
         currentJobPost = (JobPost) getArguments().getSerializable("currentJobPost");
         currentCompany = currentJobPost.getCompany();
+        User myUser = (User) getArguments().getSerializable("user");
 
         //find component
         txtAboutUs = view.findViewById(R.id.txtAboutUs);
@@ -92,19 +100,59 @@ public class DetailCompanyFragment extends Fragment {
             // TODO: Add listeners or bind ViewModel here
         }
 
-        //Follow
-        //Get userId of company and then follow
+
+        //Check following to set button follow
+        //Get following
+        userViewmodel.getGetFollowingData().observe(getViewLifecycleOwner(), data -> {
+            if(data != null)
+            {
+                // Nếu data chứa userIdOfCompany thì đặt btnFollow text thành "Followed" và vô hiệu hóa nó
+                boolean isFollowing = false;
+                for (Follower following : data) {
+                    String followedUserId = following.getFollowedId();
+                    if (followedUserId.equals(userIdOfCompany)) {
+                        isFollowing = true;
+                        break;
+                    }
+                }
+                if (isFollowing) {
+                    btnFollow.setText("UnFollow");
+                    btnFollow.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue_light));
+                } else {
+                    btnFollow.setText("Follow");
+                    btnFollow.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue));
+                }
+            }
+            else
+            {
+                Log.d("getFollowing", "null");
+            }
+        });
+        userViewmodel.getGetFollowingResult().observe(getViewLifecycleOwner(), result -> {
+            if(result != null)
+                Log.d("result get following ", result.toString());
+            else
+                Log.d("result get following ", "null");
+        });
+
+
+        //Get userId of company to check and follow
         companyViewmodel.getGetCompanyData().observe(getViewLifecycleOwner(), data ->
         {
-            Log.d("vmd2", data.getName());
             if(data != null)
             {
                 Log.d("getCompanyUser", data.toString());
                 userIdOfCompany = data.getUser().get(0).getId();
+
+                //Lay following to check button status
+                userViewmodel.getFollowing(myUser.getId());
             }
             else
                 Log.d("getCompanyUser", "null");
         });
+
+
+        //Follow
         companyViewmodel.getGetCompanyResult().observe(getViewLifecycleOwner(), result -> {
             if(result != null)
                 Log.d("result get company ", result.toString());
@@ -112,25 +160,47 @@ public class DetailCompanyFragment extends Fragment {
                 Log.d("result get company ", "null");
         });
         companyViewmodel.getCompany(currentCompany.getId());
-
+        //observe follow result
         userViewmodel.getToggleFollowResult().observe(getViewLifecycleOwner(), result -> {
             if(result != null)
+            {
                 Log.d("result toggle follow ", result.toString());
+                //Update status for button follow
+                userViewmodel.getFollowing(myUser.getId());
+            }
             else
                 Log.d("result toggle follow ", "null");
         });
         //click handle
         btnFollow.setOnClickListener(v -> {
-            Log.d("click", currentCompany.getId());
             userViewmodel.toggleFollow(userIdOfCompany);
         });
 
 
         //Chat
         btnChat.setOnClickListener(v -> {
-
+            //Nhan id created chat
+            conversationViewModel.getSingleChatData().observe(getViewLifecycleOwner(), data -> {
+                if (data != null) {
+                    conversationViewModel.getChatById(data.getId());
+                }
+                else
+                    Log.d("conversation", "null");
+            });
+            conversationViewModel.getCreatedChatData().observe(getViewLifecycleOwner(), data -> {
+                if (data != null) {
+                    bundle = new Bundle();
+                    Log.d("Chat company detail", new Gson().toJson(data));
+                    bundle.putSerializable("conversationUser", data.getMembers().get(1));
+                    bundle.putSerializable("conversation", data);
+                    nav.navigate(R.id.messageDetailFragment, bundle);
+                }
+                else
+                    Log.d("conversation", "null");
+            });
+            //Tim thong tin day du created chat de cho vao bundle
+            conversationViewModel.createChat(new FriendIdRequest(userIdOfCompany));
         });
-
     }
 
 }

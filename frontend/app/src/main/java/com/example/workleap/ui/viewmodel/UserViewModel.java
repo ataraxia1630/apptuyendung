@@ -174,8 +174,8 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onResponse(Call<ListFollowerResponse> call, Response<ListFollowerResponse> response) {
                 if (response.isSuccessful()) {
-                    ListFollowerResponse toggleResponse = response.body();
-                    getFollowingData.setValue(toggleResponse.getAllFollower());
+                    ListFollowerResponse getFollowing = response.body();
+                    getFollowingData.setValue(getFollowing.getAllFollower());
                     getFollowingResult.setValue("Get Following Success");
                 } else {
                     try {
@@ -201,8 +201,8 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onResponse(Call<ListFollowerResponse> call, Response<ListFollowerResponse> response) {
                 if (response.isSuccessful()) {
-                    ListFollowerResponse toggleResponse = response.body();
-                    getFollowerData.setValue(toggleResponse.getAllFollower());
+                    ListFollowerResponse getFollower = response.body();
+                    getFollowerData.setValue(getFollower.getAllFollower());
                     getFollowerResult.setValue("Get Follower Success");
                 } else {
                     try {

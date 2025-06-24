@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Comment;
+import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.ConversationUser;
 import com.example.workleap.data.model.entity.Message;
 import com.example.workleap.ui.view.main.NavigationActivity;
@@ -41,6 +42,7 @@ public class MessageDetailFragment extends Fragment {
     private ImageButton btnBack, btnSend;
     private EditText edtMessage;
     private ConversationUser currentConversationUser;
+    private Conversation currentConversation;
 
     public MessageDetailFragment() {
         // Required empty public constructor
@@ -59,6 +61,8 @@ public class MessageDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
            currentConversationUser = (ConversationUser) getArguments().getSerializable("conversationUser");
+           currentConversation = (Conversation) getArguments().getSerializable("conversation");
+           Log.d("conversationUser rc", new Gson().toJson(currentConversationUser));
         }
     }
 
@@ -131,7 +135,11 @@ public class MessageDetailFragment extends Fragment {
             String messageContent = edtMessage.getText().toString();
             Message newMessage = null;
             newMessage = new Message(currentConversationUser.getConversationId(), currentConversationUser.getUserId(), messageContent);
-            newMessage.setSender(currentConversationUser.getConversation().getMembers().get(0).getUser());
+            //Lay sender, gom 2 truong hop la chat co san hoac vua moi tao, vua moi tao thi conversation se null
+            if(currentConversationUser.getConversation() != null)
+                newMessage.setSender(currentConversationUser.getConversation().getMembers().get(0).getUser());
+            else
+                newMessage.setSender(currentConversation.getMembers().get(0).getUser());
 
             //Nhan ket qua mes tra ve de them ngay vao danh sach
             conversationViewModel.getSendMessageData().observe(getViewLifecycleOwner(), data ->{

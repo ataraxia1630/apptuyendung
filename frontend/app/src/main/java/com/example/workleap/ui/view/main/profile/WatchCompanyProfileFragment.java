@@ -1,6 +1,7 @@
 package com.example.workleap.ui.view.main.profile;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,17 +11,23 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.Conversation;
+import com.example.workleap.data.model.entity.Follower;
 import com.example.workleap.data.model.entity.User;
+import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.ui.view.auth.MainActivity;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.CompanyViewModel;
+import com.example.workleap.ui.viewmodel.ConversationViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -34,11 +41,13 @@ public class WatchCompanyProfileFragment extends Fragment {
     TextView tvCompanyName;
     TextView tvAboutCompany;
     TextView tvCompanyNameInfo, tvEstablishedYear, tvMailInfo, tvPhoneInfo, tvTaxCode;
-    User user;
+    User user, myUser;
 
     AuthViewModel authViewModel;
     UserViewModel userViewModel;
+    ConversationViewModel conversationViewModel;
     CompanyViewModel companyViewModel;
+    NavController nav;
     ImageButton btnOptions, btnFollow, btnChat, btnBack;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -47,7 +56,7 @@ public class WatchCompanyProfileFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String userId, companyId;
+    private String userId, companyId; //userId of company, companyId of company
 
     public WatchCompanyProfileFragment() {
         // Required empty public constructor
@@ -66,14 +75,15 @@ public class WatchCompanyProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            userId = getArguments().getString("userId");
-            Log.d("WatchCpnProfileFragment", "onCreate: " + userId + " " + companyId);
+            userId = getArguments().getString("userId"); //User of this company
+            myUser = (User) getArguments().getSerializable("myUser"); //The current user
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        nav = NavHostFragment.findNavController(this);
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_watch_company_profile, container, false);
 
@@ -84,6 +94,8 @@ public class WatchCompanyProfileFragment extends Fragment {
         companyViewModel.InitiateRepository(getContext());
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         userViewModel.InitiateRepository(getContext());
+        conversationViewModel = new ViewModelProvider(requireActivity()).get(ConversationViewModel.class);
+        conversationViewModel.initiateRepository(getContext());
 
         //Component
         tvCompanyName = (TextView) view.findViewById(R.id.textView2);
@@ -98,18 +110,7 @@ public class WatchCompanyProfileFragment extends Fragment {
         btnFollow = view.findViewById(R.id.btnFollow);
         btnBack = view.findViewById(R.id.btnBack);
 
-        //Set value from user
-        userViewModel.getGetUserData().observe(getViewLifecycleOwner(), data -> {
-            if(data != null)
-            {
-                tvMailInfo.setText(user.getEmail());
-                tvPhoneInfo.setText(user.getPhoneNumber());
-                companyId = data.getCompanyId();
-            }
-            else
-                Log.d("WatchCpnProfileFragment", "user null");
-        });
-        //Set value from company
+        //observe to Set value from company
         companyViewModel.getGetCompanyData().observe(getViewLifecycleOwner(), company -> {
             if(!isAdded() || getView()==null) return;
             if (company == null) {
@@ -131,7 +132,69 @@ public class WatchCompanyProfileFragment extends Fragment {
             else
                 Log.e("company profile", "update company result null" );
         });
-        companyViewModel.getCompany(companyId);
+
+
+
+
+
+        //Set value from user, call api
+        userViewModel.getGetUserData().observe(getViewLifecycleOwner(), data -> {
+            if(data != null)
+            {
+                user = data;
+                //Goi api get following, can goi sau khi da co user cua company
+                // Lay following to check button status
+                userViewModel.getFollowing(myUser.getId());
+
+                //get following data can goi sau khi da co user qua api get user
+                //observe check following to set button follow
+                userViewModel.getGetFollowingData().observe(getViewLifecycleOwner(), dataFollowing -> {
+                    if(dataFollowing != null)
+                    {
+                        // Nếu data chứa userIdOfCompany thì đặt btnFollow text thành "Followed" và vô hiệu hóa nó
+                        boolean isFollowing = false;
+                        for (Follower following : dataFollowing) {
+                            String followedUserId = following.getFollowedId();
+                            if (followedUserId.equals(user.getId())) {
+                                isFollowing = true;
+                                break;
+                            }
+                        }
+                        if (isFollowing) {
+                            //dat lai scr image
+                            btnFollow.setImageResource(R.drawable.ic_followed);
+                            btnFollow.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue_light));
+                        } else {
+                            //Dat lai scr image
+                            btnFollow.setImageResource(R.drawable.ic_follow);
+                            btnFollow.setBackgroundColor(Color.TRANSPARENT);
+                        }
+                    }
+                    else
+                    {
+                        Log.d("getFollowing", "null");
+                    }
+                });
+                userViewModel.getGetFollowingResult().observe(getViewLifecycleOwner(), result -> {
+                    if(result != null)
+                        Log.d("result get following ", result.toString());
+                    else
+                        Log.d("result get following ", "null");
+                });
+
+                tvMailInfo.setText(user.getEmail());
+                tvPhoneInfo.setText(user.getPhoneNumber());
+
+                //Lay ra company
+                companyId = data.getCompanyId();
+                companyViewModel.getCompany(companyId);
+            }
+            else
+                Log.d("WatchCpnProfileFragment", "user null");
+        });
+        userViewModel.getUser(userId);
+
+
         getParentFragmentManager().setFragmentResultListener(
                 "editProfile",
                 getViewLifecycleOwner(),
@@ -160,6 +223,7 @@ public class WatchCompanyProfileFragment extends Fragment {
                 }
         );
 
+
         //Option button
         btnOptions.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(getContext(), btnOptions);
@@ -187,12 +251,42 @@ public class WatchCompanyProfileFragment extends Fragment {
         //Follow observe and click handle
         userViewModel.getToggleFollowResult().observe(getViewLifecycleOwner(), result -> {
             if(result!=null)
+            {
                 Log.e("follow", result);
+                //Lay following to update button status
+                userViewModel.getFollowing(myUser.getId());
+            }
             else
                 Log.e("follow", "follow result null" );
         });
         btnFollow.setOnClickListener(v -> {
             userViewModel.toggleFollow(userId);
+        });
+
+        //Chat
+        btnChat.setOnClickListener(v -> {
+            //Nhan id created chat
+            conversationViewModel.getSingleChatData().observe(getViewLifecycleOwner(), data -> {
+                if (data != null) {
+                    conversationViewModel.getChatById(data.getId());
+                }
+                else
+                    Log.d("conversation", "null");
+            });
+            conversationViewModel.getCreatedChatData().observe(getViewLifecycleOwner(), data -> {
+                if (data != null) {
+                    Bundle bundle = new Bundle();
+                    Log.d("Chat company detail", new Gson().toJson(data));
+                    bundle.putSerializable("conversationUser", data.getMembers().get(1));
+                    bundle.putSerializable("conversation", data);
+                    nav.navigate(R.id.messageDetailFragment, bundle);
+                }
+                else
+                    Log.d("conversation", "null");
+            });
+            //Tim thong tin day du created chat de cho vao bundle
+            conversationViewModel.createChat(new FriendIdRequest(user.getId()));
+
         });
 
         //Back
