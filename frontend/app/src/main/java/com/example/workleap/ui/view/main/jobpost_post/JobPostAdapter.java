@@ -3,6 +3,8 @@ package com.example.workleap.ui.view.main.jobpost_post;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,8 +21,14 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
 
     private List<JobPost> jobPostList;
 
-    public JobPostAdapter(List<JobPost> jobPostList) {
+    private OnJobPostClickListener clickListener;
+
+    public interface OnJobPostClickListener {
+        void onJobPostClick(JobPost jobPost);
+    }
+    public JobPostAdapter(List<JobPost> jobPostList, OnJobPostClickListener clickListener) {
         this.jobPostList = jobPostList;
+        this.clickListener = clickListener;
     }
 
     public void setData(List<JobPost> newList) {
@@ -47,6 +55,13 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
         holder.txtTag1.setText(post.getJobCategory().getName());
         holder.txtTag2.setText(post.getJobType().getName());
         holder.txtTag3.setText(post.getPosition());
+
+        // Thêm sự kiện nhấp vào item
+        holder.itemView.setOnClickListener(v -> {
+            if (clickListener != null) {
+                clickListener.onJobPostClick(post);
+            }
+        });
     }
 
     @Override
@@ -57,6 +72,8 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
     static class JobPostViewHolder extends RecyclerView.ViewHolder {
         TextView txtTitle, txtCompany, txtSalary, txtLocation, txtTime, txtTag1, txtTag2, txtTag3;
         ImageView imgPost;
+
+        ImageButton btnOption;
 
         public JobPostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -69,6 +86,10 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
             txtTag1 = itemView.findViewById(R.id.txtTab1);
             txtTag2 = itemView.findViewById(R.id.txtTab2);
             txtTag3 = itemView.findViewById(R.id.txtTab3);
+
+            //an di nut option
+            btnOption = itemView.findViewById(R.id.btnOption);
+            btnOption.setVisibility(View.GONE);
         }
     }
 }

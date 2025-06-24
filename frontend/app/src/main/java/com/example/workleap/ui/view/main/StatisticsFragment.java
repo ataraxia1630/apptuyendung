@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,10 +21,13 @@ import android.widget.TextView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.User;
 import com.example.workleap.data.model.response.FieldStat;
 import com.example.workleap.data.model.response.MonthlyStat;
 import com.example.workleap.data.model.response.TopJobPostResponse;
 import com.example.workleap.ui.view.main.jobpost_post.JobPostAdapter;
+import com.example.workleap.ui.view.main.jobpost_post.MyJobPostAdapter;
+import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.StatisticViewModel;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -58,6 +63,13 @@ public class StatisticsFragment extends Fragment {
 
     List<MonthlyStat> userGrowth, jobGrowth;
     List<Integer> colors;
+
+    private Bundle bundle;
+
+    private User user;
+    private NavController nav;
+
+    private JobPostViewModel jobPostViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -126,6 +138,9 @@ public class StatisticsFragment extends Fragment {
         tvReportCount = itemReportCount.findViewById(R.id.txtCount);
         tvApplicationCount = itemApplicationCount.findViewById(R.id.txtCount);
 
+        user = (User) getArguments().getSerializable("user");
+        nav = NavHostFragment.findNavController(this);
+        jobPostViewModel  = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
 
         //over view
         statisticViewModel.getOverview();
@@ -186,7 +201,18 @@ public class StatisticsFragment extends Fragment {
                 Log.e("StatisticFragment", "getTopJobPostResult result NULL" );
         });
 
-        adapterTopJobPosts = new JobPostAdapter(new ArrayList<>());
+        adapterTopJobPosts = new JobPostAdapter(new ArrayList<>(), new JobPostAdapter.OnJobPostClickListener() {
+            @Override
+            public void onJobPostClick(JobPost jobPost) {
+                // Handle item click
+                bundle = new Bundle();
+                bundle.putSerializable("user", user);
+                //homejobpostfragment observe currentjobpost
+                jobPostViewModel.setCurrentJobPost(jobPost);
+                ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
+                nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+            }
+        });
         recyclerTopJobs.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerTopJobs.setAdapter(adapterTopJobPosts);
         statisticViewModel.getTopJobPostData().observe(getViewLifecycleOwner(), topJobPostList->{
