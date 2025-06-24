@@ -10,7 +10,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,6 +39,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
         args.putString(ARG_POST_ID, postId);
         args.putSerializable(ARG_USER, user);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -43,12 +48,15 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
     private CommentAdapter adapter;
     private ArrayList<Comment> comments = new ArrayList<Comment>();
     private String commentReplyId;
+    private NavController nav;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_comment_bottom_sheet, container, false);
+
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerComment);
         EditText edtComment = view.findViewById(R.id.edtComment);
@@ -74,7 +82,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
                 comments.addAll(data);
 
                 //Khoi tao adapter cung su kien click item
-                adapter = new CommentAdapter(comments, postViewmodel, new CommentAdapter.OnCommentClickListener() {
+                adapter = new CommentAdapter(comments, postViewmodel, this, new CommentAdapter.OnCommentClickListener() {
                     @Override
                     public void onCommentClick(Comment comment) {
                         tvReplyTo.setVisibility(View.VISIBLE);

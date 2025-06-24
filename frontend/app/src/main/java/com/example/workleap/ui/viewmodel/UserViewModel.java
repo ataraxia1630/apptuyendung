@@ -149,8 +149,7 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
                 if (response.isSuccessful()) {
-                    MessageResponse toggleResponse = response.body();
-                    toggleFollowResult.setValue(toggleResponse.getMessage());
+                    toggleFollowResult.setValue("Toggle follow success");
                 } else {
                     try {
                         MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);

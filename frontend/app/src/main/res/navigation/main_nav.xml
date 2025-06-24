@@ -26,6 +26,11 @@
         android:label="fragment_profile"
         tools:layout="@layout/fragment_applicant_profile" />
     <fragment
+        android:id="@+id/watchApplicantProfileFragment"
+        android:name="com.example.workleap.ui.view.main.profile.WatchApplicantProfileFragment"
+        android:label="fragment_watch_profile"
+        tools:layout="@layout/fragment_watch_applicant_profile" />
+    <fragment
         android:id="@+id/menu_statistics"
         android:name="com.example.workleap.ui.view.main.StatisticsFragment"
         android:label="fragment_statistics"
@@ -35,6 +40,11 @@
         android:name="com.example.workleap.ui.view.main.profile.CompanyProfileFragment"
         android:label="fragment_company_profile"
         tools:layout="@layout/fragment_company_profile" />
+    <fragment
+        android:id="@+id/watchCompanyProfileFragment"
+        android:name="com.example.workleap.ui.view.main.profile.WatchCompanyProfileFragment"
+        android:label="fragment_watch_company_profile"
+        tools:layout="@layout/fragment_watch_company_profile" />
     <fragment
         android:id="@+id/jobpostFragment"
         android:name="com.example.workleap.ui.view.main.jobpost_post.JobpostFragment"

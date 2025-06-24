@@ -1,6 +1,8 @@
 package com.example.workleap.data.model.entity;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class Company implements Serializable {
     private String id;
@@ -8,6 +10,7 @@ public class Company implements Serializable {
     private String description;
     private int establishedYear;
     private String taxcode;
+    private ArrayList<User> User;
 
     /*Post            Post[]
     User            User[]*/
@@ -61,6 +64,7 @@ public class Company implements Serializable {
     public void setTaxcode(String taxcode) {
         this.taxcode = taxcode;
     }
+    public ArrayList<User> getUser() { return User; }
 
     // Phương thức toString để in thông tin công ty
     @Override

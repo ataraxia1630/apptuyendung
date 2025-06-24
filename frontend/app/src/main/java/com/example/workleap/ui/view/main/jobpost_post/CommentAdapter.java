@@ -1,15 +1,22 @@
 package com.example.workleap.ui.view.main.jobpost_post;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workleap.R;
@@ -17,6 +24,8 @@ import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.ui.viewmodel.PostViewModel;
 import com.example.workleap.ui.viewmodel.PostViewModel;
 import com.google.gson.Gson;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -29,11 +38,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     private List<Comment> commentList;
     private PostViewModel commentViewModel;
     private OnCommentClickListener listener;
+    private TextView txtUsername, txtDateTime, txtCommentDetail;
+    private ImageView imgAvatar;
+    private ImageButton btnOptions;
+    private Fragment fragment;
 
-    public CommentAdapter(List<Comment> commentList, PostViewModel commentViewModel, OnCommentClickListener listener) {
+    public CommentAdapter(List<Comment> commentList, PostViewModel commentViewModel, Fragment fragment, OnCommentClickListener listener) {
         this.commentList = commentList;
         this.commentViewModel = commentViewModel;
         this.listener = listener;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -75,11 +89,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                         .inflate(R.layout.item_comment, holder.layoutReplies, false);
 
                 // Gán dữ liệu child comment
-                TextView txtUsername = childView.findViewById(R.id.tvUsername);
-                TextView txtDateTime = childView.findViewById(R.id.tvDateTime);
-                TextView txtCommentDetail = childView.findViewById(R.id.tvCommentDetail);
-                ImageView imgAvatar = childView.findViewById(R.id.imgAvatar);
-                ImageButton btnOptions = childView.findViewById(R.id.btnOptions);
+                txtUsername = childView.findViewById(R.id.tvUsername);
+                txtDateTime = childView.findViewById(R.id.tvDateTime);
+                txtCommentDetail = childView.findViewById(R.id.tvCommentDetail);
+                imgAvatar = childView.findViewById(R.id.imgAvatar);
+                btnOptions = childView.findViewById(R.id.btnOption);
 
                 txtUsername.setText(child.getUser().getUsername());
                 txtDateTime.setText(new SimpleDateFormat("dd/MM/yyyy").format(child.getCreatedAt()));
@@ -102,6 +116,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         }
         else
             Log.d("COMMENT_ADAPTER", "No childComment");
+
+        //Watch profile
+        holder.imgAvatar.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            NavController navController = NavHostFragment.findNavController(fragment);
+            bundle.putSerializable("user", comment.getUser());
+            navController.navigate(R.id.watchApplicantProfileFragment, bundle);
+        });
 
         // Thêm PopupMenu cho btnOption
         /*holder.btnOption.setOnClickListener(v -> {

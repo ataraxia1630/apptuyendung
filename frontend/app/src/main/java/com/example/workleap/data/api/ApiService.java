@@ -111,11 +111,11 @@ public interface ApiService {
     @PUT("api/users/setting/{id}")
     Call<UpdateUserResponse> updateUserSetting(@Path("id") String id, @Body UpdateUserRequest request);
     //Follower
-    @POST("api/followers/toggle/:followedId")
+    @POST("api/followers/toggle/{followedId}")
     Call<MessageResponse> toggleFollow(@Path("followedId") String followedId);
-    @GET("api/followers/list/following/:userId")
+    @GET("api/followers/list/following/{userId}")
     Call<ListFollowerResponse> getFollowing(@Path("userId") String userId);
-    @GET("api/followers/list/followers/:userId")
+    @GET("api/followers/list/followers/{userId}")
     Call<ListFollowerResponse> getFollowers(@Path("userId") String userId);
 
     //Applicant
