@@ -482,7 +482,7 @@ public class JobPostViewModel  extends ViewModel {
         public void onResponse(Call<ListJobAppliedResponse> call, Response<ListJobAppliedResponse> response) {
             if (response.isSuccessful() && response.body() != null) {
                 getJobAppliedData.postValue(response.body().getAllJobApplies());
-                getJobAppliedResult.setValue(response.body().getMessage());
+                getJobAppliedResult.setValue("Success");
             } else {
                 getJobAppliedResult.postValue("Failed: " + response.message());
             }

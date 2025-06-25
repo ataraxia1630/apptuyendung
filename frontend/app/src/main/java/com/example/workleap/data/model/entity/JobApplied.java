@@ -12,9 +12,11 @@ public class JobApplied {
     private String status;  // PENDING or other status
     private Date applyAt;
     private Date updated_at;
-    private JobPost jobPost;
+    private JobPost JobPost;
     private Applicant applicant;
     private CV CV;
+
+    public JobApplied(){}
 
     // Getters and Setters
 
@@ -75,11 +77,11 @@ public class JobApplied {
     }
 
     public JobPost getJobPost() {
-        return jobPost;
+        return JobPost;
     }
 
     public void setJobPost(JobPost jobPost) {
-        this.jobPost = jobPost;
+        this.JobPost = jobPost;
     }
 
     public Applicant getApplicant() {
