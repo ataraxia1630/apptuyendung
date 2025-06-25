@@ -10,7 +10,9 @@ const { JobPostSchema } = require('../validators/JobPost/jobPost.validator');
 const { JobPostUpdateSchema } = require('../validators/JobPost/jobPostUpdate.validator');
 
 router.get('/all', cache, JobPostController.getAllJobPosts);
-router.get('/:id', cache, JobPostController.getJobPostById);
+router.get('/recommend', verifyToken, requireRole('APPLICANT'), cache, JobPostController.recommendJobs);
+router.get('/:id', verifyToken, requireRole('APPLICANT'), cache, JobPostController.getJobPostById);
+
 router.put('/:id', verifyToken, checkOwnership('JobPost', 'companyId'), validate(JobPostUpdateSchema), JobPostController.updateJobPost);
 router.delete('/:id', verifyToken, checkOwnership('JobPost', 'companyId'), JobPostController.deleteJobPost);
 router.get('/search/query', cache, JobPostController.searchJobPosts);
