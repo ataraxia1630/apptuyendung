@@ -52,6 +52,8 @@ const JobAppliedService = {
                   },
                 },
               },
+              JobType: true,
+              JobCategory: true,
             },
           },
           CV: true,
