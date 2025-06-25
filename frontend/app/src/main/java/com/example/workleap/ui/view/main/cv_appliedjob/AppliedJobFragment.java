@@ -1,14 +1,43 @@
 package com.example.workleap.ui.view.main.cv_appliedjob;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.SearchView;
+import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.example.workleap.R;
+import com.example.workleap.data.model.entity.JobApplied;
+import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.Post;
+import com.example.workleap.data.model.entity.User;
+import com.example.workleap.ui.view.main.NavigationActivity;
+import com.example.workleap.ui.view.main.jobpost_post.JobPostAdapter;
+import com.example.workleap.ui.view.main.jobpost_post.MyJobPostAdapter;
+import com.example.workleap.ui.view.main.jobpost_post.PostAdapter;
+import com.example.workleap.ui.viewmodel.JobPostViewModel;
+import com.example.workleap.ui.viewmodel.PostViewModel;
+import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,50 +46,76 @@ import com.example.workleap.R;
  */
 public class AppliedJobFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView recyclerViewAppliedJob;
+    private JobPostAdapter adapterJobPost;
+    private List<JobPost> allJobs = new ArrayList<>();
+    private JobPostViewModel jobPostViewModel;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private ImageButton btnRearrange;
+    private NavController nav;
+    private User user;
 
     public AppliedJobFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AppliedJobFragment.
-     */
     // TODO: Rename and change types and number of parameters
     public static AppliedJobFragment newInstance(String param1, String param2) {
         AppliedJobFragment fragment = new AppliedJobFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        nav = NavHostFragment.findNavController(this);
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_applied_job, container, false);
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        //JOBPOST LIST
+        recyclerViewAppliedJob = view.findViewById(R.id.recyclerAppliedJob); // ID trong layout
+        btnRearrange = view.findViewById(R.id.btnRearrange);
+        jobPostViewModel  = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
+
+        //lay user cho detail jobpost applied cv
+        user = (User) getArguments().getSerializable("user");
+
+        jobPostViewModel.getJobApplied(user.getApplicantId());
+        jobPostViewModel.getJobAppliedResult().observe(getViewLifecycleOwner(), result ->
+        {
+            Log.e("AppliedJobFragment", "getJobAppliedResult: " + String.valueOf(result) + "");
+        });
+        jobPostViewModel.getJobAppliedData().observe(getViewLifecycleOwner(), jobApplieds ->
+        {
+            allJobs.clear();
+            for(JobApplied jobApplied : jobApplieds)
+            {
+                if(jobApplied != null && jobApplied.getJobPost() != null)
+                    allJobs.add(jobApplied.getJobPost());
+            }
+            // Setup RecyclerView
+            recyclerViewAppliedJob.setLayoutManager(new LinearLayoutManager(getContext()));
+            //adapterJobPost = new JobPostAdapter(allJobs, jobPostViewModel); // mặc định show tất cả
+            adapterJobPost = new JobPostAdapter(allJobs, new JobPostAdapter.OnJobPostClickListener() {
+                @Override
+                public void onJobPostClick(JobPost jobPost) {
+                    // Handle item click
+                    Bundle bundle = new Bundle();
+                    jobPostViewModel.setCurrentJobPost(jobPost);
+                    bundle.putSerializable("user", user);
+                    ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
+                    nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+                }
+            });
+            recyclerViewAppliedJob.setAdapter(adapterJobPost);
+        });
     }
 }
