@@ -117,7 +117,7 @@ const PostController = {
         try {
             const { posts, total } = await PostService.getPostsByStatus(status, skip, take);
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ posts, meta });
+            return res.status(200).json({ posts: posts, meta });
         } catch (error) {
             return res.status(500).json({ message: 'Error fetching posts by status', error });
         }
@@ -135,7 +135,7 @@ const PostController = {
 
         try {
             const post = await PostService.updatePostStatus(id, status);
-            return res.status(200).json({ post });
+            return res.status(200).json({ post: post });
         } catch (error) {
             return res.status(500).json({ message: 'Failed to update post status', error: error.message });
         }
