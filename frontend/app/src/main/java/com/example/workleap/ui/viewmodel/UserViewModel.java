@@ -36,6 +36,7 @@ public class UserViewModel extends ViewModel {
     private MutableLiveData<List<Follower>> getFollowingData = new MutableLiveData<>();
     private MutableLiveData<List<Follower>> getFollowerData = new MutableLiveData<>();
     private MutableLiveData<String> upLoadAvatarResult = new MutableLiveData<>();
+    private MutableLiveData<User> upLoadAvatarData = new MutableLiveData<>();
     private MutableLiveData<String> getUrlAvatarResult = new MutableLiveData<>();
     private MutableLiveData<String> getUrlAvatarData = new MutableLiveData<>();
 
@@ -63,6 +64,7 @@ public class UserViewModel extends ViewModel {
     public LiveData<String> getUpLoadAvatarResult() { return upLoadAvatarResult; };
     public LiveData<String> getUrlAvatarResult() { return getUrlAvatarResult; }
     public LiveData<String> getUrlAvatarData() { return getUrlAvatarData; }
+    public LiveData<User> getUploadAvatarData() { return upLoadAvatarData; }
 
     //Get user
     public void getUser(String id) {
@@ -231,15 +233,16 @@ public class UserViewModel extends ViewModel {
 
     //Avatar
     public void loadAvatar(MultipartBody.Part file) {
-        Call<MessageResponse> call = userRepository.loadAvatar(file);
-        call.enqueue(new Callback<MessageResponse>() {
+        Call<GetUserResponse> call = userRepository.loadAvatar(file);
+        call.enqueue(new Callback<GetUserResponse>() {
             @Override
-            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+            public void onResponse(Call<GetUserResponse> call, Response<GetUserResponse> response) {
                 if (response.isSuccessful()) {
                     upLoadAvatarResult.setValue("Upload success");
+                    upLoadAvatarData.setValue(response.body().getUser());
                 } else {
                     try {
-                        MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
+                        GetUserResponse error = new Gson().fromJson(response.errorBody().string(), GetUserResponse.class);
                         upLoadAvatarResult.setValue("Lỗi: " + error.getMessage());
                     } catch (Exception e) {
                         upLoadAvatarResult.setValue("Lỗi không xác định: " + response.code());
@@ -248,7 +251,7 @@ public class UserViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<MessageResponse> call, Throwable t) {
+            public void onFailure(Call<GetUserResponse> call, Throwable t) {
                 upLoadAvatarResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });

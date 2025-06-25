@@ -10,12 +10,11 @@ const route = new Router();
 route.post(
   '/upload',
   verifyToken,
-  cache,
   uploadFile,
   AvatarController.uploadAvatar
 );
 
 // get avatar URL
-route.get('/url/:path', verifyToken, cache, AvatarController.getAvatarURL);
+route.get('/url/:path', verifyToken, AvatarController.getAvatarURL);
 
 module.exports = route;

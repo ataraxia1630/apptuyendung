@@ -106,7 +106,7 @@ public class UserRepository {
     }
 
     //avatar
-    public Call<MessageResponse> loadAvatar(MultipartBody.Part file) {
+    public Call<GetUserResponse> loadAvatar(MultipartBody.Part file) {
         return apiService.uploadAvatar(file);
     }
     public Call<ImageUrlResponse> getAvatarUrl(String path) {
