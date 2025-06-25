@@ -7,8 +7,10 @@ import com.example.workleap.data.api.RetrofitClient;
 import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.model.request.FCMRequest;
 import com.example.workleap.data.model.response.FCMResponse;
+import com.example.workleap.data.model.entity.Message;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
+import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.ListFollowerResponse;
 import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
@@ -18,6 +20,7 @@ import com.example.workleap.data.model.response.RegisterResponse;
 import com.example.workleap.data.model.request.UpdateUserRequest;
 import com.example.workleap.data.model.response.UpdateUserResponse;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -109,5 +112,12 @@ public class UserRepository {
         return apiService.createFCM(request);
     }
 
+    //avatar
+    public Call<GetUserResponse> loadAvatar(MultipartBody.Part file) {
+        return apiService.uploadAvatar(file);
+    }
+    public Call<ImageUrlResponse> getAvatarUrl(String path) {
+        return apiService.getAvatarUrl(path);
+    }
 }
 

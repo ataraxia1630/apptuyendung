@@ -125,13 +125,6 @@ const JobPostController = {
         const pageSize = parseInt(req.query.pageSize) || 10;
         const { skip, take } = getPagination(page, pageSize);
 
-        const role = req.user?.role;
-        const userCompanyId = req.user?.companyId;
-        console.log(userCompanyId, companyId, role)
-
-        if (role !== 'ADMIN' && userCompanyId !== companyId) {
-            return res.status(403).json({ message: 'Forbidden: You do not own this company' });
-        }
 
         try {
             const { jobPosts, total } = await JobPostService.getJobPostsByCompany(companyId, skip, take);

@@ -19,8 +19,10 @@ import android.widget.Toast;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.ConversationUser;
+import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.ConversationViewModel;
+import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ public class MessageFragment extends Fragment {
     private RecyclerView conversationRecyclerView;
     private ImageButton btnNotification;
     private NavController nav;
+    private UserViewModel userViewModel;
 
     public MessageFragment() {
         // Required empty public constructor
@@ -76,6 +79,8 @@ public class MessageFragment extends Fragment {
         conversationViewModel = new ConversationViewModel();
         conversationViewModel.initiateRepository(getContext());
         conversationViewModel.getAllChats();
+        userViewModel = new UserViewModel();
+        userViewModel.InitiateRepository(getContext());
 
         //Find component
         conversationRecyclerView = view.findViewById(R.id.recyclerConversationList);
@@ -97,6 +102,17 @@ public class MessageFragment extends Fragment {
                     }
                 }
                 );
+
+
+                //Logo chat bang usermodel
+                userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+                    conversationUserAdapter.setImageUrlMap(map);  // Truyền map xuống adapter
+                });
+                for (ConversationUser conversationUser : conversationUsers) {
+                    userViewModel.getLogoJobPostImageUrl(conversationUser.getConversation().getMembers().get(1).getUser().getAvatar()); //dung logopath lam key
+                }
+
+
                 conversationRecyclerView.setAdapter(conversationUserAdapter);
                 conversationUserAdapter.notifyDataSetChanged();
 

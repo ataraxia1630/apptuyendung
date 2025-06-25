@@ -31,11 +31,24 @@
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/shapeableImageView"
+                    android:clickable="true"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"
                     android:layout_gravity="left"
                     android:src="@drawable/sample_avatar"
                     app:shapeAppearanceOverlay="@style/CircleImageView" />
+
+                <!-- Icon nhỏ nằm ở góc dưới phải của avatar -->
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_alignBottom="@id/shapeableImageView"
+                    android:layout_alignEnd="@id/shapeableImageView"
+                    android:layout_margin="2dp"
+                    android:src="@drawable/ic_camera"
+                    android:padding="4dp" />
 
                 <TextView
                     android:id="@+id/tvApplicantName"
