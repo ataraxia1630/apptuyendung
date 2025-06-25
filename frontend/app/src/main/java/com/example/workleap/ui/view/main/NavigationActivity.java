@@ -97,7 +97,7 @@ public class NavigationActivity extends AppCompatActivity {
                 return true;
 
             } else if (itemId == R.id.menu_statistics) {
-                navController.navigate(R.id.menu_statistics);
+                navController.navigate(R.id.menu_statistics, bundle);
                 return true;
 
             } else if (itemId == R.id.menu_notifications) {

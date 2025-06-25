@@ -16,18 +16,10 @@ public class Message {
 
     public Message() {}
 
-    public Message(String id, String conversationId, String senderId, String content,
-                   String sent_at, String updated_at, boolean isRead,
-                   boolean isDeleted, boolean isEdited) {
-        this.id = id;
+    public Message(String conversationId, String senderId, String content) {
         this.conversationId = conversationId;
         this.senderId = senderId;
         this.content = content;
-        this.sent_at = sent_at;
-        this.updated_at = updated_at;
-        this.isRead = isRead;
-        this.isDeleted = isDeleted;
-        this.isEdited = isEdited;
     }
 
     public String getId() { return id; }

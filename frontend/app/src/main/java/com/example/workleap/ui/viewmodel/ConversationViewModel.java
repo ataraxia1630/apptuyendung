@@ -8,16 +8,21 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.workleap.data.model.entity.Conversation;
+import com.example.workleap.data.model.entity.ConversationUser;
+import com.example.workleap.data.model.entity.Message;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.data.model.request.GroupChatRequest;
 import com.example.workleap.data.model.request.ListMemberIdRequest;
 import com.example.workleap.data.model.request.UserIdRequest;
 import com.example.workleap.data.model.response.ConversationResponse;
-import com.example.workleap.data.model.response.ListConversationResponse;
+import com.example.workleap.data.model.response.ListConversationUserResponse;
+import com.example.workleap.data.model.response.ListMessageResponse;
+import com.example.workleap.data.model.response.MessageChatResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.repository.ConversationRepository;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -26,9 +31,12 @@ import retrofit2.Response;
 
 public class ConversationViewModel extends ViewModel {
     private ConversationRepository conversationRepository;
-    private final MutableLiveData<List<Conversation>> allChats = new MutableLiveData<>();
+    private final MutableLiveData<List<ConversationUser>> allChats = new MutableLiveData<>();
     private final MutableLiveData<Conversation> singleChat = new MutableLiveData<>();
+    private final MutableLiveData<Conversation> createdChat = new MutableLiveData<>();
     private final MutableLiveData<String> messageResult = new MutableLiveData<>();
+    private final MutableLiveData<List<Message>> getMessageOfChatData = new MutableLiveData<>();
+    private final MutableLiveData<Message> sendMessageData = new MutableLiveData<>();
     private final MutableLiveData<String> errorResult = new MutableLiveData<>();
 
     public void initiateRepository(Context context) {
@@ -36,26 +44,29 @@ public class ConversationViewModel extends ViewModel {
     }
 
     // ===== Getter =====
-    public LiveData<List<Conversation>> getAllChatsData() { return allChats; }
+    public LiveData<List<ConversationUser>> getAllChatsData() { return allChats; }
     public LiveData<Conversation> getSingleChatData() { return singleChat; }
+    public LiveData<Conversation> getCreatedChatData() { return createdChat; }
     public LiveData<String> getMessageResult() { return messageResult; }
+    public LiveData<List<Message>> getGetMessageOfChatData() { return getMessageOfChatData; }
+    public LiveData<Message> getSendMessageData() { return sendMessageData; }
     public LiveData<String> getErrorResult() { return errorResult; }
 
     // ===== Actions =====
 
     public void getAllChats() {
-        conversationRepository.getAllChats().enqueue(new Callback<ListConversationResponse>() {
+        conversationRepository.getAllChats().enqueue(new Callback<ListConversationUserResponse>() {
             @Override
-            public void onResponse(Call<ListConversationResponse> call, Response<ListConversationResponse> response) {
+            public void onResponse(Call<ListConversationUserResponse> call, Response<ListConversationUserResponse> response) {
                 if (response.isSuccessful()) {
                     Log.d("API_RESPONSE_CHAT", new Gson().toJson(response.body()));
-                    allChats.setValue(response.body().getAllConversation());
+                    allChats.setValue(response.body().getAllConversationUser());
                     messageResult.setValue("Lấy tất cả cuộc trò chuyện thành công");
                 } else handleError(response);
             }
 
             @Override
-            public void onFailure(Call<ListConversationResponse> call, Throwable t) {
+            public void onFailure(Call<ListConversationUserResponse> call, Throwable t) {
                 errorResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
@@ -69,8 +80,21 @@ public class ConversationViewModel extends ViewModel {
         conversationRepository.getAllGroupChats().enqueue(getListCallback("Lấy danh sách nhóm conversation thành công"));
     }
 
-    public void getChatById(String conversationId) {
-        conversationRepository.getChatById(conversationId).enqueue(getListCallback("Lấy thông tin đoạn conversation thành công"));
+    public void getChatById(String id) {
+        conversationRepository.getChatById(id).enqueue(new Callback<ConversationResponse>() {
+            @Override
+            public void onResponse(Call<ConversationResponse> call, Response<ConversationResponse> response) {
+                if (response.isSuccessful()) {
+                    createdChat.setValue(response.body().getConversation());
+                    messageResult.setValue("Tạo đoạn conversation cá nhân thành công");
+                } else handleError(response);
+            }
+
+            @Override
+            public void onFailure(Call<ConversationResponse> call, Throwable t) {
+                errorResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
     }
 
     public void createChat(FriendIdRequest request) {
@@ -145,18 +169,18 @@ public class ConversationViewModel extends ViewModel {
 
     // ======= Helpers =======
 
-    private Callback<ListConversationResponse> getListCallback(String successMsg) {
-        return new Callback<ListConversationResponse>() {
+    private Callback<ListConversationUserResponse> getListCallback(String successMsg) {
+        return new Callback<ListConversationUserResponse>() {
             @Override
-            public void onResponse(Call<ListConversationResponse> call, Response<ListConversationResponse> response) {
+            public void onResponse(Call<ListConversationUserResponse> call, Response<ListConversationUserResponse> response) {
                 if (response.isSuccessful()) {
-                    allChats.setValue(response.body().getAllConversation());
+                    allChats.setValue(response.body().getAllConversationUser());
                     messageResult.setValue(successMsg);
                 } else handleError(response);
             }
 
             @Override
-            public void onFailure(Call<ListConversationResponse> call, Throwable t) {
+            public void onFailure(Call<ListConversationUserResponse> call, Throwable t) {
                 errorResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         };
@@ -201,7 +225,46 @@ public class ConversationViewModel extends ViewModel {
             MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
             errorResult.setValue("Lỗi: " + error.getMessage());
         } catch (Exception e) {
+            Log.d("API_ERROR", e.getMessage());
             errorResult.setValue("Lỗi không xác định: " + response.code());
         }
+    }
+
+    public void getMessageByChatId(String conversationId) {
+        conversationRepository.getMessagesByChatId(conversationId).enqueue(new Callback<ListMessageResponse>() {
+            @Override
+            public void onResponse(Call<ListMessageResponse> call, Response<ListMessageResponse> response) {
+               Log.d("RAW_RESPONSE", new Gson().toJson(response.body()) );
+
+               if (response.isSuccessful()) {
+                    getMessageOfChatData.setValue(response.body().getAllMessage());
+                    messageResult.setValue("Lấy messages thành công");
+               } else {
+                   handleError(response);
+               }
+            }
+
+            @Override
+            public void onFailure(Call<ListMessageResponse> call, Throwable t) {
+                errorResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void sendMessage(Message message) {
+        conversationRepository.sendMessage(message).enqueue(new Callback<MessageChatResponse>() {
+            @Override
+            public void onResponse(Call<MessageChatResponse> call, Response<MessageChatResponse> response) {
+                if (response.isSuccessful()) {
+                    sendMessageData.setValue(response.body().getMessage());
+                } else {
+                    handleError(response);
+                }
+            }
+            @Override
+            public void onFailure(Call<MessageChatResponse> call, Throwable t) {
+                errorResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
     }
 }

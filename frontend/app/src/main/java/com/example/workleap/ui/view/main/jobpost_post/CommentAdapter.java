@@ -1,22 +1,25 @@
 package com.example.workleap.ui.view.main.jobpost_post;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Comment;
+import com.example.workleap.ui.view.main.home.CommentBottomSheet;
 import com.example.workleap.ui.viewmodel.PostViewModel;
-import com.example.workleap.ui.viewmodel.PostViewModel;
-import com.google.gson.Gson;
+import com.example.workleap.ui.viewmodel.UserViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -25,15 +28,25 @@ import java.util.List;
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
     public interface OnCommentClickListener {
         void onCommentClick(Comment comment);
+        void onAvatarClick(Comment comment);
     }
+
     private List<Comment> commentList;
     private PostViewModel commentViewModel;
     private OnCommentClickListener listener;
+    private TextView txtUsername, txtDateTime, txtCommentDetail;
+    private ImageView imgAvatar;
+    private ImageButton btnOptions;
+    private NavController nav;
+    private CommentBottomSheet commentBottomSheet;
+    private UserViewModel userViewModel;
 
-    public CommentAdapter(List<Comment> commentList, PostViewModel commentViewModel, OnCommentClickListener listener) {
+    public CommentAdapter(List<Comment> commentList, PostViewModel commentViewModel, UserViewModel userViewModel, CommentBottomSheet commentBottomSheet, OnCommentClickListener listener) {
         this.commentList = commentList;
         this.commentViewModel = commentViewModel;
+        this.userViewModel = userViewModel;
         this.listener = listener;
+        this.commentBottomSheet = commentBottomSheet;
     }
 
     @NonNull
@@ -57,6 +70,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                 listener.onCommentClick(comment);
             }
         });
+        //Watch profile
+        holder.imgAvatar.setOnClickListener(v -> {
+            Log.d("click", "avatar");
+            if (listener != null) {
+                listener.onAvatarClick(comment);
+            }
+        });
 
         //ChildComment
         // Xóa các reply cũ nếu có (tránh bị lặp lại do ViewHolder được tái sử dụng)
@@ -69,21 +89,27 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             holder.layoutReplies.removeAllViews();
             holder.layoutReplies.setVisibility(View.VISIBLE);
 
-            Log.d("Child comment", childComments.get(0).getCommentDetail());
             for (Comment child : childComments) {
                 View childView = LayoutInflater.from(holder.itemView.getContext())
                         .inflate(R.layout.item_comment, holder.layoutReplies, false);
 
                 // Gán dữ liệu child comment
-                TextView txtUsername = childView.findViewById(R.id.tvUsername);
-                TextView txtDateTime = childView.findViewById(R.id.tvDateTime);
-                TextView txtCommentDetail = childView.findViewById(R.id.tvCommentDetail);
-                ImageView imgAvatar = childView.findViewById(R.id.imgAvatar);
-                ImageButton btnOptions = childView.findViewById(R.id.btnOptions);
+                txtUsername = childView.findViewById(R.id.tvUsername);
+                txtDateTime = childView.findViewById(R.id.tvDateTime);
+                txtCommentDetail = childView.findViewById(R.id.tvCommentDetail);
+                imgAvatar = childView.findViewById(R.id.imgAvatar);
+                btnOptions = childView.findViewById(R.id.btnOption);
 
                 txtUsername.setText(child.getUser().getUsername());
                 txtDateTime.setText(new SimpleDateFormat("dd/MM/yyyy").format(child.getCreatedAt()));
                 txtCommentDetail.setText(child.getCommentDetail());
+
+                imgAvatar.setOnClickListener(v -> {
+                    Log.d("click", "avatar");
+                    if (listener != null) {
+                        listener.onAvatarClick((Comment) child);
+                    }
+                });
 
                 // Ẩn các thành phần không cần thiết
                 LinearLayout childReplies = childView.findViewById(R.id.layoutReplies);

@@ -9,6 +9,9 @@ const MessService = {
           senderId,
           content,
         },
+        include: {
+          Sender: true, 
+        },
       });
       return mess;
     } catch (error) {
@@ -59,6 +62,7 @@ const MessService = {
           conversationId: chatId,
         },
         include: {
+          Sender: true,
           attachments: true,
         },
       });

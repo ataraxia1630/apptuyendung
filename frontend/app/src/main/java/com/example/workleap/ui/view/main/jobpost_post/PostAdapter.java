@@ -1,5 +1,6 @@
 package com.example.workleap.ui.view.main.jobpost_post;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -36,12 +40,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private LifecycleOwner lifecycleOwner;
     private FragmentManager fragmentManager;
     private User user;
-    public PostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager, User user) {
+    private NavController nav;
+
+    public PostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager, User user, NavController nav) {
         this.postList = postList;
         this.postViewModel = postViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.fragmentManager = fragmentManager;
         this.user = user;
+        this.nav = nav;
     }
 
     @NonNull
@@ -78,6 +85,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         //Comment
         holder.btnComment.setOnClickListener(v -> {
             CommentBottomSheet bottomSheet = CommentBottomSheet.newInstance(post.getId(), user);
+            bottomSheet.setNavController(nav);
             bottomSheet.show(fragmentManager, "commentSheet");
         });
 
@@ -119,6 +127,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             });
         });
 
+        //Watch profile
+        holder.btnProfile.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(v);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("userId", post.getCompany().getUser().get(0).getId());
+            bundle.putSerializable("myUser", user);
+            navController.navigate(R.id.watchCompanyProfileFragment, bundle);
+        });
 
         // Thêm PopupMenu cho btnOption
         /*holder.btnOption.setOnClickListener(v -> {
@@ -157,7 +173,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         TextView txtName, txtTime, txtTitle, txtContent, txtReactionCount, txtCommentShareCount;
         ImageView imgPost;
         ImageButton btnOption;
-        LinearLayout btnComment, btnReaction, btnShare;
+        LinearLayout btnComment, btnReaction, btnShare, btnProfile;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -174,6 +190,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             btnComment = itemView.findViewById(R.id.btnComment);
             btnReaction = itemView.findViewById(R.id.btn_like);
             btnShare= itemView.findViewById(R.id.btn_share);
+
+            btnProfile = itemView.findViewById(R.id.post_header);
         }
     }
 

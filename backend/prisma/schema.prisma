@@ -350,8 +350,8 @@ model User_History {
 
 model user_token {
   id         String   @id @default(uuid())
-  user_id    String
-  fcm_token  String   @unique
+  user_id    String   @unique
+  fcm_token  String
   updated_at DateTime @updatedAt
   User       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }

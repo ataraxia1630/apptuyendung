@@ -3,9 +3,9 @@ package com.example.workleap.ui.view.main.jobpost_post;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,18 +13,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
-import com.example.workleap.ui.viewmodel.JobPostViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostViewHolder> {
-    private List<JobPost> jobPostList;
-    private JobPostViewModel jobPostViewModel;
 
-    public JobPostAdapter(List<JobPost> jobPostList, JobPostViewModel jobPostViewModel) {
+    private List<JobPost> jobPostList;
+
+    private OnJobPostClickListener clickListener;
+
+    public interface OnJobPostClickListener {
+        void onJobPostClick(JobPost jobPost);
+    }
+    public JobPostAdapter(List<JobPost> jobPostList, OnJobPostClickListener clickListener) {
         this.jobPostList = jobPostList;
-        this.jobPostViewModel = jobPostViewModel;
+        this.clickListener = clickListener;
+    }
+
+    public void setData(List<JobPost> newList) {
+        this.jobPostList.clear();
+        this.jobPostList.addAll(newList);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -42,33 +52,15 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
         holder.txtSalary.setText(post.getSalaryStart() + " - " + post.getSalaryEnd() + " " + post.getCurrency());
         holder.txtTime.setText(new SimpleDateFormat("dd/MM/yyyy").format(post.getUpdatedAt()));
         holder.txtLocation.setText(post.getPosition());
-        //holder.imgPost.setImageResource(post.);
+        holder.txtTag1.setText(post.getJobCategory().getName());
+        holder.txtTag2.setText(post.getJobType().getName());
+        holder.txtTag3.setText(post.getPosition());
 
-        // Thêm PopupMenu cho btnOption
-        holder.btnOption.setOnClickListener(v -> {
-
-            PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.btnOption);
-            popupMenu.inflate(R.menu.menu_options_myjobpost); // Load menu từ file XML
-            popupMenu.setOnMenuItemClickListener(item -> {
-                    if(item.getItemId() == R.id.menu_edit) {
-                        //Chuyen sang fragment
-                        return true;
-                    }
-                    else if(item.getItemId() == R.id.menu_delete)
-                    {
-                        //Xoa trong csdl
-                        jobPostViewModel.deleteJobPost(post.getId());
-
-                        //Xoa lap tuc tren danh sach
-                        jobPostList.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, jobPostList.size());
-                        return true;
-                    }
-                    else
-                        return false;
-            });
-            popupMenu.show();
+        // Thêm sự kiện nhấp vào item
+        holder.itemView.setOnClickListener(v -> {
+            if (clickListener != null) {
+                clickListener.onJobPostClick(post);
+            }
         });
     }
 
@@ -78,8 +70,9 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
     }
 
     static class JobPostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtTitle, txtCompany, txtSalary, txtLocation, txtTime;
+        TextView txtTitle, txtCompany, txtSalary, txtLocation, txtTime, txtTag1, txtTag2, txtTag3;
         ImageView imgPost;
+
         ImageButton btnOption;
 
         public JobPostViewHolder(@NonNull View itemView) {
@@ -90,7 +83,13 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
             txtLocation = itemView.findViewById(R.id.txtLocation);
             txtTime = itemView.findViewById(R.id.txtTime);
             imgPost = itemView.findViewById(R.id.imgPost);
+            txtTag1 = itemView.findViewById(R.id.txtTab1);
+            txtTag2 = itemView.findViewById(R.id.txtTab2);
+            txtTag3 = itemView.findViewById(R.id.txtTab3);
+
+            //an di nut option
             btnOption = itemView.findViewById(R.id.btnOption);
+            btnOption.setVisibility(View.GONE);
         }
     }
 }

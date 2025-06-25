@@ -101,7 +101,7 @@ public class HomeFragment extends Fragment {
         btnMorePost = view.findViewById(R.id.btnLoadMorePosts);
         btnAdvancedSearch = view.findViewById(R.id.btnAdvanceSearch);
 
-        jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
+        jobPostViewModel  = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
 
         //lay user cho detail jobpost applied cv
@@ -179,7 +179,7 @@ public class HomeFragment extends Fragment {
 
             // Setup RecyclerView
             recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
-            adapterPost = new PostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager(), user); // mặc định show tất cả
+            adapterPost = new PostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager(), user, nav); // mặc định show tất cả
 
             //Xu li anh cua post
             postViewModel.getImageUrlMap().observe(getViewLifecycleOwner(), map -> {

@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +20,7 @@ import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.jobpost_post.CommentAdapter;
 import com.example.workleap.ui.viewmodel.PostViewModel;
+import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
@@ -28,6 +30,11 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
     private static final String ARG_POST_ID = "postId";
     private static final String ARG_USER = "user";
     private PostViewModel postViewmodel;
+    private UserViewModel userViewModel;
+    private NavController navController;
+    public void setNavController(NavController navController) {
+        this.navController = navController;
+    }
 
     public static CommentBottomSheet newInstance(String postId, User user) {
         CommentBottomSheet fragment = new CommentBottomSheet();
@@ -35,11 +42,12 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
         args.putString(ARG_POST_ID, postId);
         args.putSerializable(ARG_USER, user);
         fragment.setArguments(args);
+
         return fragment;
     }
 
     private String postId;
-    private User user;
+    private User myUser;
     private CommentAdapter adapter;
     private ArrayList<Comment> comments = new ArrayList<Comment>();
     private String commentReplyId;
@@ -50,6 +58,7 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_comment_bottom_sheet, container, false);
 
+
         RecyclerView recyclerView = view.findViewById(R.id.recyclerComment);
         EditText edtComment = view.findViewById(R.id.edtComment);
         Button btnSend = view.findViewById(R.id.btnSend);
@@ -57,12 +66,15 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
         ImageButton btnCancelReply = view.findViewById(R.id.btnCancelReply);
         TextView tvReplyTo = view.findViewById(R.id.tvReply);
 
+        //Viewmodel
         postViewmodel = new PostViewModel();
         postViewmodel.InitiateRepository(getContext());
+        userViewModel = new UserViewModel();
+        userViewModel.InitiateRepository(getContext());
 
         if (getArguments() != null) {
             postId = getArguments().getString(ARG_POST_ID);
-            user = (User) getArguments().getSerializable("user");
+            myUser = (User) getArguments().getSerializable("user");
         }
 
         // Setup adapter RecyclerView hiển thị comment theo postId
@@ -74,13 +86,41 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
                 comments.addAll(data);
 
                 //Khoi tao adapter cung su kien click item
-                adapter = new CommentAdapter(comments, postViewmodel, new CommentAdapter.OnCommentClickListener() {
+                adapter = new CommentAdapter(comments, postViewmodel, userViewModel, this, new CommentAdapter.OnCommentClickListener() {
                     @Override
                     public void onCommentClick(Comment comment) {
                         tvReplyTo.setVisibility(View.VISIBLE);
                         btnCancelReply.setVisibility(View.VISIBLE);
                         tvReplyTo.setText("Reply to: " + comment.getUser().getUsername());
                         commentReplyId = comment.getId();
+                    }
+                    @Override
+                    public void onAvatarClick(Comment comment) {
+                        userViewModel.getGetUserData().observe(getViewLifecycleOwner(), data -> {
+                            if(data != null)
+                            {
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("user", data);
+                                bundle.putSerializable("userId", data.getId());
+                                bundle.putSerializable("myUser", myUser);
+
+                                //Check company or applicant
+                                if(data.getCompanyId() == null)
+                                    navController.navigate(R.id.watchApplicantProfileFragment, bundle);
+                                else
+                                {
+                                    bundle.putString("companyId", data.getCompanyId());
+                                    Log.d("cmt bottsh", data.getId());
+                                    navController.navigate(R.id.watchCompanyProfileFragment, bundle);
+                                }
+
+                                //Show off the bottomsheet
+                                dismiss();
+                            }
+                            else
+                                Log.d("CommentBottomSheet", "User of comment null");
+                        });
+                        userViewModel.getUser(comment.getUserId());
                     }
                 });
 
@@ -117,9 +157,9 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
 
             Comment newComment = null;
             if(commentReplyId != null)
-                newComment = new Comment(user.getId(), postId, commentReplyId, commentDetail);
+                newComment = new Comment(myUser.getId(), postId, commentReplyId, commentDetail);
             else
-                newComment = new Comment(user.getId(), postId, commentDetail);
+                newComment = new Comment(myUser.getId(), postId, commentDetail);
 
             postViewmodel.createComment(newComment);
             edtComment.setText("");
