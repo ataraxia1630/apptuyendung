@@ -2,94 +2,228 @@ const prisma = require('../config/db/prismaClient');
 
 const StatisticService = {
     getOverview: async () => {
-        const [userCount, jobPostCount, reportCount, applicationCount] = await Promise.all([
+        const [userCount, jobPostCount, companyCount, applicationCount] = await Promise.all([
             prisma.user.count(),
             prisma.jobPost.count(),
-            prisma.report.count(),
+            prisma.company.count(),
             prisma.jobApplied.count()
         ]);
-        return { userCount, jobPostCount, reportCount, applicationCount };
+        return { userCount, jobPostCount, companyCount, applicationCount };
     },
 
-    getTopJobposts: async () => {
-        // Nhóm các jobApplied theo jobpostId, đếm số ứng tuyển, sắp xếp giảm dần, lấy 10 đầu
-        const results = await prisma.jobApplied.groupBy({
+    getTopJobposts: async (skip, take) => {
+        // Nhóm jobApplied theo jobpostId và đếm
+        const allResults = await prisma.jobApplied.groupBy({
             by: ['jobpostId'],
             _count: { jobpostId: true },
-            orderBy: { _count: { jobpostId: 'desc' } },
-            take: 10
+            orderBy: { _count: { jobpostId: 'desc' } }
         });
 
-        // Lấy chi tiết JobPost kèm số lượng ứng tuyển
-        const topJobposts = await Promise.all(
-            results.map(async (r) => {
-                const job = await prisma.jobPost.findUnique({ where: { id: r.jobpostId } });
+        // Cắt phân trang
+        const paginated = allResults.slice(skip, skip + take);
+
+        // Lấy chi tiết JobPost
+        const items = await Promise.all(
+            paginated.map(async (r) => {
+                const job = await prisma.jobPost.findUnique({
+                    where: { id: r.jobpostId },
+                    include: {
+                        Company: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                        avatar: true,
+                                    },
+                                },
+                            },
+                        },
+                        JobType: true,
+                        JobCategory: true,
+                    }
+                });
+                if (!job) return null; // Nếu không tìm thấy JobPost thì trả về null
                 return { job, applicationCount: r._count.jobpostId };
             })
         );
-        return topJobposts;
+
+        // Trả về đúng format controller mong muốn
+        return {
+            items,
+            total: allResults.length
+        };
     },
 
-    getTopCompanies: async () => {
-        // Nhóm các JobPost theo companyId, đếm số jobApplied cho mỗi company, sắp xếp giảm dần, lấy 10
-        const results = await prisma.jobPost.groupBy({
-            by: ['companyId'],
-            _count: { JobApplied: true },
-            orderBy: { _count: { JobApplied: 'desc' } },
-            take: 10
+
+    getTopCompanies: async (skip, take) => {
+        const jobApplications = await prisma.jobApplied.findMany({
+            select: {
+                JobPost: {
+                    select: { companyId: true }
+                }
+            }
         });
 
-        // Lấy chi tiết Company kèm số lượng ứng tuyển
-        const topCompanies = await Promise.all(
-            results.map(async (r) => {
-                const company = await prisma.company.findUnique({ where: { id: r.companyId } });
-                return { company, applicationCount: r._count.JobApplied };
-            })
-        );
-        return topCompanies;
+        const companyCounts = {};
+        for (const app of jobApplications) {
+            const cid = app.JobPost?.companyId;
+            if (cid) {
+                companyCounts[cid] = (companyCounts[cid] || 0) + 1;
+            }
+        }
+
+        const sorted = Object.entries(companyCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10);
+
+        const companyIds = sorted.map(([id]) => id);
+
+        const companies = await prisma.company.findMany({
+            where: { id: { in: companyIds } },
+            include: {
+                User: {
+                    select: {
+                        id: true,
+                        avatar: true,
+                    },
+                },
+            },
+        });
+
+        const topCompanies = sorted.map(([id, count]) => {
+            const company = companies.find(c => c.id === id);
+            return { company, applicationCount: count };
+        });
+
+        const paginated = topCompanies.slice(skip, skip + take);
+
+        return {
+            items: paginated,
+            total: topCompanies.length // ← bạn quên dòng này là sẽ lỗi totalPages
+        };
     },
+
 
     getMonthlyGrowth: async () => {
-        // Thống kê số User mới theo tháng trong 6 tháng gần nhất
-        const userGrowth = await prisma.$queryRaw`
-            SELECT to_char(date_trunc('month', created_at), 'YYYY-MM') AS month, COUNT(*) AS count
-            FROM "User"
-            WHERE created_at >= date_trunc('month', NOW()) - interval '5 months'
-            GROUP BY month
-            ORDER BY month;
-        `;
+        const startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 5);
+        startDate.setDate(1);
 
-        // Thống kê số JobPost mới theo tháng trong 6 tháng gần nhất
-        const jobGrowth = await prisma.$queryRaw`
-            SELECT to_char(date_trunc('month', created_at), 'YYYY-MM') AS month, COUNT(*) AS count
-            FROM "JobPost"
-            WHERE created_at >= date_trunc('month', NOW()) - interval '5 months'
-            GROUP BY month
-            ORDER BY month;
-        `;
+        const users = await prisma.user.findMany({
+            where: { created_at: { gte: startDate } },
+            select: { created_at: true }
+        });
 
-        return { userGrowth, jobGrowth };
+        const jobs = await prisma.jobPost.findMany({
+            where: { created_at: { gte: startDate } },
+            select: { created_at: true }
+        });
+
+        const formatMonth = (date) => {
+            const d = new Date(date);
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        };
+
+        const groupByMonth = (items) => {
+            const counts = {};
+            for (const item of items) {
+                const month = formatMonth(item.created_at);
+                counts[month] = (counts[month] || 0) + 1;
+            }
+            return Object.entries(counts)
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([month, count]) => ({ month, count }));
+        };
+
+        return {
+            userGrowth: groupByMonth(users),
+            jobGrowth: groupByMonth(jobs)
+        };
     },
 
-    getByCategory: async () => {
-        // Nhóm JobPost theo jobCategoryId, đếm số bài mỗi category
+    getByCategory: async (skip, take) => {
         const results = await prisma.jobPost.groupBy({
             by: ['jobCategoryId'],
             _count: { id: true }
         });
 
-        // Lấy tên category kèm số lượng
+        const total = results.reduce((sum, r) => sum + r._count.id, 0);
+
         const data = await Promise.all(
             results.map(async (r) => {
                 const category = await prisma.jobCategory.findUnique({ where: { id: r.jobCategoryId } });
                 return {
-                    category: category ? category.name : 'Unknown',
-                    count: r._count.id
+                    category: category?.name || 'Unknown',
+                    count: r._count.id,
+                    percentage: ((r._count.id / total) * 100).toFixed(2) // thêm tỉ lệ phần trăm
                 };
             })
         );
-        return data;
+
+        const paginated = data.slice(skip, skip + take);
+
+        return {
+            items: paginated,
+            total: data.length
+        };
     },
+    getByField: async (skip, take) => {
+        // Lấy tất cả các JobPost có liên kết JobCategory → Field
+        const results = await prisma.jobPost.findMany({
+            where: {
+                status: 'OPENING',
+                jobCategoryId: { not: null }
+            },
+            include: {
+                JobCategory: {
+                    include: {
+                        Field: true
+                    }
+                }
+            }
+        });
+
+        // Gom nhóm theo Field ID
+        const fieldMap = new Map();
+
+        results.forEach((job) => {
+            const field = job.JobCategory?.Field;
+            if (!field) return;
+
+            const key = field.id;
+            if (!fieldMap.has(key)) {
+                fieldMap.set(key, {
+                    fieldId: field.id,
+                    name: field.name,
+                    count: 0
+                });
+            }
+            fieldMap.get(key).count++;
+        });
+
+        const total = Array.from(fieldMap.values()).reduce((sum, item) => sum + item.count, 0);
+
+        const fieldData = Array.from(fieldMap.values()).map((item) => ({
+            fieldId: item.fieldId,
+            name: item.name,
+            count: item.count,
+            percentage: ((item.count / total) * 100).toFixed(2)
+        }));
+
+        // Sắp xếp giảm dần theo số lượng
+        fieldData.sort((a, b) => b.count - a.count);
+
+        // Paginate
+        const paginated = fieldData.slice(skip, skip + take);
+
+        return {
+            items: paginated,
+            total: fieldData.length
+        };
+    },
+
+
+
 
     getApplicationSummaryForCompany: async (companyId) => {
         // Đếm tổng số đơn ứng tuyển thuộc về các JobPost của company đó

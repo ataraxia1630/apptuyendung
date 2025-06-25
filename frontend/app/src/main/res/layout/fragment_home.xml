@@ -1,69 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    tools:context=".ui.view.main.HomeFragment">
+    android:paddingBottom="100dp"
+    tools:context=".ui.view.main.home.HomeFragment">
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical"
+    <!-- Thêm NestedScrollView để cuộn toàn bộ nội dung -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <!-- Thanh tìm kiếm -->
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchView"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp">
+
+                <!-- SearchView  -->
+                <android.widget.SearchView
+                    android:id="@+id/searchView"
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:queryHint="Tìm kiếm công việc..." />
+
+                <!-- Button đè lên bên phải -->
+                <ImageButton
+                    android:id="@+id/btnAdvanceSearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_binoculars"
+                    android:background="@null"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+
+
+            <!-- Tabs: Mới nhất, Đề xuất, Theo dõi,... -->
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="tag"
+                app:tabMode="scrollable"
+                app:tabIndicatorColor="@color/black"
+                app:tabTextColor="@color/black"
+                app:tabSelectedTextColor="#819FC6" />
+
+            <!-- Danh sách JobPost -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerJobPosts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/paginationLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="Tìm kiếm công việc..." />
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="16dp">
 
-        <!-- Tabs: Mới nhất, Đề xuất, Theo dõi,... -->
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="tag"
-            app:tabMode="scrollable"
-            app:tabIndicatorColor="@color/black"
-            app:tabTextColor="@color/black"
-            app:tabSelectedTextColor="#819FC6" />
+            <ImageButton
+                android:id="@+id/btnPrev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_left"
+                android:background="@null"
+                android:contentDescription="Previous Page" />
 
-        <!-- Danh sách JobPost -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewJobs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:layout_marginBottom="8dp" />
+            <TextView
+                android:id="@+id/tvPageNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textSize="18sp"
+                android:layout_marginHorizontal="16dp" />
+
+            <ImageButton
+                android:id="@+id/btnNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right"
+                android:background="@null"
+                android:contentDescription="Next Page" />
+        </LinearLayout>
 
         <!-- Nút Xem thêm -->
-        <Button
-            android:id="@+id/btnLoadMoreJobs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Xem thêm"
-            android:layout_gravity="center_horizontal"
-            android:paddingHorizontal="24dp"
-            android:layout_marginBottom="12dp" />
 
-        <!-- Danh sách Bài đăng / Tin tức -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Bài đăng, Tin tức"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:padding="8dp" />
+            <!-- Danh sách Bài đăng / Tin tức -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Posts and News"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:padding="8dp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewNews"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="8dp" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewPosts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:nestedScrollingEnabled="false" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/btnLoadMorePosts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More"
+                android:layout_gravity="center_horizontal"
+                android:paddingHorizontal="24dp"
+                android:layout_marginBottom="12dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </FrameLayout>

@@ -26,7 +26,12 @@ const messRoutes = require('./message.route');
 
 const dailyReportRoutes = require('./dailyReport.route');
 const dailyStatisticRoutes = require('./dailyStatistic.route');
+const statisticRoutes = require('./statistic.route');
 const reportRoutes = require('./report.route');
+const postImageRoute = require('./postImage.route')
+const reviewRoutes = require('./review.route');
+const followerRoutes = require('./follower.route');
+const reportReplyRoutes = require('./reportReply.route');
 
 function route(app) {
   app.use('/api/auth', authRoutes);
@@ -49,6 +54,7 @@ function route(app) {
 
   app.use('/api/save', jobSavedRoutes);
   app.use('/api/posts', PostRoutes);
+  app.use('/api/posts/images', postImageRoute);
   app.use('/api/reactions', reactionRoutes);
   app.use('/api/comments', commentRoutes);
   app.use('/api/apply', jobAppliedRoutes);
@@ -58,7 +64,11 @@ function route(app) {
 
   app.use('/api/dailyReport', dailyReportRoutes);
   app.use('/api/dailyStatistic', dailyStatisticRoutes);
+  app.use('/api/statistic', statisticRoutes)
   app.use('/api/reports', reportRoutes);
+  app.use('/api/reviews', reviewRoutes);
+  app.use('/api/followers', followerRoutes);
+  app.use('/api/report-replies', reportReplyRoutes);
 }
 
 module.exports = route;

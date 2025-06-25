@@ -18,7 +18,6 @@ route.put('/:id', verifyToken, FieldController.updateField);
 route.get(
   '/interested/:applicantId',
   verifyToken,
-  cache,
   FieldController.getAllInterestedFields
 );
 

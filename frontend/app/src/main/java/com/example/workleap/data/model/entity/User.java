@@ -1,6 +1,7 @@
 package com.example.workleap.data.model.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class User implements Serializable {
@@ -16,6 +17,9 @@ public class User implements Serializable {
     private Date updated_at;
     private String companyId; //Chỉ nhận id company hoặc id applicant
     private String applicantId; //Chỉ nhận id company hoặc id applicant
+    private ArrayList<Follower> following;
+    private ArrayList<Follower> followers;
+
 
     //Constructor rong cho Gson
     public User() {}
@@ -133,6 +137,18 @@ public class User implements Serializable {
 
     public void setApplicantId(String applicant) {
         this.applicantId = applicant;
+    }
+    public void setFollowing(ArrayList<Follower> following) {
+        this.following = following;
+    }
+    public ArrayList<Follower> getFollowing() {
+        return following;
+    }
+    public void setFollowers(ArrayList<Follower> followers) {
+        this.followers = followers;
+    }
+    public ArrayList<Follower> getFollowers() {
+        return followers;
     }
 }
 

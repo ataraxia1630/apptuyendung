@@ -7,6 +7,7 @@ const JobAppliedService = {
         where: { jobpostId },
         include: {
           CV: true,
+          applicant: true
         },
       });
       return jobApplieds.map((applied) => applied.CV);
@@ -29,7 +30,7 @@ const JobAppliedService = {
     } catch (error) {
       throw new Error(
         'Error fetching applicants applied to jobpost (service): ' +
-          error.message
+        error.message
       );
     }
   },
@@ -40,13 +41,15 @@ const JobAppliedService = {
         where: { applicantId },
         include: {
           JobPost: true,
+          applicant: true,
+          CV: true,
         },
       });
-      return jobApplieds.map((applied) => applied.JobPost);
+      return jobApplieds;
     } catch (error) {
       throw new Error(
         'Error fetching jobposts applied by applicant (service): ' +
-          error.message
+        error.message
       );
     }
   },

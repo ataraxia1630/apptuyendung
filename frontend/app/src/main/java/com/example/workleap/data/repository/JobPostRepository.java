@@ -8,6 +8,9 @@ import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
+import com.example.workleap.data.model.request.ApplyAJobRequest;
+import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
+import com.example.workleap.data.model.response.JobAppliedResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
 import com.example.workleap.data.model.response.ListJobCategoryResponse;
@@ -18,10 +21,6 @@ import com.example.workleap.data.model.response.MessageResponse;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Path;
 
 public class JobPostRepository {
     private ApiService apiService;
@@ -33,8 +32,12 @@ public class JobPostRepository {
         apiService = RetrofitClient.getClient(token).create(ApiService.class);
     }
 
-    public Call<ListJobPostResponse> getAllJobPosts() {
-        return apiService.getAllJobPosts();
+    public Call<ListJobPostResponse> getAllJobPosts(int page, int pageSize) {
+        return apiService.getAllJobPosts(page, pageSize);
+    }
+
+    public Call<ListJobPostResponse> getJobPostsByCompany(String id) {
+        return apiService.getJobPostsByCompany(id);
     }
 
     public Call<JobPostResponse> getJobPostById(String id) {
@@ -53,10 +56,11 @@ public class JobPostRepository {
         return apiService.deleteJobPost(id);
     }
 
-    public Call<ListJobPostResponse> searchJobPosts() {
-        return apiService.searchJobPosts();
+    public Call<ListJobPostResponse> searchJobPosts(String title, String location, String position, String educationRequirement, String companyName) {
+        return apiService.searchJobPosts(title, location, position, educationRequirement, companyName);
     }
 
+    public Call<JobPostResponse> getMyJobPostById(String id) {return apiService.getMyJobPostById(id);}
 
     //JobType
     public Call<ListJobTypeResponse> getAllJobTypes() {
@@ -95,7 +99,14 @@ public class JobPostRepository {
     public Call<ListJobAppliedResponse> getJobApplied(String applicantId) {
         return apiService.getJobApplied(applicantId);
     }
-    public Call<MessageResponse> applyAJob(JobApplied request) {
+    public Call<MessageResponse> applyAJob(ApplyAJobRequest request) {
         return apiService.applyAJob(request);
     }
+    public Call<JobAppliedResponse> processCvApplied(ProcessCvAppliedRequest request) {
+        return apiService.processCvApplied(request);
+    }
+    public Call<MessageResponse> withDrawCv(String applicantId, String jobPostId) {
+        return apiService.withDrawCv(applicantId, jobPostId);
+    }
+
 }

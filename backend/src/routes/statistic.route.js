@@ -8,7 +8,7 @@ const { cache } = require('../middlewares/cache.middleware');
 router.get('/overview', cache, StatisticController.getOverview);
 router.get('/top-jobposts', cache, StatisticController.getTopJobposts);
 router.get('/top-companies', cache, StatisticController.getTopCompanies);
-router.get('/monthly-growth', requireRole('ADMIN'), verifyToken, cache, StatisticController.getOverview);
+router.get('/monthly-growth', verifyToken, cache, StatisticController.getMonthlyGrowth);
 
 router.get('/applications/summary/company/:companyId',
     verifyToken,
@@ -23,6 +23,13 @@ router.get(
     requireRole('ADMIN'),
     cache,
     StatisticController.getByCategory
+);
+
+router.get(
+    '/by-field',
+    verifyToken,
+    cache,
+    StatisticController.getByField
 );
 
 

@@ -16,6 +16,6 @@ route.delete('/:id', verifyToken, MessController.deleteMess);
 route.put('/:id', verifyToken, MessController.editMess);
 
 // lấy ds tin nhắn của 1 chat
-route.get('/:chatId', verifyToken, cache, MessController.getAll);
+route.get('/:chatId', verifyToken, MessController.getAll);
 
 module.exports = route;

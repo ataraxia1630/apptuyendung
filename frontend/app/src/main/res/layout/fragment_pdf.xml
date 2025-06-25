@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#FFFFFF"
-    tools:context=".ui.view.main.PdfFragment"
+    tools:context=".ui.view.main.cv_appliedjob.PdfFragment"
     android:clickable="true"
     android:focusable="true">
 
@@ -44,12 +44,12 @@
     </RelativeLayout>
 
     <!-- PDF Viewer -->
-    <FrameLayout
+   <!-- <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <!-- ImageView to show PDF -->
+        &lt;!&ndash; ImageView to show PDF &ndash;&gt;
         <ImageView
             android:id="@+id/pdf_view"
             android:layout_width="match_parent"
@@ -57,12 +57,19 @@
             android:scaleType="fitCenter"
             android:contentDescription="PDF Viewer" />
 
-        <!-- ProgressBar -->
+        &lt;!&ndash; ProgressBar &ndash;&gt;
         <ProgressBar
             android:id="@+id/loading_bar"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
             android:visibility="gone" />
-    </FrameLayout>
+    </FrameLayout>-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pdfRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:clipToPadding="false" />
+
 </LinearLayout>

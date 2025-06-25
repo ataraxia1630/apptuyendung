@@ -18,7 +18,7 @@ const ChatService = {
                 take: 1,
               },
               members: {
-                include: { User: { select: { id: true, avatar: true } } },
+                include: { User: { select: { id: true, avatar: true, username: true } } },
               },
             },
           },

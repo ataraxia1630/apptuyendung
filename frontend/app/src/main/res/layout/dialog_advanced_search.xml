@@ -1,0 +1,82 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/searching"
+        />
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ViewFlipper
+        android:id="@+id/viewFlipper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Tab 1: Tìm việc -->
+        <LinearLayout
+            android:id="@+id/layoutJobSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/edtJobTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Title of job post" />
+
+            <EditText
+                android:id="@+id/edtLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Location" />
+
+            <EditText
+                android:id="@+id/edtPosition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Position" />
+
+            <EditText
+                android:id="@+id/edtCompanyNameJob"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Company's name" />
+
+            <EditText
+                android:id="@+id/edtEducationRequirement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Education requirement" />
+        </LinearLayout>
+
+        <!-- Tab 2: Tìm bài đăng -->
+        <LinearLayout
+            android:id="@+id/layoutPostSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/edtPostTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Title of post" />
+
+            <EditText
+                android:id="@+id/edtCompanyNamePost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Company's name" />
+
+        </LinearLayout>
+    </ViewFlipper>
+</LinearLayout>

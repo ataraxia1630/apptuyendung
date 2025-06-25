@@ -7,26 +7,88 @@ const PostService = {
                 skip,
                 take,
                 orderBy: { created_at: 'desc' },
+                where: { status: 'OPENING' },
                 include: {
-                    Company: true,
+                    Company: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                    avatar: true,
+                                }
+                            }
+                        }
+                    },
                     contents: true,
-                    Reaction: true,
-                    Comment: true,
+                    Reaction: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                    username: true,
+                                    avatar: true
+                                }
+                            }
+                        }
+                    },
+                    Comment: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                    username: true,
+                                    avatar: true
+                                }
+                            }
+                        }
+                    }
                 },
             }),
-            prisma.post.count(),
+            prisma.post.count({
+                where: { status: 'OPENING' }
+            }),
         ]);
         return { posts, total };
     },
+
 
     getPostById: async (id) => {
         return prisma.post.findUnique({
             where: { id },
             include: {
-                Company: true,
+                Company: {
+                    include: {
+                        User: {
+                            select: {
+                                id: true,
+                                avatar: true,
+                            }
+                        }
+                    }
+                },
                 contents: true,
-                Reaction: true,
-                Comment: true,
+                Reaction: {
+                    include: {
+                        User: {
+                            select: {
+                                id: true,
+                                username: true,
+                                avatar: true
+                            }
+                        }
+                    }
+                },
+                Comment: {
+                    include: {
+                        User: {
+                            select: {
+                                id: true,
+                                username: true,
+                                avatar: true
+                            }
+                        }
+                    }
+                }
             },
         });
     },
@@ -107,7 +169,7 @@ const PostService = {
             orConditions.push({
                 contents: {
                     some: {
-                        content: {
+                        value: {
                             contains: filters.contents.trim(),
                             mode: 'insensitive',
                         },
@@ -137,7 +199,10 @@ const PostService = {
             }
         }
 
-        const where = orConditions.length > 0 ? { OR: orConditions } : {};
+        const where = orConditions.length > 0
+            ? { AND: [{ status: 'OPENING' }, { OR: orConditions }] }
+            : { status: 'OPENING' };
+
 
         const [posts, total] = await Promise.all([
             prisma.post.findMany({
@@ -146,10 +211,39 @@ const PostService = {
                 take,
                 orderBy: { created_at: 'desc' },
                 include: {
-                    Company: true,
+                    Company: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                    avatar: true,
+                                }
+                            }
+                        }
+                    },
                     contents: true,
-                    Reaction: true,
-                    Comment: true,
+                    Reaction: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                    username: true,
+                                    avatar: true
+                                }
+                            }
+                        }
+                    },
+                    Comment: {
+                        include: {
+                            User: {
+                                select: {
+                                    id: true,
+                                    username: true,
+                                    avatar: true
+                                }
+                            }
+                        }
+                    }
                 },
             }),
             prisma.post.count({ where }),
@@ -164,15 +258,44 @@ const PostService = {
         try {
             const [posts, total] = await Promise.all([
                 prisma.post.findMany({
-                    where: { companyId },
+                    where: { companyId, status: 'OPENING' },
                     skip,
                     take,
                     orderBy: { created_at: 'desc' },
                     include: {
-                        Company: true,
+                        Company: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                        avatar: true,
+                                    }
+                                }
+                            }
+                        },
                         contents: true,
-                        Reaction: true,
-                        Comment: true,
+                        Reaction: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                        username: true,
+                                        avatar: true
+                                    }
+                                }
+                            }
+                        },
+                        Comment: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                        username: true,
+                                        avatar: true
+                                    }
+                                }
+                            }
+                        }
                     },
                 }),
                 prisma.post.count({
@@ -184,28 +307,67 @@ const PostService = {
             throw new Error(`Error fetching posts by company: ${error.message}`);
         }
     },
-    getPostsByStatus: async (status) => {
+    getPostsByStatus: async (status, skip = 0, take = 10) => {
         if (!status) throw new Error('Status is required');
+
         try {
-            const posts = await prisma.post.findMany({
-                where: { approvalStatus: status },
-                orderBy: { created_at: 'desc' },
-                include: {
-                    Company: true,          // lấy thông tin công ty
-                    contents: true,         // lấy mảng PostContent
-                    Comment: true,          // lấy comment nếu cần
-                    Reaction: true,
-                },
-            });
-            return posts;
+            const where = { status: status };
+
+            const [posts, total] = await Promise.all([
+                prisma.post.findMany({
+                    where,
+                    skip,
+                    take,
+                    orderBy: { created_at: 'desc' },
+                    include: {
+                        Company: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                        avatar: true,
+                                    }
+                                }
+                            }
+                        },
+                        contents: true,
+                        Reaction: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                        username: true,
+                                        avatar: true
+                                    }
+                                }
+                            }
+                        },
+                        Comment: {
+                            include: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                        username: true,
+                                        avatar: true
+                                    }
+                                }
+                            }
+                        }
+                    },
+                }),
+                prisma.post.count({ where }),
+            ]);
+
+            return { posts, total };
         } catch (error) {
-            throw new Error(`Error fetching job posts by status: ${error.message}`);
+            throw new Error(`Error fetching posts by status: ${error.message}`);
         }
     },
     updatePostStatus: async (id, status) => {
-        if (!id) throw new Error('JobPost ID is required');
+        if (!id) throw new Error('Post ID is required');
         if (!status) throw new Error('Status is required');
-        const validStatuses = ['PENDING', 'APPROVED', 'REJECTED'];
+
+        const validStatuses = ['OPENING', 'TERMINATED', 'CANCELLED', 'NOT_EXIST'];
         if (!validStatuses.includes(status)) {
             throw new Error('Invalid status');
         }
@@ -213,17 +375,18 @@ const PostService = {
         try {
             const updatedPost = await prisma.post.update({
                 where: { id },
-                data: { approvalStatus: status },
+                data: { status: status },   // cập nhật trường status
                 include: {
-                    Company: true,          // nếu cần trả về luôn thông tin Company
+                    Company: true,
                     contents: true,
                 },
             });
             return updatedPost;
         } catch (error) {
-            throw new Error(`Error updating job post status: ${error.message}`);
+            throw new Error(`Error updating post status: ${error.message}`);
         }
     },
+
 };
 
 module.exports = { PostService };

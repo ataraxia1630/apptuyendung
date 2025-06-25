@@ -19,7 +19,7 @@ route.get(
   CompanyController.searchCompaniesByName
 );
 // lấy 1 công ty theo id
-route.get('/:id', verifyToken, cache, CompanyController.getCompanyById);
+route.get('/:id', verifyToken, CompanyController.getCompanyById);
 // cập nhật công ty
 route.put(
   '/:id',

@@ -36,7 +36,6 @@ route.put(
   verifyToken,
   requireRole('COMPANY'),
   validate(ProcessSchema),
-  cache,
   JobAppliedController.processCV
 );
 
@@ -45,7 +44,6 @@ route.get(
   '/:applicantId',
   verifyToken,
   requireRole('APPLICANT'),
-  cache,
   JobAppliedController.getAllJobAppliedOfApplicant
 );
 

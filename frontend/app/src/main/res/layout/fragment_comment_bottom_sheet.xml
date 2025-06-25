@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Comments"
+        android:textSize="18sp"/>
+
+    <!-- Danh sách comment -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerComment"
+        android:layout_width="match_parent"
+        android:layout_height="300dp" />
+
+    <!-- Ô nhập comment -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/tvReply"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Reply to:"
+            android:textSize="18sp"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/btnCancelReply"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:background="@drawable/ic_cancel"
+            android:contentDescription="Cancel Reply"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+
+    <EditText
+        android:id="@+id/edtComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Comment here..." />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="150dp"
+            android:text="Cancel"
+            android:layout_gravity="end"/>
+        <Button
+        android:id="@+id/btnSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send"
+        android:layout_gravity="end"/>
+    </LinearLayout>
+
+</LinearLayout>
