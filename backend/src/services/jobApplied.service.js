@@ -52,11 +52,11 @@ const JobAppliedService = {
                   },
                 },
               },
-              applicant: true,
-              CV: true,
             },
           },
-        },
+          CV: true,
+          applicant: true,
+        }
       });
       return jobApplieds;
     } catch (error) {
