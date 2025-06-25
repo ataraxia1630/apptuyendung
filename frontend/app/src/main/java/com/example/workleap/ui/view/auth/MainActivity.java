@@ -45,22 +45,6 @@ public class MainActivity extends AppCompatActivity {
         //quyen thong bao
         requestNotificationPermissionIfNeeded();
 
-        //gui fcm_token cho supabase
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        String fcmToken = task.getResult();
-                        Log.e("MainActivity", "FCM Token: " + fcmToken);
-
-                        MyFirebaseMessagingService myFirebaseMessagingService = new MyFirebaseMessagingService();
-                        PreferencesManager preferencesManager = new PreferencesManager(this);
-                        preferencesManager.saveFcmToken(fcmToken);
-                        myFirebaseMessagingService.sendTokenToSupabase(this); // Truyền context ở đây
-                    } else {
-                        Log.e("MainActivity", "FCM Không lấy được token", task.getException());
-                    }
-                });;
-
         //Check token
         PreferencesManager preferencesManager = new PreferencesManager(this);
         if (preferencesManager.isTokenValid()) {
@@ -82,6 +66,23 @@ public class MainActivity extends AppCompatActivity {
                 if (user == null) {
                     Log.e("AutoLogin", "user null");
                 } else {
+                    //gui fcm_token cho supabase
+                    FirebaseMessaging.getInstance().getToken()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    String fcmToken = task.getResult();
+                                    Log.e("MainActivity", "FCM Token: " + fcmToken);
+
+                                    MyFirebaseMessagingService myFirebaseMessagingService = new MyFirebaseMessagingService();
+                                    preferencesManager.saveFcmToken(fcmToken);
+                                    //myFirebaseMessagingService.sendTokenToSupabase(this);
+                                    userViewModel.createFCM(user.getId(), fcmToken);
+                                } else {
+                                    Log.e("MainActivity", "FCM Không lấy được token", task.getException());
+                                }
+                            });;
+
+
                     Intent intent = new Intent(this, NavigationActivity.class);
                     Log.e("Welcome", "wellcome");
                     intent.putExtra("user", user);

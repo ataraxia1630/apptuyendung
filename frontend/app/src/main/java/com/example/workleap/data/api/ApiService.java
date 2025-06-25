@@ -12,6 +12,7 @@ import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
+import com.example.workleap.data.model.request.FCMRequest;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.data.model.request.GroupChatRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
@@ -27,6 +28,7 @@ import com.example.workleap.data.model.request.CreateApplicantSkillRequest;
 import com.example.workleap.data.model.response.CreateApplicantExperienceResponse;
 import com.example.workleap.data.model.response.CreateApplicantSkillResponse;
 import com.example.workleap.data.model.response.CreateInterestedFieldResponse;
+import com.example.workleap.data.model.response.FCMResponse;
 import com.example.workleap.data.model.response.FieldResponse;
 import com.example.workleap.data.model.response.GetApplicantResponse;
 import com.example.workleap.data.model.response.GetCompanyResponse;
@@ -404,4 +406,8 @@ public interface ApiService {
     @GET("api/mess/{chatId}")
     Call<ListMessageResponse> getMessagesByChatId(@Path("chatId") String chatId);
 
+
+    //FCM
+    @POST("api/fcm/")
+    Call<FCMResponse> createFCM(@Body FCMRequest request);
 }

@@ -8,6 +8,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.workleap.data.model.entity.Follower;
+import com.example.workleap.data.model.entity.UserToken;
+import com.example.workleap.data.model.request.FCMRequest;
+import com.example.workleap.data.model.response.FCMResponse;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.UpdateUserRequest;
 import com.example.workleap.data.model.response.ListFollowerResponse;
@@ -33,6 +36,8 @@ public class UserViewModel extends ViewModel {
     private MutableLiveData<String> getFollowerResult = new MutableLiveData<>();
     private MutableLiveData<List<Follower>> getFollowingData = new MutableLiveData<>();
     private MutableLiveData<List<Follower>> getFollowerData = new MutableLiveData<>();
+    public MutableLiveData<UserToken> createFCMData = new MutableLiveData<>();
+    public MutableLiveData<String> createFCMResult = new MutableLiveData<>();
 
     public UserViewModel() {}
     public void InitiateRepository(Context context) {
@@ -54,6 +59,9 @@ public class UserViewModel extends ViewModel {
     public LiveData<String> getGetFollowerResult() { return getFollowerResult; }
     public LiveData<List<Follower>> getGetFollowingData() { return getFollowingData; }
     public LiveData<List<Follower>> getGetFollowerData() { return getFollowerData; }
+    public LiveData<UserToken> createFCMData() { return createFCMData; }
+
+    public LiveData<String> createFCMResult(){ return createFCMResult; }
 
 
     //Get user
@@ -217,6 +225,33 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onFailure(Call<ListFollowerResponse> call, Throwable t) {
                 getFollowerResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void createFCM(String userId, String fcm_token) {
+        FCMRequest request = new FCMRequest(userId, fcm_token);
+        Call<FCMResponse> call = userRepository.createFCM(request);
+        call.enqueue(new Callback<FCMResponse>() {
+            @Override
+            public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
+                if (response.isSuccessful()) {
+                    FCMResponse getFollower = response.body();
+                    createFCMData.setValue(getFollower.getUserToken());
+                    createFCMResult.setValue("Success");
+                } else {
+                    try {
+                        FCMResponse error = new Gson().fromJson(response.errorBody().string(), FCMResponse.class);
+                        createFCMResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        createFCMResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FCMResponse> call, Throwable t) {
+                createFCMResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }

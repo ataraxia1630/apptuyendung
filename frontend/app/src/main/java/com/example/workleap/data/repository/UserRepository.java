@@ -5,6 +5,8 @@ import android.content.Context;
 import com.example.workleap.data.api.RetrofitClient;
 
 import com.example.workleap.data.api.ApiService;
+import com.example.workleap.data.model.request.FCMRequest;
+import com.example.workleap.data.model.response.FCMResponse;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.ListFollowerResponse;
@@ -101,5 +103,11 @@ public class UserRepository {
     public Call<ListFollowerResponse> getFollowers(String userId) {
         return apiService.getFollowers(userId);
     }
+
+    public Call<FCMResponse> createFCM(FCMRequest request)
+    {
+        return apiService.createFCM(request);
+    }
+
 }
 

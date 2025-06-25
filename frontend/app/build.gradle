@@ -3,14 +3,6 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
-// Đọc file local.properties
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localProperties.load(new FileInputStream(localPropertiesFile))
-}
-def SUPABASE_ANON_KEY = localProperties.getProperty("SUPABASE_ANON_KEY")
-
 android {
     namespace 'com.example.workleap'
     compileSdk 35
@@ -25,8 +17,6 @@ android {
         targetSdk 35
         versionCode 1
         versionName "1.0"
-
-        buildConfigField "String", "SUPABASE_ANON_KEY", "\"${SUPABASE_ANON_KEY}\""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -58,7 +48,6 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.navigation.fragment
     implementation libs.navigation.ui
-    implementation libs.volley
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
