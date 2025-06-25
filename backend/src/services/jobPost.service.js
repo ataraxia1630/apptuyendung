@@ -37,6 +37,56 @@ const JobPostService = {
             throw new Error(`Error fetching job posts: ${error.message}`);
         }
     },
+    recommendJobs: async (applicantId, skip = 0, take = 10) => {
+        try {
+            const interestedFields = await prisma.interestedField.findMany({
+                where: { applicantId },
+                select: { fieldId: true },
+            });
+
+            const fieldIds = interestedFields.map((f) => f.fieldId);
+
+            if (fieldIds.length === 0) return { jobPosts: [], total: 0 };
+
+            const jobPosts = await prisma.jobPost.findMany({
+                where: {
+                    JobCategory: {
+                        fieldId: { in: fieldIds },
+                    },
+                    status: { equals: 'OPENING' },
+                    apply_until: { gte: new Date() },
+                },
+                skip,
+                take,
+                orderBy: { created_at: 'desc' },
+                include: {
+                    Company: {
+                        include: {
+                            User: { select: { id: true, avatar: true } },
+                        },
+                    },
+                    JobType: true,
+                    JobCategory: true,
+                },
+            });
+
+            const total = await prisma.jobPost.count({
+                where: {
+                    JobCategory: {
+                        fieldId: { in: fieldIds },
+                    },
+                    status: { equals: 'OPENING' },
+                    apply_until: { gte: new Date() },
+                },
+            });
+            console.log('Interested Field IDs:', fieldIds);
+            console.log('Recommended jobs count:', jobPosts.length);
+
+            return { jobPosts, total };
+        } catch (error) {
+            throw new Error('Error recommending jobs: ' + error.message);
+        }
+    },
 
     getJobPostById: async (id) => {
         if (!id) throw new Error('JobPost ID is required');
