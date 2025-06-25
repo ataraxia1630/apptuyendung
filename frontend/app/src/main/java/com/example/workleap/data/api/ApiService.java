@@ -122,6 +122,13 @@ public interface ApiService {
     Call<ListFollowerResponse> getFollowing(@Path("userId") String userId);
     @GET("api/followers/list/followers/{userId}")
     Call<ListFollowerResponse> getFollowers(@Path("userId") String userId);
+    //Avatar
+    @Multipart
+    @POST("api/avatar/upload")
+    Call<GetUserResponse> uploadAvatar(@Part MultipartBody.Part file);
+    @GET("api/avatar/url/{path}")
+    Call<ImageUrlResponse> getAvatarUrl(@Path("path") String path);
+
 
     //Applicant
     @GET("api/users/applicant/{id}")

@@ -11,18 +11,22 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.ConversationUser;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConversationUserAdapter extends RecyclerView.Adapter<ConversationUserAdapter.ConversationUserViewHolder> {
 
     private final Context context;
     private List<ConversationUser> conversationUserList;
     private final OnConversationClickListener listener;
-
+    private Map<String, String> avatarUrlMap = new HashMap<>();
+    private String logoFilePath;
     public interface OnConversationClickListener {
         void onConversationClick(ConversationUser conversationUser);
     }
@@ -55,6 +59,18 @@ public class ConversationUserAdapter extends RecyclerView.Adapter<ConversationUs
 
         // Set tin nhắn gần nhất (chỉ placeholder nếu backend chưa có)
         holder.txtLastMessage.setText("Tin nhắn gần nhất...");
+
+        //Xu li logo chat
+        logoFilePath = conversationUser.getConversation().getMembers().get(1).getUser().getAvatar(); // dùng làm key
+        if(logoFilePath != null)
+        {
+            String imageUrl = avatarUrlMap.get(logoFilePath);
+            if(holder.imgAvatar == null)
+                Log.d("MessageAdapter", "Avatar is null");
+            if (imageUrl != null && holder.imgAvatar != null) {
+                Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.imgAvatar);
+            }
+        }
 
         // Ẩn/hiện số lượng tin chưa đọc
         /*if (conversation.get() > 0) {
@@ -94,5 +110,10 @@ public class ConversationUserAdapter extends RecyclerView.Adapter<ConversationUs
             txtLastMessage = itemView.findViewById(R.id.txtLastMessage);
             txtUnreadCount = itemView.findViewById(R.id.txtUnreadCount);
         }
+    }
+
+    public void setImageUrlMap(Map<String, String> map) {
+        this.avatarUrlMap = map;
+        notifyDataSetChanged();
     }
 }

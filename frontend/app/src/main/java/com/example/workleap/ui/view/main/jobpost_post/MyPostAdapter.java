@@ -1,6 +1,5 @@
 package com.example.workleap.ui.view.main.jobpost_post;
 
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +32,8 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
     private String filePath;
     private LifecycleOwner lifecycleOwner;
     private FragmentManager fragmentManager;
+    private Map<String, String> logoUrlMap = new HashMap<>();
+    private String logoFilePath;
     private User user;
     public MyPostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager, User user) {
         this.postList = postList;
@@ -82,6 +83,19 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
             bottomSheet.show(fragmentManager, "commentSheet");
         });
 
+
+        //Xu li logo company jobpost
+        logoFilePath = post.getCompany().getUser().get(0).getAvatar(); // dùng làm key
+        if(logoFilePath != null)
+        {
+            String imageUrl = logoUrlMap.get(logoFilePath);
+            if(holder.logoPost == null)
+                Log.d("MyPostAdapter", "logoPost is null");
+            if (imageUrl != null && holder.logoPost != null) {
+                Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.logoPost);
+            }
+        }
+
         // Thêm PopupMenu cho btnOption
         /*holder.btnOption.setOnClickListener(v -> {
 
@@ -117,7 +131,7 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView txtName, txtTime, txtTitle, txtContent, txtReactionCount, txtCommentCount, txtShareCount;
-        ImageView imgPost, imgAvatar;
+        ImageView imgPost, logoPost;
         ImageButton btnOption, btnReact, btnShare;
         LinearLayout btnComment;
 
@@ -131,6 +145,7 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
             txtShareCount = itemView.findViewById(R.id.tv_like_count);
             txtTitle = itemView.findViewById(R.id.tv_post_title);
 
+            logoPost = itemView.findViewById(R.id.iv_user_avatar);
             imgPost = itemView.findViewById(R.id.imgPost);
             btnOption = itemView.findViewById(R.id.btnOption);
             btnComment = itemView.findViewById(R.id.btnComment);
@@ -140,5 +155,10 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
     public void setImageUrlMap(Map<String, String> map) {
         this.imageUrlMap = map;
         notifyDataSetChanged(); // hoặc chỉ update item cụ thể nếu muốn tối ưu
+    }
+
+    public void setLogoUrlMap(Map<String, String> map) {
+        this.logoUrlMap = map;
+        notifyDataSetChanged();
     }
 }
