@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
@@ -128,19 +128,6 @@ android:paddingBottom="100dp">
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Edit Education"
                 android:src="@drawable/ic_chat" />
-
-            <ImageButton
-                android:id="@+id/btnOptions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginEnd="8dp"
-
-                android:layout_marginBottom="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Option"
-                android:src="@drawable/ic_options" />
 
         </RelativeLayout>
 
@@ -359,6 +346,40 @@ android:paddingBottom="100dp">
         app:cardCornerRadius="10dp"/>
 
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:text="JobPosts"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:padding="15dp"/>
+    <!-- Danh sách JobPost -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerJobPosts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:nestedScrollingEnabled="false"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:text="Posts"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:padding="15dp"/>
+    <!-- Danh sách JobPost -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerPosts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:nestedScrollingEnabled="false"
+        android:layout_marginBottom="8dp" />
+
 </LinearLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
