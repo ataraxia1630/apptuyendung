@@ -20,9 +20,11 @@ import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.ConversationUser;
+import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.Message;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.ConversationViewModel;
+import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ public class MessageDetailFragment extends Fragment {
     private EditText edtMessage;
     private ConversationUser currentConversationUser;
     private Conversation currentConversation;
+    private UserViewModel userViewModel;
 
     public MessageDetailFragment() {
         // Required empty public constructor
@@ -83,6 +86,8 @@ public class MessageDetailFragment extends Fragment {
         conversationViewModel = new ConversationViewModel();
         conversationViewModel.initiateRepository(getContext());
         conversationViewModel.getAllChats();
+        userViewModel = new UserViewModel();
+        userViewModel.InitiateRepository(getContext());
 
         //Find component
         messageRecyclerView = view.findViewById(R.id.recyclerMessages);
@@ -107,6 +112,15 @@ public class MessageDetailFragment extends Fragment {
                     }
                 }
                 );
+
+                //Logo message bang usermodel
+                userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+                    messageAdapter.setImageUrlMap(map);  // Truyền map xuống adapter
+                });
+                for (Message message : messages) {
+                    userViewModel.getLogoJobPostImageUrl(message.getSender().getAvatar()); //dung logopath company lam key
+                }
+
                 messageRecyclerView.setAdapter(messageAdapter);
                 messageAdapter.notifyDataSetChanged();
 

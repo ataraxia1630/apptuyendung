@@ -36,7 +36,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private List<Post> postList;
     private PostViewModel postViewModel;
     private Map<String, String> imageUrlMap = new HashMap<>();
+    private Map<String, String> logoUrlMap = new HashMap<>();
     private String filePath;
+    private String logoFilePath;
     private LifecycleOwner lifecycleOwner;
     private FragmentManager fragmentManager;
     private User user;
@@ -79,6 +81,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 Log.d("MyPostAdapter", "imgPost is null");
             if (imageUrl != null && holder.itemView.getContext() != null && holder.imgPost != null) {
                 Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.imgPost);
+            }
+        }
+
+        //Xu li logo company post
+        logoFilePath = post.getCompany().getUser().get(0).getAvatar(); // dùng làm key
+        if(logoFilePath != null)
+        {
+            String imageUrl = logoUrlMap.get(logoFilePath);
+            if(holder.logoPost == null)
+                Log.d("MyPostAdapter", "logoPost is null");
+            if (imageUrl != null && holder.logoPost != null) {
+                Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.logoPost);
             }
         }
 
@@ -171,7 +185,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView txtName, txtTime, txtTitle, txtContent, txtReactionCount, txtCommentShareCount;
-        ImageView imgPost;
+        ImageView imgPost, logoPost;
         ImageButton btnOption;
         LinearLayout btnComment, btnReaction, btnShare, btnProfile;
 
@@ -192,11 +206,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             btnShare= itemView.findViewById(R.id.btn_share);
 
             btnProfile = itemView.findViewById(R.id.post_header);
+
+            logoPost = itemView.findViewById(R.id.iv_user_avatar);
         }
     }
 
     public void setImageUrlMap(Map<String, String> map) {
         this.imageUrlMap = map;
-        notifyDataSetChanged(); // hoặc chỉ update item cụ thể nếu muốn tối ưu
+        notifyDataSetChanged();
+    }
+
+    public void setLogoUrlMap(Map<String, String> map) {
+        this.logoUrlMap = map;
+        notifyDataSetChanged();
     }
 }

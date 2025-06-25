@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -9,13 +10,15 @@
     android:id="@+id/messageContainer">
 
     <!-- Avatar (ẩn nếu là tin của mình) -->
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imgSenderAvatar"
+        android:scaleType="centerCrop"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:src="@drawable/ic_edit_pen"
         android:layout_marginEnd="8dp"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        app:shapeAppearanceOverlay="@style/CircleImageView"/>
 
     <!-- Nội dung tin nhắn -->
     <LinearLayout

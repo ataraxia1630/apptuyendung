@@ -1,11 +1,9 @@
 package com.example.workleap.ui.view.main.jobpost_post;
 
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.ui.view.main.home.CommentBottomSheet;
@@ -22,7 +21,9 @@ import com.example.workleap.ui.viewmodel.PostViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
@@ -40,6 +41,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     private NavController nav;
     private CommentBottomSheet commentBottomSheet;
     private UserViewModel userViewModel;
+    private Map<String, String> avatarUrlMap = new HashMap<>();
+    private String logoFilePath;
 
     public CommentAdapter(List<Comment> commentList, PostViewModel commentViewModel, UserViewModel userViewModel, CommentBottomSheet commentBottomSheet, OnCommentClickListener listener) {
         this.commentList = commentList;
@@ -78,6 +81,19 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             }
         });
 
+        //Xu li logo comment
+        logoFilePath = comment.getUser().getAvatar(); // dùng làm key
+        if(logoFilePath != null)
+        {
+            String imageUrl = avatarUrlMap.get(logoFilePath);
+            if(holder.imgAvatar == null)
+                Log.d("MyPostAdapter", "logoPost is null");
+            if (imageUrl != null && holder.imgAvatar != null) {
+                Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.imgAvatar);
+            }
+        }
+
+
         //ChildComment
         // Xóa các reply cũ nếu có (tránh bị lặp lại do ViewHolder được tái sử dụng)
         holder.layoutReplies.removeAllViews();
@@ -110,6 +126,18 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                         listener.onAvatarClick((Comment) child);
                     }
                 });
+
+                //Xu li logo comment
+                logoFilePath = child.getUser().getAvatar(); // dùng làm key
+                if(logoFilePath != null)
+                {
+                    String imageUrl = avatarUrlMap.get(logoFilePath);
+                    if(imgAvatar == null)
+                        Log.d("MyPostAdapter", "logoPost is null");
+                    if (imageUrl != null && imgAvatar != null) {
+                        Glide.with(holder.itemView.getContext()).load(imageUrl).into(imgAvatar);
+                    }
+                }
 
                 // Ẩn các thành phần không cần thiết
                 LinearLayout childReplies = childView.findViewById(R.id.layoutReplies);
@@ -177,5 +205,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             imgAvatar = itemView.findViewById(R.id.imgAvatar);
             btnOption = itemView.findViewById(R.id.btnOption);
         }
+    }
+
+    public void setImageUrlMap(Map<String, String> map) {
+        this.avatarUrlMap = map;
+        notifyDataSetChanged();
     }
 }

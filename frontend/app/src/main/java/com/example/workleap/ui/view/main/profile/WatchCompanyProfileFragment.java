@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.PopupMenu;
@@ -17,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.Follower;
@@ -41,6 +43,7 @@ public class WatchCompanyProfileFragment extends Fragment {
     TextView tvCompanyName;
     TextView tvAboutCompany;
     TextView tvCompanyNameInfo, tvEstablishedYear, tvMailInfo, tvPhoneInfo, tvTaxCode;
+    ImageView avatar;
     User user, myUser;
 
     AuthViewModel authViewModel;
@@ -109,6 +112,7 @@ public class WatchCompanyProfileFragment extends Fragment {
         btnChat = view.findViewById(R.id.btnChat);
         btnFollow = view.findViewById(R.id.btnFollow);
         btnBack = view.findViewById(R.id.btnBack);
+        avatar = view.findViewById(R.id.shapeableImageView);
 
         //observe to Set value from company
         companyViewModel.getGetCompanyData().observe(getViewLifecycleOwner(), company -> {
@@ -184,6 +188,33 @@ public class WatchCompanyProfileFragment extends Fragment {
 
                 tvMailInfo.setText(user.getEmail());
                 tvPhoneInfo.setText(user.getPhoneNumber());
+
+                //Lay avatar
+                //Observe
+                userViewModel.getUrlAvatarResult().observe(getViewLifecycleOwner(), result -> {
+                    if(result != null)
+                        Log.d("CompanyProfile avatar", result);
+                    else
+                        Log.d("Companyprofile avatar", "getUrlAvatarResult NULL");
+                });
+                userViewModel.getUrlAvatarData().observe(getViewLifecycleOwner(), dataImage -> {
+                    if(dataImage != null)
+                    {
+                        Glide.with(this.getContext()).load(dataImage).into(avatar);
+                        Log.d("ApplicantProfile avatar", "Set avatar success");
+                    }
+                    else
+                        Log.d("ApplicantProfile avatar", "getUrlAvatarData NULL");
+                });
+                //Check and get avatar
+                if(user.getAvatar() != null)
+                {
+                    //Load avatar from database
+                    userViewModel.getAvatarUrl(user.getAvatar());
+                }
+                else
+                    Log.d("CompanyProfile avatar", "user avatar null");
+
 
                 //Lay ra company
                 companyId = data.getCompanyId();
