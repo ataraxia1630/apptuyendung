@@ -24,11 +24,13 @@ const jobAppliedRoutes = require('./jobApplied.route');
 const chatRoutes = require('./chat.route');
 const messRoutes = require('./message.route');
 
+const fcmRoutes = require('./fcm.route');
+
 const dailyReportRoutes = require('./dailyReport.route');
 const dailyStatisticRoutes = require('./dailyStatistic.route');
 const statisticRoutes = require('./statistic.route');
 const reportRoutes = require('./report.route');
-const postImageRoute = require('./postImage.route')
+const postImageRoute = require('./postImage.route');
 const reviewRoutes = require('./review.route');
 const followerRoutes = require('./follower.route');
 const reportReplyRoutes = require('./reportReply.route');
@@ -62,9 +64,11 @@ function route(app) {
   app.use('/api/chat', chatRoutes);
   app.use('/api/mess', messRoutes);
 
+  app.use('/api/fcm', fcmRoutes);
+
   app.use('/api/dailyReport', dailyReportRoutes);
   app.use('/api/dailyStatistic', dailyStatisticRoutes);
-  app.use('/api/statistic', statisticRoutes)
+  app.use('/api/statistic', statisticRoutes);
   app.use('/api/reports', reportRoutes);
   app.use('/api/reviews', reviewRoutes);
   app.use('/api/followers', followerRoutes);
