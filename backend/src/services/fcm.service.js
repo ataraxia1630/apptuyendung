@@ -1,5 +1,6 @@
 const admin = require('../config/firebase/firebase');
 const { supabase } = require('../config/db/supabase');
+const prisma = require('../config/db/prismaClient');
 
 const FcmService = {
   sendFCM: async (userId, title, body) => {
@@ -34,6 +35,19 @@ const FcmService = {
       console.log('Notification sent successfully:', response);
     } catch (error) {
       console.error('Error sending notification:', error);
+    }
+  },
+
+  createNew: async (user_id, fcm_token) => {
+    try {
+      const user_token = await prisma.user_token.upsert({
+        where: { user_id },
+        update: { fcm_token },
+        create: { user_id, fcm_token },
+      });
+      return user_token;
+    } catch (error) {
+      throw new Error('Error:' + error.message);
     }
   },
 };
