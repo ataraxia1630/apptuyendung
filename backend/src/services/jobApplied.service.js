@@ -40,10 +40,23 @@ const JobAppliedService = {
       const jobApplieds = await prisma.jobApplied.findMany({
         where: { applicantId },
         include: {
-          JobPost: true,
-          applicant: true,
+          JobPost: {
+            include: {
+              Company: {
+                include: {
+                  User: {
+                    select: {
+                      id: true,
+                      avatar: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           CV: true,
-        },
+          applicant: true,
+        }
       });
       return jobApplieds;
     } catch (error) {
@@ -53,6 +66,7 @@ const JobAppliedService = {
       );
     }
   },
+
 
   applyJob: async (data) => {
     try {
