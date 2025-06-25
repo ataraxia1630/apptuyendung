@@ -173,7 +173,6 @@ public class ApplicantProfileFragment extends Fragment {
 
         //Lay avatar
         //Observe
-        Log.d("wtf", "wtf");
         userViewModel.getUrlAvatarResult().observe(getViewLifecycleOwner(), result -> {
             if(result != null)
                 Log.d("ApplicantProfile avatar", result);

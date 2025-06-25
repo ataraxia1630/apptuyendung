@@ -1,5 +1,6 @@
 package com.example.workleap.ui.view.main.jobpost_post;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +12,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MyJobPostAdapter extends RecyclerView.Adapter<MyJobPostAdapter.JobPostViewHolder> {
     private List<JobPost> jobPostList;
+    private Map<String, String> logoUrlMap = new HashMap<>();
+    private String logoFilePath;
     private JobPostViewModel jobPostViewModel;
     private OnJobPostClickListener clickListener;
 
@@ -52,6 +58,19 @@ public class MyJobPostAdapter extends RecyclerView.Adapter<MyJobPostAdapter.JobP
         holder.txtTag2.setText(jobPost.getJobType().getName());
         holder.txtTag3.setText(jobPost.getPosition());
         //holder.imgPost.setImageResource(post.);
+
+        //Xu li logo company jobpost
+        logoFilePath = jobPost.getCompany().getUser().get(0).getAvatar(); // dùng làm key
+        if(logoFilePath != null)
+        {
+            String imageUrl = logoUrlMap.get(logoFilePath);
+            if(holder.imgPost == null)
+                Log.d("JobPostAdapter", "logoPost is null");
+            if (imageUrl != null && holder.imgPost != null) {
+                Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.imgPost);
+            }
+        }
+
 
         // Thêm sự kiện nhấp vào item
         holder.itemView.setOnClickListener(v -> {
@@ -112,5 +131,10 @@ public class MyJobPostAdapter extends RecyclerView.Adapter<MyJobPostAdapter.JobP
             txtTag2 = itemView.findViewById(R.id.txtTab2);
             txtTag3 = itemView.findViewById(R.id.txtTab3);
         }
+    }
+
+    public void setLogoUrlMap(Map<String, String> map) {
+        this.logoUrlMap = map;
+        notifyDataSetChanged();
     }
 }

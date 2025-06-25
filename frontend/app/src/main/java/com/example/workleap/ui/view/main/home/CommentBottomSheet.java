@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Comment;
+import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.jobpost_post.CommentAdapter;
 import com.example.workleap.ui.viewmodel.PostViewModel;
@@ -123,6 +124,14 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
                         userViewModel.getUser(comment.getUserId());
                     }
                 });
+
+                //Logo jobpost bang usermodel
+                userViewModel.avatarCommentUrlMap().observe(getViewLifecycleOwner(), map -> {
+                    adapter.setImageUrlMap(map);  // Truyền map xuống adapter
+                });
+                for (Comment comment : comments) {
+                    userViewModel.getAvatarCommentImageUrl(comment.getUser().getAvatar()); //dung logopath company lam key
+                }
 
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 recyclerView.setAdapter(adapter);

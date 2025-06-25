@@ -18,7 +18,9 @@ import com.example.workleap.data.model.entity.User;
 import com.example.workleap.data.repository.UserRepository;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -39,6 +41,9 @@ public class UserViewModel extends ViewModel {
     private MutableLiveData<User> upLoadAvatarData = new MutableLiveData<>();
     private MutableLiveData<String> getUrlAvatarResult = new MutableLiveData<>();
     private MutableLiveData<String> getUrlAvatarData = new MutableLiveData<>();
+    private MutableLiveData<Map<String, String>> logoPostUrlMap = new MutableLiveData<>(new HashMap<>());
+    private MutableLiveData<Map<String, String>> logoJobPostUrlMap = new MutableLiveData<>(new HashMap<>());
+    private MutableLiveData<Map<String, String>> avatarCommentUrlMap = new MutableLiveData<>(new HashMap<>());
 
     public UserViewModel() {}
     public void InitiateRepository(Context context) {
@@ -65,6 +70,16 @@ public class UserViewModel extends ViewModel {
     public LiveData<String> getUrlAvatarResult() { return getUrlAvatarResult; }
     public LiveData<String> getUrlAvatarData() { return getUrlAvatarData; }
     public LiveData<User> getUploadAvatarData() { return upLoadAvatarData; }
+
+    public LiveData<Map<String, String>> getLogoPostUrlMap() {
+        return logoPostUrlMap;
+    }
+    public LiveData<Map<String, String>> getLogoJobPostUrlMap() {
+        return logoJobPostUrlMap;
+    }
+    public LiveData<Map<String, String>> avatarCommentUrlMap() {
+        return avatarCommentUrlMap;
+    }
 
     //Get user
     public void getUser(String id) {
@@ -265,6 +280,96 @@ public class UserViewModel extends ViewModel {
                 if (response.isSuccessful()) {
                     getUrlAvatarData.setValue(response.body().getUrl());
                     getUrlAvatarResult.setValue("Upload success");
+                } else {
+                    try {
+                        ImageUrlResponse error = new Gson().fromJson(response.errorBody().string(), ImageUrlResponse.class);
+                        getUrlAvatarResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getUrlAvatarResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ImageUrlResponse> call, Throwable t) {
+                getUrlAvatarResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getLogoPostImageUrl(String path) {
+        Call<ImageUrlResponse> call = userRepository.getAvatarUrl(path);
+        call.enqueue(new Callback<ImageUrlResponse>() {
+            @Override
+            public void onResponse(Call<ImageUrlResponse> call, Response<ImageUrlResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String url = response.body().getUrl();
+                    Map<String, String> currentMap = logoPostUrlMap.getValue();
+                    if (currentMap != null) {
+                        currentMap.put(path, url);
+                        logoPostUrlMap.postValue(new HashMap<>(currentMap));
+                    }
+                    getUrlAvatarResult.setValue("Get logo post image URL success");
+                } else {
+                    try {
+                        ImageUrlResponse error = new Gson().fromJson(response.errorBody().string(), ImageUrlResponse.class);
+                        getUrlAvatarResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getUrlAvatarResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ImageUrlResponse> call, Throwable t) {
+                getUrlAvatarResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getLogoJobPostImageUrl(String path) {
+        Call<ImageUrlResponse> call = userRepository.getAvatarUrl(path);
+        call.enqueue(new Callback<ImageUrlResponse>() {
+            @Override
+            public void onResponse(Call<ImageUrlResponse> call, Response<ImageUrlResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String url = response.body().getUrl();
+                    Map<String, String> currentMap = logoJobPostUrlMap.getValue();
+                    if (currentMap != null) {
+                        currentMap.put(path, url);
+                        logoJobPostUrlMap.postValue(new HashMap<>(currentMap));
+                    }
+                    getUrlAvatarResult.setValue("Get logo job post image URL success");
+                } else {
+                    try {
+                        ImageUrlResponse error = new Gson().fromJson(response.errorBody().string(), ImageUrlResponse.class);
+                        getUrlAvatarResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getUrlAvatarResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ImageUrlResponse> call, Throwable t) {
+                getUrlAvatarResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getAvatarCommentImageUrl(String path) {
+        Call<ImageUrlResponse> call = userRepository.getAvatarUrl(path);
+        call.enqueue(new Callback<ImageUrlResponse>() {
+            @Override
+            public void onResponse(Call<ImageUrlResponse> call, Response<ImageUrlResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String url = response.body().getUrl();
+                    Map<String, String> currentMap = avatarCommentUrlMap.getValue();
+                    if (currentMap != null) {
+                        currentMap.put(path, url);
+                        avatarCommentUrlMap.postValue(new HashMap<>(currentMap));
+                    }
+                    getUrlAvatarResult.setValue("Get avatar comment image URL success");
                 } else {
                     try {
                         ImageUrlResponse error = new Gson().fromJson(response.errorBody().string(), ImageUrlResponse.class);

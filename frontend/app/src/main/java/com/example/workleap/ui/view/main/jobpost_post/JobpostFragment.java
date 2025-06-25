@@ -25,6 +25,7 @@ import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.PostViewModel;
+import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class JobpostFragment extends Fragment{
     private List<Post> allPosts = new ArrayList<>();
     private JobPostViewModel jobPostViewModel;
     private PostViewModel postViewModel;
+    private UserViewModel userViewModel;
 
     private User user;
     private Bundle bundle;
@@ -79,6 +81,8 @@ public class JobpostFragment extends Fragment{
         jobPostViewModel.InitiateRepository(getContext());
         postViewModel = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
         postViewModel.InitiateRepository(getContext());
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        userViewModel.InitiateRepository(getContext());
 
         user = (User) getArguments().getSerializable("user");
         bundle = new Bundle();
@@ -136,6 +140,15 @@ public class JobpostFragment extends Fragment{
                     nav.navigate(R.id.overviewJobPostFragment, bundle); // Navigate to DetailJobPostFragment
                 }
             });
+
+            //Logo jobpost bang usermodel
+            userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterJobPost.setLogoUrlMap(map);  // Truyền map xuống adapter
+            });
+            for (JobPost jobPost : jobPosts) {
+                userViewModel.getLogoJobPostImageUrl(jobPost.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key
+            }
+
             recyclerViewJobPost.setAdapter(adapterJobPost);
             adapterJobPost.notifyDataSetChanged();
         });
@@ -175,6 +188,9 @@ public class JobpostFragment extends Fragment{
                 adapterPost.setImageUrlMap(map);  // Truyền map xuống adapter
                 Log.d("getImageUrlMap", map.toString());
             });
+            userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterPost.setLogoUrlMap(map);  // Truyền map xuống adapter
+            });
             for (Post post : posts) {
                 if(post.getContents().size() > 1)
                 {
@@ -182,6 +198,7 @@ public class JobpostFragment extends Fragment{
                     Log.d("filePath", filePath);
                     postViewModel.getImageUrl(filePath); // dùng filePath làm key
                 }
+                userViewModel.getLogoJobPostImageUrl(post.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key
             }
 
             recyclerViewPost.setAdapter(adapterPost);
