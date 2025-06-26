@@ -7,6 +7,7 @@ import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.entity.Message;
+import com.example.workleap.data.model.entity.Notification;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
@@ -48,6 +49,7 @@ import com.example.workleap.data.model.response.ListFollowerResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListMessageResponse;
 import com.example.workleap.data.model.response.ListMonthlyStatResponse;
+import com.example.workleap.data.model.response.ListNotificationResponse;
 import com.example.workleap.data.model.response.ListPostResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
@@ -417,4 +419,11 @@ public interface ApiService {
     //FCM
     @POST("api/fcm/")
     Call<FCMResponse> createFCM(@Body FCMRequest request);
+
+    //Notification
+    @GET("api/notification/")
+    Call<ListNotificationResponse> getAllNotification();
+    @DELETE("api/notification/{id}")
+    Call<MessageResponse> deleteNotification(@Path("id") String id);
+
 }

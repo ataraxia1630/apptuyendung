@@ -13,6 +13,7 @@ import com.example.workleap.data.model.request.UserIdRequest;
 import com.example.workleap.data.model.response.ConversationResponse;
 import com.example.workleap.data.model.response.ListConversationUserResponse;
 import com.example.workleap.data.model.response.ListMessageResponse;
+import com.example.workleap.data.model.response.ListNotificationResponse;
 import com.example.workleap.data.model.response.MessageChatResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 
@@ -110,5 +111,14 @@ public class ConversationRepository {
 
     public Call<MessageResponse> deleteChat(String chatId) {
         return apiService.deleteChat(chatId);
+    }
+
+    //notification
+    public Call<ListNotificationResponse> getAllNotification(){
+        return apiService.getAllNotification();
+    }
+    public Call<MessageResponse> deleteNotification(String notificationId)
+    {
+        return  apiService.deleteNotification(notificationId);
     }
 }
