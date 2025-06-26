@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.ConversationUser;
 import com.example.workleap.data.model.entity.Message;
+import com.example.workleap.data.model.entity.Notification;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.data.model.request.GroupChatRequest;
 import com.example.workleap.data.model.request.ListMemberIdRequest;
@@ -17,6 +18,7 @@ import com.example.workleap.data.model.request.UserIdRequest;
 import com.example.workleap.data.model.response.ConversationResponse;
 import com.example.workleap.data.model.response.ListConversationUserResponse;
 import com.example.workleap.data.model.response.ListMessageResponse;
+import com.example.workleap.data.model.response.ListNotificationResponse;
 import com.example.workleap.data.model.response.MessageChatResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.repository.ConversationRepository;
@@ -37,6 +39,7 @@ public class ConversationViewModel extends ViewModel {
     private final MutableLiveData<String> messageResult = new MutableLiveData<>();
     private final MutableLiveData<List<Message>> getMessageOfChatData = new MutableLiveData<>();
     private final MutableLiveData<Message> sendMessageData = new MutableLiveData<>();
+    private final MutableLiveData<List<Notification>> getAllNotificationData = new MutableLiveData<>();
     private final MutableLiveData<String> errorResult = new MutableLiveData<>();
 
     public void initiateRepository(Context context) {
@@ -51,6 +54,8 @@ public class ConversationViewModel extends ViewModel {
     public LiveData<List<Message>> getGetMessageOfChatData() { return getMessageOfChatData; }
     public LiveData<Message> getSendMessageData() { return sendMessageData; }
     public LiveData<String> getErrorResult() { return errorResult; }
+
+    public LiveData<List<Notification>> getAllNotificationData() { return getAllNotificationData; }
 
     // ===== Actions =====
 
@@ -263,6 +268,38 @@ public class ConversationViewModel extends ViewModel {
             }
             @Override
             public void onFailure(Call<MessageChatResponse> call, Throwable t) {
+                errorResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getAllNotification() {
+        conversationRepository.getAllNotification().enqueue(new Callback<ListNotificationResponse>() {
+            @Override
+            public void onResponse(Call<ListNotificationResponse> call, Response<ListNotificationResponse> response) {
+                if (response.isSuccessful()) {
+                    getAllNotificationData.setValue(response.body().getNotifications());
+                } else {
+                    handleError(response);
+                }
+            }
+            @Override
+            public void onFailure(Call<ListNotificationResponse> call, Throwable t) {
+                errorResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+    public void deleteNotification(String notificationId) {
+        conversationRepository.deleteNotification(notificationId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                } else {
+                    handleError(response);
+                }
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
                 errorResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });

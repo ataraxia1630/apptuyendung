@@ -7,11 +7,13 @@ import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.entity.Message;
+import com.example.workleap.data.model.entity.Notification;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
+import com.example.workleap.data.model.request.FCMRequest;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.data.model.request.GroupChatRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
@@ -27,6 +29,7 @@ import com.example.workleap.data.model.request.CreateApplicantSkillRequest;
 import com.example.workleap.data.model.response.CreateApplicantExperienceResponse;
 import com.example.workleap.data.model.response.CreateApplicantSkillResponse;
 import com.example.workleap.data.model.response.CreateInterestedFieldResponse;
+import com.example.workleap.data.model.response.FCMResponse;
 import com.example.workleap.data.model.response.FieldResponse;
 import com.example.workleap.data.model.response.GetApplicantResponse;
 import com.example.workleap.data.model.response.GetCompanyResponse;
@@ -46,6 +49,7 @@ import com.example.workleap.data.model.response.ListFollowerResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListMessageResponse;
 import com.example.workleap.data.model.response.ListMonthlyStatResponse;
+import com.example.workleap.data.model.response.ListNotificationResponse;
 import com.example.workleap.data.model.response.ListPostResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
@@ -410,5 +414,16 @@ public interface ApiService {
     // Lấy danh sách tin nhắn của một cuộc trò chuyện
     @GET("api/mess/{chatId}")
     Call<ListMessageResponse> getMessagesByChatId(@Path("chatId") String chatId);
+
+
+    //FCM
+    @POST("api/fcm/")
+    Call<FCMResponse> createFCM(@Body FCMRequest request);
+
+    //Notification
+    @GET("api/notification/")
+    Call<ListNotificationResponse> getAllNotification();
+    @DELETE("api/notification/{id}")
+    Call<Void> deleteNotification(@Path("id") String id);
 
 }
