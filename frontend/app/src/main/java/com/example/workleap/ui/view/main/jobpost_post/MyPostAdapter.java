@@ -115,8 +115,20 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
             else
                 Log.d("Reaction toggle", "Result is null");
         });
-        //React
-        holder.btnReaction.setOnClickListener(v -> {
+
+        //React click to remove
+        postViewModel.removeReactionResult().observe(lifecycleOwner, result -> {
+            if(result != null)
+                Log.d("Reaction remove", "Result: " + result);
+            else
+                Log.d("Reaction remove", "Result is null");
+        });
+        holder.btnReaction.setOnClickListener( v -> {
+            holder.imgReaction.setImageResource(R.drawable.ic_reaction);
+            postViewModel.removeReaction(post.getId());
+        });
+        //Long click to react
+        holder.btnReaction.setOnLongClickListener(v -> {
             View popupView = LayoutInflater.from(v.getContext()).inflate(R.layout.layout_popup_reaction, null);
             PopupWindow popupWindow = new PopupWindow(popupView,
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -167,6 +179,7 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
                 holder.imgReaction.setImageResource(R.drawable.ic_idea);
                 popupWindow.dismiss();
             });
+            return true;
         });
 
 

@@ -7,9 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.ContextCompat;
@@ -26,6 +28,7 @@ import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.Follower;
 import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.ui.view.auth.MainActivity;
@@ -36,10 +39,12 @@ import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.CompanyViewModel;
 import com.example.workleap.ui.viewmodel.ConversationViewModel;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
+import com.example.workleap.ui.viewmodel.PostViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,6 +57,11 @@ public class WatchCompanyProfileFragment extends Fragment {
     TextView tvAboutCompany;
     TextView tvCompanyNameInfo, tvEstablishedYear, tvMailInfo, tvPhoneInfo, tvTaxCode;
     ImageView avatar;
+    private Button btnMorePost;
+    private int pagePost = 1;
+    private int pageSizePost = 4;
+    private boolean isMorePost = false; // Kiểm tra đang tải lại fragment hay tải thêm bài đăng
+    private List<Post> allPosts = new ArrayList<>();
     User user, myUser;
 
     AuthViewModel authViewModel;
@@ -59,6 +69,7 @@ public class WatchCompanyProfileFragment extends Fragment {
     JobPostViewModel jobPostViewModel;
     ConversationViewModel conversationViewModel;
     CompanyViewModel companyViewModel;
+    PostViewModel postViewModel;
     NavController nav;
     ImageButton btnFollow, btnChat, btnBack;
 
@@ -113,6 +124,8 @@ public class WatchCompanyProfileFragment extends Fragment {
         conversationViewModel = new ViewModelProvider(requireActivity()).get(ConversationViewModel.class);
         conversationViewModel.initiateRepository(getContext());
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
+        postViewModel = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
+        postViewModel.InitiateRepository(getContext());
 
         //Component
         tvCompanyName = (TextView) view.findViewById(R.id.textView2);
@@ -128,6 +141,7 @@ public class WatchCompanyProfileFragment extends Fragment {
         recyclerViewJobPost = view.findViewById(R.id.recyclerJobPosts);
         recyclerViewPost = view.findViewById(R.id.recyclerPosts);
         avatar = view.findViewById(R.id.shapeableImageView);
+        btnMorePost = view.findViewById(R.id.btnLoadMorePosts);
 
         //observe to Set value from company
         companyViewModel.getGetCompanyData().observe(getViewLifecycleOwner(), company -> {
@@ -185,6 +199,63 @@ public class WatchCompanyProfileFragment extends Fragment {
         });
 
 
+
+        //POST LIST
+        postViewModel = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
+        postViewModel.InitiateRepository(getContext());
+
+        postViewModel.getPostCompanyResult().observe(getViewLifecycleOwner(), result ->
+        {
+            String s = result.toString();
+            Log.e("Watchcompany", "getPostCompanyResult: " + s + "");
+        });
+        postViewModel.getPostCompanyData().observe(getViewLifecycleOwner(), posts ->
+        {
+            if(!isMorePost)
+                allPosts.clear(); //Neu khong phai tai them thi clear de tranh bi trung
+
+            isMorePost = false; //Dat lai neu dang la true
+
+            if(posts != null && !posts.isEmpty()) {
+                allPosts.addAll(posts);
+                Toast.makeText(this.getContext(), "Loading Posts...", Toast.LENGTH_SHORT).show();
+            }
+            else
+                Toast.makeText(this.getContext(), "No more posts", Toast.LENGTH_SHORT).show();
+
+
+            // Setup RecyclerView
+            recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
+            adapterPost = new PostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager(), myUser, nav); // mặc định show tất cả
+
+            //Xu li anh cua post bang postviewmodel va logo cua post bang usermodel
+            postViewModel.getImageUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterPost.setImageUrlMap(map);  // Truyền map xuống adapter
+            });
+            userViewModel.getLogoPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterPost.setLogoUrlMap(map);  // Truyền map xuống adapter
+            });
+            for (Post post : posts) {
+                if(post.getContents().size() > 1)
+                {
+                    String filePath = post.getContents().get(1).getValue();  // hoặc chỗ chứa đường dẫn ảnh
+                    Log.d("filePath", filePath);
+                    postViewModel.getImageUrl(filePath); // dùng filePath làm key
+                }
+                userViewModel.getLogoPostImageUrl(post.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key
+            }
+
+            //Hien thi
+            recyclerViewPost.setAdapter(adapterPost);
+            adapterPost.notifyDataSetChanged();
+        });
+
+        //Load more posts
+        btnMorePost.setOnClickListener(v -> {
+            pagePost++;
+            isMorePost = true;
+            postViewModel.getPostByCompany(companyId, pagePost, pageSizePost);
+        });
 
 
 
@@ -266,6 +337,9 @@ public class WatchCompanyProfileFragment extends Fragment {
                 //Lay ra company
                 companyId = data.getCompanyId();
                 companyViewModel.getCompany(companyId);
+
+                //Lay ra post cua company khi da co id
+                postViewModel.getPostByCompany(companyId, pagePost, pageSizePost);
             }
             else
                 Log.d("WatchCpnProfileFragment", "user null");

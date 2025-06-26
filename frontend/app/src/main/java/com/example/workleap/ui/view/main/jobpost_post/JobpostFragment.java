@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
@@ -41,11 +42,14 @@ public class JobpostFragment extends Fragment{
     private JobPostViewModel jobPostViewModel;
     private PostViewModel postViewModel;
     private UserViewModel userViewModel;
-
+    private int pagePost = 1;
+    private int pageSizePost = 4;
+    private boolean isMorePost = false;
     private User user;
     private Bundle bundle;
     private NavController nav;
     private ImageButton btnCreateNew;
+    private Button btnMorePost;
 
     private boolean isOnJobPostTab = true;
 
@@ -76,6 +80,7 @@ public class JobpostFragment extends Fragment{
 
         recyclerViewJobPost = view.findViewById(R.id.recyclerJobPosts);
         recyclerViewPost = view.findViewById(R.id.recyclerPosts);
+        btnMorePost = view.findViewById(R.id.btnLoadMorePosts);
 
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
@@ -154,6 +159,12 @@ public class JobpostFragment extends Fragment{
         });
         jobPostViewModel.getJobPostsByCompany(user.getCompanyId());
 
+        //Load more posts
+        btnMorePost.setOnClickListener(v -> {
+            pagePost++;
+            isMorePost = true;
+            postViewModel.getPostByCompany(user.getCompanyId(), pagePost, pageSizePost);
+        });
 
         //Load Post
         postViewModel.getPostCompanyResult().observe(getViewLifecycleOwner(), result ->
@@ -163,7 +174,11 @@ public class JobpostFragment extends Fragment{
         });
         postViewModel.getPostCompanyData().observe(getViewLifecycleOwner(), posts ->
         {
-            allPosts.clear();
+            if(!isMorePost)
+                allPosts.clear(); //Neu khong phai tai them thi clear de tranh bi trung
+
+            isMorePost = false; //Dat lai neu dang la true
+
             if(posts != null)
                 allPosts.addAll(posts);
             else
@@ -204,7 +219,7 @@ public class JobpostFragment extends Fragment{
             recyclerViewPost.setAdapter(adapterPost);
             adapterPost.notifyDataSetChanged();
         });
-        postViewModel.getPostByCompany(user.getCompanyId());
+        postViewModel.getPostByCompany(user.getCompanyId(), pagePost, pageSizePost);
 
 
         //Create jobpost or post
