@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Post;
+import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.home.CommentBottomSheet;
 import com.example.workleap.ui.viewmodel.PostViewModel;
@@ -57,10 +59,8 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
         holder.txtTime.setText(post.getCreatedAt().toString());
         holder.txtTitle.setText(post.getTitle());
         holder.txtContent.setText(post.getContents().get(0).getValue());
-
-        //holder.txtReactionCount.setText(post.getContents().length);
-        //holder.txtShareCount.setText(post.getReaction().length);
-        //holder.txtCommentCount.setText(post.getComment().length)
+        holder.txtReactionCount.setText(post.getReaction().size() + " Reactions    •");
+        holder.txtCommentShareCount.setText(post.getComment().size() + " Comments");
 
         //Xu li anh jobpost
         if(post.getContents().size() > 1)
@@ -77,10 +77,96 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
             }
         }
 
+        //Xu li nut reaction
+        if(post.getReaction().size() > 0)
+        {
+            for (Reaction reaction : post.getReaction()) {
+                if (reaction.getUserId().equals(user.getId())) {
+                    switch (reaction.getReactionType()) {
+                        case "LIKE":
+                            holder.imgReaction.setImageResource(R.drawable.ic_like);
+                            break;
+                        case "LOVE":
+                            holder.imgReaction.setImageResource(R.drawable.ic_love);
+                            break;
+                        case "WOW":
+                            holder.imgReaction.setImageResource(R.drawable.ic_wow);
+                            break;
+                        case "SAD":
+                            holder.imgReaction.setImageResource(R.drawable.ic_sad);
+                            break;
+                        case "IDEA":
+                            holder.imgReaction.setImageResource(R.drawable.ic_idea);
+                            break;
+                    }
+                }
+            }
+        }
+
         //Comment
         holder.btnComment.setOnClickListener(v -> {
             CommentBottomSheet bottomSheet = CommentBottomSheet.newInstance(post.getId(), user);
             bottomSheet.show(fragmentManager, "commentSheet");
+        });
+
+        postViewModel.toggleReactionResult().observe(lifecycleOwner, result -> {
+            if(result != null)
+                Log.d("Reaction toggle", "Result: " + result);
+            else
+                Log.d("Reaction toggle", "Result is null");
+        });
+        //React
+        holder.btnReaction.setOnClickListener(v -> {
+            View popupView = LayoutInflater.from(v.getContext()).inflate(R.layout.layout_popup_reaction, null);
+            PopupWindow popupWindow = new PopupWindow(popupView,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    true);
+
+            // Hiển thị ngay phía trên nút
+            popupWindow.showAsDropDown(v, 0, -v.getHeight() * 2);
+
+
+            // Gắn sự kiện cho từng reaction
+            popupView.findViewById(R.id.img_like).setOnClickListener(rv -> {
+                Log.d("Reaction", "LIKE");
+                Reaction request = new Reaction(post.getId(), user.getId(), "LIKE");
+                postViewModel.toggleReaction(request);
+                holder.imgReaction.setImageResource(R.drawable.ic_like);
+                popupWindow.dismiss();
+            });
+
+            popupView.findViewById(R.id.img_love).setOnClickListener(rv -> {
+                Log.d("Reaction", "LOVE");
+                Reaction request = new Reaction(post.getId(), user.getId(), "LOVE");
+                postViewModel.toggleReaction(request);
+                holder.imgReaction.setImageResource(R.drawable.ic_love);
+                popupWindow.dismiss();
+            });
+
+            popupView.findViewById(R.id.img_wow).setOnClickListener(rv -> {
+                Log.d("Reactionnnn", "WOW");
+                Reaction request = new Reaction(post.getId(), user.getId(), "WOW");
+                postViewModel.toggleReaction(request);
+                holder.imgReaction.setImageResource(R.drawable.ic_wow);
+                popupWindow.dismiss();
+            });
+
+            popupView.findViewById(R.id.img_sad).setOnClickListener(rv -> {
+                Log.d("Reaction", "SAD");
+                Reaction request = new Reaction(post.getId(), user.getId(), "SAD");
+                postViewModel.toggleReaction(request);
+                holder.imgReaction.setImageResource(R.drawable.ic_sad);
+                popupWindow.dismiss();
+            });
+
+            popupView.findViewById(R.id.img_idea).setOnClickListener(rv -> {
+                Log.d("Reaction", "IDEA");
+                Reaction request = new Reaction(post.getId(), user.getId(), "IDEA");
+                postViewModel.toggleReaction(request);
+                holder.imgReaction.setImageResource(R.drawable.ic_idea);
+                popupWindow.dismiss();
+            });
         });
 
 
@@ -130,17 +216,17 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
     }
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtName, txtTime, txtTitle, txtContent, txtReactionCount, txtCommentCount, txtShareCount;
-        ImageView imgPost, logoPost;
-        ImageButton btnOption, btnReact, btnShare;
-        LinearLayout btnComment;
+        TextView txtName, txtTime, txtTitle, txtContent, txtReactionCount, txtCommentShareCount, txtShareCount;
+        ImageView imgPost, logoPost, imgReaction;
+        ImageButton btnOption, btnShare;
+        LinearLayout btnComment, btnReaction;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.tv_user_name);
             txtTime = itemView.findViewById(R.id.tv_post_time);
             txtContent = itemView.findViewById(R.id.tv_post_content);
-            txtCommentCount = itemView.findViewById(R.id.tv_comment_share_count);
+            txtCommentShareCount = itemView.findViewById(R.id.tv_comment_share_count);
             txtReactionCount = itemView.findViewById(R.id.tv_like_count);
             txtShareCount = itemView.findViewById(R.id.tv_like_count);
             txtTitle = itemView.findViewById(R.id.tv_post_title);
@@ -149,6 +235,8 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
             imgPost = itemView.findViewById(R.id.imgPost);
             btnOption = itemView.findViewById(R.id.btnOption);
             btnComment = itemView.findViewById(R.id.btnComment);
+            btnReaction = itemView.findViewById(R.id.btn_like);
+            imgReaction = itemView.findViewById(R.id.img_like);
         }
     }
 
