@@ -44,6 +44,11 @@
                 android:layout_centerVertical="true"/>
         </RelativeLayout>
 
+        <!-- Thêm NestedScrollView để cuộn toàn bộ nội dung -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
         <!-- Nội dung tab, chiếm toàn bộ phần còn lại -->
         <FrameLayout
             android:id="@+id/frameContent"
@@ -71,8 +76,8 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"/>
 
-                <!-- Button được chuyển vào đây, nằm ngay dưới RecyclerView -->
-                <!--<Button
+                <!-- Button nằm ngay dưới RecyclerView -->
+                <Button
                     android:id="@+id/btnLoadMoreJobPosts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -80,7 +85,7 @@
                     android:layout_gravity="center_horizontal"
                     android:paddingHorizontal="24dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="12dp" />-->
+                    android:layout_marginBottom="70dp" />
             </LinearLayout>
 
             <!-- Layout POST -->
@@ -104,7 +109,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
 
-                <!-- Button được chuyển vào đây, nằm ngay dưới RecyclerView -->
+                <!-- Button nằm ngay dưới RecyclerView -->
                 <Button
                     android:id="@+id/btnLoadMorePosts"
                     android:layout_width="wrap_content"
@@ -113,9 +118,9 @@
                     android:layout_gravity="center_horizontal"
                     android:paddingHorizontal="24dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_marginBottom="70dp" />
             </LinearLayout>
-
         </FrameLayout>
+        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 </FrameLayout>
