@@ -424,6 +424,6 @@ public interface ApiService {
     @GET("api/notification/")
     Call<ListNotificationResponse> getAllNotification();
     @DELETE("api/notification/{id}")
-    Call<MessageResponse> deleteNotification(@Path("id") String id);
+    Call<Void> deleteNotification(@Path("id") String id);
 
 }

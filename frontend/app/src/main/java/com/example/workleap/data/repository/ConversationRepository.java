@@ -117,7 +117,7 @@ public class ConversationRepository {
     public Call<ListNotificationResponse> getAllNotification(){
         return apiService.getAllNotification();
     }
-    public Call<MessageResponse> deleteNotification(String notificationId)
+    public Call<Void> deleteNotification(String notificationId)
     {
         return  apiService.deleteNotification(notificationId);
     }

@@ -290,16 +290,16 @@ public class ConversationViewModel extends ViewModel {
         });
     }
     public void deleteNotification(String notificationId) {
-        conversationRepository.deleteNotification(notificationId).enqueue(new Callback<MessageResponse>() {
+        conversationRepository.deleteNotification(notificationId).enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                 } else {
                     handleError(response);
                 }
             }
             @Override
-            public void onFailure(Call<MessageResponse> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 errorResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });

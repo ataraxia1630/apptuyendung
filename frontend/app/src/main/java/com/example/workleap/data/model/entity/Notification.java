@@ -8,7 +8,7 @@ public class Notification {
     private String userId;
     private String message;
     private String status;
-    private Date createdAt;
+    private Date created_at;
     private User user;
 
     // Constructors
@@ -20,7 +20,7 @@ public class Notification {
         this.userId = userId;
         this.message = message;
         this.status = status;
-        this.createdAt = createdAt;
+        this.created_at = createdAt;
     }
 
     // Getters & Setters
@@ -39,8 +39,8 @@ public class Notification {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+    public Date getCreated_at() { return created_at; }
+    public void setCreated_at(Date created_at) { this.created_at = created_at; }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
