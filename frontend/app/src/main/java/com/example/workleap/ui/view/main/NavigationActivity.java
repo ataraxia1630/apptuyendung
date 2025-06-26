@@ -84,7 +84,6 @@ public class NavigationActivity extends AppCompatActivity {
             if (itemId == R.id.menu_home) {
                 navController.navigate(R.id.menu_home, bundle);
                 return true;
-
             } else if (itemId == R.id.menu_cv_jobpost) {
                 if ("applicant".equalsIgnoreCase( user.getRole())) { //dat userRole sau tranh loi null
                     navController.navigate(R.id.cvFragment, bundle);
@@ -101,7 +100,7 @@ public class NavigationActivity extends AppCompatActivity {
                 return true;
 
             } else if (itemId == R.id.menu_notifications) {
-                navController.navigate(R.id.menu_notifications);
+                navController.navigate(R.id.menu_notifications, bundle);
                 return true;
 
             } else if (itemId == R.id.menu_profile) {

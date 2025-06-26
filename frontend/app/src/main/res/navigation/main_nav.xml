@@ -104,6 +104,10 @@
         android:name="com.example.workleap.ui.view.main.message_notification.NotificationFragment"
         android:label="Notification" />
     <fragment
+        android:id="@+id/followingFragment"
+        android:name="com.example.workleap.ui.view.main.message_notification.FollowingFragment"
+        android:label="Following" />
+    <fragment
         android:id="@+id/messageDetailFragment"
         android:name="com.example.workleap.ui.view.main.message_notification.MessageDetailFragment"
         android:label="Message" />

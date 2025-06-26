@@ -20,6 +20,7 @@ import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.ConversationUser;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.ConversationViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
@@ -38,9 +39,10 @@ public class MessageFragment extends Fragment {
     private ConversationViewModel conversationViewModel;
     private ConversationUserAdapter conversationUserAdapter;
     private RecyclerView conversationRecyclerView;
-    private ImageButton btnNotification;
+    private ImageButton btnNotification, btnFollowing;
     private NavController nav;
     private UserViewModel userViewModel;
+    private User myUser;
 
     public MessageFragment() {
         // Required empty public constructor
@@ -59,6 +61,7 @@ public class MessageFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
            // mParam1 = getArguments().getString(ARG_PARAM1);
+            myUser = (User) getArguments().getSerializable("user");
         }
     }
 
@@ -78,13 +81,15 @@ public class MessageFragment extends Fragment {
         //Initiate view model
         conversationViewModel = new ConversationViewModel();
         conversationViewModel.initiateRepository(getContext());
-        conversationViewModel.getAllChats();
+        //conversationViewModel.getAllChats();
         userViewModel = new UserViewModel();
         userViewModel.InitiateRepository(getContext());
 
         //Find component
         conversationRecyclerView = view.findViewById(R.id.recyclerConversationList);
         btnNotification = view.findViewById(R.id.btnNotification);
+        btnFollowing = view.findViewById(R.id.btnFollowing);
+
 
         //Get all conversations
         conversationViewModel.getAllChatsData().observe(getViewLifecycleOwner(), data -> {
@@ -132,6 +137,13 @@ public class MessageFragment extends Fragment {
         btnNotification.setOnClickListener(v -> {
             NavController navController = NavHostFragment.findNavController(MessageFragment.this);
             navController.navigate(R.id.action_messageFragment_to_notificationFragment);
+        });
+
+        btnFollowing.setOnClickListener(v -> {
+            NavController navController = NavHostFragment.findNavController(MessageFragment.this);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("user", myUser);
+            navController.navigate(R.id.followingFragment, bundle);
         });
     }
 }

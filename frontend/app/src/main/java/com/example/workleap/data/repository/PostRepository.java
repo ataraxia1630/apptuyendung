@@ -44,8 +44,8 @@ public class PostRepository {
         return apiService.getPostById(id);
     }
 
-    public Call<ListPostResponse> getPostsByCompany(String id) {
-        return apiService.getPostsByCompany(id);
+    public Call<ListPostResponse> getPostsByCompany(String id, int page, int pageSize) {
+        return apiService.getPostsByCompany(id, page, pageSize);
     }
 
     public Call<PostResponse> createPost(Post request) {

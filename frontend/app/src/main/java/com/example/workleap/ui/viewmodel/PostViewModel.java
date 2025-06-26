@@ -132,8 +132,8 @@ public class PostViewModel extends ViewModel {
     }
 
     // Get post company
-    public void getPostByCompany(String companyId) {
-        Call<ListPostResponse> call = postRepository.getPostsByCompany(companyId);
+    public void getPostByCompany(String companyId, int page, int pageSize) {
+        Call<ListPostResponse> call = postRepository.getPostsByCompany(companyId, page, pageSize);
         call.enqueue(new Callback<ListPostResponse>() {
             @Override
             public void onResponse(Call<ListPostResponse> call, Response<ListPostResponse> response) {
