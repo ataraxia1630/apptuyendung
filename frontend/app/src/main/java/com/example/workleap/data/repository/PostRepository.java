@@ -96,4 +96,9 @@ public class PostRepository {
     public Call<ListPostResponse> searchPosts(String title, String companyName) {
         return apiService.searchPost(title, companyName);
     }
+
+    public Call<ListPostResponse> getPostByStatus(int page, int pageSize, String status)
+    {
+        return  apiService.getPostByStatus(status, page, pageSize);
+    }
 }

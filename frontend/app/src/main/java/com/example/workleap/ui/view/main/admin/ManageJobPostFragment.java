@@ -18,18 +18,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.Post;
+import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.jobpost_post.MyJobPostAdapter;
+import com.example.workleap.ui.view.main.jobpost_post.MyPostAdapter;
+import com.example.workleap.ui.view.main.jobpost_post.PostAdapter;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
+import com.example.workleap.ui.viewmodel.PostViewModel;
 import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ManageJobPostFragment extends Fragment {
 
-    private RecyclerView recyclerViewJobPost;
+    private RecyclerView recyclerViewJobPost, recyclerViewPost;
     private MyJobPostAdapter adapterJobPost;
+    private PostAdapter adapterPost;
     private List<JobPost> jobPostList = new ArrayList<>();
+    private List<Post> postList = new ArrayList<>();
     private JobPostViewModel jobPostViewModel;
+    private PostViewModel postViewModel;
     private int page = 1;
     private int pageSize = 5;
 
@@ -38,6 +46,7 @@ public class ManageJobPostFragment extends Fragment {
     private TabLayout tabLayoutStatus;
     private NavController nav;
 
+    private User user;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         nav = NavHostFragment.findNavController(this);
@@ -48,7 +57,10 @@ public class ManageJobPostFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        user = (User) getArguments().getSerializable("user");
+
         recyclerViewJobPost = view.findViewById(R.id.recyclerJobPosts);
+        recyclerViewPost = view.findViewById(R.id.recyclerViewPosts);
         btnPrev = view.findViewById(R.id.btnPrev);
         btnNext = view.findViewById(R.id.btnNext);
         tvPageNumber = view.findViewById(R.id.tvPageNumber);
@@ -56,7 +68,10 @@ public class ManageJobPostFragment extends Fragment {
 
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
+        postViewModel = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
+        postViewModel.InitiateRepository(getContext());
 
+        //adapterJopPost
         adapterJobPost = new MyJobPostAdapter(jobPostList, jobPostViewModel, jobPost -> {
             Bundle bundle = new Bundle();
             bundle.putSerializable("jobPost", jobPost);
@@ -65,6 +80,12 @@ public class ManageJobPostFragment extends Fragment {
         recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewJobPost.setAdapter(adapterJobPost);
 
+        //adapterPost
+        adapterPost = new PostAdapter(postList, postViewModel, this, requireActivity().getSupportFragmentManager(), user, nav);
+        recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewPost.setAdapter(adapterPost);
+
+        //tablayout
         tabLayoutStatus.addTab(tabLayoutStatus.newTab().setText("Pending"));
         //tabLayoutStatus.addTab(tabLayoutStatus.newTab().setText("Approved"));
         tabLayoutStatus.addTab(tabLayoutStatus.newTab().setText("Rejected"));
@@ -92,12 +113,14 @@ public class ManageJobPostFragment extends Fragment {
             loadJobPostsByStatus(tabLayoutStatus.getSelectedTabPosition());
         });
 
-        // Load mặc định tab đầu tiên
+        // mac dinh tab dau tien va load danh sach
         tabLayoutStatus.selectTab(tabLayoutStatus.getTabAt(0));
+        loadJobPostsByStatus(0);
     }
 
     private void loadJobPostsByStatus(int statusTabIndex) {
         if (statusTabIndex == 0) {
+            //jobpost
             jobPostViewModel.getJobPostByStatus(page, pageSize, "OPENING");
             jobPostViewModel.getJobPostByStatusData().observe(getViewLifecycleOwner(), jobPosts -> {
                 if(jobPosts==null)
@@ -105,12 +128,26 @@ public class ManageJobPostFragment extends Fragment {
                     Log.e("ManageJobPostFragment", "getJobPostByStatusData NULL");
                     return;
                 }
-                Log.e("eee", String.valueOf(jobPosts.size()));
                 updateJobPostList(jobPosts);
             });
             jobPostViewModel.getJobPostByStatusResult().observe(getViewLifecycleOwner(), result->{
                 Log.e("ManageJobPostFragment", "getJobPostByStatusResult: " + result);
             });
+
+            //post
+            postViewModel.getPostByStatus(page, pageSize, "OPENING");
+            postViewModel.getPostByStatusData().observe(getViewLifecycleOwner(), posts -> {
+                if(posts==null)
+                {
+                    Log.e("ManageJobPostFragment", "getPostByStatusData NULL");
+                    return;
+                }
+                updatePostList(posts);
+            });
+            postViewModel.getPostByStatusResult().observe(getViewLifecycleOwner(), result->{
+                Log.e("ManageJobPostFragment", "getPostByStatusResult: " + result);
+            });
+
         } else {
             jobPostViewModel.getJobPostByStatus(page, pageSize, "CANCELLED");
             jobPostViewModel.getJobPostByStatusData().observe(getViewLifecycleOwner(), jobPosts -> {
@@ -124,6 +161,19 @@ public class ManageJobPostFragment extends Fragment {
             jobPostViewModel.getJobPostByStatusResult().observe(getViewLifecycleOwner(), result->{
                 Log.e("ManageJobPostFragment", "getJobPostByStatusResult: " + result);
             });
+
+            postViewModel.getPostByStatus(page, pageSize, "CANCELLED");
+            postViewModel.getPostByStatusData().observe(getViewLifecycleOwner(), posts -> {
+                if(posts==null)
+                {
+                    Log.e("ManageJobPostFragment", "getPostByStatusData NULL");
+                    return;
+                }
+                updatePostList(posts);
+            });
+            postViewModel.getPostByStatusResult().observe(getViewLifecycleOwner(), result->{
+                Log.e("ManageJobPostFragment", "getPostByStatusResult: " + result);
+            });
         }
         tvPageNumber.setText(String.valueOf(page));
     }
@@ -132,5 +182,10 @@ public class ManageJobPostFragment extends Fragment {
         jobPostList.clear();
         if (jobPosts != null) jobPostList.addAll(jobPosts);
         adapterJobPost.notifyDataSetChanged();
+    }
+    private void updatePostList(List<Post> posts) {
+        postList.clear();
+        if (posts != null) postList.addAll(posts);
+        adapterPost.notifyDataSetChanged();
     }
 }

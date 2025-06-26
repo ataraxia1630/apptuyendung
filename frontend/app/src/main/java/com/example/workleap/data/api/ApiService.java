@@ -315,8 +315,8 @@ public interface ApiService {
     Call<ListPostResponse> searchPost(
             @Query("title") String query,
             @Query("companyName") String companyName);
-    @GET("api/posts/status/:status")
-    Call<ListPostResponse> getPostByStatus(@Query("page") int page, @Query("pageSize") int pageSize);
+    @GET("api/posts/status/{status}")
+    Call<ListPostResponse> getPostByStatus(@Path("status") String status, @Query("page") int page, @Query("pageSize") int pageSize);
 
     //Comment
     @POST("api/comments/")
