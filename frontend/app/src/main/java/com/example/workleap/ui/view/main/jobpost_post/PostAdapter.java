@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.Post;
+import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.home.CommentBottomSheet;
 import com.example.workleap.ui.viewmodel.PostViewModel;
@@ -43,7 +44,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private FragmentManager fragmentManager;
     private User user;
     private NavController nav;
-
     public PostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager, User user, NavController nav) {
         this.postList = postList;
         this.postViewModel = postViewModel;
@@ -96,6 +96,32 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
         }
 
+        //Xu li nut reaction
+        if(post.getReaction().size() > 0)
+        {
+            for (Reaction reaction : post.getReaction()) {
+                if (reaction.getUserId().equals(user.getId())) {
+                    switch (reaction.getReactionType()) {
+                        case "LIKE":
+                            holder.imgReaction.setImageResource(R.drawable.ic_like);
+                            break;
+                        case "LOVE":
+                            holder.imgReaction.setImageResource(R.drawable.ic_love);
+                            break;
+                        case "WOW":
+                            holder.imgReaction.setImageResource(R.drawable.ic_wow);
+                            break;
+                        case "SAD":
+                            holder.imgReaction.setImageResource(R.drawable.ic_sad);
+                            break;
+                        case "IDEA":
+                            holder.imgReaction.setImageResource(R.drawable.ic_idea);
+                            break;
+                    }
+                }
+            }
+        }
+
         //Comment
         holder.btnComment.setOnClickListener(v -> {
             CommentBottomSheet bottomSheet = CommentBottomSheet.newInstance(post.getId(), user);
@@ -103,8 +129,27 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             bottomSheet.show(fragmentManager, "commentSheet");
         });
 
-        //React
-        holder.btnReaction.setOnClickListener(v -> {
+
+        postViewModel.toggleReactionResult().observe(lifecycleOwner, result -> {
+            if(result != null)
+                Log.d("Reaction toggle", "Result: " + result);
+            else
+                Log.d("Reaction toggle", "Result is null");
+        });
+
+        //React click to remove
+        postViewModel.removeReactionResult().observe(lifecycleOwner, result -> {
+            if(result != null)
+                Log.d("Reaction remove", "Result: " + result);
+            else
+                Log.d("Reaction remove", "Result is null");
+        });
+        holder.btnReaction.setOnClickListener( v -> {
+            holder.imgReaction.setImageResource(R.drawable.ic_reaction);
+            postViewModel.removeReaction(post.getId());
+        });
+        //Long click to react
+        holder.btnReaction.setOnLongClickListener(v -> {
             View popupView = LayoutInflater.from(v.getContext()).inflate(R.layout.layout_popup_reaction, null);
             PopupWindow popupWindow = new PopupWindow(popupView,
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -114,32 +159,50 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             // Hiển thị ngay phía trên nút
             popupWindow.showAsDropDown(v, 0, -v.getHeight() * 2);
 
+
             // Gắn sự kiện cho từng reaction
             popupView.findViewById(R.id.img_like).setOnClickListener(rv -> {
                 Log.d("Reaction", "LIKE");
+                Reaction request = new Reaction(post.getId(), user.getId(), "LIKE");
+                postViewModel.toggleReaction(request);
+                holder.imgReaction.setImageResource(R.drawable.ic_like);
                 popupWindow.dismiss();
             });
 
             popupView.findViewById(R.id.img_love).setOnClickListener(rv -> {
                 Log.d("Reaction", "LOVE");
+                Reaction request = new Reaction(post.getId(), user.getId(), "LOVE");
+                postViewModel.toggleReaction(request);
+                holder.imgReaction.setImageResource(R.drawable.ic_love);
                 popupWindow.dismiss();
             });
 
             popupView.findViewById(R.id.img_wow).setOnClickListener(rv -> {
-                Log.d("Reaction", "WOW");
+                Log.d("Reactionnnn", "WOW");
+                Reaction request = new Reaction(post.getId(), user.getId(), "WOW");
+                postViewModel.toggleReaction(request);
+                holder.imgReaction.setImageResource(R.drawable.ic_wow);
                 popupWindow.dismiss();
             });
 
             popupView.findViewById(R.id.img_sad).setOnClickListener(rv -> {
                 Log.d("Reaction", "SAD");
+                Reaction request = new Reaction(post.getId(), user.getId(), "SAD");
+                postViewModel.toggleReaction(request);
+                holder.imgReaction.setImageResource(R.drawable.ic_sad);
                 popupWindow.dismiss();
             });
 
             popupView.findViewById(R.id.img_idea).setOnClickListener(rv -> {
                 Log.d("Reaction", "IDEA");
+                Reaction request = new Reaction(post.getId(), user.getId(), "IDEA");
+                postViewModel.toggleReaction(request);
+                holder.imgReaction.setImageResource(R.drawable.ic_idea);
                 popupWindow.dismiss();
             });
+            return true;
         });
+
 
         //Watch profile
         holder.btnProfile.setOnClickListener(v -> {
@@ -185,7 +248,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView txtName, txtTime, txtTitle, txtContent, txtReactionCount, txtCommentShareCount;
-        ImageView imgPost, logoPost;
+        ImageView imgPost, logoPost, imgReaction;
         ImageButton btnOption;
         LinearLayout btnComment, btnReaction, btnShare, btnProfile;
 
@@ -208,6 +271,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             btnProfile = itemView.findViewById(R.id.post_header);
 
             logoPost = itemView.findViewById(R.id.iv_user_avatar);
+            imgReaction = itemView.findViewById(R.id.img_like);
         }
     }
 
