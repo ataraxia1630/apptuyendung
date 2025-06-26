@@ -90,7 +90,10 @@ public class NavigationActivity extends AppCompatActivity {
                     navController.navigate(R.id.cvFragment, bundle);
                 } else if ("company".equalsIgnoreCase(user.getRole())) {
                     navController.navigate(R.id.jobpostFragment, bundle);
-                } else {
+                } else if ("admin".equalsIgnoreCase(user.getRole())) {
+                    navController.navigate(R.id.ManageJobPostFragment, bundle);
+                }
+                else{
                     Log.e("NavActivity", "role: "+ user.getRole() );
                     Toast.makeText(this, "Vai trò không hợp lệ!", Toast.LENGTH_SHORT).show();
                 }

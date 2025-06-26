@@ -21,8 +21,6 @@ router.get('/company/:id', verifyToken, JobPostController.getJobPostsByCompany);
 router.get(
     '/admin/by-status',
     verifyToken,
-    requireRole('ADMIN'),
-    cache,
     JobPostController.getJobPostsByStatus
 );
 

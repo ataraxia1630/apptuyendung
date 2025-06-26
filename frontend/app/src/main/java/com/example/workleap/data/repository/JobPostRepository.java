@@ -109,4 +109,9 @@ public class JobPostRepository {
         return apiService.withDrawCv(applicantId, jobPostId);
     }
 
+    public Call<ListJobPostResponse> getJobPostByStatus(int page, int pageSize, String status)
+    {
+        return apiService.getJobPostByStatus(page, pageSize, status);
+    }
+
 }
