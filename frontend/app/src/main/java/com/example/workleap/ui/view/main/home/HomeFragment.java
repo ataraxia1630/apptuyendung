@@ -190,6 +190,9 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(this.getContext(), "No more posts", Toast.LENGTH_SHORT).show();
 
 
+
+
+
             // Setup RecyclerView
             recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
             adapterPost = new PostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager(), user, nav); // mặc định show tất cả

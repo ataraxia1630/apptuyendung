@@ -51,6 +51,11 @@
         android:label="fragment_jobpost"
         tools:layout="@layout/fragment_my_jobpost" />
     <fragment
+        android:id="@+id/ManageJobPostFragment"
+        android:name="com.example.workleap.ui.view.main.admin.ManageJobPostFragment"
+        android:label="fragment_manage_job_post"
+        tools:layout="@layout/fragment_manage_job_post" />
+    <fragment
         android:id="@+id/overviewJobPostFragment"
         android:name="com.example.workleap.ui.view.main.jobpost_post.OverviewMyJobPostFragment"
         android:label="fragment_overview_my_jobpost"

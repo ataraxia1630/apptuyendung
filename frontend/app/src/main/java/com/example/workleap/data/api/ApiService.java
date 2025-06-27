@@ -229,6 +229,11 @@ public interface ApiService {
     @GET("api/job-posts/company/me/{id}")
     Call<JobPostResponse> getMyJobPostById( @Path("id") String id);
 
+    @GET("api/job-posts/admin/by-status")
+    Call<ListJobPostResponse> getJobPostByStatus(@Query("page") int page, @Query("pageSize") int pageSize, @Query("status") String status);
+    @PUT("api/job-posts/admin/toggle/{id}")
+    Call<JobPostResponse> toggleJobPostStatus(@Path("id") String id);
+
     //JobType
     @GET("api/types/all")
     Call<ListJobTypeResponse> getAllJobTypes();
@@ -312,6 +317,8 @@ public interface ApiService {
     Call<ListPostResponse> searchPost(
             @Query("title") String query,
             @Query("companyName") String companyName);
+    @GET("api/posts/status/{status}")
+    Call<ListPostResponse> getPostByStatus(@Path("status") String status, @Query("page") int page, @Query("pageSize") int pageSize);
 
     //Comment
     @POST("api/comments/")
@@ -339,7 +346,6 @@ public interface ApiService {
     Call<ListMonthlyStatResponse> getMonthlyGrowth();
     @GET("api/statistic/by-field")
     Call<ListFieldStatResponse> getByField(@Query("page") int page, @Query("pageSize") int pageSize);
-
 
     //Chat-Conversation
     // Lấy tất cả các cuộc trò chuyện của user
