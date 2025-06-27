@@ -14,7 +14,7 @@ router.delete('/:id', verifyToken, checkOwnership('Post', 'companyId'), PostCont
 router.get('/search/query', cache, PostController.searchPosts);
 router.get('/company/:companyId', verifyToken, PostController.getPostsByCompany);
 
-router.get('/status/:status', verifyToken, requireRole('ADMIN'), PostController.getPostsByStatus);
+router.get('/status/:status', verifyToken, PostController.getPostsByStatus);
 router.put('/status/:id', verifyToken, requireRole('ADMIN'), PostController.updatePostStatus);
 
 

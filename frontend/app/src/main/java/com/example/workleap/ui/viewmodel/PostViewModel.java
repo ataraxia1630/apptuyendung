@@ -61,7 +61,9 @@ public class PostViewModel extends ViewModel {
     private MutableLiveData<Map<String, String>> imageUrlMap = new MutableLiveData<>(new HashMap<>());
 
     private MutableLiveData<List<Post>> searchPostData = new MutableLiveData<>();
+    private MutableLiveData<List<Post>> getPostByStatusData = new MutableLiveData<>();
     private MutableLiveData<String> searchPostResult = new MutableLiveData<>();
+    private MutableLiveData<String> getPostByStatusResult = new MutableLiveData<>();
 
     public PostViewModel(){}
     public void InitiateRepository(Context context) {
@@ -103,7 +105,9 @@ public class PostViewModel extends ViewModel {
 
     //search
     public LiveData<List<Post>> searchPostData() { return searchPostData; }
+    public LiveData<List<Post>> getPostByStatusData() { return getPostByStatusData; }
     public LiveData<String> searchPostResult() { return searchPostResult; }
+    public LiveData<String> getPostByStatusResult() { return getPostByStatusResult; }
 
     // Get all post
     public void getAllPost(int page, int pageSize) {
@@ -507,6 +511,32 @@ public class PostViewModel extends ViewModel {
             @Override
             public void onFailure(Call<ListPostResponse> call, Throwable t) {
                 searchPostResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getPostByStatus(int page, int pageSize, String status) {
+        Call<ListPostResponse> call = postRepository.getPostByStatus(page, pageSize, status);
+        call.enqueue(new Callback<ListPostResponse>() {
+            @Override
+            public void onResponse(Call<ListPostResponse> call, Response<ListPostResponse> response) {
+                if (response.isSuccessful()) {
+                    ListPostResponse listPostResponse = response.body();
+                    getPostByStatusData.setValue(listPostResponse.getAllPost());
+                    getPostByStatusResult.setValue("Success");
+                } else {
+                    try {
+                        ListPostResponse error = new Gson().fromJson(response.errorBody().string(), ListPostResponse.class);
+                        getPostByStatusResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getPostByStatusResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ListPostResponse> call, Throwable t) {
+                getPostByStatusResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }
