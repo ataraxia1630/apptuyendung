@@ -1,14 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutAdminReport"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.view.main.admin.ReportFragment">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white">
 
-    <!-- TODO: Update blank fragment layout -->
+    <!-- Title -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/tvTitleReports"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Reports"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp" />
 
-</FrameLayout>
+    <!-- RecyclerView hiển thị danh sách report -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewReports"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingBottom="8dp" />
+
+    <!-- Empty text nếu không có report -->
+    <TextView
+        android:id="@+id/tvNoReports"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No reports found."
+        android:textColor="@android:color/darker_gray"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>

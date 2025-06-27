@@ -94,8 +94,8 @@ public class ManageJobPostFragment extends Fragment {
         adapterJobPost = new MyJobPostAdapter(jobPostList, jobPostViewModel, jobPost -> {
             Bundle bundle = new Bundle();
             bundle.putSerializable("user", user);
-            jobPostViewModel.setCurrentJobPost(jobPost);
-            nav.navigate(R.id.HomeJobPostFragment, bundle);
+            bundle.putSerializable("currentJobPost", jobPost);
+            nav.navigate(R.id.overviewJobPostFragment, bundle);
         });
         recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewJobPost.setAdapter(adapterJobPost);

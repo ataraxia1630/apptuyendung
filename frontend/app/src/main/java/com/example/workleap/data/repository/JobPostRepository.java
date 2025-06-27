@@ -12,6 +12,7 @@ import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.request.JobSavedRequest;
 import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
+import com.example.workleap.data.model.request.StatusRequest;
 import com.example.workleap.data.model.response.JobAppliedResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
@@ -120,9 +121,9 @@ public class JobPostRepository {
         return apiService.getJobPostByStatus(page, pageSize, status);
     }
 
-    public Call<JobPostResponse> toggleJobPostStatus(String id)
+    public Call<JobPostResponse> toggleJobPostStatus(String id, StatusRequest statusRequest)
     {
-        return apiService.toggleJobPostStatus(id);
+        return apiService.toggleJobPostStatus(id, statusRequest);
     }
 
 }
