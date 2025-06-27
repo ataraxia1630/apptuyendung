@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModel;
 import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
-import com.example.workleap.data.model.entity.JobSaved;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.request.JobSavedRequest;
@@ -43,6 +42,7 @@ public class JobPostViewModel  extends ViewModel {
 
     //job post
     private MutableLiveData<List<JobPost>> getAllJobPostData = new MutableLiveData<>();
+    private MutableLiveData<List<JobPost>> getJobPostsRecommendData = new MutableLiveData<>();
     private MutableLiveData<List<JobPost>> getJobPostByStatusData = new MutableLiveData<>();
     private MutableLiveData<JobPost> toggleJobPostStatusData = new MutableLiveData<>();
     private MutableLiveData<String> toggleJobPostStatusResult = new MutableLiveData<>();
@@ -55,6 +55,7 @@ public class JobPostViewModel  extends ViewModel {
     private MutableLiveData<JobApplied> processCvAppliedData = new MutableLiveData<>();
 
     private MutableLiveData<String> getAllJobPostResult = new MutableLiveData<>();
+    private MutableLiveData<String> getJobPostsRecommendResult = new MutableLiveData<>();
     private MutableLiveData<String> getJobPostByStatusResult = new MutableLiveData<>();
     private MutableLiveData<String> getJobPostsByCompanyResult = new MutableLiveData<>();
     private MutableLiveData<String> getJobPostResult = new MutableLiveData<>();
@@ -69,7 +70,7 @@ public class JobPostViewModel  extends ViewModel {
     //jobcategory, jobcategory, jobsave
     private MutableLiveData<List<JobType>> getAllJobTypeData = new MutableLiveData<>();
     private MutableLiveData<List<JobCategory>> getAllJobCategoryData = new MutableLiveData<>();
-    private MutableLiveData<List<JobPost>> getAllJobSaved = new MutableLiveData<>();
+    private MutableLiveData<List<JobPost>> getAllJobSavedData = new MutableLiveData<>();
 
     private MutableLiveData<String> getAllJobTypeResult = new MutableLiveData<>();
     private MutableLiveData<String> createJobTypeResult = new MutableLiveData<>();
@@ -98,6 +99,10 @@ public class JobPostViewModel  extends ViewModel {
 
     //Getter live data
     public LiveData<List<JobPost>> getAllJobPostData() { return getAllJobPostData; }
+    public LiveData<List<JobPost>> getJobPostsRecommendData() { return getJobPostsRecommendData; }
+    public LiveData<String> getJobPostsRecommendResult() { return getJobPostsRecommendResult; }
+
+    public LiveData<String> getJobPostRecommendResult() { return getJobPostsRecommendResult; }
     public LiveData<List<JobPost>> getJobPostByStatusData() { return getJobPostByStatusData; }
     public LiveData<JobPost> toggleJobPostData() { return toggleJobPostStatusData; }
     public LiveData<String> toggleJobPostResult() { return toggleJobPostResult(); }
@@ -124,7 +129,7 @@ public class JobPostViewModel  extends ViewModel {
 
     public LiveData<List<JobType>> getAllJobTypeData() { return getAllJobTypeData; }
     public LiveData<List<JobCategory>> getAllJobCategoryData() { return getAllJobCategoryData; }
-    public LiveData<List<JobPost>> getAllJobSaved() { return getAllJobSaved; }
+    public LiveData<List<JobPost>> getAllJobSaved() { return getAllJobSavedData; }
     public LiveData<String> getAllJobTypeResult() { return getAllJobTypeResult; }
     public LiveData<String> createJobTypeResult() { return createJobTypeResult; }
     public LiveData<String> getAllJobCategoryResult() { return getAllJobCategoryResult; }
@@ -166,6 +171,25 @@ public class JobPostViewModel  extends ViewModel {
             @Override
             public void onFailure(Call<ListJobPostResponse> call, Throwable t) {
                 getAllJobPostResult.postValue("Error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getJobPostsRecommend(int page, int pageSize) {
+        jobPostRepository.getJobPostRecommend(page, pageSize).enqueue(new Callback<ListJobPostResponse>() {
+            @Override
+            public void onResponse(Call<ListJobPostResponse> call, Response<ListJobPostResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    getJobPostsRecommendData.postValue(response.body().getAllJobPost());
+                    getJobPostsRecommendResult.postValue("Success");
+                    Log.d("API_RESPONSE", new Gson().toJson(response.body()));
+                } else {
+                    getJobPostsRecommendResult.postValue("Failed: " + response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<ListJobPostResponse> call, Throwable t) {
+                getJobPostsRecommendResult.postValue("Error: " + t.getMessage());
             }
         });
     }
@@ -398,11 +422,12 @@ public class JobPostViewModel  extends ViewModel {
 
     //Job saved
     public void getAllJobSaved(String applicantId) {
+        Log.d("JobPostViewModel", "getAllJobSaved: " + applicantId + "");
         jobPostRepository.getJobSaved(applicantId).enqueue(new Callback<ListJobPostResponse>() {
             @Override
             public void onResponse(Call<ListJobPostResponse> call, Response<ListJobPostResponse> response){
                 if (response.isSuccessful() && response.body() != null) {
-                    getAllJobSaved.postValue(response.body().getAllJobPost());
+                    getAllJobSavedData.postValue(response.body().getAllJobPost());
                     getAllJobSavedResult.postValue("Success");
                     Log.d("API_RESPONSE", new Gson().toJson(response.body()));
                     } else {

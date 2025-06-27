@@ -234,6 +234,8 @@ public interface ApiService {
     Call<ListJobPostResponse> getJobPostByStatus(@Query("page") int page, @Query("pageSize") int pageSize, @Query("status") String status);
     @PUT("api/job-posts/admin/toggle/{id}")
     Call<JobPostResponse> toggleJobPostStatus(@Path("id") String id);
+    @GET("api/job-posts/recommend")
+    Call<ListJobPostResponse> getJobPostRecommend(@Query("page") int page, @Query("pageSize") int pageSize);
 
     //JobType
     @GET("api/types/all")

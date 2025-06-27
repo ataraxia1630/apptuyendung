@@ -38,6 +38,10 @@ public class JobPostRepository {
         return apiService.getAllJobPosts(page, pageSize);
     }
 
+    public Call<ListJobPostResponse> getJobPostRecommend(int page, int pageSize) {
+        return apiService.getJobPostRecommend(page, pageSize);
+    }
+
     public Call<ListJobPostResponse> getJobPostsByCompany(String id) {
         return apiService.getJobPostsByCompany(id);
     }
