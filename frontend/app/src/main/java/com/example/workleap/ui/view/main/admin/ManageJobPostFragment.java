@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -25,6 +26,7 @@ import com.example.workleap.ui.view.main.jobpost_post.MyPostAdapter;
 import com.example.workleap.ui.view.main.jobpost_post.PostAdapter;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.PostViewModel;
+import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,7 @@ public class ManageJobPostFragment extends Fragment {
     private List<Post> postList = new ArrayList<>();
     private JobPostViewModel jobPostViewModel;
     private PostViewModel postViewModel;
+    private UserViewModel userViewModel;
     private int page = 1;
     private int pageSize = 5;
 
@@ -70,11 +73,28 @@ public class ManageJobPostFragment extends Fragment {
         jobPostViewModel.InitiateRepository(getContext());
         postViewModel = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
         postViewModel.InitiateRepository(getContext());
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        userViewModel.InitiateRepository(getContext());
+
+        // load anh
+        //anh jobpost
+        userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+            adapterJobPost.setLogoUrlMap(map);
+        });
+        //anh company post
+        postViewModel.getImageUrlMap().observe(getViewLifecycleOwner(), map -> {
+            adapterPost.setImageUrlMap(map);
+        });
+        //anh post
+        userViewModel.getLogoPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+            adapterPost.setLogoUrlMap(map);
+        });
 
         //adapterJopPost
         adapterJobPost = new MyJobPostAdapter(jobPostList, jobPostViewModel, jobPost -> {
             Bundle bundle = new Bundle();
-            bundle.putSerializable("jobPost", jobPost);
+            bundle.putSerializable("user", user);
+            jobPostViewModel.setCurrentJobPost(jobPost);
             nav.navigate(R.id.HomeJobPostFragment, bundle);
         });
         recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -101,6 +121,37 @@ public class ManageJobPostFragment extends Fragment {
             @Override public void onTabReselected(TabLayout.Tab tab) {}
         });
 
+        //jobpost
+        jobPostViewModel.getJobPostByStatusData().observe(getViewLifecycleOwner(), jobPosts ->  {
+            if(jobPosts==null)
+            {
+                Log.e("ManageJobPostFragment", "getJobPostByStatusData NULL");
+                return;
+            }
+            updateJobPostList(jobPosts);
+        });
+        jobPostViewModel.getJobPostByStatusResult().observe(getViewLifecycleOwner(), result->{
+            Log.e("ManageJobPostFragment", "getJobPostByStatusResult: " + result);
+        });
+
+        //post
+        postViewModel.getPostByStatusData().observe(getViewLifecycleOwner(), posts -> {
+            if(posts==null)
+            {
+                Log.e("ManageJobPostFragment", "getPostByStatusData NULL");
+                return;
+            }
+            updatePostList(posts);
+
+        });
+        postViewModel.getPostByStatusResult().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String result) {
+                Log.e("ManageJobPostFragment", "getPostByStatusResult: " + result);
+                postViewModel.getPostByStatusResult().removeObserver(this); // log mot lan
+            }
+        });
+
         btnPrev.setOnClickListener(v -> {
             if (page > 1) {
                 page--;
@@ -119,73 +170,45 @@ public class ManageJobPostFragment extends Fragment {
     }
 
     private void loadJobPostsByStatus(int statusTabIndex) {
+        jobPostList.clear();
+        adapterJobPost.notifyDataSetChanged();
+        postList.clear();
+        adapterPost.notifyDataSetChanged();
+
         if (statusTabIndex == 0) {
-            //jobpost
             jobPostViewModel.getJobPostByStatus(page, pageSize, "OPENING");
-            jobPostViewModel.getJobPostByStatusData().observe(getViewLifecycleOwner(), jobPosts -> {
-                if(jobPosts==null)
-                {
-                    Log.e("ManageJobPostFragment", "getJobPostByStatusData NULL");
-                    return;
-                }
-                updateJobPostList(jobPosts);
-            });
-            jobPostViewModel.getJobPostByStatusResult().observe(getViewLifecycleOwner(), result->{
-                Log.e("ManageJobPostFragment", "getJobPostByStatusResult: " + result);
-            });
-
-            //post
             postViewModel.getPostByStatus(page, pageSize, "OPENING");
-            postViewModel.getPostByStatusData().observe(getViewLifecycleOwner(), posts -> {
-                if(posts==null)
-                {
-                    Log.e("ManageJobPostFragment", "getPostByStatusData NULL");
-                    return;
-                }
-                updatePostList(posts);
-            });
-            postViewModel.getPostByStatusResult().observe(getViewLifecycleOwner(), result->{
-                Log.e("ManageJobPostFragment", "getPostByStatusResult: " + result);
-            });
-
         } else {
             jobPostViewModel.getJobPostByStatus(page, pageSize, "CANCELLED");
-            jobPostViewModel.getJobPostByStatusData().observe(getViewLifecycleOwner(), jobPosts -> {
-                if(jobPosts==null)
-                {
-                    Log.e("ManageJobPostFragment", "getJobPostByStatusData NULL");
-                    return;
-                }
-                updateJobPostList(jobPosts);
-            });
-            jobPostViewModel.getJobPostByStatusResult().observe(getViewLifecycleOwner(), result->{
-                Log.e("ManageJobPostFragment", "getJobPostByStatusResult: " + result);
-            });
-
             postViewModel.getPostByStatus(page, pageSize, "CANCELLED");
-            postViewModel.getPostByStatusData().observe(getViewLifecycleOwner(), posts -> {
-                if(posts==null)
-                {
-                    Log.e("ManageJobPostFragment", "getPostByStatusData NULL");
-                    return;
-                }
-                updatePostList(posts);
-            });
-            postViewModel.getPostByStatusResult().observe(getViewLifecycleOwner(), result->{
-                Log.e("ManageJobPostFragment", "getPostByStatusResult: " + result);
-            });
         }
         tvPageNumber.setText(String.valueOf(page));
     }
 
     private void updateJobPostList(List<JobPost> jobPosts) {
         jobPostList.clear();
-        if (jobPosts != null) jobPostList.addAll(jobPosts);
+        if (jobPosts != null) {
+            jobPostList.addAll(jobPosts);
+
+            for (JobPost jobPost : jobPosts) {
+                userViewModel.getLogoJobPostImageUrl(jobPost.getCompany().getUser().get(0).getAvatar());
+            }
+        }
         adapterJobPost.notifyDataSetChanged();
     }
     private void updatePostList(List<Post> posts) {
         postList.clear();
-        if (posts != null) postList.addAll(posts);
+        if (posts != null) {
+            postList.addAll(posts);
+
+            for (Post post : posts) {
+                if (post.getContents().size() > 1) {
+                    String filePath = post.getContents().get(1).getValue();
+                    postViewModel.getImageUrl(filePath);
+                }
+                userViewModel.getLogoPostImageUrl(post.getCompany().getUser().get(0).getAvatar());
+            }
+        }
         adapterPost.notifyDataSetChanged();
     }
 }

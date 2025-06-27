@@ -114,4 +114,9 @@ public class JobPostRepository {
         return apiService.getJobPostByStatus(page, pageSize, status);
     }
 
+    public Call<JobPostResponse> toggleJobPostStatus(String id)
+    {
+        return apiService.toggleJobPostStatus(id);
+    }
+
 }

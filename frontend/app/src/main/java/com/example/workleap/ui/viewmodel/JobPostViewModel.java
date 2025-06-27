@@ -42,6 +42,8 @@ public class JobPostViewModel  extends ViewModel {
     //job post
     private MutableLiveData<List<JobPost>> getAllJobPostData = new MutableLiveData<>();
     private MutableLiveData<List<JobPost>> getJobPostByStatusData = new MutableLiveData<>();
+    private MutableLiveData<JobPost> toggleJobPostStatusData = new MutableLiveData<>();
+    private MutableLiveData<String> toggleJobPostStatusResult = new MutableLiveData<>();
     private MutableLiveData<List<JobPost>> getJobPostsByCompanyData = new MutableLiveData<>();
     private MutableLiveData<JobPost> getJobPostData = new MutableLiveData<>();
     private MutableLiveData<JobPost> getMyJobPostByIdData = new MutableLiveData<>();
@@ -95,6 +97,8 @@ public class JobPostViewModel  extends ViewModel {
     //Getter live data
     public LiveData<List<JobPost>> getAllJobPostData() { return getAllJobPostData; }
     public LiveData<List<JobPost>> getJobPostByStatusData() { return getJobPostByStatusData; }
+    public LiveData<JobPost> toggleJobPostData() { return toggleJobPostStatusData; }
+    public LiveData<String> toggleJobPostResult() { return toggleJobPostResult(); }
     public LiveData<List<JobPost>> getJobPostsByCompanyData() { return getJobPostsByCompanyData; }
     public LiveData<JobPost> getJobPostData() { return getJobPostData; }
     public LiveData<JobPost> getMyJobPostByIdData() { return getMyJobPostByIdData; }
@@ -575,4 +579,23 @@ public class JobPostViewModel  extends ViewModel {
         });
     }
 
+    public void toggleJobPostStatus(String id) {
+        jobPostRepository.toggleJobPostStatus(id).enqueue(new Callback<JobPostResponse>() {
+            @Override
+            public void onResponse(Call<JobPostResponse> call, Response<JobPostResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    toggleJobPostStatusData.postValue(response.body().getJobPost());
+                    toggleJobPostStatusResult.postValue("Success");
+                    Log.d("API_RESPONSE", new Gson().toJson(response.body()));
+                } else {
+                    getJobPostByStatusResult.postValue("Failed: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JobPostResponse> call, Throwable t) {
+                getJobPostByStatusResult.postValue("Error: " + t.getMessage());
+            }
+        });
+    }
 }
