@@ -8,8 +8,9 @@ const { validate } = require('../middlewares/validate.middleware');
 const { ReportSchema } = require('../validators/report.validator');
 
 router.post('/', verifyToken, validate(ReportSchema), ReportController.createReport);
-router.get('/', verifyToken, cache, ReportController.getAllReports);
-router.patch('/:id/approve', verifyToken, requireRole('ADMIN'), ReportController.approveReport);
-router.patch('/:id/reject', verifyToken, requireRole('ADMIN'), ReportController.rejectReport);
+router.get('/', verifyToken, requireRole('ADMIN'), cache, ReportController.getAllReports);
+router.get('/type/:type', verifyToken, requireRole('ADMIN'), cache, ReportController.getReportsByType);
+router.get('/:id', verifyToken, requireRole('ADMIN'), cache, ReportController.getReportById);
+
 
 module.exports = router;

@@ -21,12 +21,10 @@ router.get('/company/:id', verifyToken, JobPostController.getJobPostsByCompany);
 router.get(
     '/admin/by-status',
     verifyToken,
-    requireRole('ADMIN'),
-    cache,
     JobPostController.getJobPostsByStatus
 );
 
-router.put('/admin/toggle/:id', verifyToken, requireRole('ADMIN'), JobPostController.toggleJobPostStatus);
+router.put('/admin/toggle/:id', verifyToken, JobPostController.toggleJobPostStatus);
 //Danh cho company
 router.get('/company/me/jobs-applications', verifyToken, requireRole('COMPANY'), JobPostController.getMyJobsWithApplications);
 router.post('/', verifyToken, requireRole('COMPANY'), validate(JobPostSchema), JobPostController.createJobPost);

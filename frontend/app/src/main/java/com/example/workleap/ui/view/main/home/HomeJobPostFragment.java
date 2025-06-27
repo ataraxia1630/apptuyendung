@@ -17,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.User;
+import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -63,7 +64,10 @@ public class HomeJobPostFragment extends Fragment {
         viewPager = view.findViewById(R.id.viewPager);
 
         // Back navigation
-        btnBack.setOnClickListener(v -> NavHostFragment.findNavController(this).navigateUp());
+        btnBack.setOnClickListener(v -> {
+            ((NavigationActivity) getActivity()).showBottomNav(true); // Show bottom navigation
+            NavHostFragment.findNavController(this).navigateUp();
+        });
 
         // Option (can be customized)
         btnOption.setOnClickListener(v -> {

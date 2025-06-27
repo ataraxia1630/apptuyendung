@@ -84,13 +84,15 @@ public class NavigationActivity extends AppCompatActivity {
             if (itemId == R.id.menu_home) {
                 navController.navigate(R.id.menu_home, bundle);
                 return true;
-
             } else if (itemId == R.id.menu_cv_jobpost) {
                 if ("applicant".equalsIgnoreCase( user.getRole())) { //dat userRole sau tranh loi null
                     navController.navigate(R.id.cvFragment, bundle);
                 } else if ("company".equalsIgnoreCase(user.getRole())) {
                     navController.navigate(R.id.jobpostFragment, bundle);
-                } else {
+                } else if ("admin".equalsIgnoreCase(user.getRole())) {
+                    navController.navigate(R.id.ManageJobPostFragment, bundle);
+                }
+                else{
                     Log.e("NavActivity", "role: "+ user.getRole() );
                     Toast.makeText(this, "Vai trò không hợp lệ!", Toast.LENGTH_SHORT).show();
                 }
@@ -101,7 +103,7 @@ public class NavigationActivity extends AppCompatActivity {
                 return true;
 
             } else if (itemId == R.id.menu_notifications) {
-                navController.navigate(R.id.menu_notifications);
+                navController.navigate(R.id.menu_notifications, bundle);
                 return true;
 
             } else if (itemId == R.id.menu_profile) {

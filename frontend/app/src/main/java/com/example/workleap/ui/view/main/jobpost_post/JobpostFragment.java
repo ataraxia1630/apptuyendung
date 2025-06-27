@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
@@ -25,6 +26,7 @@ import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.PostViewModel;
+import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -39,11 +41,15 @@ public class JobpostFragment extends Fragment{
     private List<Post> allPosts = new ArrayList<>();
     private JobPostViewModel jobPostViewModel;
     private PostViewModel postViewModel;
-
+    private UserViewModel userViewModel;
+    private int pagePost = 1;
+    private int pageSizePost = 4;
+    private boolean isMorePost = false;
     private User user;
     private Bundle bundle;
     private NavController nav;
     private ImageButton btnCreateNew;
+    private Button btnMorePost;
 
     private boolean isOnJobPostTab = true;
 
@@ -72,13 +78,19 @@ public class JobpostFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //Reset page, cho truong hop navigate up tro lai sau khi load more
+        pagePost = 1;
+
         recyclerViewJobPost = view.findViewById(R.id.recyclerJobPosts);
         recyclerViewPost = view.findViewById(R.id.recyclerPosts);
+        btnMorePost = view.findViewById(R.id.btnLoadMorePosts);
 
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
         postViewModel = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
         postViewModel.InitiateRepository(getContext());
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        userViewModel.InitiateRepository(getContext());
 
         user = (User) getArguments().getSerializable("user");
         bundle = new Bundle();
@@ -136,11 +148,26 @@ public class JobpostFragment extends Fragment{
                     nav.navigate(R.id.overviewJobPostFragment, bundle); // Navigate to DetailJobPostFragment
                 }
             });
+
+            //Logo jobpost bang usermodel
+            userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterJobPost.setLogoUrlMap(map);  // Truyền map xuống adapter
+            });
+            for (JobPost jobPost : jobPosts) {
+                userViewModel.getLogoJobPostImageUrl(jobPost.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key
+            }
+
             recyclerViewJobPost.setAdapter(adapterJobPost);
             adapterJobPost.notifyDataSetChanged();
         });
         jobPostViewModel.getJobPostsByCompany(user.getCompanyId());
 
+        //Load more posts
+        btnMorePost.setOnClickListener(v -> {
+            pagePost++;
+            isMorePost = true;
+            postViewModel.getPostByCompany(user.getCompanyId(), pagePost, pageSizePost);
+        });
 
         //Load Post
         postViewModel.getPostCompanyResult().observe(getViewLifecycleOwner(), result ->
@@ -150,7 +177,11 @@ public class JobpostFragment extends Fragment{
         });
         postViewModel.getPostCompanyData().observe(getViewLifecycleOwner(), posts ->
         {
-            allPosts.clear();
+            if(!isMorePost)
+                allPosts.clear(); //Neu khong phai tai them thi clear de tranh bi trung
+
+            isMorePost = false; //Dat lai neu dang la true
+
             if(posts != null)
                 allPosts.addAll(posts);
             else
@@ -158,7 +189,7 @@ public class JobpostFragment extends Fragment{
             // Setup RecyclerView
             recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
             //show tat ca jobpost va vao detail fragment khi click vao item
-            adapterPost = new MyPostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager(), user);
+            adapterPost = new MyPostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager(), user, nav);
             /*adapter = new MyPostAdapter(allPosts, postViewModel, new MyPostAdapter.OnPostClickListener() {
                 @Override
                 public void onPostClick(JobPost post) {
@@ -175,19 +206,23 @@ public class JobpostFragment extends Fragment{
                 adapterPost.setImageUrlMap(map);  // Truyền map xuống adapter
                 Log.d("getImageUrlMap", map.toString());
             });
+            userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterPost.setLogoUrlMap(map);  // Truyền map xuống adapter
+            });
             for (Post post : posts) {
                 if(post.getContents().size() > 1)
                 {
                     String filePath = post.getContents().get(1).getValue();  // hoặc chỗ chứa đường dẫn ảnh
                     Log.d("filePath", filePath);
-                    postViewModel.getImageUrl(filePath); // dùng filePath làm key
+                    postViewModel.getImageUrlMap(filePath); // dùng filePath làm key
                 }
+                userViewModel.getLogoJobPostImageUrl(post.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key
             }
 
             recyclerViewPost.setAdapter(adapterPost);
             adapterPost.notifyDataSetChanged();
         });
-        postViewModel.getPostByCompany(user.getCompanyId());
+        postViewModel.getPostByCompany(user.getCompanyId(), pagePost, pageSizePost);
 
 
         //Create jobpost or post

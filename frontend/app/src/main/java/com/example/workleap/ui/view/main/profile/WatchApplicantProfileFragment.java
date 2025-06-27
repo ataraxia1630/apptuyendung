@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.ApplicantEducation;
 import com.example.workleap.data.model.entity.Education;
@@ -62,6 +64,7 @@ public class WatchApplicantProfileFragment extends Fragment {
     User user, myUser;
 
     ImageButton btnOptions, btnChat, btnFollow, btnBack;
+    ImageView avatar;
 
     ApplicantViewModel applicantViewModel;
     UserViewModel userViewModel;
@@ -134,9 +137,37 @@ public class WatchApplicantProfileFragment extends Fragment {
         fieldContainer = view.findViewById(R.id.interestedFieldContainer);
         educationListContainer = view.findViewById(R.id.educationListContainer);
         experienceListContainer = view.findViewById(R.id.experienceListContainer);
+        avatar = view.findViewById(R.id.shapeableImageView);
 
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
+
+        //Lay avatar
+        //Observe
+        userViewModel.getUrlAvatarResult().observe(getViewLifecycleOwner(), result -> {
+            if(result != null)
+                Log.d("ApplicantProfile avatar", result);
+            else
+                Log.d("ApplicantProfile avatar", "getUrlAvatarResult NULL");
+        });
+        userViewModel.getUrlAvatarData().observe(getViewLifecycleOwner(), data -> {
+            if(data != null)
+            {
+                Glide.with(this.getContext()).load(data).into(avatar);
+                Log.d("ApplicantProfile avatar", "Set avatar success");
+            }
+            else
+                Log.d("ApplicantProfile avatar", "getUrlAvatarData NULL");
+        });
+        //Check and get avatar
+        if(user.getAvatar() != null)
+        {
+            //Load avatar from database
+            userViewModel.getAvatarUrl(user.getAvatar());
+        }
+        else
+            Log.d("ApplicantProfile avatar", "user avatar null");
+
         //load
         LoadSkill();
         LoadEducation();

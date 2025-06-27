@@ -30,10 +30,11 @@ import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.NavigationActivity;
-import com.example.workleap.ui.view.main.jobpost_post.MyJobPostAdapter;
+import com.example.workleap.ui.view.main.jobpost_post.JobPostAdapter;
 import com.example.workleap.ui.view.main.jobpost_post.PostAdapter;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.PostViewModel;
+import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -47,12 +48,13 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerViewJobPost, recyclerViewPost;
-    private MyJobPostAdapter adapterJobPost;
+    private JobPostAdapter adapterJobPost;
     private PostAdapter adapterPost;
     private List<JobPost> allJobs = new ArrayList<>();
     private List<Post> allPosts = new ArrayList<>();
     private JobPostViewModel jobPostViewModel;
     private PostViewModel postViewModel;
+    private UserViewModel userViewModel;
     private int pageJobPost = 1;
     private int pageSizeJobPost = 4;
     private int pagePost = 1;
@@ -103,6 +105,8 @@ public class HomeFragment extends Fragment {
 
         jobPostViewModel  = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        userViewModel.InitiateRepository(getContext());
 
         //lay user cho detail jobpost applied cv
         user = (User) getArguments().getSerializable("user");
@@ -121,7 +125,7 @@ public class HomeFragment extends Fragment {
             // Setup RecyclerView
             recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
             //adapterJobPost = new JobPostAdapter(allJobs, jobPostViewModel); // mặc định show tất cả
-            adapterJobPost = new MyJobPostAdapter(allJobs, jobPostViewModel, new MyJobPostAdapter.OnJobPostClickListener() {
+            adapterJobPost = new JobPostAdapter(allJobs, new JobPostAdapter.OnJobPostClickListener() {
                 @Override
                 public void onJobPostClick(JobPost jobPost) {
                     // Handle item click
@@ -133,6 +137,15 @@ public class HomeFragment extends Fragment {
                     nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
                 }
             });
+
+            //Logo jobpost bang usermodel
+            userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterJobPost.setLogoUrlMap(map);  // Truyền map xuống adapter
+            });
+            for (JobPost jobPost : jobPosts) {
+                userViewModel.getLogoJobPostImageUrl(jobPost.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key
+            }
+
             recyclerViewJobPost.setAdapter(adapterJobPost);
             adapterJobPost.notifyDataSetChanged();
         });
@@ -177,21 +190,28 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(this.getContext(), "No more posts", Toast.LENGTH_SHORT).show();
 
 
+
+
+
             // Setup RecyclerView
             recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
             adapterPost = new PostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager(), user, nav); // mặc định show tất cả
 
-            //Xu li anh cua post
+            //Xu li anh cua post bang postviewmodel va logo cua post bang usermodel
             postViewModel.getImageUrlMap().observe(getViewLifecycleOwner(), map -> {
                 adapterPost.setImageUrlMap(map);  // Truyền map xuống adapter
+            });
+            userViewModel.getLogoPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterPost.setLogoUrlMap(map);  // Truyền map xuống adapter
             });
             for (Post post : posts) {
                 if(post.getContents().size() > 1)
                 {
                     String filePath = post.getContents().get(1).getValue();  // hoặc chỗ chứa đường dẫn ảnh
                     Log.d("filePath", filePath);
-                    postViewModel.getImageUrl(filePath); // dùng filePath làm key
+                    postViewModel.getImageUrlMap(filePath); // dùng filePath làm key
                 }
+                userViewModel.getLogoPostImageUrl(post.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key
             }
 
             //Hien thi

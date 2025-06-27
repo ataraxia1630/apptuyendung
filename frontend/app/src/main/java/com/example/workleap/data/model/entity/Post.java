@@ -1,10 +1,11 @@
 package com.example.workleap.data.model.entity;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Post {
+public class Post implements Serializable {
     private String id;
     private String companyId;
     private String title;
@@ -14,6 +15,7 @@ public class Post {
     private ArrayList<Comment> Comment;
     private Date created_at;
     private Date updated_at;
+
 
     // Default constructor
     public Post() {

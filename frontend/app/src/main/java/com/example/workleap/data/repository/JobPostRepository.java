@@ -10,6 +10,7 @@ import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
+import com.example.workleap.data.model.request.StatusRequest;
 import com.example.workleap.data.model.response.JobAppliedResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
@@ -107,6 +108,16 @@ public class JobPostRepository {
     }
     public Call<MessageResponse> withDrawCv(String applicantId, String jobPostId) {
         return apiService.withDrawCv(applicantId, jobPostId);
+    }
+
+    public Call<ListJobPostResponse> getJobPostByStatus(int page, int pageSize, String status)
+    {
+        return apiService.getJobPostByStatus(page, pageSize, status);
+    }
+
+    public Call<JobPostResponse> toggleJobPostStatus(String id, StatusRequest statusRequest)
+    {
+        return apiService.toggleJobPostStatus(id, statusRequest);
     }
 
 }

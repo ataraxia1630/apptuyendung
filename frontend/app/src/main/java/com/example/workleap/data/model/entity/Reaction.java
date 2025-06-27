@@ -1,8 +1,9 @@
 package com.example.workleap.data.model.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Reaction {
+public class Reaction implements Serializable {
     private String postId;
     private String userId;
     private String reactionType; // Assuming ReactionType is an enum, represented as String for simplicity

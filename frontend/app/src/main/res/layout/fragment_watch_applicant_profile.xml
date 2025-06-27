@@ -43,6 +43,8 @@
                     android:id="@+id/shapeableImageView"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"
                     android:layout_gravity="left"
                     android:src="@drawable/sample_avatar"
                     app:shapeAppearanceOverlay="@style/CircleImageView" />

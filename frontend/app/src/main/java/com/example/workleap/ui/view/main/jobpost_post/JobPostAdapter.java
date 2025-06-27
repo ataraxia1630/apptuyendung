@@ -1,5 +1,6 @@
 package com.example.workleap.ui.view.main.jobpost_post;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +12,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostViewHolder> {
 
     private List<JobPost> jobPostList;
-
+    private Map<String, String> logoUrlMap = new HashMap<>();
+    private String logoFilePath;
     private OnJobPostClickListener clickListener;
 
     public interface OnJobPostClickListener {
@@ -56,6 +61,18 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
         holder.txtTag2.setText(post.getJobType().getName());
         holder.txtTag3.setText(post.getPosition());
 
+        //Xu li logo company jobpost
+        logoFilePath = post.getCompany().getUser().get(0).getAvatar(); // dùng làm key
+        if(logoFilePath != null)
+        {
+            String imageUrl = logoUrlMap.get(logoFilePath);
+            if(holder.imgPost == null)
+                Log.d("JobPostAdapter", "logoPost is null");
+            if (imageUrl != null && holder.imgPost != null) {
+                Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.imgPost);
+            }
+        }
+
         // Thêm sự kiện nhấp vào item
         holder.itemView.setOnClickListener(v -> {
             if (clickListener != null) {
@@ -73,7 +90,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
         TextView txtTitle, txtCompany, txtSalary, txtLocation, txtTime, txtTag1, txtTag2, txtTag3;
         ImageView imgPost;
 
-        ImageButton btnOption;
+        ImageButton btnSave;
 
         public JobPostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -86,10 +103,12 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
             txtTag1 = itemView.findViewById(R.id.txtTab1);
             txtTag2 = itemView.findViewById(R.id.txtTab2);
             txtTag3 = itemView.findViewById(R.id.txtTab3);
-
-            //an di nut option
-            btnOption = itemView.findViewById(R.id.btnOption);
-            btnOption.setVisibility(View.GONE);
+            btnSave = itemView.findViewById(R.id.btnSave);
         }
+    }
+
+    public void setLogoUrlMap(Map<String, String> map) {
+        this.logoUrlMap = map;
+        notifyDataSetChanged();
     }
 }
