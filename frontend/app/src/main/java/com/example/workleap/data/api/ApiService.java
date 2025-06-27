@@ -13,6 +13,8 @@ import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
+import com.example.workleap.data.model.request.EmailOtpRequest;
+import com.example.workleap.data.model.request.EmailRequest;
 import com.example.workleap.data.model.request.FCMRequest;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.data.model.request.GroupChatRequest;
@@ -98,9 +100,20 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
+    //Xac thuc
+    @POST("api/auth/exist")
+    Call<MessageResponse> checkUserExist(@Body RegisterRequest request);
+    @POST("api/auth/send-otp")
+    Call<MessageResponse> sendOtp(@Body EmailRequest request);
+    @POST("api/auth/resend-otp")
+    Call<MessageResponse> resendOtp(@Body EmailRequest request);
+    @POST("api/auth/verify-otp")
+    Call<MessageResponse> verifyOtp(@Body EmailOtpRequest request);
+
     //Đăng ký
     @POST("api/auth/register")
     Call<RegisterResponse> registerUser(@Body RegisterRequest request);
+
 
 
     //Đăng nhập
