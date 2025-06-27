@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.workleap.R;
 
-public class ReportFragment extends Fragment {
+public class SendReportFragment extends Fragment {
 
     private TextView tvReportedTarget;
     private EditText edtReportReason;
@@ -28,12 +28,12 @@ public class ReportFragment extends Fragment {
 
     private String targetName;
 
-    public ReportFragment() {
+    public SendReportFragment() {
         // Required empty public constructor
     }
 
-    public static ReportFragment newInstance(String type, String targetId, String targetName) {
-        ReportFragment fragment = new ReportFragment();
+    public static SendReportFragment newInstance(String type, String targetId, String targetName) {
+        SendReportFragment fragment = new SendReportFragment();
         Bundle args = new Bundle();
         args.putString("type", type);   //user, jobpost, post
         args.putString("targetId", targetId);
