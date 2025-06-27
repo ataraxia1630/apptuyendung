@@ -78,10 +78,39 @@ public class OverviewMyJobPostFragment extends Fragment {
             NavHostFragment.findNavController(this).navigateUp();
         });
 
+        jobPostViewModel.getDeleteJobPostResult().observe(getViewLifecycleOwner(), result -> {
+            if(result != null)
+            {
+                Log.d("JobPostViewModel", "result: " + result);
+                //Quay ve
+                ((NavigationActivity) getActivity()).showBottomNav(true);
+                NavHostFragment.findNavController(this).navigateUp();
+            }
+            else
+                Log.d("JobPostViewModel", "result: null");
+        });
+        jobPostViewModel.toggleJobPostResult().observe(getViewLifecycleOwner(), result -> {
+            if(result != null)
+            {
+                Log.d("JobPostViewModel", "toggleJobPostResult result " + result);
+                //Quay ve
+                ((NavigationActivity) getActivity()).showBottomNav(true);
+                NavHostFragment.findNavController(this).navigateUp();
+            }
+            else
+                Log.d("JobPostViewModel", "toggleJobPostResult NULL");
+        });
+
         //Delete or edit
         btnOption.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(v.getContext(), btnOption);
-            popupMenu.inflate(R.menu.menu_options_myjobpost); // Load menu từ file XML
+            // Load menu từ file XML
+            if (user.getRole().equalsIgnoreCase("ADMIN")) {
+                popupMenu.inflate(R.menu.menu_options_adminjobpost);
+            } else {
+                popupMenu.inflate(R.menu.menu_options_myjobpost);
+            }
+
             popupMenu.setOnMenuItemClickListener(item -> {
                 if(item.getItemId() == R.id.menu_edit) {
                     //Chuyen sang fragment edit jobpost
@@ -91,19 +120,18 @@ public class OverviewMyJobPostFragment extends Fragment {
                 }
                 else if(item.getItemId() == R.id.menu_delete)
                 {
-                    jobPostViewModel.getDeleteJobPostResult().observe(getViewLifecycleOwner(), result -> {
-                        if(result != null)
-                        {
-                            Log.d("JobPostViewModel", "result: " + result);
-                            //Quay ve
-                            ((NavigationActivity) getActivity()).showBottomNav(true);
-                            NavHostFragment.findNavController(this).navigateUp();
-                        }
-                        else
-                           Log.d("JobPostViewModel", "result: null");
-                    });
                     //Xoa trong csdl
                     jobPostViewModel.deleteJobPost(currentJobPost.getId());
+                    return true;
+                }
+                else if(item.getItemId() == R.id.menu_approve)
+                {
+                    jobPostViewModel.toggleJobPostStatus(currentJobPost.getId(), "OPENING");
+                    return true;
+                }
+                else if(item.getItemId() == R.id.menu_reject)
+                {
+                    jobPostViewModel.toggleJobPostStatus(currentJobPost.getId(), "CANCELLED");
                     return true;
                 }
                 else

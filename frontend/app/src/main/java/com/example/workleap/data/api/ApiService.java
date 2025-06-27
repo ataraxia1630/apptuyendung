@@ -19,6 +19,7 @@ import com.example.workleap.data.model.request.GroupChatRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
 import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
 import com.example.workleap.data.model.request.ListMemberIdRequest;
+import com.example.workleap.data.model.request.StatusRequest;
 import com.example.workleap.data.model.request.UserIdRequest;
 import com.example.workleap.data.model.response.CVResponse;
 import com.example.workleap.data.model.response.CommentResponse;
@@ -231,7 +232,7 @@ public interface ApiService {
     @GET("api/job-posts/admin/by-status")
     Call<ListJobPostResponse> getJobPostByStatus(@Query("page") int page, @Query("pageSize") int pageSize, @Query("status") String status);
     @PUT("api/job-posts/admin/toggle/{id}")
-    Call<JobPostResponse> toggleJobPostStatus(@Path("id") String id);
+    Call<JobPostResponse> toggleJobPostStatus(@Path("id") String id, @Body StatusRequest statusRequest);
 
     //JobType
     @GET("api/types/all")
@@ -318,6 +319,10 @@ public interface ApiService {
             @Query("companyName") String companyName);
     @GET("api/posts/status/{status}")
     Call<ListPostResponse> getPostByStatus(@Path("status") String status, @Query("page") int page, @Query("pageSize") int pageSize);
+    @PUT("api/posts/status/{id}")
+    Call<PostResponse> updatePostStatus(@Path("id") String id, @Body StatusRequest request);
+
+
 
     //Comment
     @POST("api/comments/")
