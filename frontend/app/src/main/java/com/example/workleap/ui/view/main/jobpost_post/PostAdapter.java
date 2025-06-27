@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.navigation.NavController;
@@ -26,6 +27,7 @@ import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.entity.User;
+import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.view.main.home.CommentBottomSheet;
 import com.example.workleap.ui.viewmodel.PostViewModel;
 
@@ -213,11 +215,34 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             navController.navigate(R.id.watchCompanyProfileFragment, bundle);
         });
 
+        //observe result update post status
+        postViewModel.deletePostByIdResult().observe(lifecycleOwner, result -> {
+            if(result != null)
+            {
+                Log.d("PostAdapter", "result: " + result);
+            }
+            else
+                Log.d("PostAdapter", "result: null");
+        });
+        postViewModel.updatePostByIdResult().observe(lifecycleOwner, result -> {
+            if(result != null)
+            {
+                Log.d("PostAdapter", "updatePostByIdResult result " + result);
+            }
+            else
+                Log.d("PostAdapter", "updatePostByIdResult NULL");
+        });
+
         // Thêm PopupMenu cho btnOption
-        /*holder.btnOption.setOnClickListener(v -> {
+        holder.btnOption.setOnClickListener(v -> {
 
             PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.btnOption);
-            popupMenu.inflate(R.menu.menu_options_myjobpost); // Load menu từ file XML
+            if (user.getRole().equalsIgnoreCase("ADMIN")) {
+                popupMenu.inflate(R.menu.menu_options_adminjobpost);
+            } else {
+                //popupMenu.inflate(R.menu.menu_options_myjobpost); // Load menu từ file XML
+                return;
+            }
             popupMenu.setOnMenuItemClickListener(item -> {
                     if(item.getItemId() == R.id.menu_edit) {
                         //Chuyen sang fragment
@@ -226,9 +251,28 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     else if(item.getItemId() == R.id.menu_delete)
                     {
                         //Xoa trong csdl
-                        postViewModel.deletePost(post.getId());
-
+                        postViewModel.deletePostById(post.getId());
                         //Xoa lap tuc tren danh sach
+                        postList.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, postList.size());
+                        return true;
+                    }
+                    else if(item.getItemId() == R.id.menu_approve)
+                    {
+                        //Xoa trong csdl
+                        postViewModel.updatePostStatus(post.getId(), "OPENING");
+
+                        postList.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, postList.size());
+                        return true;
+                    }
+                    else if(item.getItemId() == R.id.menu_reject)
+                    {
+                        //Xoa trong csdl
+                        postViewModel.updatePostStatus(post.getId(), "CANCELLED");
+
                         postList.remove(position);
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position, postList.size());
@@ -238,7 +282,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         return false;
             });
             popupMenu.show();
-        });*/
+        });
     }
 
     @Override

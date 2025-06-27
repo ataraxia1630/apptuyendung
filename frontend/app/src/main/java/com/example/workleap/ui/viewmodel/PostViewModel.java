@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.Reaction;
+import com.example.workleap.data.model.request.StatusRequest;
 import com.example.workleap.data.model.response.CommentResponse;
 import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.ListCommentResponse;
@@ -62,8 +63,10 @@ public class PostViewModel extends ViewModel {
 
     private MutableLiveData<List<Post>> searchPostData = new MutableLiveData<>();
     private MutableLiveData<List<Post>> getPostByStatusData = new MutableLiveData<>();
+    private MutableLiveData<Post> updatePostStatusData = new MutableLiveData<>();
     private MutableLiveData<String> searchPostResult = new MutableLiveData<>();
     private MutableLiveData<String> getPostByStatusResult = new MutableLiveData<>();
+    private MutableLiveData<String> updatePostStatusResult = new MutableLiveData<>();
 
     public PostViewModel(){}
     public void InitiateRepository(Context context) {
@@ -106,8 +109,10 @@ public class PostViewModel extends ViewModel {
     //search
     public LiveData<List<Post>> searchPostData() { return searchPostData; }
     public LiveData<List<Post>> getPostByStatusData() { return getPostByStatusData; }
+    public LiveData<Post> getUpdatePostStatusData() { return updatePostStatusData; }
     public LiveData<String> searchPostResult() { return searchPostResult; }
     public LiveData<String> getPostByStatusResult() { return getPostByStatusResult; }
+    public LiveData<String> getUpdatePostStatusResult() { return updatePostStatusResult; }
 
     // Get all post
     public void getAllPost(int page, int pageSize) {
@@ -537,6 +542,32 @@ public class PostViewModel extends ViewModel {
             @Override
             public void onFailure(Call<ListPostResponse> call, Throwable t) {
                 getPostByStatusResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+    public void updatePostStatus(String postId, String status) {
+        StatusRequest request = new StatusRequest(status);
+        Call<PostResponse> call = postRepository.updatePostStatus(postId, request);
+        call.enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+                if (response.isSuccessful()) {
+                    PostResponse PostResponse = response.body();
+                    updatePostStatusData.setValue(PostResponse.getPost());
+                    updatePostStatusResult.setValue("Success");
+                } else {
+                    try {
+                        ListPostResponse error = new Gson().fromJson(response.errorBody().string(), ListPostResponse.class);
+                        updatePostStatusResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        updatePostStatusResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                updatePostStatusResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }

@@ -319,6 +319,10 @@ public interface ApiService {
             @Query("companyName") String companyName);
     @GET("api/posts/status/{status}")
     Call<ListPostResponse> getPostByStatus(@Path("status") String status, @Query("page") int page, @Query("pageSize") int pageSize);
+    @PUT("api/posts/status/{id}")
+    Call<PostResponse> updatePostStatus(@Path("id") String id, @Body StatusRequest request);
+
+
 
     //Comment
     @POST("api/comments/")

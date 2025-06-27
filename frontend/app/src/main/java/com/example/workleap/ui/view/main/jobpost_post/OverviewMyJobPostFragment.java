@@ -124,12 +124,12 @@ public class OverviewMyJobPostFragment extends Fragment {
                     jobPostViewModel.deleteJobPost(currentJobPost.getId());
                     return true;
                 }
-                else if(item.getItemId() == R.id.menu_open)
+                else if(item.getItemId() == R.id.menu_approve)
                 {
                     jobPostViewModel.toggleJobPostStatus(currentJobPost.getId(), "OPENING");
                     return true;
                 }
-                else if(item.getItemId() == R.id.menu_cancel)
+                else if(item.getItemId() == R.id.menu_reject)
                 {
                     jobPostViewModel.toggleJobPostStatus(currentJobPost.getId(), "CANCELLED");
                     return true;
