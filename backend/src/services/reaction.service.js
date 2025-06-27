@@ -26,12 +26,6 @@ const ReactionService = {
         });
     },
 
-    // Xóa reaction
-    removeReaction: async ({ postId, userId }) => {
-        return await prisma.reaction.delete({
-            where: { postId_userId: { postId, userId } }
-        });
-    }
 };
 
 module.exports = { ReactionService };

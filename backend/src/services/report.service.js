@@ -1,10 +1,10 @@
 const prisma = require('../config/db/prismaClient');
 
 const ReportService = {
-    createReport: async ({ reporterId, reason, jobPostId, postId, reportedUserId }) => {
+    createReport: async ({ userId, reason, jobPostId, postId, reportedUserId }) => {
         return await prisma.report.create({
             data: {
-                userId: reporterId,
+                userId,
                 reason,
                 jobPostId,
                 postId,
@@ -13,16 +13,17 @@ const ReportService = {
         });
     },
 
-    getAllReports: async () => {
-        return await prisma.report.findMany({
-            orderBy: { created_at: 'desc' },
-            include: {
-                jobPost: true,
-                post: true,
-                reportedUser: true,
-                user: true,
-            },
-        });
+    getAllReports: async (skip, take) => {
+        const [reports, total] = await Promise.all([
+            prisma.report.findMany({
+                skip,
+                take,
+                orderBy: { created_at: 'desc' },
+            }),
+            prisma.report.count(),
+        ]);
+
+        return { reports, total };
     },
 
     getReportById: async (id) => {
@@ -31,13 +32,28 @@ const ReportService = {
         });
     },
 
-    updateReportStatus: async (id, status) => {
-        return await prisma.report.update({
-            where: { id },
-            data: {
-                status,
-            },
-        });
+    getReportsByType: async (type, skip, take) => {
+        let whereClause = {};
+
+        if (type === 'jobPost') {
+            whereClause.jobPostId = { not: null };
+        } else if (type === 'post') {
+            whereClause.postId = { not: null };
+        } else if (type === 'user') {
+            whereClause.reportedUserId = { not: null };
+        }
+
+        const [reports, total] = await Promise.all([
+            prisma.report.findMany({
+                where: whereClause,
+                skip,
+                take,
+                orderBy: { created_at: 'desc' },
+            }),
+            prisma.report.count({ where: whereClause }),
+        ]);
+
+        return { reports, total };
     },
 };
 
