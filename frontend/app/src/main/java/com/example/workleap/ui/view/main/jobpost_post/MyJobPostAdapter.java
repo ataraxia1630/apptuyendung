@@ -80,7 +80,7 @@ public class MyJobPostAdapter extends RecyclerView.Adapter<MyJobPostAdapter.JobP
         });
 
         // Thêm PopupMenu cho btnOption
-        holder.btnOption.setOnClickListener(v -> {
+        /*holder.btnOption.setOnClickListener(v -> {
 
             PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.btnOption);
             popupMenu.inflate(R.menu.menu_options_myjobpost); // Load menu từ file XML
@@ -104,8 +104,7 @@ public class MyJobPostAdapter extends RecyclerView.Adapter<MyJobPostAdapter.JobP
                         return false;
             });
             popupMenu.show();
-
-        });
+        });*/
     }
 
     @Override

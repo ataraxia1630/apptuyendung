@@ -42,7 +42,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private String logoFilePath;
     private LifecycleOwner lifecycleOwner;
     private FragmentManager fragmentManager;
-    private User user;
+    private User user; //My User to reaction
     private NavController nav;
     public PostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager, User user, NavController nav) {
         this.postList = postList;
@@ -266,7 +266,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             btnOption = itemView.findViewById(R.id.btnOption);
             btnComment = itemView.findViewById(R.id.btnComment);
             btnReaction = itemView.findViewById(R.id.btn_like);
-            btnShare= itemView.findViewById(R.id.btn_share);
+            //btnShare= itemView.findViewById(R.id.btn_share);
 
             btnProfile = itemView.findViewById(R.id.post_header);
 

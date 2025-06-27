@@ -12,7 +12,7 @@ router.post('/', verifyToken, requireRole("COMPANY"), PostController.createPost)
 router.put('/:id', verifyToken, checkOwnership('Post', 'companyId'), PostController.updatePost);
 router.delete('/:id', verifyToken, checkOwnership('Post', 'companyId'), PostController.deletePost);
 router.get('/search/query', cache, PostController.searchPosts);
-router.get('/company/:companyId', verifyToken, cache, PostController.getPostsByCompany);
+router.get('/company/:companyId', verifyToken, PostController.getPostsByCompany);
 
 router.get('/status/:status', verifyToken, PostController.getPostsByStatus);
 router.put('/status/:id', verifyToken, requireRole('ADMIN'), PostController.updatePostStatus);

@@ -11,9 +11,12 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:paddingTop="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="32dp"  >
 
-        <!-- Tab + Add Button cùng hàng -->
+        <!-- Tab + Add Button -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -28,7 +31,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_toStartOf="@id/btnAdd"
                 android:background="@android:color/transparent"
-                android:layout_centerVertical="true"/>
+                android:layout_centerVertical="true" />
 
             <ImageButton
                 android:id="@+id/btnAdd"
@@ -41,7 +44,12 @@
                 android:layout_centerVertical="true"/>
         </RelativeLayout>
 
-        <!-- Nội dung tùy theo tab -->
+        <!-- Thêm NestedScrollView để cuộn toàn bộ nội dung -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+        <!-- Nội dung tab, chiếm toàn bộ phần còn lại -->
         <FrameLayout
             android:id="@+id/frameContent"
             android:layout_width="match_parent"
@@ -55,7 +63,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <!-- Divider -->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -63,11 +70,22 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp" />
 
-                <!-- RecyclerView JobPosts -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerJobPosts"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <!-- Button nằm ngay dưới RecyclerView -->
+                <Button
+                    android:id="@+id/btnLoadMoreJobPosts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="More"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingHorizontal="24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="70dp" />
             </LinearLayout>
 
             <!-- Layout POST -->
@@ -78,7 +96,6 @@
                 android:layout_height="match_parent"
                 android:visibility="gone">
 
-                <!-- Divider -->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -86,12 +103,24 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp" />
 
-                <!-- RecyclerView Posts -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerPosts"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <!-- Button nằm ngay dưới RecyclerView -->
+                <Button
+                    android:id="@+id/btnLoadMorePosts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="More"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingHorizontal="24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="70dp" />
             </LinearLayout>
         </FrameLayout>
+        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 </FrameLayout>

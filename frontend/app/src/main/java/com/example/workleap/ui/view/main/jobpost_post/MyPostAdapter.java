@@ -1,5 +1,6 @@
 package com.example.workleap.ui.view.main.jobpost_post;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,12 +8,15 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -37,12 +41,14 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
     private Map<String, String> logoUrlMap = new HashMap<>();
     private String logoFilePath;
     private User user;
-    public MyPostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager, User user) {
+    private NavController nav;
+    public MyPostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager, User user, NavController nav) {
         this.postList = postList;
         this.postViewModel = postViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.fragmentManager = fragmentManager;
         this.user = user;
+        this.nav = nav;
     }
 
     @NonNull
@@ -115,8 +121,20 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
             else
                 Log.d("Reaction toggle", "Result is null");
         });
-        //React
-        holder.btnReaction.setOnClickListener(v -> {
+
+        //React click to remove
+        postViewModel.removeReactionResult().observe(lifecycleOwner, result -> {
+            if(result != null)
+                Log.d("Reaction remove", "Result: " + result);
+            else
+                Log.d("Reaction remove", "Result is null");
+        });
+        holder.btnReaction.setOnClickListener( v -> {
+            holder.imgReaction.setImageResource(R.drawable.ic_reaction);
+            postViewModel.removeReaction(post.getId());
+        });
+        //Long click to react
+        holder.btnReaction.setOnLongClickListener(v -> {
             View popupView = LayoutInflater.from(v.getContext()).inflate(R.layout.layout_popup_reaction, null);
             PopupWindow popupWindow = new PopupWindow(popupView,
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -167,6 +185,7 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
                 holder.imgReaction.setImageResource(R.drawable.ic_idea);
                 popupWindow.dismiss();
             });
+            return true;
         });
 
 
@@ -183,31 +202,41 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
         }
 
         // Thêm PopupMenu cho btnOption
-        /*holder.btnOption.setOnClickListener(v -> {
+        holder.btnOption.setOnClickListener(v -> {
 
             PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.btnOption);
             popupMenu.inflate(R.menu.menu_options_myjobpost); // Load menu từ file XML
             popupMenu.setOnMenuItemClickListener(item -> {
                     if(item.getItemId() == R.id.menu_edit) {
-                        //Chuyen sang fragment
+                        //Chuyen sang fragment edit
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("post", post);
+                        nav.navigate(R.id.updatePostFragment, bundle);
                         return true;
                     }
                     else if(item.getItemId() == R.id.menu_delete)
                     {
+                        postViewModel.deletePostByIdResult().observe(lifecycleOwner, result -> {
+                            if(result != null)
+                            {
+                                //Xoa lap tuc tren danh sach
+                                postList.remove(position);
+                                notifyItemRemoved(position);
+                                notifyItemRangeChanged(position, postList.size());
+                            }
+                            else
+                                Log.d("Delete post", "Result is null");
+                        });
                         //Xoa trong csdl
-                        postViewModel.deletePost(post.getId());
+                        postViewModel.deletePostById(post.getId());
 
-                        //Xoa lap tuc tren danh sach
-                        postList.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, postList.size());
                         return true;
                     }
                     else
                         return false;
             });
             popupMenu.show();
-        });*/
+        });
     }
 
     @Override

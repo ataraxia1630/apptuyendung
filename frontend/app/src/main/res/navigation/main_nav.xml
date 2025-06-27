@@ -81,6 +81,11 @@
         android:label="fragment_createpost"
         tools:layout="@layout/fragment_create_post" />
     <fragment
+        android:id="@+id/updatePostFragment"
+        android:name="com.example.workleap.ui.view.main.jobpost_post.UpdatePostFragment"
+        android:label="fragment_updatepost"
+        tools:layout="@layout/fragment_create_post" />
+    <fragment
         android:id="@+id/updateJobPostFragment"
         android:name="com.example.workleap.ui.view.main.jobpost_post.UpdateJobPostFragment"
         android:label="fragment_detailmyjobpost"
@@ -108,6 +113,10 @@
         android:id="@+id/notificationFragment"
         android:name="com.example.workleap.ui.view.main.message_notification.NotificationFragment"
         android:label="Notification" />
+    <fragment
+        android:id="@+id/followingFragment"
+        android:name="com.example.workleap.ui.view.main.message_notification.FollowingFragment"
+        android:label="Following" />
     <fragment
         android:id="@+id/messageDetailFragment"
         android:name="com.example.workleap.ui.view.main.message_notification.MessageDetailFragment"
