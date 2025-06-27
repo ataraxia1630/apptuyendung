@@ -45,6 +45,8 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class SubmittedProfilesFragment extends Fragment {
     private JobPostViewModel jobPostViewModel;
@@ -57,6 +59,8 @@ public class SubmittedProfilesFragment extends Fragment {
 
     private CV downloadingCV;
     private ActivityResultLauncher<Intent> createFileLauncher;
+    private Uri zipOutputUri;
+    private ActivityResultLauncher<Intent> zipFileLauncher;
 
     private String urlSupabase = "https://epuxazakjgtmjuhuwkza.supabase.co/storage/v1/object/public/cv-storage/";
 
@@ -188,6 +192,28 @@ public class SubmittedProfilesFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         });
+
+        tvExport.setOnClickListener(v -> {
+            if (submittedProfiles == null || submittedProfiles.isEmpty()) {
+                Toast.makeText(getContext(), "No profiles to export.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intent.setType("application/zip");
+            intent.putExtra(Intent.EXTRA_TITLE, "exported_cvs.zip");
+            zipFileLauncher.launch(intent);
+        });
+
+        zipFileLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        zipOutputUri = result.getData().getData();
+                        exportAllCVsToZip(zipOutputUri); // gọi sau khi người dùng chọn file
+                    }
+                }
+        );
         createFileLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -312,6 +338,99 @@ public class SubmittedProfilesFragment extends Fragment {
         }).start();
 
     }
+    private void exportAllCVsToZip(Uri outputUri) {
+        String exportZipChannelId = "export_zip_channel";
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(requireContext());
+        int exportNotificationId = (int) System.currentTimeMillis();
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), exportZipChannelId)
+                .setSmallIcon(R.drawable.ic_download) // icon tuỳ chỉnh của bạn
+                .setContentTitle("Exporting CVs...")
+                .setContentText("0%")
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setOnlyAlertOnce(true)
+                .setProgress(100, 0, false);
+
+        // Kiểm tra quyền nếu Android 13+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            notificationManager.notify(exportNotificationId, builder.build());
+        }
+
+        new Thread(() -> {
+            try {
+                int totalFiles = submittedProfiles.size();
+                int currentIndex = 0;
+
+                ZipOutputStream zipOut = new ZipOutputStream(requireContext().getContentResolver().openOutputStream(outputUri));
+
+                int index = 0; //danh so de khong trung ten file
+                for (JobApplied jobApplied : submittedProfiles) {
+                    Log.e("ZIP_EXPORT", "Processing file: " + jobApplied.getCV().getTitle());
+                    String fileUrl = urlSupabase + jobApplied.getCV().getFilePath();
+                    URL url = new URL(fileUrl);
+                    InputStream inputStream = new BufferedInputStream(url.openStream());
+
+                    String fileName = (index++)+ "_" + jobApplied.getApplicant().getFirstName()+ jobApplied.getApplicant().getLastName() + ".pdf";
+                    ZipEntry entry = new ZipEntry(fileName);
+                    zipOut.putNextEntry(entry);
+
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        zipOut.write(buffer, 0, bytesRead);
+                    }
+
+                    zipOut.closeEntry();
+                    inputStream.close();
+
+                    currentIndex++;
+                    int progress = (int) ((currentIndex * 100.0f) / totalFiles);
+
+                    builder.setContentText(progress + "%")
+                            .setProgress(100, progress, false);
+                    notificationManager.notify(exportNotificationId, builder.build());
+                }
+
+                zipOut.close();
+
+                // Mở file khi click vào thông báo
+                Intent openIntent = new Intent(Intent.ACTION_VIEW);
+                openIntent.setDataAndType(outputUri, "application/zip");
+                openIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                PendingIntent pendingIntent = PendingIntent.getActivity(
+                        requireContext(), 0, openIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                );
+
+                builder.setContentTitle("Export complete")
+                        .setContentText("All CVs exported.")
+                        .setSmallIcon(R.drawable.ic_success)
+                        .setProgress(0, 0, false)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                notificationManager.notify(exportNotificationId, builder.build());
+
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(getContext(), "Export successful!", Toast.LENGTH_SHORT).show());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                builder.setContentTitle("Export failed")
+                        .setContentText("An error occurred.")
+                        .setProgress(0, 0, false)
+                        .setSmallIcon(R.drawable.ic_cancel);
+                notificationManager.notify(exportNotificationId, builder.build());
+
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(getContext(), "Export failed.", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
+    }
+
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
