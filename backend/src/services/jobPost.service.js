@@ -199,7 +199,35 @@ const JobPostService = {
         if (data.salary_start !== undefined) updateData.salary_start = data.salary_start;
         if (data.salary_end !== undefined) updateData.salary_end = data.salary_end;
         if (data.currency !== undefined) updateData.currency = data.currency;
-        if (data.status !== undefined) updateData.status = data.status;
+        if (data.status !== undefined) {
+            const existing = await prisma.jobPost.findUnique({ where: { id } });
+            if (!existing) {
+                throw new Error('JobPost not found');
+            }
+
+            if (data.status === 'OPENING') {
+                const existing = await prisma.jobPost.findUnique({ where: { id } });
+
+                if (!existing) throw new Error('JobPost not found');
+
+                if (existing.status !== 'TERMINATED') {
+                    throw new Error(`Only TERMINATED job posts can be reopened`);
+                }
+
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (existing.apply_until < today) {
+                    throw new Error(`Cannot reopen job post. Apply until date has passed`);
+                }
+
+                updateData.status = 'OPENING';
+            }
+            else if (data.status !== existing.status) {
+                throw new Error('Changing job post status is not allowed in this route');
+            }
+        }
+
         if (data.educationRequirement !== undefined) updateData.educationRequirement = data.educationRequirement;
 
         if (data.apply_until) {
