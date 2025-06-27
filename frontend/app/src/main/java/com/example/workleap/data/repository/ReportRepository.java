@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.api.RetrofitClient;
-import com.example.workleap.data.model.response.ListReportResponse;
-import com.example.workleap.data.model.response.ReportResponse;
 
 import retrofit2.Call;
 

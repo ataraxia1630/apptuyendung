@@ -13,6 +13,7 @@ import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
+import com.example.workleap.data.model.request.StatusRequest;
 import com.example.workleap.data.model.response.JobAppliedResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
@@ -76,6 +77,7 @@ public class JobPostViewModel  extends ViewModel {
     private MutableLiveData<String> getAllJobSavedResult = new MutableLiveData<>();
     private MutableLiveData<String> createJobSavedResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteJobSavedResult = new MutableLiveData<>();
+    private MutableLiveData<String> toggleJobPostResult = new MutableLiveData<>();
 
     //Job applied
     private MutableLiveData<List<JobApplied>> getCvsJobAppliedData = new MutableLiveData<>();
@@ -98,7 +100,7 @@ public class JobPostViewModel  extends ViewModel {
     public LiveData<List<JobPost>> getAllJobPostData() { return getAllJobPostData; }
     public LiveData<List<JobPost>> getJobPostByStatusData() { return getJobPostByStatusData; }
     public LiveData<JobPost> toggleJobPostData() { return toggleJobPostStatusData; }
-    public LiveData<String> toggleJobPostResult() { return toggleJobPostResult(); }
+    public LiveData<String> toggleJobPostResult() { return toggleJobPostResult; }
     public LiveData<List<JobPost>> getJobPostsByCompanyData() { return getJobPostsByCompanyData; }
     public LiveData<JobPost> getJobPostData() { return getJobPostData; }
     public LiveData<JobPost> getMyJobPostByIdData() { return getMyJobPostByIdData; }
@@ -579,8 +581,9 @@ public class JobPostViewModel  extends ViewModel {
         });
     }
 
-    public void toggleJobPostStatus(String id) {
-        jobPostRepository.toggleJobPostStatus(id).enqueue(new Callback<JobPostResponse>() {
+    public void toggleJobPostStatus(String id, String status) {
+        StatusRequest request = new StatusRequest(status);
+        jobPostRepository.toggleJobPostStatus(id, request).enqueue(new Callback<JobPostResponse>() {
             @Override
             public void onResponse(Call<JobPostResponse> call, Response<JobPostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
