@@ -5,8 +5,14 @@ import android.content.Context;
 import com.example.workleap.data.api.RetrofitClient;
 
 import com.example.workleap.data.api.ApiService;
+import com.example.workleap.data.model.request.EmailOtpRequest;
+import com.example.workleap.data.model.request.EmailRequest;
+import com.example.workleap.data.model.request.FCMRequest;
+import com.example.workleap.data.model.response.FCMResponse;
+import com.example.workleap.data.model.entity.Message;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
+import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.ListFollowerResponse;
 import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
@@ -16,9 +22,11 @@ import com.example.workleap.data.model.response.RegisterResponse;
 import com.example.workleap.data.model.request.UpdateUserRequest;
 import com.example.workleap.data.model.response.UpdateUserResponse;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -33,6 +41,21 @@ public class UserRepository {
         token = preferencesManager.getToken();
         apiService = RetrofitClient.getClient(token).create(ApiService.class);
     }
+
+    //Xac thuc
+    public Call<MessageResponse> checkUserExist(RegisterRequest request) {
+        return apiService.checkUserExist(request);
+    }
+    public Call<MessageResponse> sendOtp(EmailRequest request) {
+        return apiService.sendOtp(request);
+    }
+    public Call<MessageResponse> resendOtp(EmailRequest request) {
+        return apiService.resendOtp(request);
+        }
+    public Call<MessageResponse> verifyOtp(EmailOtpRequest request) {
+        return apiService.verifyOtp(request);
+    }
+
 
     //Đăng ký
     public Call<RegisterResponse> registerUser(RegisterRequest request) {
@@ -100,6 +123,19 @@ public class UserRepository {
     }
     public Call<ListFollowerResponse> getFollowers(String userId) {
         return apiService.getFollowers(userId);
+    }
+
+    public Call<FCMResponse> createFCM(FCMRequest request)
+    {
+        return apiService.createFCM(request);
+    }
+
+    //avatar
+    public Call<GetUserResponse> loadAvatar(MultipartBody.Part file) {
+        return apiService.uploadAvatar(file);
+    }
+    public Call<ImageUrlResponse> getAvatarUrl(String path) {
+        return apiService.getAvatarUrl(path);
     }
 }
 

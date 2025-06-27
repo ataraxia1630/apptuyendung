@@ -57,4 +57,16 @@ public class PreferencesManager {
         editor.remove("user_id");
         editor.apply();
     }
+
+    // Lưu FCM token
+    public void saveFcmToken(String token) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("fcm_token", token);
+        editor.apply();
+    }
+
+    // Lấy FCM token
+    public String getFcmToken() {
+        return prefs.getString("fcm_token", null);
+    }
 }

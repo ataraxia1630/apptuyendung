@@ -9,7 +9,8 @@ import java.util.List;
 
 import kotlinx.coroutines.Job;
 
-public class JobPost implements Serializable {
+public class
+JobPost implements Serializable {
     private String id;
     private String companyId;
     private String jobCategoryId;

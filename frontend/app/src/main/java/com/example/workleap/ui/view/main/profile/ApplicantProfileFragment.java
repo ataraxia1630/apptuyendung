@@ -1,12 +1,21 @@
 package com.example.workleap.ui.view.main.profile;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -14,10 +23,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.ApplicantEducation;
 import com.example.workleap.data.model.entity.Education;
@@ -32,6 +45,11 @@ import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.chip.Chip;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +57,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,6 +79,8 @@ public class ApplicantProfileFragment extends Fragment {
 
     ImageButton btnAddExperience, btnAddInterestedField, btnAddEdu, btnAddSkill, btnOptions, btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
 
+    ImageView avatar;
+
     ApplicantViewModel applicantViewModel;
     UserViewModel userViewModel;
 
@@ -68,15 +92,10 @@ public class ApplicantProfileFragment extends Fragment {
     List<Field> applicantInterestedField;
     List<Education> listEducation;
     List<Experience> applicantExperience;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final int PICK_IMAGE_REQUEST = 1001;
+    private Uri imageUri;
+    private String currentAvatarUrl;
+    private ImageView imagePreview;
 
     public ApplicantProfileFragment() {
         // Required empty public constructor
@@ -94,8 +113,7 @@ public class ApplicantProfileFragment extends Fragment {
     public static ApplicantProfileFragment newInstance(String param1, String param2) {
         ApplicantProfileFragment fragment = new ApplicantProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        //args.putString(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -104,8 +122,7 @@ public class ApplicantProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            //mParam1 = getArguments().getString(ARG_PARAM1);
         }
     }
 
@@ -149,9 +166,36 @@ public class ApplicantProfileFragment extends Fragment {
         fieldContainer = view.findViewById(R.id.interestedFieldContainer);
         educationListContainer = view.findViewById(R.id.educationListContainer);
         experienceListContainer = view.findViewById(R.id.experienceListContainer);
+        avatar = view.findViewById(R.id.shapeableImageView);
 
         tvMailInfo.setText(user.getEmail());
         tvPhoneInfo.setText(user.getPhoneNumber());
+
+        //Lay avatar
+        //Observe
+        userViewModel.getUrlAvatarResult().observe(getViewLifecycleOwner(), result -> {
+            if(result != null)
+                Log.d("ApplicantProfile avatar", result);
+            else
+                Log.d("ApplicantProfile avatar", "getUrlAvatarResult NULL");
+        });
+        userViewModel.getUrlAvatarData().observe(getViewLifecycleOwner(), data -> {
+            if(data != null)
+            {
+                currentAvatarUrl = data;
+                Glide.with(this.getContext()).load(data).into(avatar);
+                Log.d("ApplicantProfile avatar", "Set avatar success");
+            }
+            else
+                Log.d("ApplicantProfile avatar", "getUrlAvatarData NULL");
+        });
+        if(user.getAvatar() != null)
+        {
+            //Load avatar from database
+            userViewModel.getAvatarUrl(user.getAvatar());
+        }
+        else
+            Log.d("ApplicantProfile avatar", "user avatar null");
 
         //load
         LoadSkill();
@@ -384,6 +428,14 @@ public class ApplicantProfileFragment extends Fragment {
                 }
         );
 
+
+        //click handle
+        //avatar
+        avatar.setOnClickListener(v -> {
+            showImagePopup(this.requireContext());
+        });
+
+        //Edit
         btnOptions.setOnClickListener( v -> {
             PopupMenu popupMenu = new PopupMenu(getContext(), btnOptions);
             popupMenu.getMenuInflater().inflate(R.menu.menu_options, popupMenu.getMenu());
@@ -496,7 +548,6 @@ public class ApplicantProfileFragment extends Fragment {
                 TextView tvAchievements = eduItem.findViewById(R.id.tvAchievements);
                 TextView tvSchoolLink   = eduItem.findViewById(R.id.tvSchoolLink);
                 ImageButton btnEdit     = eduItem.findViewById(R.id.btnEditEducation);
-
                 tvSchoolName.setText(applicantEdu.getEducation().getUniName());
                 tvSchoolAddress.setText(applicantEdu.getEducation().getAddress());
                 tvEduLevel.setText(applicantEdu.getEduLevel());
@@ -696,4 +747,140 @@ public class ApplicantProfileFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
         return sdf.format(date);
     }
+
+    //Handle load avatar
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            imageUri = data.getData();
+
+            //Hien thi anh duoc chon len
+            imagePreview.setImageURI(imageUri);
+        }
+    }
+    private File uriToFile(Uri uri) {
+        File file = new File(requireContext().getCacheDir(), "avatar.jpg");
+        try (InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
+             OutputStream outputStream = new FileOutputStream(file)) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_MEDIA_IMAGES}, 1);
+            } else {
+                openImagePicker();
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            } else {
+                openImagePicker();
+            }
+        }
+    }
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    public void showImagePopup(Context context) {
+        // Inflate layout
+        LayoutInflater inflater = LayoutInflater.from(context); // hoặc getContext() nếu trong Fragment
+        View view = inflater.inflate(R.layout.dialog_image_popup, null);
+
+        // Tạo dialog
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setView(view)
+                .setCancelable(false)
+                .create();
+
+        // Ánh xạ View
+        imagePreview = view.findViewById(R.id.imagePreview);
+        ImageButton btnLoad = view.findViewById(R.id.btnLoadImage);
+        Button btnSave = view.findViewById(R.id.btnSave);
+        Button btnCancel = view.findViewById(R.id.btnCancel);
+
+        //Set current image preview
+        if(currentAvatarUrl != null)
+            Glide.with(this).load(currentAvatarUrl).into(imagePreview);
+
+        // Xử lý sự kiện
+        btnLoad.setOnClickListener(v -> {
+            Log.d("btnLoadImage", "btnLoadImage clicked");
+            // Yêu cầu quyền (nếu chưa có)
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                Log.d("btnLoadImage", "xin quyen");
+            } else {
+                // Mở bộ chọn ảnh
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                Log.d("btnLoadImage", "mo bo chon anh");
+            }
+        });
+
+        btnSave.setOnClickListener(v -> {
+            //Upload anh dang hien thi len csdl
+            //Ket qua
+            userViewModel.getUploadAvatarData().observe(getViewLifecycleOwner(), data -> {
+                if(data != null)
+                {
+                    //Update current avatar
+                    userViewModel.getAvatarUrl(data.getAvatar());
+                }
+                else
+                    Log.e("Upload image data", "Upload image data null");
+            });
+            userViewModel.getUpLoadAvatarResult().observe(getViewLifecycleOwner(), result ->
+            {
+                if(result != null)
+                {
+                    Log.e("Upload image result", result);
+                }
+                else
+                    Log.e("Upload image result", "Upload image result null");
+            });
+
+            //Tao file de gui
+            if(imageUri != null)
+            {
+                File imageFile = uriToFile(imageUri);
+                // Tạo RequestBody từ file
+                RequestBody requestFile = RequestBody.create(
+                        MediaType.parse("image/*"),
+                        imageFile
+                );
+
+                // Tạo MultipartBody.Part
+                MultipartBody.Part body = MultipartBody.Part.createFormData("file", imageFile.getName(), requestFile);
+                userViewModel.loadAvatar(body);
+            }
+
+            dialog.dismiss();
+        });
+
+        btnCancel.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        // Hiển thị dialog
+        dialog.show();
+    }
+
 }

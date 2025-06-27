@@ -10,7 +10,9 @@ const { JobPostSchema } = require('../validators/JobPost/jobPost.validator');
 const { JobPostUpdateSchema } = require('../validators/JobPost/jobPostUpdate.validator');
 
 router.get('/all', cache, JobPostController.getAllJobPosts);
-router.get('/:id', cache, JobPostController.getJobPostById);
+router.get('/recommend', verifyToken, requireRole('APPLICANT'), cache, JobPostController.recommendJobs);
+router.get('/:id', verifyToken, requireRole('APPLICANT'), cache, JobPostController.getJobPostById);
+
 router.put('/:id', verifyToken, checkOwnership('JobPost', 'companyId'), validate(JobPostUpdateSchema), JobPostController.updateJobPost);
 router.delete('/:id', verifyToken, checkOwnership('JobPost', 'companyId'), JobPostController.deleteJobPost);
 router.get('/search/query', cache, JobPostController.searchJobPosts);
@@ -19,12 +21,10 @@ router.get('/company/:id', verifyToken, JobPostController.getJobPostsByCompany);
 router.get(
     '/admin/by-status',
     verifyToken,
-    requireRole('ADMIN'),
-    cache,
     JobPostController.getJobPostsByStatus
 );
 
-router.put('/admin/toggle/:id', verifyToken, requireRole('ADMIN'), JobPostController.toggleJobPostStatus);
+router.put('/admin/toggle/:id', verifyToken, JobPostController.toggleJobPostStatus);
 //Danh cho company
 router.get('/company/me/jobs-applications', verifyToken, requireRole('COMPANY'), JobPostController.getMyJobsWithApplications);
 router.post('/', verifyToken, requireRole('COMPANY'), validate(JobPostSchema), JobPostController.createJobPost);

@@ -20,9 +20,11 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.workleap.R;
 import com.example.workleap.data.repository.PreferencesManager;
+import com.example.workleap.ui.notification.MyFirebaseMessagingService;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
     private NavController navController;
@@ -43,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         //quyen thong bao
         requestNotificationPermissionIfNeeded();
 
-        Log.e("hello", "heelo");
         //Check token
         PreferencesManager preferencesManager = new PreferencesManager(this);
         if (preferencesManager.isTokenValid()) {
@@ -65,6 +66,23 @@ public class MainActivity extends AppCompatActivity {
                 if (user == null) {
                     Log.e("AutoLogin", "user null");
                 } else {
+                    //gui fcm_token cho supabase
+                    FirebaseMessaging.getInstance().getToken()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    String fcmToken = task.getResult();
+                                    Log.e("MainActivity", "FCM Token: " + fcmToken);
+
+                                    MyFirebaseMessagingService myFirebaseMessagingService = new MyFirebaseMessagingService();
+                                    preferencesManager.saveFcmToken(fcmToken);
+                                    //myFirebaseMessagingService.sendTokenToSupabase(this);
+                                    userViewModel.createFCM(user.getId(), fcmToken);
+                                } else {
+                                    Log.e("MainActivity", "FCM Không lấy được token", task.getException());
+                                }
+                            });;
+
+
                     Intent intent = new Intent(this, NavigationActivity.class);
                     Log.e("Welcome", "wellcome");
                     intent.putExtra("user", user);
@@ -78,6 +96,15 @@ public class MainActivity extends AppCompatActivity {
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
 
+        //get token to test firebase
+        /*FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        String token = task.getResult();
+                        Log.e("FCM", "Token: " + token);
+                        // Gửi về server tương tự
+                    }
+                });*/
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -101,5 +128,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 }

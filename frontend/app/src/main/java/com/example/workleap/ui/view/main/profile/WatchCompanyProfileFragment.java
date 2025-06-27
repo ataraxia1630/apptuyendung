@@ -1,35 +1,45 @@
 package com.example.workleap.ui.view.main.profile;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.workleap.R;
-import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.Follower;
+import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.data.model.request.FriendIdRequest;
-import com.example.workleap.ui.view.auth.MainActivity;
+import com.example.workleap.ui.view.main.NavigationActivity;
+import com.example.workleap.ui.view.main.jobpost_post.JobPostAdapter;
+import com.example.workleap.ui.view.main.jobpost_post.PostAdapter;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.CompanyViewModel;
 import com.example.workleap.ui.viewmodel.ConversationViewModel;
+import com.example.workleap.ui.viewmodel.JobPostViewModel;
+import com.example.workleap.ui.viewmodel.PostViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,14 +51,26 @@ public class WatchCompanyProfileFragment extends Fragment {
     TextView tvCompanyName;
     TextView tvAboutCompany;
     TextView tvCompanyNameInfo, tvEstablishedYear, tvMailInfo, tvPhoneInfo, tvTaxCode;
+    ImageView avatar;
+    private Button btnMorePost;
+    private int pagePost = 1;
+    private int pageSizePost = 4;
+    private boolean isMorePost = false; // Kiểm tra đang tải lại fragment hay tải thêm bài đăng
+    private List<Post> allPosts = new ArrayList<>();
     User user, myUser;
 
     AuthViewModel authViewModel;
     UserViewModel userViewModel;
+    JobPostViewModel jobPostViewModel;
     ConversationViewModel conversationViewModel;
     CompanyViewModel companyViewModel;
+    PostViewModel postViewModel;
     NavController nav;
-    ImageButton btnOptions, btnFollow, btnChat, btnBack;
+    ImageButton btnFollow, btnChat, btnBack;
+
+    RecyclerView recyclerViewJobPost, recyclerViewPost;
+    private JobPostAdapter adapterJobPost;
+    private PostAdapter adapterPost;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -96,6 +118,9 @@ public class WatchCompanyProfileFragment extends Fragment {
         userViewModel.InitiateRepository(getContext());
         conversationViewModel = new ViewModelProvider(requireActivity()).get(ConversationViewModel.class);
         conversationViewModel.initiateRepository(getContext());
+        jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
+        postViewModel = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
+        postViewModel.InitiateRepository(getContext());
 
         //Component
         tvCompanyName = (TextView) view.findViewById(R.id.textView2);
@@ -105,10 +130,13 @@ public class WatchCompanyProfileFragment extends Fragment {
         tvMailInfo = (TextView) view.findViewById(R.id.emailInfo);
         tvPhoneInfo= (TextView) view.findViewById(R.id.phoneInfo);
         tvTaxCode = (TextView) view.findViewById(R.id.taxCodeInfo);
-        btnOptions = view.findViewById(R.id.btnOptions);
         btnChat = view.findViewById(R.id.btnChat);
         btnFollow = view.findViewById(R.id.btnFollow);
         btnBack = view.findViewById(R.id.btnBack);
+        recyclerViewJobPost = view.findViewById(R.id.recyclerJobPosts);
+        recyclerViewPost = view.findViewById(R.id.recyclerPosts);
+        avatar = view.findViewById(R.id.shapeableImageView);
+        btnMorePost = view.findViewById(R.id.btnLoadMorePosts);
 
         //observe to Set value from company
         companyViewModel.getGetCompanyData().observe(getViewLifecycleOwner(), company -> {
@@ -124,6 +152,38 @@ public class WatchCompanyProfileFragment extends Fragment {
                 tvTaxCode.setText(company.getTaxcode());
                 tvCompanyNameInfo.setText(company.getName());
             }
+
+            //job post list
+            jobPostViewModel.getJobPostsByCompany(company.getId());
+            jobPostViewModel.getJobPostsByCompanyResult().observe(getViewLifecycleOwner(), result ->
+            {
+                Log.e("AppliedJobFragment", "getJobPostsByCompanyResult: " + result);
+            });
+            jobPostViewModel.getJobPostsByCompanyData().observe(getViewLifecycleOwner(), jobPosts ->
+            {
+                if(jobPosts == null)
+                {
+                    Log.e("watchcompanyprofile", "jobposts NULL");
+                    return;
+                }else
+                {
+                    Log.e("eeeee", String.valueOf(jobPosts.size()));
+                }
+                // Setup RecyclerView
+                recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
+                adapterJobPost = new JobPostAdapter(jobPosts, new JobPostAdapter.OnJobPostClickListener() {
+                    @Override
+                    public void onJobPostClick(JobPost jobPost) {
+                        // Handle item click
+                        Bundle bundle = new Bundle();
+                        jobPostViewModel.setCurrentJobPost(jobPost);
+                        bundle.putSerializable("user", user);
+                        ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
+                        nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+                    }
+                });
+                recyclerViewJobPost.setAdapter(adapterJobPost);
+            });
         });
         companyViewModel.getGetCompanyResult().observe(getViewLifecycleOwner(), result ->{
             if(!isAdded() || getView()==null) return;
@@ -134,6 +194,63 @@ public class WatchCompanyProfileFragment extends Fragment {
         });
 
 
+
+        //POST LIST
+        postViewModel = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
+        postViewModel.InitiateRepository(getContext());
+
+        postViewModel.getPostCompanyResult().observe(getViewLifecycleOwner(), result ->
+        {
+            String s = result.toString();
+            Log.e("Watchcompany", "getPostCompanyResult: " + s + "");
+        });
+        postViewModel.getPostCompanyData().observe(getViewLifecycleOwner(), posts ->
+        {
+            if(!isMorePost)
+                allPosts.clear(); //Neu khong phai tai them thi clear de tranh bi trung
+
+            isMorePost = false; //Dat lai neu dang la true
+
+            if(posts != null && !posts.isEmpty()) {
+                allPosts.addAll(posts);
+                Toast.makeText(this.getContext(), "Loading Posts...", Toast.LENGTH_SHORT).show();
+            }
+            else
+                Toast.makeText(this.getContext(), "No more posts", Toast.LENGTH_SHORT).show();
+
+
+            // Setup RecyclerView
+            recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
+            adapterPost = new PostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager(), myUser, nav); // mặc định show tất cả
+
+            //Xu li anh cua post bang postviewmodel va logo cua post bang usermodel
+            postViewModel.getImageUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterPost.setImageUrlMap(map);  // Truyền map xuống adapter
+            });
+            userViewModel.getLogoPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterPost.setLogoUrlMap(map);  // Truyền map xuống adapter
+            });
+            for (Post post : posts) {
+                if(post.getContents().size() > 1)
+                {
+                    String filePath = post.getContents().get(1).getValue();  // hoặc chỗ chứa đường dẫn ảnh
+                    Log.d("filePath", filePath);
+                    postViewModel.getImageUrlMap(filePath); // dùng filePath làm key
+                }
+                userViewModel.getLogoPostImageUrl(post.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key
+            }
+
+            //Hien thi
+            recyclerViewPost.setAdapter(adapterPost);
+            adapterPost.notifyDataSetChanged();
+        });
+
+        //Load more posts
+        btnMorePost.setOnClickListener(v -> {
+            pagePost++;
+            isMorePost = true;
+            postViewModel.getPostByCompany(companyId, pagePost, pageSizePost);
+        });
 
 
 
@@ -185,68 +302,45 @@ public class WatchCompanyProfileFragment extends Fragment {
                 tvMailInfo.setText(user.getEmail());
                 tvPhoneInfo.setText(user.getPhoneNumber());
 
+                //Lay avatar
+                //Observe
+                userViewModel.getUrlAvatarResult().observe(getViewLifecycleOwner(), result -> {
+                    if(result != null)
+                        Log.d("CompanyProfile avatar", result);
+                    else
+                        Log.d("Companyprofile avatar", "getUrlAvatarResult NULL");
+                });
+                userViewModel.getUrlAvatarData().observe(getViewLifecycleOwner(), dataImage -> {
+                    if(dataImage != null)
+                    {
+                        Glide.with(this.getContext()).load(dataImage).into(avatar);
+                        Log.d("ApplicantProfile avatar", "Set avatar success");
+                    }
+                    else
+                        Log.d("ApplicantProfile avatar", "getUrlAvatarData NULL");
+                });
+                //Check and get avatar
+                if(user.getAvatar() != null)
+                {
+                    //Load avatar from database
+                    userViewModel.getAvatarUrl(user.getAvatar());
+                }
+                else
+                    Log.d("CompanyProfile avatar", "user avatar null");
+
+
                 //Lay ra company
                 companyId = data.getCompanyId();
                 companyViewModel.getCompany(companyId);
+
+                //Lay ra post cua company khi da co id
+                postViewModel.getPostByCompany(companyId, pagePost, pageSizePost);
             }
             else
                 Log.d("WatchCpnProfileFragment", "user null");
         });
         userViewModel.getUser(userId);
 
-
-        getParentFragmentManager().setFragmentResultListener(
-                "editProfile",
-                getViewLifecycleOwner(),
-                (requestKey, bundle) -> {
-                    String cardType = bundle.getString("cardType");
-                    ArrayList<String> values = bundle.getStringArrayList("values");
-                    // TODO: xử lý cập nhật UI hoặc gọi ViewModel
-                    if ("CompanyInfo".equalsIgnoreCase(cardType) && values != null) {
-                        tvCompanyNameInfo.setText(values.get(0));
-                        tvEstablishedYear.setText(values.get(1));
-                        //tvPhoneInfo.setText(values.get(2));
-                        //tvMailInfo.setText(values.get(3));
-                        tvTaxCode.setText(values.get(2));
-                        Log.e("khoa", "khoa");
-
-                        companyViewModel.updateCompany(user.getCompanyId(), values.get(0), tvAboutCompany.getText().toString(), Integer.parseInt(values.get(1)), values.get(2) );
-
-                        //companyViewModel.updateCompany(user.getCompanyId(), tvCompanyNameInfo.getText().toString(), values.get(0), Integer.parseInt(tvEstablishedYear.getText().toString()), tvTaxCode.getText().toString());
-                    }
-                    else if ("AboutCompany".equalsIgnoreCase(cardType) && values != null) {
-                        Log.e("company profile", "about company update");
-                        tvAboutCompany.setText(values.get(0));
-
-                        companyViewModel.updateCompany(user.getCompanyId(), tvCompanyNameInfo.getText().toString(), values.get(0), Integer.parseInt(tvEstablishedYear.getText().toString()), tvTaxCode.getText().toString());
-                    }
-                }
-        );
-
-
-        //Option button
-        btnOptions.setOnClickListener(v -> {
-            PopupMenu popupMenu = new PopupMenu(getContext(), btnOptions);
-            popupMenu.getMenuInflater().inflate(R.menu.menu_options, popupMenu.getMenu());
-
-            popupMenu.setOnMenuItemClickListener(item -> {
-                int itemId = item.getItemId();
-
-                if (itemId == R.id.menu_setting) {
-                    return true;
-                } else if (itemId == R.id.menu_logout) {
-                    authViewModel.logout();
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    requireActivity().finish();
-                    return true;
-                }
-                return false;
-            });
-
-            popupMenu.show();
-        });
 
         //Follow observe and click handle
         userViewModel.getToggleFollowResult().observe(getViewLifecycleOwner(), result -> {

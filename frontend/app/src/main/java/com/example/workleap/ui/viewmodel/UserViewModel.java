@@ -8,8 +8,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.workleap.data.model.entity.Follower;
+import com.example.workleap.data.model.entity.UserToken;
+import com.example.workleap.data.model.request.FCMRequest;
+import com.example.workleap.data.model.response.FCMResponse;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.UpdateUserRequest;
+import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.ListFollowerResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.response.UpdateUserResponse;
@@ -17,8 +21,11 @@ import com.example.workleap.data.model.entity.User;
 import com.example.workleap.data.repository.UserRepository;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,6 +40,16 @@ public class UserViewModel extends ViewModel {
     private MutableLiveData<String> getFollowerResult = new MutableLiveData<>();
     private MutableLiveData<List<Follower>> getFollowingData = new MutableLiveData<>();
     private MutableLiveData<List<Follower>> getFollowerData = new MutableLiveData<>();
+    public MutableLiveData<UserToken> createFCMData = new MutableLiveData<>();
+    public MutableLiveData<String> createFCMResult = new MutableLiveData<>();
+    private MutableLiveData<String> upLoadAvatarResult = new MutableLiveData<>();
+    private MutableLiveData<User> upLoadAvatarData = new MutableLiveData<>();
+    private MutableLiveData<String> getUrlAvatarResult = new MutableLiveData<>();
+    private MutableLiveData<String> getUrlAvatarData = new MutableLiveData<>();
+    private MutableLiveData<Map<String, String>> logoPostUrlMap = new MutableLiveData<>(new HashMap<>());
+    private MutableLiveData<Map<String, String>> logoJobPostUrlMap = new MutableLiveData<>(new HashMap<>());
+    private MutableLiveData<Map<String, String>> avatarCommentUrlMap = new MutableLiveData<>(new HashMap<>());
+
 
     public UserViewModel() {}
     public void InitiateRepository(Context context) {
@@ -54,7 +71,24 @@ public class UserViewModel extends ViewModel {
     public LiveData<String> getGetFollowerResult() { return getFollowerResult; }
     public LiveData<List<Follower>> getGetFollowingData() { return getFollowingData; }
     public LiveData<List<Follower>> getGetFollowerData() { return getFollowerData; }
+    public LiveData<UserToken> createFCMData() { return createFCMData; }
 
+    public LiveData<String> createFCMResult(){ return createFCMResult; }
+
+    public LiveData<String> getUpLoadAvatarResult() { return upLoadAvatarResult; };
+    public LiveData<String> getUrlAvatarResult() { return getUrlAvatarResult; }
+    public LiveData<String> getUrlAvatarData() { return getUrlAvatarData; }
+    public LiveData<User> getUploadAvatarData() { return upLoadAvatarData; }
+
+    public LiveData<Map<String, String>> getLogoPostUrlMap() {
+        return logoPostUrlMap;
+    }
+    public LiveData<Map<String, String>> getLogoJobPostUrlMap() {
+        return logoJobPostUrlMap;
+    }
+    public LiveData<Map<String, String>> avatarCommentUrlMap() {
+        return avatarCommentUrlMap;
+    }
 
     //Get user
     public void getUser(String id) {
@@ -217,6 +251,173 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onFailure(Call<ListFollowerResponse> call, Throwable t) {
                 getFollowerResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void createFCM(String userId, String fcm_token) {
+        FCMRequest request = new FCMRequest(userId, fcm_token);
+        Call<FCMResponse> call = userRepository.createFCM(request);
+        call.enqueue(new Callback<FCMResponse>() {
+            @Override
+            public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
+                if (response.isSuccessful()) {
+                    FCMResponse getFollower = response.body();
+                    createFCMData.setValue(getFollower.getUserToken());
+                    createFCMResult.setValue("Success");
+                } else {
+                    try {
+                        FCMResponse error = new Gson().fromJson(response.errorBody().string(), FCMResponse.class);
+                        createFCMResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        createFCMResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<FCMResponse> call, Throwable t) {
+                createFCMResult.setValue("Lỗi kết nối: " + t.getMessage());
+                }
+        });
+    }
+    
+    //Avatar
+    public void loadAvatar(MultipartBody.Part file) {
+        Call<GetUserResponse> call = userRepository.loadAvatar(file);
+        call.enqueue(new Callback<GetUserResponse>() {
+            @Override
+            public void onResponse(Call<GetUserResponse> call, Response<GetUserResponse> response) {
+                if (response.isSuccessful()) {
+                    upLoadAvatarResult.setValue("Upload success");
+                    upLoadAvatarData.setValue(response.body().getUser());
+                } else {
+                    try {
+                        GetUserResponse error = new Gson().fromJson(response.errorBody().string(), GetUserResponse.class);
+                        upLoadAvatarResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        upLoadAvatarResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetUserResponse> call, Throwable t) {
+                upLoadAvatarResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getAvatarUrl(String path) {
+        Call<ImageUrlResponse> call = userRepository.getAvatarUrl(path);
+        call.enqueue(new Callback<ImageUrlResponse>() {
+            @Override
+            public void onResponse(Call<ImageUrlResponse> call, Response<ImageUrlResponse> response) {
+                if (response.isSuccessful()) {
+                    getUrlAvatarData.setValue(response.body().getUrl());
+                    getUrlAvatarResult.setValue("Upload success");
+                } else {
+                    try {
+                        ImageUrlResponse error = new Gson().fromJson(response.errorBody().string(), ImageUrlResponse.class);
+                        getUrlAvatarResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getUrlAvatarResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ImageUrlResponse> call, Throwable t) {
+                getUrlAvatarResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getLogoPostImageUrl(String path) {
+        Call<ImageUrlResponse> call = userRepository.getAvatarUrl(path);
+        call.enqueue(new Callback<ImageUrlResponse>() {
+            @Override
+            public void onResponse(Call<ImageUrlResponse> call, Response<ImageUrlResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String url = response.body().getUrl();
+                    Map<String, String> currentMap = logoPostUrlMap.getValue();
+                    if (currentMap != null) {
+                        currentMap.put(path, url);
+                        logoPostUrlMap.postValue(new HashMap<>(currentMap));
+                    }
+                    getUrlAvatarResult.setValue("Get logo post image URL success");
+                } else {
+                    try {
+                        ImageUrlResponse error = new Gson().fromJson(response.errorBody().string(), ImageUrlResponse.class);
+                        getUrlAvatarResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getUrlAvatarResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ImageUrlResponse> call, Throwable t) {
+                getUrlAvatarResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getLogoJobPostImageUrl(String path) {
+        Call<ImageUrlResponse> call = userRepository.getAvatarUrl(path);
+        call.enqueue(new Callback<ImageUrlResponse>() {
+            @Override
+            public void onResponse(Call<ImageUrlResponse> call, Response<ImageUrlResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String url = response.body().getUrl();
+                    Map<String, String> currentMap = logoJobPostUrlMap.getValue();
+                    if (currentMap != null) {
+                        currentMap.put(path, url);
+                        logoJobPostUrlMap.postValue(new HashMap<>(currentMap));
+                    }
+                    getUrlAvatarResult.setValue("Get logo job post image URL success");
+                } else {
+                    try {
+                        ImageUrlResponse error = new Gson().fromJson(response.errorBody().string(), ImageUrlResponse.class);
+                        getUrlAvatarResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getUrlAvatarResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ImageUrlResponse> call, Throwable t) {
+                getUrlAvatarResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getAvatarCommentImageUrl(String path) {
+        Call<ImageUrlResponse> call = userRepository.getAvatarUrl(path);
+        call.enqueue(new Callback<ImageUrlResponse>() {
+            @Override
+            public void onResponse(Call<ImageUrlResponse> call, Response<ImageUrlResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String url = response.body().getUrl();
+                    Map<String, String> currentMap = avatarCommentUrlMap.getValue();
+                    if (currentMap != null) {
+                        currentMap.put(path, url);
+                        avatarCommentUrlMap.postValue(new HashMap<>(currentMap));
+                    }
+                    getUrlAvatarResult.setValue("Get avatar comment image URL success");
+                } else {
+                    try {
+                        ImageUrlResponse error = new Gson().fromJson(response.errorBody().string(), ImageUrlResponse.class);
+                        getUrlAvatarResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getUrlAvatarResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ImageUrlResponse> call, Throwable t) {
+                getUrlAvatarResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }

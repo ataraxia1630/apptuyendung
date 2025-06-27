@@ -7,16 +7,21 @@ import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.entity.Message;
+import com.example.workleap.data.model.entity.Notification;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
+import com.example.workleap.data.model.request.EmailOtpRequest;
+import com.example.workleap.data.model.request.EmailRequest;
+import com.example.workleap.data.model.request.FCMRequest;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.data.model.request.GroupChatRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
 import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
 import com.example.workleap.data.model.request.ListMemberIdRequest;
+import com.example.workleap.data.model.request.StatusRequest;
 import com.example.workleap.data.model.request.UserIdRequest;
 import com.example.workleap.data.model.response.CVResponse;
 import com.example.workleap.data.model.response.CommentResponse;
@@ -27,6 +32,7 @@ import com.example.workleap.data.model.request.CreateApplicantSkillRequest;
 import com.example.workleap.data.model.response.CreateApplicantExperienceResponse;
 import com.example.workleap.data.model.response.CreateApplicantSkillResponse;
 import com.example.workleap.data.model.response.CreateInterestedFieldResponse;
+import com.example.workleap.data.model.response.FCMResponse;
 import com.example.workleap.data.model.response.FieldResponse;
 import com.example.workleap.data.model.response.GetApplicantResponse;
 import com.example.workleap.data.model.response.GetCompanyResponse;
@@ -46,6 +52,7 @@ import com.example.workleap.data.model.response.ListFollowerResponse;
 import com.example.workleap.data.model.response.ListJobPostResponse;
 import com.example.workleap.data.model.response.ListMessageResponse;
 import com.example.workleap.data.model.response.ListMonthlyStatResponse;
+import com.example.workleap.data.model.response.ListNotificationResponse;
 import com.example.workleap.data.model.response.ListPostResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
@@ -93,9 +100,20 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
+    //Xac thuc
+    @POST("api/auth/exist")
+    Call<MessageResponse> checkUserExist(@Body RegisterRequest request);
+    @POST("api/auth/send-otp")
+    Call<MessageResponse> sendOtp(@Body EmailRequest request);
+    @POST("api/auth/resend-otp")
+    Call<MessageResponse> resendOtp(@Body EmailRequest request);
+    @POST("api/auth/verify-otp")
+    Call<MessageResponse> verifyOtp(@Body EmailOtpRequest request);
+
     //Đăng ký
     @POST("api/auth/register")
     Call<RegisterResponse> registerUser(@Body RegisterRequest request);
+
 
 
     //Đăng nhập
@@ -122,6 +140,13 @@ public interface ApiService {
     Call<ListFollowerResponse> getFollowing(@Path("userId") String userId);
     @GET("api/followers/list/followers/{userId}")
     Call<ListFollowerResponse> getFollowers(@Path("userId") String userId);
+    //Avatar
+    @Multipart
+    @POST("api/avatar/upload")
+    Call<GetUserResponse> uploadAvatar(@Part MultipartBody.Part file);
+    @GET("api/avatar/url/{path}")
+    Call<ImageUrlResponse> getAvatarUrl(@Path("path") String path);
+
 
     //Applicant
     @GET("api/users/applicant/{id}")
@@ -217,6 +242,10 @@ public interface ApiService {
     );
     @GET("api/job-posts/company/me/{id}")
     Call<JobPostResponse> getMyJobPostById( @Path("id") String id);
+    @GET("api/job-posts/admin/by-status")
+    Call<ListJobPostResponse> getJobPostByStatus(@Query("page") int page, @Query("pageSize") int pageSize, @Query("status") String status);
+    @PUT("api/job-posts/admin/toggle/{id}")
+    Call<JobPostResponse> toggleJobPostStatus(@Path("id") String id, @Body StatusRequest statusRequest);
 
     //JobType
     @GET("api/types/all")
@@ -281,7 +310,7 @@ public interface ApiService {
     @GET("api/posts/{id}")
     Call<PostResponse> getPostById(@Path("id") String id);
     @GET("api/posts/company/{id}")
-    Call<ListPostResponse> getPostsByCompany(@Path("id") String id);
+    Call<ListPostResponse> getPostsByCompany(@Path("id") String id, @Query("page") int page, @Query("pageSize") int pageSize);
     @POST("api/posts")
     Call<PostResponse> createPost(@Body Post request);
     @PUT("api/posts/{id}")
@@ -301,6 +330,12 @@ public interface ApiService {
     Call<ListPostResponse> searchPost(
             @Query("title") String query,
             @Query("companyName") String companyName);
+    @GET("api/posts/status/{status}")
+    Call<ListPostResponse> getPostByStatus(@Path("status") String status, @Query("page") int page, @Query("pageSize") int pageSize);
+    @PUT("api/posts/status/{id}")
+    Call<PostResponse> updatePostStatus(@Path("id") String id, @Body StatusRequest request);
+
+
 
     //Comment
     @POST("api/comments/")
@@ -328,7 +363,6 @@ public interface ApiService {
     Call<ListMonthlyStatResponse> getMonthlyGrowth();
     @GET("api/statistic/by-field")
     Call<ListFieldStatResponse> getByField(@Query("page") int page, @Query("pageSize") int pageSize);
-
 
     //Chat-Conversation
     // Lấy tất cả các cuộc trò chuyện của user
@@ -403,5 +437,16 @@ public interface ApiService {
     // Lấy danh sách tin nhắn của một cuộc trò chuyện
     @GET("api/mess/{chatId}")
     Call<ListMessageResponse> getMessagesByChatId(@Path("chatId") String chatId);
+
+
+    //FCM
+    @POST("api/fcm/")
+    Call<FCMResponse> createFCM(@Body FCMRequest request);
+
+    //Notification
+    @GET("api/notification/")
+    Call<ListNotificationResponse> getAllNotification();
+    @DELETE("api/notification/{id}")
+    Call<Void> deleteNotification(@Path("id") String id);
 
 }

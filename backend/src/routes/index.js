@@ -25,6 +25,7 @@ const chatRoutes = require('./chat.route');
 const messRoutes = require('./message.route');
 
 const fcmRoutes = require('./fcm.route');
+const notificationRoutes = require('./notification.route');
 
 const dailyReportRoutes = require('./dailyReport.route');
 const dailyStatisticRoutes = require('./dailyStatistic.route');
@@ -65,6 +66,7 @@ function route(app) {
   app.use('/api/mess', messRoutes);
 
   app.use('/api/fcm', fcmRoutes);
+  app.use('/api/notification', notificationRoutes);
 
   app.use('/api/dailyReport', dailyReportRoutes);
   app.use('/api/dailyStatistic', dailyStatisticRoutes);

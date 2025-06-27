@@ -35,6 +35,32 @@ const JobPostController = {
         }
     },
 
+    recommendJobs: async (req, res) => {
+        const userId = req.user.userId;
+
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 10;
+        const { skip, take } = getPagination(page, pageSize);
+
+        try {
+            const user = await prisma.user.findUnique({ where: { id: userId } });
+            if (!user?.applicantId) {
+                console.log('❌ Không phải applicant');
+                return res.status(403).json({ message: 'Forbidden' });
+            }
+
+            const { jobPosts, total } = await JobPostService.recommendJobs(user.applicantId, skip, take);
+
+            const meta = buildMeta(total, page, pageSize);
+            return res.status(200).json({ jobPosts, meta });
+        } catch (error) {
+            return res.status(500).json({
+                message: 'Error recommending jobs',
+                error: error.message || error,
+            });
+        }
+    },
+
     // Tạo một bài đăng công việc mới
     createJobPost: async (req, res) => {
         try {
@@ -99,13 +125,6 @@ const JobPostController = {
         const pageSize = parseInt(req.query.pageSize) || 10;
         const { skip, take } = getPagination(page, pageSize);
 
-        const role = req.user?.role;
-        const userCompanyId = req.user?.companyId;
-        console.log(userCompanyId, companyId, role)
-
-        if (role !== 'ADMIN' && userCompanyId !== companyId) {
-            return res.status(403).json({ message: 'Forbidden: You do not own this company' });
-        }
 
         try {
             const { jobPosts, total } = await JobPostService.getJobPostsByCompany(companyId, skip, take);
