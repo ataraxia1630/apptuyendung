@@ -6,7 +6,7 @@ const ReportController = {
     createReport: async (req, res) => {
         try {
             const { reason, jobPostId, postId, reportedUserId } = req.body;
-            const userId = req.user.id;
+            const userId = req.user.userId;
 
             if (!reason || (!jobPostId && !postId && !reportedUserId)) {
                 return res.status(400).json({ message: 'Missing required fields' });
@@ -58,26 +58,22 @@ const ReportController = {
             return res.status(500).json({ message: 'Failed to fetch reports by type', error: error.message });
         }
     },
-
-    approveReport: async (req, res) => {
+    getReportById: async (req, res) => {
         const { id } = req.params;
-        try {
-            const updated = await ReportService.updateReportStatus(id, 'APPROVED');
-            return res.status(200).json({ message: 'Report approved', report: updated });
-        } catch (error) {
-            return res.status(500).json({ message: 'Failed to approve report', error: error.message });
-        }
-    },
 
-    rejectReport: async (req, res) => {
-        const { id } = req.params;
         try {
-            const updated = await ReportService.updateReportStatus(id, 'REJECTED');
-            return res.status(200).json({ message: 'Report rejected', report: updated });
+            const report = await ReportService.getReportById(id);
+            if (!report) {
+                return res.status(404).json({ message: 'Report not found' });
+            }
+
+            return res.status(200).json({ report });
         } catch (error) {
-            return res.status(500).json({ message: 'Failed to reject report', error: error.message });
+            return res.status(500).json({ message: 'Failed to fetch report', error: error.message });
         }
-    },
+    }
+
+
 };
 
 module.exports = { ReportController };

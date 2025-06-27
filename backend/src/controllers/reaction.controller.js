@@ -27,28 +27,7 @@ const ReactionController = {
         }
     },
 
-    removeReaction: async (req, res) => {
-        const { postId } = req.params;
-        const userId = req.user?.userId;
 
-        if (!postId || !userId) {
-            return res.status(400).json({ message: 'Missing postId or userId' });
-        }
-
-        try {
-            await ReactionService.removeReaction({ postId, userId });
-
-            // Emit sau khi xử lý thành công
-            sendToPostRoom(postId, 'reaction.removed', {
-                postId,
-                userId
-            });
-
-            return res.status(200).json({ message: 'Reaction removed' });
-        } catch (err) {
-            return res.status(500).json({ message: err.message });
-        }
-    }
 };
 
 module.exports = { ReactionController };

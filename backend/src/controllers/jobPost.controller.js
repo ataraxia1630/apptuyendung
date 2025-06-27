@@ -52,7 +52,7 @@ const JobPostController = {
             const { jobPosts, total } = await JobPostService.recommendJobs(user.applicantId, skip, take);
 
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ jobPosts, meta });
+            return res.status(200).json({ jobPosts: jobPosts, meta });
         } catch (error) {
             return res.status(500).json({
                 message: 'Error recommending jobs',
@@ -149,7 +149,7 @@ const JobPostController = {
         try {
             const { jobPosts, total } = await JobPostService.getJobPostsByStatus(status, skip, take);
             const meta = buildMeta(total, page, pageSize);
-            return res.status(200).json({ jobPosts, meta });
+            return res.status(200).json({ jobPosts: jobPosts, meta });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Failed to fetch job posts by status', error: error.message });
@@ -166,7 +166,7 @@ const JobPostController = {
 
         try {
             const jobPost = await JobPostService.updateJobPostStatus(id, status);
-            return res.status(200).json({ jobPost });
+            return res.status(200).json({ jobPost: jobPost });
         } catch (error) {
             return res.status(500).json({ message: 'Failed to update post status', error: error.message });
         }
@@ -181,7 +181,7 @@ const JobPostController = {
             const { jobPosts, total } = await JobPostService.getMyJobsWithApplications(companyId, skip, take);
             const meta = buildMeta(total, page, pageSize);
 
-            return res.status(200).json({ data: jobPosts, meta });
+            return res.status(200).json({ jobPosts: jobPosts, meta });
         } catch (error) {
             console.error('Error fetching company job posts with applications:', error);
             return res.status(500).json({ message: 'Lỗi khi lấy danh sách công việc và ứng tuyển', error });
