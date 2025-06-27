@@ -30,7 +30,7 @@ import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.NavigationActivity;
-import com.example.workleap.ui.view.main.jobpost_post.MyJobPostAdapter;
+import com.example.workleap.ui.view.main.jobpost_post.JobPostAdapter;
 import com.example.workleap.ui.view.main.jobpost_post.PostAdapter;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.PostViewModel;
@@ -48,7 +48,7 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerViewJobPost, recyclerViewPost;
-    private MyJobPostAdapter adapterJobPost;
+    private JobPostAdapter adapterJobPost;
     private PostAdapter adapterPost;
     private List<JobPost> allJobs = new ArrayList<>();
     private List<Post> allPosts = new ArrayList<>();
@@ -125,7 +125,7 @@ public class HomeFragment extends Fragment {
             // Setup RecyclerView
             recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
             //adapterJobPost = new JobPostAdapter(allJobs, jobPostViewModel); // mặc định show tất cả
-            adapterJobPost = new MyJobPostAdapter(allJobs, jobPostViewModel, new MyJobPostAdapter.OnJobPostClickListener() {
+            adapterJobPost = new JobPostAdapter(allJobs, new JobPostAdapter.OnJobPostClickListener() {
                 @Override
                 public void onJobPostClick(JobPost jobPost) {
                     // Handle item click
@@ -206,7 +206,7 @@ public class HomeFragment extends Fragment {
                 {
                     String filePath = post.getContents().get(1).getValue();  // hoặc chỗ chứa đường dẫn ảnh
                     Log.d("filePath", filePath);
-                    postViewModel.getImageUrl(filePath); // dùng filePath làm key
+                    postViewModel.getImageUrlMap(filePath); // dùng filePath làm key
                 }
                 userViewModel.getLogoPostImageUrl(post.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key
             }

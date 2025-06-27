@@ -44,6 +44,7 @@ public class PostViewModel extends ViewModel {
     private MutableLiveData<String> deletePostByIdResult = new MutableLiveData<>();
     private MutableLiveData<String> getPostByIdResult = new MutableLiveData<>();
     private MutableLiveData<String> updatePostByIdResult = new MutableLiveData<>();
+    private MutableLiveData<Post> updatePostByIdData = new MutableLiveData<>();
 
     private MutableLiveData<String> creatCommentResult = new MutableLiveData<>();
     private MutableLiveData<Comment> creatCommentData = new MutableLiveData<>();
@@ -79,6 +80,7 @@ public class PostViewModel extends ViewModel {
     public LiveData<String> deletePostByIdResult() { return deletePostByIdResult; }
     public LiveData<String> getPostByIdResult() { return getPostByIdResult; }
     public LiveData<String> updatePostByIdResult() { return updatePostByIdResult; }
+    public LiveData<Post> updatePostByIdData() { return updatePostByIdData; }
 
     //comment
     public LiveData<String> creatCommentResult() { return creatCommentResult; }
@@ -222,6 +224,7 @@ public class PostViewModel extends ViewModel {
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful()) {
                     PostResponse postResponse = response.body();
+                    updatePostByIdData.setValue(postResponse.getPost());
                     updatePostByIdResult.setValue("Update post success");
                 } else {
                     try {
@@ -424,6 +427,32 @@ public class PostViewModel extends ViewModel {
     }
 
     public void getImageUrl(String filePath) {
+        Call<ImageUrlResponse> call = postRepository.getImageUrl(filePath);
+        call.enqueue(new Callback<ImageUrlResponse>() {
+            @Override
+            public void onResponse(Call<ImageUrlResponse> call, Response<ImageUrlResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String url = response.body().getUrl();
+                    getImageUrlData.setValue(url);
+                    getImageUrlResult.setValue("Get url image success");
+                } else {
+                    try {
+                        ImageUrlResponse error = new Gson().fromJson(response.errorBody().string(), ImageUrlResponse.class);
+                        getImageUrlResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getImageUrlResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ImageUrlResponse> call, Throwable t) {
+                getImageUrlResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getImageUrlMap(String filePath) {
         Call<ImageUrlResponse> call = postRepository.getImageUrl(filePath);
         call.enqueue(new Callback<ImageUrlResponse>() {
             @Override

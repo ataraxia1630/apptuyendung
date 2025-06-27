@@ -78,6 +78,9 @@ public class JobpostFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //Reset page, cho truong hop navigate up tro lai sau khi load more
+        pagePost = 1;
+
         recyclerViewJobPost = view.findViewById(R.id.recyclerJobPosts);
         recyclerViewPost = view.findViewById(R.id.recyclerPosts);
         btnMorePost = view.findViewById(R.id.btnLoadMorePosts);
@@ -186,7 +189,7 @@ public class JobpostFragment extends Fragment{
             // Setup RecyclerView
             recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
             //show tat ca jobpost va vao detail fragment khi click vao item
-            adapterPost = new MyPostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager(), user);
+            adapterPost = new MyPostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager(), user, nav);
             /*adapter = new MyPostAdapter(allPosts, postViewModel, new MyPostAdapter.OnPostClickListener() {
                 @Override
                 public void onPostClick(JobPost post) {
@@ -211,7 +214,7 @@ public class JobpostFragment extends Fragment{
                 {
                     String filePath = post.getContents().get(1).getValue();  // hoặc chỗ chứa đường dẫn ảnh
                     Log.d("filePath", filePath);
-                    postViewModel.getImageUrl(filePath); // dùng filePath làm key
+                    postViewModel.getImageUrlMap(filePath); // dùng filePath làm key
                 }
                 userViewModel.getLogoJobPostImageUrl(post.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key
             }

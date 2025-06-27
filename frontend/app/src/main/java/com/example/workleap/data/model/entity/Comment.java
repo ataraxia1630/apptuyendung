@@ -1,9 +1,10 @@
 package com.example.workleap.data.model.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Comment {
+public class Comment implements Serializable {
     private String id;
     private String userId;
     private String postId;
