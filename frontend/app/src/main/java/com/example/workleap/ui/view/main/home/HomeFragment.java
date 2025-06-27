@@ -27,8 +27,10 @@ import android.widget.ViewFlipper;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.JobSaved;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.User;
+import com.example.workleap.data.model.request.JobSavedRequest;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.view.main.jobpost_post.JobPostAdapter;
 import com.example.workleap.ui.view.main.jobpost_post.PostAdapter;
@@ -135,6 +137,27 @@ public class HomeFragment extends Fragment {
                     bundle.putSerializable("user", user);
                     ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
                     nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+                }
+
+                @Override
+                public void onSaveClick(JobPost jobpost) {
+                    jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
+                        if(result != null)
+                            Log.e("HomeFragment", "createJobSavedResult: " + result + "");
+                        else
+                            Log.e("HomeFragment", "createJobSavedResult: null");
+                    });
+                    if(user.getApplicantId() != null)
+                    {
+                        JobSavedRequest jobSave = new JobSavedRequest(user.getApplicantId(), jobpost.getId());
+                        jobPostViewModel.createJobSaved(jobSave);
+                    }
+                    return;
+                }
+
+                @Override
+                public void onReportClick(JobPost jobpost) {
+                    return;
                 }
             });
 

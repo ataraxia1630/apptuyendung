@@ -21,11 +21,14 @@ import android.widget.TextView;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.JobSaved;
 import com.example.workleap.data.model.entity.User;
+import com.example.workleap.data.model.request.JobSavedRequest;
 import com.example.workleap.data.model.response.FieldStat;
 import com.example.workleap.data.model.response.MonthlyStat;
 import com.example.workleap.data.model.response.TopJobPostResponse;
 import com.example.workleap.ui.view.main.jobpost_post.JobPostAdapter;
+import com.example.workleap.ui.view.main.jobpost_post.JobpostFragment;
 import com.example.workleap.ui.view.main.jobpost_post.MyJobPostAdapter;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.StatisticViewModel;
@@ -66,7 +69,7 @@ public class StatisticsFragment extends Fragment {
 
     private Bundle bundle;
 
-    private User user;
+    private User user; //myUser
     private NavController nav;
 
     private JobPostViewModel jobPostViewModel;
@@ -211,6 +214,27 @@ public class StatisticsFragment extends Fragment {
                 jobPostViewModel.setCurrentJobPost(jobPost);
                 ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
                 nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+            }
+
+            @Override
+            public void onSaveClick(JobPost jobpost) {
+                jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
+                    if(result != null)
+                        Log.e("HomeFragment", "createJobSavedResult: " + result + "");
+                    else
+                        Log.e("HomeFragment", "createJobSavedResult: null");
+                });
+                if(user.getApplicantId() != null)
+                {
+                    JobSavedRequest jobSave = new JobSavedRequest(user.getApplicantId(), jobpost.getId());
+                    jobPostViewModel.createJobSaved(jobSave);
+                }
+                return;
+            }
+
+            @Override
+            public void onReportClick(JobPost jobpost) {
+                return;
             }
         });
         recyclerTopJobs.setLayoutManager(new LinearLayoutManager(getContext()));

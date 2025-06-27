@@ -4,9 +4,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,6 +30,8 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
 
     public interface OnJobPostClickListener {
         void onJobPostClick(JobPost jobPost);
+        void onSaveClick(JobPost jobPost);
+        void onReportClick(JobPost jobPost);
     }
     public JobPostAdapter(List<JobPost> jobPostList, OnJobPostClickListener clickListener) {
         this.jobPostList = jobPostList;
@@ -79,6 +81,28 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
                 clickListener.onJobPostClick(post);
             }
         });
+
+        // Thêm PopupMenu cho btnOption
+        holder.btnOption.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.btnOption);
+            popupMenu.inflate(R.menu.menu_options_jobpost); // Load menu từ file XML
+            popupMenu.setOnMenuItemClickListener(item -> {
+                    if(item.getItemId() == R.id.menu_save) {
+                        //Save
+                        clickListener.onSaveClick(post);
+                        return true;
+                    }
+                    else if(item.getItemId() == R.id.menu_report)
+                    {
+                       //report
+                        clickListener.onReportClick(post);
+                        return true;
+                    }
+                    else
+                        return false;
+            });
+            popupMenu.show();
+        });
     }
 
     @Override
@@ -90,7 +114,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
         TextView txtTitle, txtCompany, txtSalary, txtLocation, txtTime, txtTag1, txtTag2, txtTag3;
         ImageView imgPost;
 
-        ImageButton btnSave;
+        ImageButton btnOption;
 
         public JobPostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -103,7 +127,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
             txtTag1 = itemView.findViewById(R.id.txtTab1);
             txtTag2 = itemView.findViewById(R.id.txtTab2);
             txtTag3 = itemView.findViewById(R.id.txtTab3);
-            btnSave = itemView.findViewById(R.id.btnSave);
+            btnOption = itemView.findViewById(R.id.btnOption);
         }
     }
 

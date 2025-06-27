@@ -10,8 +10,10 @@ import androidx.lifecycle.ViewModel;
 import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.JobSaved;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
+import com.example.workleap.data.model.request.JobSavedRequest;
 import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
 import com.example.workleap.data.model.response.JobAppliedResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
@@ -396,7 +398,7 @@ public class JobPostViewModel  extends ViewModel {
 
     //Job saved
     public void getAllJobSaved(String applicantId) {
-        jobPostRepository.createJobSaved(applicantId).enqueue(new Callback<ListJobPostResponse>() {
+        jobPostRepository.getJobSaved(applicantId).enqueue(new Callback<ListJobPostResponse>() {
             @Override
             public void onResponse(Call<ListJobPostResponse> call, Response<ListJobPostResponse> response){
                 if (response.isSuccessful() && response.body() != null) {
@@ -414,10 +416,10 @@ public class JobPostViewModel  extends ViewModel {
         });
     }
 
-    public void createJobSaved(JobPost request) {
-        jobPostRepository.createJobSaved(request).enqueue(new Callback<ListJobPostResponse>() {
+    public void createJobSaved(JobSavedRequest request) {
+        jobPostRepository.createJobSaved(request).enqueue(new Callback<MessageResponse>() {
             @Override
-            public void onResponse(Call<ListJobPostResponse> call, Response<ListJobPostResponse> response) {
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     createJobSavedResult.postValue("Success");
                 } else {
@@ -426,7 +428,7 @@ public class JobPostViewModel  extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<ListJobPostResponse> call, Throwable t) {
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
                 createJobSavedResult.postValue("Error: " + t.getMessage());
             }
         });

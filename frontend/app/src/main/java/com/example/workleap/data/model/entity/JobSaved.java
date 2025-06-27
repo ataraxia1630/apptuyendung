@@ -14,6 +14,11 @@ public class JobSaved {
     private Applicant applicant;
 
     // Getters and Setters
+    public JobSaved() {};
+    public JobSaved(String jobpostId, String applicantId) {
+        this.jobpostId = jobpostId;
+        this.applicantId = applicantId;
+    }
 
     public String getJobpostId() {
         return jobpostId;

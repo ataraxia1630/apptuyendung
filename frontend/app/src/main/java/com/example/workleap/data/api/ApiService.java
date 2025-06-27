@@ -5,6 +5,7 @@ import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.JobSaved;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.entity.Message;
 import com.example.workleap.data.model.entity.Notification;
@@ -16,6 +17,7 @@ import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
 import com.example.workleap.data.model.request.FCMRequest;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.data.model.request.GroupChatRequest;
+import com.example.workleap.data.model.request.JobSavedRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
 import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
 import com.example.workleap.data.model.request.ListMemberIdRequest;
@@ -247,9 +249,9 @@ public interface ApiService {
 
     //JobSaved
     @GET("api/save/{applicantId}")
-    Call<ListJobPostResponse> createJobSaved(@Path("applicantId") String applicantId);
+    Call<ListJobPostResponse> getJobSaved(@Path("applicantId") String applicantId);
     @POST("api/save/")
-    Call <ListJobPostResponse> createJobSaved(@Body JobPost request);
+    Call <MessageResponse> createJobSaved(@Body JobSavedRequest request);
     @DELETE("api/save/{applicantId}/{jobpostId}")
     Call <MessageResponse> deleteJobSaved(@Path("applicantId") String applicantId, @Path("jobpostId") String jobpostId);
 
