@@ -90,7 +90,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
         TextView txtTitle, txtCompany, txtSalary, txtLocation, txtTime, txtTag1, txtTag2, txtTag3;
         ImageView imgPost;
 
-        ImageButton btnOption;
+        ImageButton btnSave;
 
         public JobPostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -103,9 +103,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
             txtTag1 = itemView.findViewById(R.id.txtTab1);
             txtTag2 = itemView.findViewById(R.id.txtTab2);
             txtTag3 = itemView.findViewById(R.id.txtTab3);
-            //an di nut option
-            btnOption = itemView.findViewById(R.id.btnOption);
-            btnOption.setVisibility(View.GONE);
+            btnSave = itemView.findViewById(R.id.btnSave);
         }
     }
 

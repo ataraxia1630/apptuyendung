@@ -1,6 +1,5 @@
 package com.example.workleap.ui.view.main.profile;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -24,14 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.workleap.R;
-import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.Follower;
-import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.data.model.request.FriendIdRequest;
-import com.example.workleap.ui.view.auth.MainActivity;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.view.main.jobpost_post.JobPostAdapter;
 import com.example.workleap.ui.view.main.jobpost_post.PostAdapter;
@@ -240,7 +235,7 @@ public class WatchCompanyProfileFragment extends Fragment {
                 {
                     String filePath = post.getContents().get(1).getValue();  // hoặc chỗ chứa đường dẫn ảnh
                     Log.d("filePath", filePath);
-                    postViewModel.getImageUrl(filePath); // dùng filePath làm key
+                    postViewModel.getImageUrlMap(filePath); // dùng filePath làm key
                 }
                 userViewModel.getLogoPostImageUrl(post.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key
             }

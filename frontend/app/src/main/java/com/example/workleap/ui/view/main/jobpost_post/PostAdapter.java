@@ -266,7 +266,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             btnOption = itemView.findViewById(R.id.btnOption);
             btnComment = itemView.findViewById(R.id.btnComment);
             btnReaction = itemView.findViewById(R.id.btn_like);
-            btnShare= itemView.findViewById(R.id.btn_share);
+            //btnShare= itemView.findViewById(R.id.btn_share);
 
             btnProfile = itemView.findViewById(R.id.post_header);
 

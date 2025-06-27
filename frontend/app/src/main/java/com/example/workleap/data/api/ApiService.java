@@ -228,7 +228,6 @@ public interface ApiService {
     );
     @GET("api/job-posts/company/me/{id}")
     Call<JobPostResponse> getMyJobPostById( @Path("id") String id);
-
     @GET("api/job-posts/admin/by-status")
     Call<ListJobPostResponse> getJobPostByStatus(@Query("page") int page, @Query("pageSize") int pageSize, @Query("status") String status);
     @PUT("api/job-posts/admin/toggle/{id}")

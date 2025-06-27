@@ -223,7 +223,6 @@ public class UpdateJobPostFragment extends Fragment {
 
             if(isJobPostSubmitted) {
                 // Hien lai bottom navigation va quay ve
-                ((NavigationActivity) getActivity()).showBottomNav(true);
                 NavHostFragment.findNavController(this).navigateUp();
             }
         });
