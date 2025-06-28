@@ -7,5 +7,7 @@ const route = new Router();
 
 route.post('/', verifyToken, uploadFile, PostImageController.uploadImage);
 route.get('/:filePath', verifyToken, PostImageController.getImageURL);
+route.delete('/:filePath', verifyToken, PostImageController.deleteImage);
+
 
 module.exports = route;

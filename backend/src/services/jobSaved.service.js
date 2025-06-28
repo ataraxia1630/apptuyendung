@@ -7,7 +7,17 @@ const JobSavedService = {
         where: { applicantId },
         orderBy: { created_at: sortOrder },
         include: {
-          JobPost: true,
+          JobPost: {
+            include: {
+              Company: {
+                include: {
+                  User: { select: { id: true, avatar: true } },
+                },
+              },
+              JobType: true,
+              JobCategory: true,
+            },
+          },
         },
       });
 
@@ -15,7 +25,7 @@ const JobSavedService = {
     } catch (error) {
       throw new Error(
         'Error fetching all job posts saved by an applicant (service): ' +
-          error.message
+        error.message
       );
     }
   },
