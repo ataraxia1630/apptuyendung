@@ -1,5 +1,8 @@
-const { message } = require('../config/db/prismaClient');
 const { JobAppliedService } = require('../services/jobApplied.service');
+const { JobPostService } = require('../services/jobPost.service');
+const { CompanyService } = require('../services/company.service');
+const { ApplicantService } = require('../services/applicant.service');
+const NotiEmitter = require('../emitters/notification.emitter');
 
 const JobAppliedController = {
   getAllCvAppliedToJob: async (req, res) => {
@@ -47,7 +50,24 @@ const JobAppliedController = {
   applyJob: async (req, res) => {
     try {
       const apply = await JobAppliedService.applyJob(req.body);
-      return res.status(201).json({ apply: apply });
+      res.status(201).json({ apply: apply });
+      (async () => {
+        try {
+          const jobpost = await JobPostService.getJobPostById(
+            req.body.jobpostId
+          );
+          const company = await CompanyService.getCompanyById(
+            jobpost.companyId
+          );
+
+          NotiEmitter.emit('job.applied', {
+            userId: company.User.id,
+            jobTitle: jobpost.title,
+          });
+        } catch (err) {
+          console.error('Error while sending notification:', err.message);
+        }
+      })();
     } catch (error) {
       return res.status(500).json({ message: '', error: error.message });
     }
@@ -70,7 +90,31 @@ const JobAppliedController = {
   processCV: async (req, res) => {
     try {
       const jobApplied = await JobAppliedService.processCV(req.body);
-      return res.status(200).json({ jobApplied });
+      res.status(200).json({ jobApplied });
+      if (jobApplied.status === 'SUCCESS' || jobApplied.status === 'FAILURE') {
+        (async () => {
+          try {
+            const jobpost = await JobPostService.getJobPostById(
+              jobApplied.jobpostId
+            );
+            const applicant = await ApplicantService.getApplicantById(
+              jobApplied.applicantId
+            );
+
+            NotiEmitter.emit(
+              jobApplied.status === 'SUCCESS'
+                ? 'jobApplied.success'
+                : 'jobApplied.fail',
+              {
+                userId: applicant.User.id,
+                jobTitle: jobpost.title,
+              }
+            );
+          } catch (err) {
+            console.error('Error while sending notification:', err.message);
+          }
+        })();
+      }
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }

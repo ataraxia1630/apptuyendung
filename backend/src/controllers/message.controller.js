@@ -1,6 +1,7 @@
 const { sendToChatRoom } = require('../socket');
 const { MessService } = require('../services/message.service');
-const { message } = require('../config/db/prismaClient');
+const { ChatService } = require('../services/chat.service');
+const NotiEmitter = require('../emitters/notification.emitter');
 
 const MessController = {
   sendMess: async (req, res) => {
@@ -9,7 +10,21 @@ const MessController = {
       const { conversationId, content } = req.body;
       const mess = await MessService.createNew(userId, conversationId, content);
       sendToChatRoom(conversationId, 'newMess', { mess });
-      return res.status(201).json({ mess });
+      res.status(201).json({ mess });
+      (async () => {
+        try {
+          const chat = await ChatService.getChatById(conversationId);
+          const members = chat.members;
+
+          members.map((member) => {
+            NotiEmitter.emit('mess.new', {
+              userId: member.userId,
+            });
+          });
+        } catch (err) {
+          console.error('Error while sending notification:', err.message);
+        }
+      })();
     } catch (error) {
       return res.status(500).json({ message: error.message || 'Server error' });
     }
