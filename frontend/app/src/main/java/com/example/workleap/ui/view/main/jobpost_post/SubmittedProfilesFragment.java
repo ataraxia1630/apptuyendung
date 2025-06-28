@@ -69,6 +69,8 @@ public class SubmittedProfilesFragment extends Fragment {
 
     SubmittedProfilesAdapter adapter;
 
+    String currentStatus = "all"; //all, success, failure, pending
+
     public SubmittedProfilesFragment() {
         // Required empty public constructor
     }
@@ -107,8 +109,7 @@ public class SubmittedProfilesFragment extends Fragment {
 
 
             this.submittedProfiles = jobpost.getJobApplied();
-            currentSubmittedProfiles.clear();
-            currentSubmittedProfiles.addAll(submittedProfiles);
+
             if(submittedProfiles==null)
             {
                 Log.e("SubmitProfileFragment", "submittedProfiles NULL");
@@ -160,6 +161,29 @@ public class SubmittedProfilesFragment extends Fragment {
 
                 tvProfileCount.setText(String.valueOf(submittedProfiles.size()));
                 Log.e("SubmitProfileFragment", "submitted profiles NOT null");
+
+                //giu lai filter neu co cap nhat status cho cv
+                switch (currentStatus.toLowerCase()) {
+                    case "all":
+                        adapter.updateList(submittedProfiles);
+                        currentSubmittedProfiles.clear();
+                        currentSubmittedProfiles.addAll(submittedProfiles);
+                        break;
+                    case "pending":
+                        updateAdapterList("PENDING");
+                        break;
+                    case "success":
+                        updateAdapterList("SUCCESS");
+                        break;
+                    case "failure":
+                        updateAdapterList("FAILURE");
+                        break;
+                    default:
+                        adapter.updateList(submittedProfiles);
+                        currentSubmittedProfiles.clear();
+                        currentSubmittedProfiles.addAll(submittedProfiles);
+                        break;
+                }
             }
 
 
@@ -186,20 +210,21 @@ public class SubmittedProfilesFragment extends Fragment {
                 int id = item.getItemId();
 
                 if (id == R.id.cv_all) {
+                    currentStatus = "all";
                     adapter.updateList(submittedProfiles);
-                    Log.e("eeeee", String.valueOf(submittedProfiles.size()));
                     adapter.notifyDataSetChanged();
                     return true;
                 } else if (id == R.id.cv_pending) {
+                    currentStatus="pending";
                     updateAdapterList("PENDING");
-                    Log.e("eeeee", String.valueOf(submittedProfiles.size()));
                     return true;
                 } else if (id == R.id.cv_success) {
+                    currentStatus = "success";
                     updateAdapterList("SUCCESS");
-                    Log.e("eeeee", String.valueOf(submittedProfiles.size()));
                     return true;
                 } else if (id == R.id.cv_failed) {
-                    updateAdapterList("FAILED");
+                    currentStatus = "failure";
+                    updateAdapterList("FAILURE");
                     return true;
                 } else {
                     return false;

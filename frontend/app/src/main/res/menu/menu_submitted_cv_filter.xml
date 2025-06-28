@@ -11,5 +11,5 @@
         android:title="SUCCESS" />
     <item
         android:id="@+id/cv_failed"
-        android:title="FAILED" />
+        android:title="FAILURE" />
 </menu>
