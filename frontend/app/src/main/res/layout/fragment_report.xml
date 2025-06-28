@@ -1,74 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollViewReport"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutAdminReport"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp"
     android:background="@android:color/white">
 
-    <LinearLayout
-        android:id="@+id/layoutReport"
-        android:layout_width="match_parent"
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tvTitleReports"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:text="User Reports"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp" />
 
-        <!-- Title -->
-        <TextView
-            android:id="@+id/tvReportTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Report"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+    <!-- RecyclerView hiển thị danh sách report -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewReports"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingBottom="8dp" />
 
-        <!-- Reported Target -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reported Target:"
-            android:textStyle="bold" />
+    <!-- Empty text nếu không có report -->
+    <TextView
+        android:id="@+id/tvNoReports"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No reports found."
+        android:textColor="@android:color/darker_gray"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal" />
 
-        <TextView
-            android:id="@+id/tvReportedTarget"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="User: John Doe"
-            android:textColor="@android:color/holo_red_dark"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Reason -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reason:"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/edtReportReason"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:gravity="top"
-            android:hint="Describe the issue..."
-            android:inputType="textMultiLine"
-            android:background="@color/gray_light"
-            android:padding="8dp"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Submit Button -->
-        <Button
-            android:id="@+id/btnSubmitReport"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Submit Report"
-            android:backgroundTint="@color/cardview_dark_background"
-            android:textColor="@android:color/white"
-            android:padding="12dp" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:srcCompat="@drawable/report_photo" />
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>
