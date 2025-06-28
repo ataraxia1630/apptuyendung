@@ -226,7 +226,7 @@ public interface ApiService {
     @GET("api/job-posts/all")
     Call<ListJobPostResponse> getAllJobPosts(@Query("page") int page, @Query("pageSize") int pageSize);
     @GET("api/job-posts/company/{id}")
-    Call<ListJobPostResponse> getJobPostsByCompany(@Path ("id") String id);
+    Call<ListJobPostResponse> getJobPostsByCompany(@Path ("id") String id, @Query("page") int page, @Query("pageSize") int pageSize);
     @GET("api/job-posts/{id}")
     Call<JobPostResponse> getJobPostById(@Path("id") String id);
     @POST("api/job-posts")

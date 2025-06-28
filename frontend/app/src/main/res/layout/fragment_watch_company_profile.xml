@@ -246,6 +246,39 @@
             android:nestedScrollingEnabled="false"
             android:layout_marginBottom="8dp" />
 
+        <LinearLayout
+            android:id="@+id/paginationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageButton
+                android:id="@+id/btnPrev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_left"
+                android:background="@null"
+                android:contentDescription="Previous Page" />
+
+            <TextView
+                android:id="@+id/tvPageNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textSize="18sp"
+                android:layout_marginHorizontal="16dp" />
+
+            <ImageButton
+                android:id="@+id/btnNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right"
+                android:background="@null"
+                android:contentDescription="Next Page" />
+        </LinearLayout>
+        
         <!-- POSTS -->
         <TextView
             android:layout_width="wrap_content"

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="4dp"
+    android:gravity="end"
+    android:id="@+id/messageContainer">
+
+    <!-- Nội dung tin nhắn -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_message_received"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:elevation="2dp">
+
+        <!-- Nếu là nhóm thì hiện tên người gửi -->
+        <TextView
+            android:id="@+id/txtSenderName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nguyễn Văn A"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:textColor="#666"/>
+
+        <TextView
+            android:id="@+id/txtMessageContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Xin chào mọi người"
+            android:textSize="16sp"
+            android:textColor="#000"/>
+
+        <!-- Thêm thời gian ở dưới, canh phải -->
+        <TextView
+            android:id="@+id/txtTimestamp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="10:35 22/06"
+            android:textSize="10sp"
+            android:gravity="end"
+            android:textColor="#999"
+            android:layout_marginTop="4dp"/>
+    </LinearLayout>
+    <!-- Avatar (ẩn nếu là tin của mình) -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imgSenderAvatar"
+        android:scaleType="centerCrop"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_edit_pen"
+        android:layout_marginEnd="8dp"
+        android:visibility="visible"
+        app:shapeAppearanceOverlay="@style/CircleImageView"/>
+
+</LinearLayout>

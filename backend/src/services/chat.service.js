@@ -231,8 +231,8 @@ const ChatService = {
       const chat = await prisma.conversation.findUnique({
         where: { id },
         include: {
-          Message: [],
-          members: [],
+          Message: true,
+          members: true,
         },
       });
       if (!chat) throw new Error('Chat not found!');
