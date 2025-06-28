@@ -26,15 +26,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private Map<String, String> avatarUrlMap = new HashMap<>();
     private String logoFilePath;
     private final OnMessageClickListener listener;
-
+    private static final int VIEW_TYPE_MY_MESSAGE = 1;
+    private static final int VIEW_TYPE_OTHER_MESSAGE = 2;
+    private String currentUserId;
     public interface OnMessageClickListener {
         void onMessageClick(Message message);
     }
 
-    public MessageAdapter(Context context, List<Message> messageList, OnMessageClickListener listener) {
+    public MessageAdapter(Context context, List<Message> messageList, String currentUserId, OnMessageClickListener listener) {
         this.context = context;
         this.messageList = messageList;
         this.listener = listener;
+        this.currentUserId = currentUserId;
     }
 
     public void setMessageList(List<Message> messageList) {
@@ -46,6 +49,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_message, parent, false);
+        if (viewType == VIEW_TYPE_MY_MESSAGE) {
+            view = LayoutInflater.from(context).inflate(R.layout.item_message_right, parent, false);
+        } else {
+            view = LayoutInflater.from(context).inflate(R.layout.item_message, parent, false);
+        }
         return new MessageViewHolder(view);
     }
 
@@ -96,5 +104,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public void setImageUrlMap(Map<String, String> map) {
         this.avatarUrlMap = map;
         notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        Message message = messageList.get(position);
+        if (message.getSender().getId().equals(currentUserId)) {
+            return VIEW_TYPE_MY_MESSAGE;
+        } else {
+            return VIEW_TYPE_OTHER_MESSAGE;
+        }
     }
 }

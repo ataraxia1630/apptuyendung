@@ -23,6 +23,7 @@ import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.ConversationUser;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.Message;
+import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.ConversationViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
@@ -48,6 +49,7 @@ public class MessageDetailFragment extends Fragment {
     private ConversationUser currentConversationUser;
     private Conversation currentConversation;
     private UserViewModel userViewModel;
+    private User myUser;
 
     public MessageDetailFragment() {
         // Required empty public constructor
@@ -67,6 +69,7 @@ public class MessageDetailFragment extends Fragment {
         if (getArguments() != null) {
            currentConversationUser = (ConversationUser) getArguments().getSerializable("conversationUser");
            currentConversation = (Conversation) getArguments().getSerializable("conversation");
+           myUser = (User) getArguments().getSerializable("myUser");
            Log.d("conversationUser rc", new Gson().toJson(currentConversationUser));
         }
     }
@@ -106,7 +109,7 @@ public class MessageDetailFragment extends Fragment {
             if(messages != null) {
                 this.messages.clear();
                 this.messages.addAll(data);
-                messageAdapter = new MessageAdapter(getContext(),this.messages, new MessageAdapter.OnMessageClickListener() {
+                messageAdapter = new MessageAdapter(getContext(),this.messages, myUser.getId(), new MessageAdapter.OnMessageClickListener() {
                     @Override
                     public void onMessageClick(Message message) {
                         // Xử lý khi click vào đoạn chat
