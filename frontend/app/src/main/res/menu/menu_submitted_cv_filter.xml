@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/cv_all"
+        android:title="ALL" />
+    <item
+        android:id="@+id/cv_pending"
+        android:title="PENDING" />
+    <item
+        android:id="@+id/cv_success"
+        android:title="SUCCESS" />
+    <item
+        android:id="@+id/cv_failed"
+        android:title="FAILED" />
+</menu>

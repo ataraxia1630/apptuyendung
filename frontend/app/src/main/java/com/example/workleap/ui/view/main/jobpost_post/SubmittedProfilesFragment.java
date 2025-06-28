@@ -23,6 +23,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -45,12 +46,14 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class SubmittedProfilesFragment extends Fragment {
     private JobPostViewModel jobPostViewModel;
     ArrayList<JobApplied> submittedProfiles;
+    ArrayList<JobApplied> currentSubmittedProfiles;
     private JobPost currentJobPost;
     private TextView tvProfileCount, tvExport, tvStartReviewing;
     private EditText etSearch;
@@ -64,6 +67,7 @@ public class SubmittedProfilesFragment extends Fragment {
 
     private String urlSupabase = "https://epuxazakjgtmjuhuwkza.supabase.co/storage/v1/object/public/cv-storage/";
 
+    SubmittedProfilesAdapter adapter;
 
     public SubmittedProfilesFragment() {
         // Required empty public constructor
@@ -88,6 +92,8 @@ public class SubmittedProfilesFragment extends Fragment {
         btnFilter = view.findViewById(R.id.btnFilter);
         rvSubmittedCVs = view.findViewById(R.id.rvSubmittedCVs);
 
+        currentSubmittedProfiles = new ArrayList<>();
+
         currentJobPost = (JobPost) getArguments().getSerializable("currentJobPost");
 
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
@@ -101,6 +107,8 @@ public class SubmittedProfilesFragment extends Fragment {
 
 
             this.submittedProfiles = jobpost.getJobApplied();
+            currentSubmittedProfiles.clear();
+            currentSubmittedProfiles.addAll(submittedProfiles);
             if(submittedProfiles==null)
             {
                 Log.e("SubmitProfileFragment", "submittedProfiles NULL");
@@ -108,7 +116,7 @@ public class SubmittedProfilesFragment extends Fragment {
             }
             else
             {
-                SubmittedProfilesAdapter adapter = new SubmittedProfilesAdapter(
+                adapter = new SubmittedProfilesAdapter(
                         submittedProfiles,
                         new SubmittedProfilesAdapter.OnSubmittedProfilesMenuClickListener() {
                             @Override
@@ -170,20 +178,51 @@ public class SubmittedProfilesFragment extends Fragment {
         });
 
 
+        btnFilter.setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(requireContext(), btnFilter);
+            popup.getMenuInflater().inflate(R.menu.menu_submitted_cv_filter, popup.getMenu());
+
+            popup.setOnMenuItemClickListener(item -> {
+                int id = item.getItemId();
+
+                if (id == R.id.cv_all) {
+                    adapter.updateList(submittedProfiles);
+                    Log.e("eeeee", String.valueOf(submittedProfiles.size()));
+                    adapter.notifyDataSetChanged();
+                    return true;
+                } else if (id == R.id.cv_pending) {
+                    updateAdapterList("PENDING");
+                    Log.e("eeeee", String.valueOf(submittedProfiles.size()));
+                    return true;
+                } else if (id == R.id.cv_success) {
+                    updateAdapterList("SUCCESS");
+                    Log.e("eeeee", String.valueOf(submittedProfiles.size()));
+                    return true;
+                } else if (id == R.id.cv_failed) {
+                    updateAdapterList("FAILED");
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+
+            popup.show();
+        });
+
         tvStartReviewing.setOnClickListener(v -> {
-            if(submittedProfiles==null)
+            if(currentSubmittedProfiles==null)
             {
                 Toast.makeText(this.getActivity(), "No profiles have been submitted yet.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(submittedProfiles.size()==0)
+            if(currentSubmittedProfiles.size()==0)
             {
                 Toast.makeText(this.getActivity(), "No profiles have been submitted yet.", Toast.LENGTH_SHORT).show();
                 return;
             }
             MultiPdfFragment multiPdfFragment = new MultiPdfFragment();
             Bundle bundle = new Bundle();
-            bundle.putSerializable("jobApplieds", submittedProfiles);
+            bundle.putSerializable("jobApplieds", currentSubmittedProfiles);
             multiPdfFragment.setArguments(bundle);
 
             requireActivity().getSupportFragmentManager()
@@ -194,7 +233,7 @@ public class SubmittedProfilesFragment extends Fragment {
         });
 
         tvExport.setOnClickListener(v -> {
-            if (submittedProfiles == null || submittedProfiles.isEmpty()) {
+            if (currentSubmittedProfiles == null || currentSubmittedProfiles.isEmpty()) {
                 Toast.makeText(getContext(), "No profiles to export.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -359,13 +398,13 @@ public class SubmittedProfilesFragment extends Fragment {
 
         new Thread(() -> {
             try {
-                int totalFiles = submittedProfiles.size();
+                int totalFiles = currentSubmittedProfiles.size();
                 int currentIndex = 0;
 
                 ZipOutputStream zipOut = new ZipOutputStream(requireContext().getContentResolver().openOutputStream(outputUri));
 
                 int index = 0; //danh so de khong trung ten file
-                for (JobApplied jobApplied : submittedProfiles) {
+                for (JobApplied jobApplied : currentSubmittedProfiles) {
                     Log.e("ZIP_EXPORT", "Processing file: " + jobApplied.getCV().getTitle());
                     String fileUrl = urlSupabase + jobApplied.getCV().getFilePath();
                     URL url = new URL(fileUrl);
@@ -438,5 +477,18 @@ public class SubmittedProfilesFragment extends Fragment {
             submittedProfiles.clear();  //tranh mo lai o jobpost khac khi chua kip load du lieu moi
         }
     }
+    private void updateAdapterList(String status) {
+        List<JobApplied> statusProfiles = new ArrayList<>();
+        for (JobApplied jobApplied : submittedProfiles) {
+            if (status.equalsIgnoreCase(jobApplied.getStatus())) {
+                statusProfiles.add(jobApplied);
+            }
+        }
+
+        currentSubmittedProfiles.clear();
+        currentSubmittedProfiles.addAll(statusProfiles);
+        adapter.updateList(statusProfiles);
+    }
+
 
 }
