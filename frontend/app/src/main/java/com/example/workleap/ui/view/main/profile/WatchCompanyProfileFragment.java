@@ -56,6 +56,9 @@ public class WatchCompanyProfileFragment extends Fragment {
     private Button btnMorePost;
     private int pagePost = 1;
     private int pageSizePost = 4;
+    private int pageJobPost = 1;
+    private int pageSizeJobPost = 4;
+    private TextView tvPageNumber;
     private boolean isMorePost = false; // Kiểm tra đang tải lại fragment hay tải thêm bài đăng
     private List<Post> allPosts = new ArrayList<>();
     User user, myUser;
@@ -68,6 +71,7 @@ public class WatchCompanyProfileFragment extends Fragment {
     PostViewModel postViewModel;
     NavController nav;
     ImageButton btnFollow, btnChat, btnBack;
+    private ImageButton btnPrev, btnNext;
 
     RecyclerView recyclerViewJobPost, recyclerViewPost;
     private JobPostAdapter adapterJobPost;
@@ -138,6 +142,9 @@ public class WatchCompanyProfileFragment extends Fragment {
         recyclerViewPost = view.findViewById(R.id.recyclerPosts);
         avatar = view.findViewById(R.id.shapeableImageView);
         btnMorePost = view.findViewById(R.id.btnLoadMorePosts);
+        btnPrev = view.findViewById(R.id.btnPrev);
+        btnNext = view.findViewById(R.id.btnNext);
+        tvPageNumber = view.findViewById(R.id.tvPageNumber);
 
         //observe to Set value from company
         companyViewModel.getGetCompanyData().observe(getViewLifecycleOwner(), company -> {
@@ -155,7 +162,7 @@ public class WatchCompanyProfileFragment extends Fragment {
             }
 
             //job post list
-            jobPostViewModel.getJobPostsByCompany(company.getId());
+            jobPostViewModel.getJobPostsByCompany(company.getId(), pageJobPost, pageSizeJobPost);
             jobPostViewModel.getJobPostsByCompanyResult().observe(getViewLifecycleOwner(), result ->
             {
                 Log.e("AppliedJobFragment", "getJobPostsByCompanyResult: " + result);
@@ -166,7 +173,7 @@ public class WatchCompanyProfileFragment extends Fragment {
                 {
                     Log.e("watchcompanyprofile", "jobposts NULL");
                     return;
-                }else
+                } else
                 {
                     Log.e("eeeee", String.valueOf(jobPosts.size()));
                 }
@@ -274,7 +281,23 @@ public class WatchCompanyProfileFragment extends Fragment {
             postViewModel.getPostByCompany(companyId, pagePost, pageSizePost);
         });
 
+        //Page for jobpost
+        btnPrev.setOnClickListener(v -> {
+            if (pageJobPost > 1) {
+                pageJobPost--;
 
+                jobPostViewModel.getJobPostsByCompany(companyId, pageJobPost, pageSizeJobPost);
+
+                tvPageNumber.setText(String.valueOf(pageJobPost));
+            }
+        });
+        btnNext.setOnClickListener(v -> {
+            pageJobPost++;
+
+            jobPostViewModel.getJobPostsByCompany(companyId, pageJobPost, pageSizeJobPost);
+
+            tvPageNumber.setText(String.valueOf(pageJobPost));
+        });
 
         //Set value from user, call api
         userViewModel.getGetUserData().observe(getViewLifecycleOwner(), data -> {

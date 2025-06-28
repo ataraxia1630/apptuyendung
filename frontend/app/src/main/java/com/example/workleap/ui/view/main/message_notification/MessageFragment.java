@@ -102,6 +102,7 @@ public class MessageFragment extends Fragment {
                         // Xử lý khi click vào đoạn chat
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("conversationUser", conversationUser);
+                        bundle.putSerializable("myUser", myUser);
                         ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
                         nav.navigate(R.id.messageDetailFragment, bundle); // Navigate to DetailJobPostFragment*/
                     }

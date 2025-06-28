@@ -56,6 +56,7 @@ import com.example.workleap.data.model.response.ListMessageResponse;
 import com.example.workleap.data.model.response.ListMonthlyStatResponse;
 import com.example.workleap.data.model.response.ListNotificationResponse;
 import com.example.workleap.data.model.response.ListPostResponse;
+import com.example.workleap.data.model.response.ListReportResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
@@ -225,7 +226,7 @@ public interface ApiService {
     @GET("api/job-posts/all")
     Call<ListJobPostResponse> getAllJobPosts(@Query("page") int page, @Query("pageSize") int pageSize);
     @GET("api/job-posts/company/{id}")
-    Call<ListJobPostResponse> getJobPostsByCompany(@Path ("id") String id);
+    Call<ListJobPostResponse> getJobPostsByCompany(@Path ("id") String id, @Query("page") int page, @Query("pageSize") int pageSize);
     @GET("api/job-posts/{id}")
     Call<JobPostResponse> getJobPostById(@Path("id") String id);
     @POST("api/job-posts")
@@ -453,5 +454,9 @@ public interface ApiService {
     Call<ListNotificationResponse> getAllNotification();
     @DELETE("api/notification/{id}")
     Call<Void> deleteNotification(@Path("id") String id);
+
+    //Report
+    @GET("/api/reports/")
+    Call<ListReportResponse> getAllReports();
 
 }

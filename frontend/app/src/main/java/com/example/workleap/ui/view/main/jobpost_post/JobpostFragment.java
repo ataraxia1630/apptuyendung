@@ -44,12 +44,15 @@ public class JobpostFragment extends Fragment{
     private UserViewModel userViewModel;
     private int pagePost = 1;
     private int pageSizePost = 4;
+    private int pageJobPost = 1;
+    private int pageSizeJobPost = 4;
     private boolean isMorePost = false;
+    private boolean isMoreJobPost = false;
     private User user;
     private Bundle bundle;
     private NavController nav;
     private ImageButton btnCreateNew;
-    private Button btnMorePost;
+    private Button btnMorePost, btnLoadMoreJobPosts;
 
     private boolean isOnJobPostTab = true;
 
@@ -84,6 +87,7 @@ public class JobpostFragment extends Fragment{
         recyclerViewJobPost = view.findViewById(R.id.recyclerJobPosts);
         recyclerViewPost = view.findViewById(R.id.recyclerPosts);
         btnMorePost = view.findViewById(R.id.btnLoadMorePosts);
+        btnLoadMoreJobPosts = view.findViewById(R.id.btnLoadMoreJobPosts);
 
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
@@ -131,7 +135,11 @@ public class JobpostFragment extends Fragment{
         });
         jobPostViewModel.getJobPostsByCompanyData().observe(getViewLifecycleOwner(), jobPosts ->
         {
-            allJobs.clear();
+            if(!isMoreJobPost)
+                allJobs.clear(); //Neu khong phai tai them thi clear de tranh bi trung
+
+            isMoreJobPost = false; //Dat lai neu dang la true
+
             if(jobPosts != null)
                 allJobs.addAll(jobPosts);
             // Setup RecyclerView
@@ -160,13 +168,19 @@ public class JobpostFragment extends Fragment{
             recyclerViewJobPost.setAdapter(adapterJobPost);
             adapterJobPost.notifyDataSetChanged();
         });
-        jobPostViewModel.getJobPostsByCompany(user.getCompanyId());
+        jobPostViewModel.getJobPostsByCompany(user.getCompanyId(), pageJobPost, pageSizeJobPost);
 
         //Load more posts
         btnMorePost.setOnClickListener(v -> {
-            pagePost++;
-            isMorePost = true;
-            postViewModel.getPostByCompany(user.getCompanyId(), pagePost, pageSizePost);
+                pagePost++;
+                isMorePost = true;
+                postViewModel.getPostByCompany(user.getCompanyId(), pagePost, pageSizePost);
+        });
+        //Load more jobpost
+        btnLoadMoreJobPosts.setOnClickListener(v -> {
+                pageJobPost++;
+                isMoreJobPost = true;
+                jobPostViewModel.getJobPostsByCompany(user.getCompanyId(), pageJobPost, pageSizeJobPost);
         });
 
         //Load Post
@@ -243,6 +257,6 @@ public class JobpostFragment extends Fragment{
     public void onResume() {
         super.onResume();
         // Load lai sau khi create new hoac edit
-        jobPostViewModel.getJobPostsByCompany(user.getCompanyId());
+        jobPostViewModel.getJobPostsByCompany(user.getCompanyId(), pageJobPost, pageSizeJobPost);
     }
 }

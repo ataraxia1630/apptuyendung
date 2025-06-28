@@ -196,8 +196,8 @@ public class JobPostViewModel  extends ViewModel {
         });
     }
 
-    public void getJobPostsByCompany(String companyId) {
-        jobPostRepository.getJobPostsByCompany(companyId).enqueue(new Callback<ListJobPostResponse>() {
+    public void getJobPostsByCompany(String companyId, int page, int pageSize) {
+        jobPostRepository.getJobPostsByCompany(companyId, page, pageSize).enqueue(new Callback<ListJobPostResponse>() {
             @Override
             public void onResponse(Call<ListJobPostResponse> call, Response<ListJobPostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

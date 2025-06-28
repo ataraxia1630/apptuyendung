@@ -48,14 +48,13 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
     @Override
     public void onBindViewHolder(@NonNull ReportViewHolder holder, int position) {
         Report report = reportList.get(position);
-        holder.tvReportedBy.setText("From: " + report.getUserId());
         holder.tvReason.setText(report.getReason());
 
         String target = "Unknown";
         if (report.getReportedUserId() != null) target = "User ID: " + report.getReportedUserId();
         else if (report.getPostId() != null) target = "Post ID: " + report.getPostId();
         else if (report.getJobPostId() != null) target = "JobPost ID: " + report.getJobPostId();
-        holder.tvTarget.setText("Target: " + target);
+        holder.tvTarget.setText(target);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
         holder.tvDate.setText(sdf.format(report.getCreated_at()));
@@ -90,7 +89,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
     }
 
     public static class ReportViewHolder extends RecyclerView.ViewHolder {
-        TextView tvReportedBy, tvTarget, tvReason, tvDate;
+        TextView tvTarget, tvReason, tvDate;
         ImageButton btnOption;
 
         public ReportViewHolder(@NonNull View itemView) {
