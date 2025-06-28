@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,6 +44,7 @@ public class MessageDetailFragment extends Fragment {
     private NavController nav;
     private ImageButton btnBack, btnSend;
     private EditText edtMessage;
+    private TextView txtName, txtEmail;
     private ConversationUser currentConversationUser;
     private Conversation currentConversation;
     private UserViewModel userViewModel;
@@ -94,6 +96,10 @@ public class MessageDetailFragment extends Fragment {
         btnBack = view.findViewById(R.id.btnBack);
         btnSend = view.findViewById(R.id.btnSend);
         edtMessage = view.findViewById(R.id.edtMessage);
+        txtName = view.findViewById(R.id.txtName);
+        txtEmail = view.findViewById(R.id.txtEmail);
+
+        txtName.setText(currentConversationUser.getConversation().getMembers().get(1).getUser().getUsername());
 
         //Get all messages
         conversationViewModel.getGetMessageOfChatData().observe(getViewLifecycleOwner(), data -> {
