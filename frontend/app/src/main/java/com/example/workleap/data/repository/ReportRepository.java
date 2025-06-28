@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.api.RetrofitClient;
+import com.example.workleap.data.model.response.ListCommentResponse;
+import com.example.workleap.data.model.response.ListPostResponse;
+import com.example.workleap.data.model.response.ListReportResponse;
 
 import retrofit2.Call;
 
@@ -17,4 +20,7 @@ public class ReportRepository {
         apiService = RetrofitClient.getClient(token).create(ApiService.class);
     }
 
+    public Call<ListReportResponse> getAllPosts() {
+        return apiService.getAllReports();
+    }
 }

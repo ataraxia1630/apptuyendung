@@ -103,7 +103,10 @@ public class NavigationActivity extends AppCompatActivity {
                 return true;
 
             } else if (itemId == R.id.menu_notifications) {
-                navController.navigate(R.id.menu_notifications, bundle);
+                if("admin".equalsIgnoreCase(user.getRole()))
+                    navController.navigate(R.id.reportFragment, bundle);
+                else
+                    navController.navigate(R.id.menu_notifications, bundle);
                 return true;
 
             } else if (itemId == R.id.menu_profile) {
@@ -113,6 +116,7 @@ public class NavigationActivity extends AppCompatActivity {
                 } else if ("company".equalsIgnoreCase( user.getRole())) {
                     navController.navigate(R.id.companyProfileFragment, bundle);
                 } else {
+                    navController.navigate(R.id.applicantProfileFragment, bundle);
                     Toast.makeText(this, "Vai trò không hợp lệ!", Toast.LENGTH_SHORT).show();
                 }
                 return true;
