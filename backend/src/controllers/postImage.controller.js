@@ -42,7 +42,24 @@ const PostImageController = {
                 error: error.message,
             });
         }
-    }
+    },
+    deleteImage: async (req, res) => {
+        const filePath = req.params.filePath;
+
+        try {
+            const success = await PostImageHelper.deleteImage(filePath);
+            if (!success) {
+                return res.status(500).json({ message: 'Delete failed' });
+            }
+
+            return res.status(200).json({ message: 'Image deleted successfully' });
+        } catch (error) {
+            return res.status(500).json({
+                message: 'Delete image failed',
+                error: error.message,
+            });
+        }
+    },
 };
 
 module.exports = { PostImageController };
