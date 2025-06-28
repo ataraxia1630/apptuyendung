@@ -17,15 +17,17 @@ import com.example.workleap.R;
 import com.example.workleap.data.model.entity.Applicant;
 import com.example.workleap.data.model.entity.JobApplied;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SubmittedProfilesAdapter extends RecyclerView.Adapter<SubmittedProfilesAdapter.JobAppliedViewHolder> {
 
-    private final List<JobApplied> jobAppliedList;
+    private final List<JobApplied> jobAppliedList = new ArrayList<>();
     private final OnSubmittedProfilesMenuClickListener menuClickListener;
 
     public SubmittedProfilesAdapter(List<JobApplied> jobAppliedList, OnSubmittedProfilesMenuClickListener listener) {
-        this.jobAppliedList = jobAppliedList;
+        this.jobAppliedList.clear();
+        this.jobAppliedList.addAll(jobAppliedList);
         this.menuClickListener = listener;
     }
 
@@ -58,6 +60,8 @@ public class SubmittedProfilesAdapter extends RecyclerView.Adapter<SubmittedProf
             holder.txtStatus.setTextColor(Color.GREEN);
         if(jobApplied.getStatus().equalsIgnoreCase("FAILURE"))
             holder.txtStatus.setTextColor(Color.RED);
+        if(jobApplied.getStatus().equalsIgnoreCase("PENDING"))
+            holder.txtStatus.setTextColor(Color.GRAY);
 
         holder.itemView.setOnClickListener(v -> menuClickListener.onOpen(jobApplied));
         holder.btnOption.setOnClickListener(v -> holder.showPopupMenu(v, jobApplied));

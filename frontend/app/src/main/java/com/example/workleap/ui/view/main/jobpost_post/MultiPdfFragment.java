@@ -142,6 +142,8 @@ public class MultiPdfFragment extends Fragment {
             tvStatus.setTextColor(Color.GREEN);
         if(String.valueOf(tvStatus.getText()).equalsIgnoreCase("FAILURE"))
             tvStatus.setTextColor(Color.RED);
+        if(String.valueOf(tvStatus.getText()).equalsIgnoreCase("PENDING"))
+            tvStatus.setTextColor(Color.GRAY);
     }
 }
 
