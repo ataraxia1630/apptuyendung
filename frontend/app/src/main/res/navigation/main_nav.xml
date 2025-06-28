@@ -86,6 +86,11 @@
         android:label="fragment_updatepost"
         tools:layout="@layout/fragment_create_post" />
     <fragment
+        android:id="@+id/watchPostFragment"
+        android:name="com.example.workleap.ui.view.main.jobpost_post.WatchPostFragment"
+        android:label="fragment_watchpost"
+        tools:layout="@layout/fragment_create_post" />
+    <fragment
         android:id="@+id/updateJobPostFragment"
         android:name="com.example.workleap.ui.view.main.jobpost_post.UpdateJobPostFragment"
         android:label="fragment_detailmyjobpost"
