@@ -27,8 +27,10 @@ import android.widget.ViewFlipper;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.JobSaved;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.User;
+import com.example.workleap.data.model.request.JobSavedRequest;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.view.main.jobpost_post.JobPostAdapter;
 import com.example.workleap.ui.view.main.jobpost_post.PostAdapter;
@@ -63,7 +65,8 @@ public class HomeFragment extends Fragment {
     private ImageButton btnPrev, btnNext, btnAdvancedSearch;
     private Button btnMorePost;
     private TextView tvPageNumber;
-    
+    private TabLayout tabFilter;
+    private String tabName;
 
     private boolean isMorePost = false; // Kiểm tra đang tải lại fragment hay tải thêm bài đăng
     private NavController nav;
@@ -108,10 +111,47 @@ public class HomeFragment extends Fragment {
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         userViewModel.InitiateRepository(getContext());
 
+        //filter tab
+        tabFilter = view.findViewById(R.id.tabLayout);
+        tabFilter.addTab(tabFilter.newTab().setText("New"));
+        tabFilter.addTab(tabFilter.newTab().setText("For You"));
+        tabFilter.addTab(tabFilter.newTab().setText("Saved"));
+        tabFilter.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                tabName = tab.getText().toString();
+                Log.d("TabFilter", "Selected tab: " + tabName);
+
+                //Reset page
+                pageJobPost = 1;
+                tvPageNumber.setText(String.valueOf(pageJobPost));
+
+                switch (tabName) {
+                    case "New":
+                        jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
+                        break;
+                    case "Following":
+                        // TODO: Lọc theo các công ty đang theo dõi
+                        break;
+                    case "For You":
+                        jobPostViewModel.getJobPostsRecommend(pageJobPost, pageSizeJobPost);
+                        break;
+                    case "Saved":
+                        jobPostViewModel.getAllJobSaved(user.getApplicantId());
+                        break;
+                }
+            }
+
+            @Override public void onTabUnselected(TabLayout.Tab tab) {}
+            @Override public void onTabReselected(TabLayout.Tab tab) {}
+        });
+
+
         //lay user cho detail jobpost applied cv
         user = (User) getArguments().getSerializable("user");
         if(user==null) Log.e("HomeFragment", "user null");
 
+        //observe list jobpost
         jobPostViewModel.getAllJobPostResult().observe(getViewLifecycleOwner(), result ->
         {
             String s = result.toString();
@@ -136,6 +176,27 @@ public class HomeFragment extends Fragment {
                     ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
                     nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
                 }
+
+                @Override
+                public void onSaveClick(JobPost jobpost) {
+                    jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
+                        if(result != null)
+                            Log.e("HomeFragment", "createJobSavedResult: " + result + "");
+                        else
+                            Log.e("HomeFragment", "createJobSavedResult: null");
+                    });
+                    if(user.getApplicantId() != null)
+                    {
+                        JobSavedRequest jobSave = new JobSavedRequest(user.getApplicantId(), jobpost.getId());
+                        jobPostViewModel.createJobSaved(jobSave);
+                    }
+                    return;
+                }
+
+                @Override
+                public void onReportClick(JobPost jobpost) {
+                    return;
+                }
             });
 
             //Logo jobpost bang usermodel
@@ -151,17 +212,166 @@ public class HomeFragment extends Fragment {
         });
         jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
 
+        //observe recommend jobpost
+        jobPostViewModel.getJobPostsRecommendData().observe(getViewLifecycleOwner(), jobPosts ->
+        {
+            allJobs.clear();
+            if(jobPosts != null)
+                allJobs.addAll(jobPosts);
+            // Setup RecyclerView
+            recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
+            //adapterJobPost = new JobPostAdapter(allJobs, jobPostViewModel); // mặc định show tất cả
+            adapterJobPost = new JobPostAdapter(allJobs, new JobPostAdapter.OnJobPostClickListener() {
+                @Override
+                public void onJobPostClick(JobPost jobPost) {
+                    // Handle item click
+                    Bundle bundle = new Bundle();
+                    jobPostViewModel.setCurrentJobPost(jobPost);
+                    bundle.putSerializable("jobPost", jobPost);
+                    bundle.putSerializable("user", user);
+                    ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
+                    nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+                }
+
+                @Override
+                public void onSaveClick(JobPost jobpost) {
+                    jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
+                        if(result != null)
+                            Log.e("HomeFragment", "createJobSavedResult: " + result + "");
+                        else
+                            Log.e("HomeFragment", "createJobSavedResult: null");
+                    });
+                    if(user.getApplicantId() != null)
+                    {
+                        JobSavedRequest jobSave = new JobSavedRequest(user.getApplicantId(), jobpost.getId());
+                        jobPostViewModel.createJobSaved(jobSave);
+                    }
+                    return;
+                }
+
+                @Override
+                public void onReportClick(JobPost jobpost) {
+                    return;
+                }
+            });
+
+            //Logo jobpost bang usermodel
+            userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterJobPost.setLogoUrlMap(map);  // Truyền map xuống adapter
+            });
+            for (JobPost jobPost : jobPosts) {
+                userViewModel.getLogoJobPostImageUrl(jobPost.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key
+            }
+
+            recyclerViewJobPost.setAdapter(adapterJobPost);
+            adapterJobPost.notifyDataSetChanged();
+        });
+
+        //observe saved jobpost
+        jobPostViewModel.getAllJobSavedResult().observe(getViewLifecycleOwner(), result -> {
+            if(result != null)
+                Log.d("HomeFragment", "getAllJobSavedResult: " + result + "");
+            else
+                Log.d("HomeFragment", "getAllJobSavedResult: null");
+        });
+        jobPostViewModel.getAllJobSaved().observe(getViewLifecycleOwner(), jobPosts ->
+        {
+            allJobs.clear();
+            if(jobPosts != null)
+                allJobs.addAll(jobPosts);
+            // Setup RecyclerView
+            recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
+            //adapterJobPost = new JobPostAdapter(allJobs, jobPostViewModel); // mặc định show tất cả
+            adapterJobPost = new JobPostAdapter(allJobs, new JobPostAdapter.OnJobPostClickListener() {
+                @Override
+                public void onJobPostClick(JobPost jobPost) {
+                    // Handle item click
+                    Bundle bundle = new Bundle();
+                    jobPostViewModel.setCurrentJobPost(jobPost);
+                    bundle.putSerializable("jobPost", jobPost);
+                    bundle.putSerializable("user", user);
+                    ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
+                    nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+                }
+
+                @Override
+                public void onSaveClick(JobPost jobpost) {
+                    jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
+                        if(result != null)
+                            Log.e("HomeFragment", "createJobSavedResult: " + result + "");
+                        else
+                            Log.e("HomeFragment", "createJobSavedResult: null");
+                    });
+                    if(user.getApplicantId() != null)
+                    {
+                        JobSavedRequest jobSave = new JobSavedRequest(user.getApplicantId(), jobpost.getId());
+                        jobPostViewModel.createJobSaved(jobSave);
+                    }
+                    return;
+                }
+
+                @Override
+                public void onReportClick(JobPost jobpost) {
+                    return;
+                }
+            });
+
+            //Logo jobpost bang usermodel
+            userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+                adapterJobPost.setLogoUrlMap(map);  // Truyền map xuống adapter
+            });
+            for (JobPost jobPost : jobPosts) {
+                if(jobPost.getCompany() != null)
+                    userViewModel.getLogoJobPostImageUrl(jobPost.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key
+            }
+
+            recyclerViewJobPost.setAdapter(adapterJobPost);
+            adapterJobPost.notifyDataSetChanged();
+        });
+
         //Page for jobpost
         btnPrev.setOnClickListener(v -> {
             if (pageJobPost > 1) {
                 pageJobPost--;
-                jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
+
+                //Tuy thuoc tab filter
+                switch (tabName) {
+                    case "New":
+                        jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
+                        break;
+                    case "Following":
+                        break;
+                    case "For You":
+                        jobPostViewModel.getJobPostsRecommend(pageJobPost, pageSizeJobPost);
+                        break;
+                    case "Saved":
+                        Log.d("hi", "hi bug");
+                        jobPostViewModel.getAllJobSaved(user.getApplicantId());
+                        break;
+                }
+
                 tvPageNumber.setText(String.valueOf(pageJobPost));
             }
         });
         btnNext.setOnClickListener(v -> {
             pageJobPost++;
-            jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
+
+            //Tuy thuoc tab filter
+            switch (tabName) {
+                case "New":
+                    jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
+                    break;
+                case "Following":
+                    // TODO: Lọc theo các công ty đang theo dõi
+                    break;
+                case "For You":
+                    jobPostViewModel.getJobPostsRecommend(pageJobPost, pageSizeJobPost);
+                    break;
+                case "Saved":
+                    jobPostViewModel.getAllJobSaved(user.getApplicantId());
+                    break;
+            }
+
             tvPageNumber.setText(String.valueOf(pageJobPost));
         });
 

@@ -63,7 +63,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:background="@null"
-        android:src="@drawable/ic_bookmark" />
+        android:src="@drawable/ic_show_more" />
 
 
     </LinearLayout>
