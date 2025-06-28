@@ -7,9 +7,12 @@ import com.example.workleap.data.api.RetrofitClient;
 import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.JobSaved;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
+import com.example.workleap.data.model.request.JobSavedRequest;
 import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
+import com.example.workleap.data.model.request.StatusRequest;
 import com.example.workleap.data.model.response.JobAppliedResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
@@ -34,6 +37,10 @@ public class JobPostRepository {
 
     public Call<ListJobPostResponse> getAllJobPosts(int page, int pageSize) {
         return apiService.getAllJobPosts(page, pageSize);
+    }
+
+    public Call<ListJobPostResponse> getJobPostRecommend(int page, int pageSize) {
+        return apiService.getJobPostRecommend(page, pageSize);
     }
 
     public Call<ListJobPostResponse> getJobPostsByCompany(String id) {
@@ -79,10 +86,10 @@ public class JobPostRepository {
     }
 
     //Job saved
-    public Call<ListJobPostResponse> createJobSaved(String applicantId) {
-        return apiService.createJobSaved(applicantId);
+    public Call<ListJobPostResponse> getJobSaved(String applicantId) {
+        return apiService.getJobSaved(applicantId);
     }
-    public Call<ListJobPostResponse> createJobSaved(JobPost request) {
+    public Call<MessageResponse> createJobSaved(JobSavedRequest request) {
         return apiService.createJobSaved(request);
     }
     public Call<MessageResponse> deleteJobSaved(String applicantId, String jobpostId) {
@@ -107,6 +114,16 @@ public class JobPostRepository {
     }
     public Call<MessageResponse> withDrawCv(String applicantId, String jobPostId) {
         return apiService.withDrawCv(applicantId, jobPostId);
+    }
+
+    public Call<ListJobPostResponse> getJobPostByStatus(int page, int pageSize, String status)
+    {
+        return apiService.getJobPostByStatus(page, pageSize, status);
+    }
+
+    public Call<JobPostResponse> toggleJobPostStatus(String id, StatusRequest statusRequest)
+    {
+        return apiService.toggleJobPostStatus(id, statusRequest);
     }
 
 }

@@ -1,6 +1,8 @@
 package com.example.workleap.data.model.entity;
 
-public class PostContent {
+import java.io.Serializable;
+
+public class PostContent implements Serializable {
     private String id;
     private String postId;
     private String type; // Assuming ContentType is an enum, represented as String for simplicity

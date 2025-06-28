@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:paddingBottom="100dp"
-    tools:context=".ui.view.main.home.HomeFragment">
+    tools:context=".ui.view.main.admin.ManageJobPostFragment">
 
-    <!-- Thêm NestedScrollView để cuộn toàn bộ nội dung -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,12 +16,15 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="8dp">
 
+            <!-- Search + Advanced -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp">
+                android:paddingBottom="8dp"
+                android:background="@color/blue_light">
 
                 <!-- SearchView  -->
                 <android.widget.SearchView
@@ -46,65 +48,57 @@
                     android:layout_centerVertical="true"/>
             </RelativeLayout>
 
-
-            <!-- Tabs: Mới nhất, Đề xuất, Theo dõi,... -->
+            <!-- TabLayout chọn trạng thái -->
             <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
+                android:id="@+id/tabLayoutStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:contentDescription="tag"
-                app:tabMode="fixed"
-                app:tabGravity="fill"
-                app:tabIndicatorFullWidth="false"
-                app:tabIndicatorColor="@color/black"
-                app:tabTextColor="@color/black"
-                app:tabSelectedTextColor="#819FC6" />
+                app:tabIndicatorColor="@android:color/holo_blue_dark"
+                app:tabSelectedTextColor="@android:color/black"
+                app:tabTextColor="@android:color/darker_gray"/>
 
-            <!-- Danh sách JobPost -->
+
+            <!-- Danh sách JobPosts -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerJobPosts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginBottom="8dp" />
+                android:paddingTop="8dp"
+                android:nestedScrollingEnabled="false" />
 
-        <LinearLayout
-            android:id="@+id/paginationLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-            <ImageButton
-                android:id="@+id/btnPrev"
-                android:layout_width="wrap_content"
+            <!-- Phân trang -->
+            <LinearLayout
+                android:id="@+id/paginationLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_left"
-                android:background="@null"
-                android:contentDescription="Previous Page" />
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="16dp">
 
-            <TextView
-                android:id="@+id/tvPageNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1"
-                android:textSize="18sp"
-                android:layout_marginHorizontal="16dp" />
+                <ImageButton
+                    android:id="@+id/btnPrev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_left"
+                    android:background="@null" />
 
-            <ImageButton
-                android:id="@+id/btnNext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_right"
-                android:background="@null"
-                android:contentDescription="Next Page" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/tvPageNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textSize="18sp"
+                    android:layout_marginHorizontal="16dp" />
 
-        <!-- Nút Xem thêm -->
+                <ImageButton
+                    android:id="@+id/btnNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_right"
+                    android:background="@null" />
+            </LinearLayout>
 
-            <!-- Danh sách Bài đăng / Tin tức -->
+            <!-- Section khác -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -128,8 +122,6 @@
                 android:layout_gravity="center_horizontal"
                 android:paddingHorizontal="24dp"
                 android:layout_marginBottom="12dp" />
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 </FrameLayout>

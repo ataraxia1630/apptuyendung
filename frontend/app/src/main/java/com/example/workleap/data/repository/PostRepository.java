@@ -7,6 +7,7 @@ import com.example.workleap.data.api.RetrofitClient;
 import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.Reaction;
+import com.example.workleap.data.model.request.StatusRequest;
 import com.example.workleap.data.model.response.CommentResponse;
 import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.ListCommentResponse;
@@ -95,5 +96,14 @@ public class PostRepository {
     //search
     public Call<ListPostResponse> searchPosts(String title, String companyName) {
         return apiService.searchPost(title, companyName);
+    }
+
+    public Call<ListPostResponse> getPostByStatus(int page, int pageSize, String status)
+    {
+        return  apiService.getPostByStatus(status, page, pageSize);
+    }
+    public Call<PostResponse> updatePostStatus(String postId, StatusRequest request)
+    {
+        return  apiService.updatePostStatus(postId, request);
     }
 }

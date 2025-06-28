@@ -5,6 +5,7 @@ import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
+import com.example.workleap.data.model.entity.JobSaved;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.entity.Message;
 import com.example.workleap.data.model.entity.Notification;
@@ -13,12 +14,16 @@ import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.data.model.request.CVRequest;
 import com.example.workleap.data.model.request.CreateApplicantEducationRequest;
+import com.example.workleap.data.model.request.EmailOtpRequest;
+import com.example.workleap.data.model.request.EmailRequest;
 import com.example.workleap.data.model.request.FCMRequest;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.data.model.request.GroupChatRequest;
+import com.example.workleap.data.model.request.JobSavedRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
 import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
 import com.example.workleap.data.model.request.ListMemberIdRequest;
+import com.example.workleap.data.model.request.StatusRequest;
 import com.example.workleap.data.model.request.UserIdRequest;
 import com.example.workleap.data.model.response.CVResponse;
 import com.example.workleap.data.model.response.CommentResponse;
@@ -97,9 +102,20 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
+    //Xac thuc
+    @POST("api/auth/exist")
+    Call<MessageResponse> checkUserExist(@Body RegisterRequest request);
+    @POST("api/auth/send-otp")
+    Call<MessageResponse> sendOtp(@Body EmailRequest request);
+    @POST("api/auth/resend-otp")
+    Call<MessageResponse> resendOtp(@Body EmailRequest request);
+    @POST("api/auth/verify-otp")
+    Call<MessageResponse> verifyOtp(@Body EmailOtpRequest request);
+
     //Đăng ký
     @POST("api/auth/register")
     Call<RegisterResponse> registerUser(@Body RegisterRequest request);
+
 
 
     //Đăng nhập
@@ -228,6 +244,13 @@ public interface ApiService {
     );
     @GET("api/job-posts/company/me/{id}")
     Call<JobPostResponse> getMyJobPostById( @Path("id") String id);
+    @GET("api/job-posts/admin/by-status")
+    Call<ListJobPostResponse> getJobPostByStatus(@Query("page") int page, @Query("pageSize") int pageSize, @Query("status") String status);
+    @PUT("api/job-posts/admin/toggle/{id}")
+    Call<JobPostResponse> toggleJobPostStatus(@Path("id") String id, @Body StatusRequest statusRequest);
+    @GET("api/job-posts/recommend")
+    Call<ListJobPostResponse> getJobPostRecommend(@Query("page") int page, @Query("pageSize") int pageSize);
+    
 
     //JobType
     @GET("api/types/all")
@@ -243,9 +266,9 @@ public interface ApiService {
 
     //JobSaved
     @GET("api/save/{applicantId}")
-    Call<ListJobPostResponse> createJobSaved(@Path("applicantId") String applicantId);
+    Call<ListJobPostResponse> getJobSaved(@Path("applicantId") String applicantId);
     @POST("api/save/")
-    Call <ListJobPostResponse> createJobSaved(@Body JobPost request);
+    Call <MessageResponse> createJobSaved(@Body JobSavedRequest request);
     @DELETE("api/save/{applicantId}/{jobpostId}")
     Call <MessageResponse> deleteJobSaved(@Path("applicantId") String applicantId, @Path("jobpostId") String jobpostId);
 
@@ -312,6 +335,12 @@ public interface ApiService {
     Call<ListPostResponse> searchPost(
             @Query("title") String query,
             @Query("companyName") String companyName);
+    @GET("api/posts/status/{status}")
+    Call<ListPostResponse> getPostByStatus(@Path("status") String status, @Query("page") int page, @Query("pageSize") int pageSize);
+    @PUT("api/posts/status/{id}")
+    Call<PostResponse> updatePostStatus(@Path("id") String id, @Body StatusRequest request);
+
+
 
     //Comment
     @POST("api/comments/")
@@ -339,7 +368,6 @@ public interface ApiService {
     Call<ListMonthlyStatResponse> getMonthlyGrowth();
     @GET("api/statistic/by-field")
     Call<ListFieldStatResponse> getByField(@Query("page") int page, @Query("pageSize") int pageSize);
-
 
     //Chat-Conversation
     // Lấy tất cả các cuộc trò chuyện của user

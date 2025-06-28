@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.Reaction;
+import com.example.workleap.data.model.request.StatusRequest;
 import com.example.workleap.data.model.response.CommentResponse;
 import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.ListCommentResponse;
@@ -44,6 +45,7 @@ public class PostViewModel extends ViewModel {
     private MutableLiveData<String> deletePostByIdResult = new MutableLiveData<>();
     private MutableLiveData<String> getPostByIdResult = new MutableLiveData<>();
     private MutableLiveData<String> updatePostByIdResult = new MutableLiveData<>();
+    private MutableLiveData<Post> updatePostByIdData = new MutableLiveData<>();
 
     private MutableLiveData<String> creatCommentResult = new MutableLiveData<>();
     private MutableLiveData<Comment> creatCommentData = new MutableLiveData<>();
@@ -60,7 +62,11 @@ public class PostViewModel extends ViewModel {
     private MutableLiveData<Map<String, String>> imageUrlMap = new MutableLiveData<>(new HashMap<>());
 
     private MutableLiveData<List<Post>> searchPostData = new MutableLiveData<>();
+    private MutableLiveData<List<Post>> getPostByStatusData = new MutableLiveData<>();
+    private MutableLiveData<Post> updatePostStatusData = new MutableLiveData<>();
     private MutableLiveData<String> searchPostResult = new MutableLiveData<>();
+    private MutableLiveData<String> getPostByStatusResult = new MutableLiveData<>();
+    private MutableLiveData<String> updatePostStatusResult = new MutableLiveData<>();
 
     public PostViewModel(){}
     public void InitiateRepository(Context context) {
@@ -79,6 +85,7 @@ public class PostViewModel extends ViewModel {
     public LiveData<String> deletePostByIdResult() { return deletePostByIdResult; }
     public LiveData<String> getPostByIdResult() { return getPostByIdResult; }
     public LiveData<String> updatePostByIdResult() { return updatePostByIdResult; }
+    public LiveData<Post> updatePostByIdData() { return updatePostByIdData; }
 
     //comment
     public LiveData<String> creatCommentResult() { return creatCommentResult; }
@@ -101,7 +108,11 @@ public class PostViewModel extends ViewModel {
 
     //search
     public LiveData<List<Post>> searchPostData() { return searchPostData; }
+    public LiveData<List<Post>> getPostByStatusData() { return getPostByStatusData; }
+    public LiveData<Post> getUpdatePostStatusData() { return updatePostStatusData; }
     public LiveData<String> searchPostResult() { return searchPostResult; }
+    public LiveData<String> getPostByStatusResult() { return getPostByStatusResult; }
+    public LiveData<String> getUpdatePostStatusResult() { return updatePostStatusResult; }
 
     // Get all post
     public void getAllPost(int page, int pageSize) {
@@ -222,6 +233,7 @@ public class PostViewModel extends ViewModel {
             public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                 if (response.isSuccessful()) {
                     PostResponse postResponse = response.body();
+                    updatePostByIdData.setValue(postResponse.getPost());
                     updatePostByIdResult.setValue("Update post success");
                 } else {
                     try {
@@ -430,6 +442,32 @@ public class PostViewModel extends ViewModel {
             public void onResponse(Call<ImageUrlResponse> call, Response<ImageUrlResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     String url = response.body().getUrl();
+                    getImageUrlData.setValue(url);
+                    getImageUrlResult.setValue("Get url image success");
+                } else {
+                    try {
+                        ImageUrlResponse error = new Gson().fromJson(response.errorBody().string(), ImageUrlResponse.class);
+                        getImageUrlResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getImageUrlResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ImageUrlResponse> call, Throwable t) {
+                getImageUrlResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getImageUrlMap(String filePath) {
+        Call<ImageUrlResponse> call = postRepository.getImageUrl(filePath);
+        call.enqueue(new Callback<ImageUrlResponse>() {
+            @Override
+            public void onResponse(Call<ImageUrlResponse> call, Response<ImageUrlResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String url = response.body().getUrl();
 
                     Map<String, String> currentMap = imageUrlMap.getValue();
                     if (currentMap != null) {
@@ -478,6 +516,58 @@ public class PostViewModel extends ViewModel {
             @Override
             public void onFailure(Call<ListPostResponse> call, Throwable t) {
                 searchPostResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getPostByStatus(int page, int pageSize, String status) {
+        Call<ListPostResponse> call = postRepository.getPostByStatus(page, pageSize, status);
+        call.enqueue(new Callback<ListPostResponse>() {
+            @Override
+            public void onResponse(Call<ListPostResponse> call, Response<ListPostResponse> response) {
+                if (response.isSuccessful()) {
+                    ListPostResponse listPostResponse = response.body();
+                    getPostByStatusData.setValue(listPostResponse.getAllPost());
+                    getPostByStatusResult.setValue("Success");
+                } else {
+                    try {
+                        ListPostResponse error = new Gson().fromJson(response.errorBody().string(), ListPostResponse.class);
+                        getPostByStatusResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getPostByStatusResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ListPostResponse> call, Throwable t) {
+                getPostByStatusResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+    public void updatePostStatus(String postId, String status) {
+        StatusRequest request = new StatusRequest(status);
+        Call<PostResponse> call = postRepository.updatePostStatus(postId, request);
+        call.enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+                if (response.isSuccessful()) {
+                    PostResponse PostResponse = response.body();
+                    updatePostStatusData.setValue(PostResponse.getPost());
+                    updatePostStatusResult.setValue("Success");
+                } else {
+                    try {
+                        ListPostResponse error = new Gson().fromJson(response.errorBody().string(), ListPostResponse.class);
+                        updatePostStatusResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        updatePostStatusResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                updatePostStatusResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }
