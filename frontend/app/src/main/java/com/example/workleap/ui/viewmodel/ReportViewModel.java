@@ -146,11 +146,13 @@ public class ReportViewModel extends ViewModel {
                     Log.e("reportviewmodel", "hehe");
                 } else {
                     try {
-                        ReportResponse error = new Gson().fromJson(response.errorBody().string(), ReportResponse.class);
+                        String errorJson = response.errorBody().string();
+                        Log.e("reportviewmodel", "Error raw body: " + errorJson);
+
+                        ReportResponse error = new Gson().fromJson(errorJson, ReportResponse.class);
                         createReportResult.setValue("Lỗi: " + error.getMessage());
-                        Log.e("reportviewmodel", error.getMessage());
                     } catch (Exception e) {
-                        Log.e("reportviewmodel", "khong xac dinh");
+                        Log.e("reportviewmodel", "Lỗi không xác định: " + e.getMessage(), e);
                         createReportResult.setValue("Lỗi không xác định: " + response.code());
                     }
                 }

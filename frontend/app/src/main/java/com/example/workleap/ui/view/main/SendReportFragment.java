@@ -105,7 +105,22 @@ public class SendReportFragment extends Fragment {
                 Toast.makeText(getContext(), "Reason is too long. Please keep it under 100 characters.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            reportViewModel.createReportUser(reason, reportedTargetId);
+            if("user".equalsIgnoreCase(reportType))
+            {
+                reportViewModel.createReportUser(reason, reportedTargetId);
+            }
+            else if ("jobpost".equalsIgnoreCase(reportType))
+            {
+                reportViewModel.createReportJobPost(reason, reportedTargetId);
+            }
+            else if ("post".equalsIgnoreCase(reportType))
+            {
+                reportViewModel.createReportPost(reason, reportedTargetId);
+            }
+            else {
+                Toast.makeText(getContext(), "  Failed to send the report. Please try again.", Toast.LENGTH_LONG).show();
+                return;
+            }
             Toast.makeText(getContext(), "Report submitted successfully", Toast.LENGTH_LONG).show();
 
             // Optionally: Clear the form
