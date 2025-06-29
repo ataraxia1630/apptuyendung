@@ -98,6 +98,16 @@ public class JobPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             h.txtTag2.setText(post.getJobType().getName());
             h.txtTag3.setText(post.getPosition());
 
+            if(!post.getStatus().equals("OPENING"))
+            {
+                h.txtTag4.setVisibility(View.VISIBLE);
+                h.txtTag4.setText(post.getStatus());
+            }
+            else
+            {
+                h.txtTag4.setVisibility(View.GONE);
+            }
+
             logoFilePath = post.getCompany().getUser().get(0).getAvatar();
             if (logoFilePath != null) {
                 String imageUrl = logoUrlMap.get(logoFilePath);
@@ -134,7 +144,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     static class JobPostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtTitle, txtCompany, txtSalary, txtLocation, txtTime, txtTag1, txtTag2, txtTag3;
+        TextView txtTitle, txtCompany, txtSalary, txtLocation, txtTime, txtTag1, txtTag2, txtTag3, txtTag4;
         ImageView imgPost;
         ImageButton btnOption;
 
@@ -149,6 +159,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             txtTag1 = itemView.findViewById(R.id.txtTab1);
             txtTag2 = itemView.findViewById(R.id.txtTab2);
             txtTag3 = itemView.findViewById(R.id.txtTab3);
+            txtTag4 = itemView.findViewById(R.id.txtStatus);
             btnOption = itemView.findViewById(R.id.btnOption);
         }
     }

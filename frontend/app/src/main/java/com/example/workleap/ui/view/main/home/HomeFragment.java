@@ -381,7 +381,6 @@ public class HomeFragment extends Fragment {
                 if(post.getContents().size() > 1)
                 {
                     String filePath = post.getContents().get(1).getValue();  // hoặc chỗ chứa đường dẫn ảnh
-                    Log.d("filePath", filePath);
                     postViewModel.getImageUrlMap(filePath); // dùng filePath làm key
                 }
                 userViewModel.getLogoPostImageUrl(post.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key

@@ -78,6 +78,30 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
             myUser = (User) getArguments().getSerializable("user");
         }
 
+        userViewModel.getGetUserData().observe(getViewLifecycleOwner(), data -> {
+            if(data != null)
+            {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("user", data);
+                bundle.putSerializable("userId", data.getId());
+                bundle.putSerializable("myUser", myUser);
+
+                //Check company or applicant
+                if(data.getCompanyId() == null)
+                    navController.navigate(R.id.watchApplicantProfileFragment, bundle);
+                else
+                {
+                    bundle.putString("companyId", data.getCompanyId());
+                    Log.d("cmt bottsh", data.getId());
+                    navController.navigate(R.id.watchCompanyProfileFragment, bundle);
+                }
+
+                //Show off the bottomsheet
+                dismiss();
+            }
+            else
+                Log.d("CommentBottomSheet", "User of comment null");
+        });
         // Setup adapter RecyclerView hiển thị comment theo postId
         postViewmodel.getCommentByPostData().observe(getViewLifecycleOwner(), data->
         {
@@ -97,30 +121,6 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
                     }
                     @Override
                     public void onAvatarClick(Comment comment) {
-                        userViewModel.getGetUserData().observe(getViewLifecycleOwner(), data -> {
-                            if(data != null)
-                            {
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("user", data);
-                                bundle.putSerializable("userId", data.getId());
-                                bundle.putSerializable("myUser", myUser);
-
-                                //Check company or applicant
-                                if(data.getCompanyId() == null)
-                                    navController.navigate(R.id.watchApplicantProfileFragment, bundle);
-                                else
-                                {
-                                    bundle.putString("companyId", data.getCompanyId());
-                                    Log.d("cmt bottsh", data.getId());
-                                    navController.navigate(R.id.watchCompanyProfileFragment, bundle);
-                                }
-
-                                //Show off the bottomsheet
-                                dismiss();
-                            }
-                            else
-                                Log.d("CommentBottomSheet", "User of comment null");
-                        });
                         userViewModel.getUser(comment.getUserId());
                     }
                 });
@@ -148,21 +148,20 @@ public class CommentBottomSheet extends BottomSheetDialogFragment {
         });
         postViewmodel.getCommentByPost(postId);
 
+        //Nhan ket qua comment tra ve de them ngay vao danh sach
+        postViewmodel.creatCommentData().observe(getViewLifecycleOwner(), data ->{
+            if(data != null)
+            {
+                if(data.getCommentId() == null)
+                    comments.add(data);
+                else
+                    postViewmodel.getCommentByPost(postId);
+                adapter.notifyDataSetChanged();
+            }
+        });
         // Gửi comment mới khi nhấn nút btnSend
         btnSend.setOnClickListener(v -> {
             String commentDetail = edtComment.getText().toString();
-
-            //Nhan ket qua comment tra ve de them ngay vao danh sach
-            postViewmodel.creatCommentData().observe(getViewLifecycleOwner(), data ->{
-                if(data != null)
-                {
-                    if(data.getCommentId() == null)
-                        comments.add(data);
-                    else
-                        postViewmodel.getCommentByPost(postId);
-                    adapter.notifyDataSetChanged();
-                }
-            });
 
             Comment newComment = null;
             if(commentReplyId != null)

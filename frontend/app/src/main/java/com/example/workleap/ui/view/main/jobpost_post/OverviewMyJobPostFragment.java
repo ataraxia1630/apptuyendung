@@ -1,5 +1,7 @@
 package com.example.workleap.ui.view.main.jobpost_post;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +27,8 @@ import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.view.main.home.DetailCompanyFragment;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
+import com.example.workleap.utils.ToastUtil;
+import com.example.workleap.utils.Utils;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
@@ -52,7 +56,7 @@ public class OverviewMyJobPostFragment extends Fragment {
 
         user = (User) getArguments().getSerializable("user");
         currentJobPost = (JobPost) getArguments().getSerializable("currentJobPost");
-
+        Toast.makeText(getContext(), "currentJobPost: " + currentJobPost.getStatus(), Toast.LENGTH_SHORT).show();
         jobPostViewModel = new JobPostViewModel();
         jobPostViewModel.InitiateRepository(getContext());
 
@@ -74,6 +78,7 @@ public class OverviewMyJobPostFragment extends Fragment {
 
         btnBack.setOnClickListener(v ->
         {
+            Toast.makeText(getContext(), "current stt" + currentJobPost.getStatus(), Toast.LENGTH_SHORT).show();
             ((NavigationActivity) getActivity()).showBottomNav(true);
             NavHostFragment.findNavController(this).navigateUp();
         });
@@ -101,6 +106,14 @@ public class OverviewMyJobPostFragment extends Fragment {
                 Log.d("JobPostViewModel", "toggleJobPostResult NULL");
         });
 
+        jobPostViewModel.getUpdateJobPostResult().observe(getViewLifecycleOwner(), result -> {
+            if(result != null) {
+                Log.d("JobPostViewModel", "updateJobPostResult result " + result);
+            }
+            else
+                Log.d("JobPostViewModel", "updateJobPostResult NULL");
+        });
+
         //Delete or edit
         btnOption.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(v.getContext(), btnOption);
@@ -116,6 +129,37 @@ public class OverviewMyJobPostFragment extends Fragment {
                     //Chuyen sang fragment edit jobpost
                     NavController nav = NavHostFragment.findNavController(this);
                     nav.navigate(R.id.updateJobPostFragment, getArguments());
+                    return true;
+                }
+                else if(item.getItemId() == R.id.menu_status) {
+                    String newStatus;
+                    if(currentJobPost.getStatus().equalsIgnoreCase("OPENING"))
+                        newStatus = "TERMINATED";
+                    else
+                        newStatus = "OPENING";
+
+                    //Chuyen sang dialog status jobpost
+                    new AlertDialog.Builder(this.getContext())
+                            .setTitle("Change status of jobpost")
+                            .setMessage("Do you want change status to " + newStatus + " ? If the apply-until date has passed, you must renew it to reopen")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //Update status
+                                    JobPost updatedJobPost = currentJobPost;
+                                    updatedJobPost.setStatus(newStatus);
+                                    updatedJobPost.setApplyUntil(Utils.formatDate(currentJobPost.getApplyUntil()));
+                                    jobPostViewModel.updateJobPost(currentJobPost.getId(), updatedJobPost);
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    Log.d("after cancel", currentJobPost.getStatus());
+                                }
+                            })
+                            .show();
                     return true;
                 }
                 else if(item.getItemId() == R.id.menu_delete)

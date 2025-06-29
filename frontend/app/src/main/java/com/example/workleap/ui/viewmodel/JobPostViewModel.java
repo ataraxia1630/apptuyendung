@@ -296,8 +296,17 @@ public class JobPostViewModel  extends ViewModel {
                     updateJobPostData.postValue(response.body().getJobPost());
                     updateJobPostResult.postValue("Success");
                 } else {
-                    Log.d("API_RESPONSE", new Gson().toJson(response.body()));
-                    updateJobPostResult.postValue("Failed: " + response.message());
+                    String errorMessage = "Unknown error";
+                    try {
+                        if (response.errorBody() != null) {
+                            errorMessage = response.errorBody().string();
+                        }
+                    } catch (IOException e) {
+                        errorMessage = "Error parsing errorBody: " + e.getMessage();
+                    }
+
+                    Log.e("API_RESPONSE_ERROR", errorMessage);
+                    updateJobPostResult.postValue("Failed: " + errorMessage);
                 }
             }
 

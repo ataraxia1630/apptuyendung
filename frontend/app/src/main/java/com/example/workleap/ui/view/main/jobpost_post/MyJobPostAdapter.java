@@ -57,6 +57,17 @@ public class MyJobPostAdapter extends RecyclerView.Adapter<MyJobPostAdapter.JobP
         holder.txtTag1.setText(jobPost.getJobCategory().getName());
         holder.txtTag2.setText(jobPost.getJobType().getName());
         holder.txtTag3.setText(jobPost.getPosition());
+        if(!jobPost.getStatus().equals("OPENING"))
+        {
+            holder.txtTag4.setVisibility(View.VISIBLE);
+            holder.txtTag4.setText(jobPost.getStatus());
+        }
+        else
+        {
+            holder.txtTag4.setVisibility(View.GONE);
+        }
+
+
         //holder.imgPost.setImageResource(post.);
 
         //Xu li logo company jobpost
@@ -113,7 +124,7 @@ public class MyJobPostAdapter extends RecyclerView.Adapter<MyJobPostAdapter.JobP
     }
 
     static class JobPostViewHolder extends RecyclerView.ViewHolder {
-        TextView txtTitle, txtCompany, txtSalary, txtLocation, txtTime, txtTag1, txtTag2, txtTag3;
+        TextView txtTitle, txtCompany, txtSalary, txtLocation, txtTime, txtTag1, txtTag2, txtTag3, txtTag4;
         ImageView imgPost;
         ImageButton btnOption;
 
@@ -129,6 +140,7 @@ public class MyJobPostAdapter extends RecyclerView.Adapter<MyJobPostAdapter.JobP
             txtTag1 = itemView.findViewById(R.id.txtTab1);
             txtTag2 = itemView.findViewById(R.id.txtTab2);
             txtTag3 = itemView.findViewById(R.id.txtTab3);
+            txtTag4 = itemView.findViewById(R.id.txtStatus);
         }
     }
 
