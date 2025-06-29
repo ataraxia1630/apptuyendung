@@ -277,6 +277,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         notifyItemRangeChanged(position, postList.size());
                         return true;
                     }
+                    else if(item.getItemId() == R.id.action_report)
+                    {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("type", "post");
+                        bundle.putString("targetId", post.getId());
+                        bundle.putString("targetName", post.getTitle());
+                        nav.navigate(R.id.sendReportFragment, bundle);
+                        return true;
+                    }
                     else
                         return false;
             });

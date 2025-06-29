@@ -75,11 +75,8 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
                     actionListener.onViewReporter(report);
                     return true;
                 }
-                else if (item.getItemId() == R.id.menu_approve_report) {
+                else if (item.getItemId() == R.id.menu_reply_report) {
                     actionListener.onApprove(report);
-                    return true;
-                } else if (item.getItemId() == R.id.menu_reject_report) {
-                    actionListener.onReject(report);
                     return true;
                 }
                 return false;

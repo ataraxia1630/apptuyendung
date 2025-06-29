@@ -481,10 +481,10 @@ public class WatchApplicantProfileFragment extends Fragment {
                 else if(itemId == R.id.action_report)
                 {
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("type", "user");
-                    bundle.putSerializable("targetId", user.getId());
-                    bundle.putSerializable("targetName", String.valueOf(tvApplicantName.getText()));
-                    nav.navigate(R.id.sendReportFragment);
+                    bundle.putString("type", "user");
+                    bundle.putString("targetId", user.getId());
+                    bundle.putString("targetName", String.valueOf(tvApplicantName.getText()));
+                    nav.navigate(R.id.sendReportFragment, bundle);
                     return true;
                 }
                 return false;

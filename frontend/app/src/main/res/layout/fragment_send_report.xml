@@ -41,7 +41,7 @@
             android:id="@+id/tvReportedTarget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User: "
+            android:text="this target"
             android:textColor="@android:color/holo_red_dark"
             android:layout_marginBottom="12dp" />
 

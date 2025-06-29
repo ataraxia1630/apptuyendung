@@ -22,6 +22,8 @@ import com.example.workleap.R;
 import com.example.workleap.ui.viewmodel.ReportViewModel;
 import com.example.workleap.ui.viewmodel.StatisticViewModel;
 
+import java.util.Locale;
+
 public class SendReportFragment extends Fragment {
 
     private TextView tvReportedTarget;
@@ -78,7 +80,8 @@ public class SendReportFragment extends Fragment {
             targetName = getArguments().getString("targetName");
 
             // Display the target based on type
-            switch (reportType) {
+            String type = reportType.toUpperCase();
+            switch (type) {
                 case "POST":
                     tvReportedTarget.setText("Post: " + targetName);
                     break;

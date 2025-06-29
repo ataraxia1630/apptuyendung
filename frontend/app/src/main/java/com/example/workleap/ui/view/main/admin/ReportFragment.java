@@ -104,7 +104,7 @@ public class ReportFragment extends Fragment {
             @Override
             public void onApprove(Report report) {
                 // Xử lý duyệt báo cáo
-                Toast.makeText(getContext(), "Approved report", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Reply report", Toast.LENGTH_SHORT).show();
             }
 
             @Override
