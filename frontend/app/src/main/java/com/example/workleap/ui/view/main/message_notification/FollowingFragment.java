@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,6 +39,7 @@ public class FollowingFragment extends Fragment {
     private FollowerAdapter followerUserAdapter;
     private RecyclerView followerRecyclerView;
     private ImageButton btnBack;
+    private ProgressBar progressCenterLoading;
     private NavController nav;
     private User myUser;
 
@@ -84,9 +86,13 @@ public class FollowingFragment extends Fragment {
         //Find component
         followerRecyclerView = view.findViewById(R.id.recyclerFollowingList);
         btnBack = view.findViewById(R.id.btnBack);
+        progressCenterLoading = view.findViewById(R.id.progressCenterLoading);
+        //Loading
+        progressCenterLoading.setVisibility(View.VISIBLE);
 
         //Get all followers
         userViewModel.getGetFollowingData().observe(getViewLifecycleOwner(), data -> {
+            progressCenterLoading.setVisibility(View.GONE);
             if(followerUsers != null) {
                 this.followerUsers.clear();
                 this.followerUsers.addAll(data);

@@ -6,6 +6,7 @@ import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.api.RetrofitClient;
 import com.example.workleap.data.model.response.GetCompanyResponse;
 import com.example.workleap.data.model.request.UpdateCompanyRequest;
+import com.example.workleap.data.model.response.ListCompanyResponse;
 import com.example.workleap.data.model.response.UpdateCompanyResponse;
 
 import retrofit2.Call;
@@ -23,6 +24,9 @@ public class CompanyRepository {
     //Get
     public Call<GetCompanyResponse> getCompany(String id) {
         return apiService.getCompany(id);
+    }
+    public Call<ListCompanyResponse> getAllCompany() {
+        return apiService.getAllCompany();
     }
 
     //Update

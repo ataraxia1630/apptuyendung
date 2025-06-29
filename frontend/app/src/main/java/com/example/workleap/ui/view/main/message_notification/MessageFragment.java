@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.workleap.R;
@@ -40,6 +41,7 @@ public class MessageFragment extends Fragment {
     private ConversationUserAdapter conversationUserAdapter;
     private RecyclerView conversationRecyclerView;
     private ImageButton btnNotification, btnFollowing;
+    private ProgressBar progressCenterLoading;
     private NavController nav;
     private UserViewModel userViewModel;
     private User myUser;
@@ -89,10 +91,15 @@ public class MessageFragment extends Fragment {
         conversationRecyclerView = view.findViewById(R.id.recyclerConversationList);
         btnNotification = view.findViewById(R.id.btnNotification);
         btnFollowing = view.findViewById(R.id.btnFollowing);
+        progressCenterLoading = view.findViewById(R.id.progressCenterLoading);
 
+        //Loading
+        progressCenterLoading.setVisibility(View.VISIBLE);
 
         //Get all conversations
         conversationViewModel.getAllChatsData().observe(getViewLifecycleOwner(), data -> {
+            progressCenterLoading.setVisibility(View.GONE);
+
             if(conversationUsers != null) {
                 this.conversationUsers.clear();
                 this.conversationUsers.addAll(data);

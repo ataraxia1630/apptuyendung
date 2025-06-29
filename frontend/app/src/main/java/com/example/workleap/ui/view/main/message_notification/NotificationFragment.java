@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +32,7 @@ public class NotificationFragment extends Fragment {
     private List<Notification> notificationList = new ArrayList<>();
 
     private ConversationViewModel conversationViewModel;
+    private ProgressBar progressCenterLoading;
 
     public NotificationFragment() {}
 
@@ -55,11 +57,17 @@ public class NotificationFragment extends Fragment {
         });
         recyclerView.setAdapter(adapter);
 
+        //Loading
+        progressCenterLoading = view.findViewById(R.id.progressCenterLoading);
+        progressCenterLoading.setVisibility(View.VISIBLE);
 
         conversationViewModel = new ViewModelProvider(requireActivity()).get(ConversationViewModel.class);
         conversationViewModel.initiateRepository(getContext());
         conversationViewModel.getAllNotification();
         conversationViewModel.getAllNotificationData().observe(getViewLifecycleOwner(), notifications -> {
+
+            progressCenterLoading.setVisibility(View.GONE);
+
             if(notifications==null)
             {
                 Log.e("NotificationFragment","getAllNotificationData NULL");

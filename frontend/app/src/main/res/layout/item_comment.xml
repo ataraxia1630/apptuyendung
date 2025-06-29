@@ -62,14 +62,14 @@
                 android:layout_marginTop="4dp" />
         </LinearLayout>
 
-        <ImageButton
+        <!--<ImageButton
             android:id="@+id/btnOption"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_show_more"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Options"
-            android:layout_marginStart="8dp" />
+            android:layout_marginStart="8dp" />-->
     </LinearLayout>
 
     <!-- Nút Xem thêm -->

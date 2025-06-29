@@ -44,11 +44,15 @@ public class JobPostViewModel  extends ViewModel {
     //job post
     private MutableLiveData<List<JobPost>> getAllJobPostData = new MutableLiveData<>();
     private MutableLiveData<List<JobPost>> getJobPostsRecommendData = new MutableLiveData<>();
+    private MutableLiveData<String> getJobPostsRecommendResult = new MutableLiveData<>();
     private MutableLiveData<List<JobPost>> getJobPostByStatusData = new MutableLiveData<>();
     private MutableLiveData<JobPost> toggleJobPostStatusData = new MutableLiveData<>();
     private MutableLiveData<String> toggleJobPostStatusResult = new MutableLiveData<>();
     private MutableLiveData<List<JobPost>> getJobPostsByCompanyData = new MutableLiveData<>();
     private MutableLiveData<JobPost> getJobPostData = new MutableLiveData<>();
+    public void resetJobPostData() {
+        getJobPostData.setValue(null);
+    }
     private MutableLiveData<JobPost> getMyJobPostByIdData = new MutableLiveData<>();
     private MutableLiveData<JobPost> createJobPostData = new MutableLiveData<>();
     private MutableLiveData<JobPost> updateJobPostData = new MutableLiveData<>();
@@ -56,7 +60,6 @@ public class JobPostViewModel  extends ViewModel {
     private MutableLiveData<JobApplied> processCvAppliedData = new MutableLiveData<>();
 
     private MutableLiveData<String> getAllJobPostResult = new MutableLiveData<>();
-    private MutableLiveData<String> getJobPostsRecommendResult = new MutableLiveData<>();
     private MutableLiveData<String> getJobPostByStatusResult = new MutableLiveData<>();
     private MutableLiveData<String> getJobPostsByCompanyResult = new MutableLiveData<>();
     private MutableLiveData<String> getJobPostResult = new MutableLiveData<>();
@@ -296,8 +299,17 @@ public class JobPostViewModel  extends ViewModel {
                     updateJobPostData.postValue(response.body().getJobPost());
                     updateJobPostResult.postValue("Success");
                 } else {
-                    Log.d("API_RESPONSE", new Gson().toJson(response.body()));
-                    updateJobPostResult.postValue("Failed: " + response.message());
+                    String errorMessage = "Unknown error";
+                    try {
+                        if (response.errorBody() != null) {
+                            errorMessage = response.errorBody().string();
+                        }
+                    } catch (IOException e) {
+                        errorMessage = "Error parsing errorBody: " + e.getMessage();
+                    }
+
+                    Log.e("API_RESPONSE_ERROR", errorMessage);
+                    updateJobPostResult.postValue("Failed: " + errorMessage);
                 }
             }
 

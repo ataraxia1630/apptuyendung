@@ -83,6 +83,7 @@ public class JobpostFragment extends Fragment{
 
         //Reset page, cho truong hop navigate up tro lai sau khi load more
         pagePost = 1;
+        pageJobPost = 1;
 
         recyclerViewJobPost = view.findViewById(R.id.recyclerJobPosts);
         recyclerViewPost = view.findViewById(R.id.recyclerPosts);
@@ -99,6 +100,8 @@ public class JobpostFragment extends Fragment{
         user = (User) getArguments().getSerializable("user");
         bundle = new Bundle();
         bundle.putSerializable("companyId", user.getCompanyId());
+
+        adapterPost = new MyPostAdapter(new ArrayList<>(), postViewModel, this, requireActivity().getSupportFragmentManager(), user, nav);
 
         //Tab handle
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
@@ -183,6 +186,14 @@ public class JobpostFragment extends Fragment{
                 jobPostViewModel.getJobPostsByCompany(user.getCompanyId(), pageJobPost, pageSizeJobPost);
         });
 
+        //Observe image
+        postViewModel.getImageUrlMap().observe(getViewLifecycleOwner(), map -> {
+            adapterPost.setImageUrlMap(map);  // Truyền map xuống adapter
+        });
+        userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
+            adapterPost.setLogoUrlMap(map);  // Truyền map xuống adapter
+        });
+
         //Load Post
         postViewModel.getPostCompanyResult().observe(getViewLifecycleOwner(), result ->
         {
@@ -216,18 +227,10 @@ public class JobpostFragment extends Fragment{
             });*/
 
             //Xu li anh cua post
-            postViewModel.getImageUrlMap().observe(getViewLifecycleOwner(), map -> {
-                adapterPost.setImageUrlMap(map);  // Truyền map xuống adapter
-                Log.d("getImageUrlMap", map.toString());
-            });
-            userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
-                adapterPost.setLogoUrlMap(map);  // Truyền map xuống adapter
-            });
             for (Post post : posts) {
                 if(post.getContents().size() > 1)
                 {
                     String filePath = post.getContents().get(1).getValue();  // hoặc chỗ chứa đường dẫn ảnh
-                    Log.d("filePath", filePath);
                     postViewModel.getImageUrlMap(filePath); // dùng filePath làm key
                 }
                 userViewModel.getLogoJobPostImageUrl(post.getCompany().getUser().get(0).getAvatar()); //dung logopath company lam key

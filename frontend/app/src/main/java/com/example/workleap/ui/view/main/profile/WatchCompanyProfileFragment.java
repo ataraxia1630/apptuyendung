@@ -1,5 +1,6 @@
 package com.example.workleap.ui.view.main.profile;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -28,6 +30,7 @@ import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.data.model.request.JobSavedRequest;
+import com.example.workleap.ui.view.auth.MainActivity;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.view.main.jobpost_post.JobPostAdapter;
 import com.example.workleap.ui.view.main.jobpost_post.PostAdapter;
@@ -71,6 +74,7 @@ public class WatchCompanyProfileFragment extends Fragment {
     PostViewModel postViewModel;
     NavController nav;
     ImageButton btnFollow, btnChat, btnBack;
+    ImageButton btnOption; //cho admin
     private ImageButton btnPrev, btnNext;
 
     RecyclerView recyclerViewJobPost, recyclerViewPost;
@@ -145,6 +149,77 @@ public class WatchCompanyProfileFragment extends Fragment {
         btnPrev = view.findViewById(R.id.btnPrev);
         btnNext = view.findViewById(R.id.btnNext);
         tvPageNumber = view.findViewById(R.id.tvPageNumber);
+        //chi hien len khi mo bang admin
+        btnOption = view.findViewById(R.id.btnOptions);
+        if("admin".equalsIgnoreCase(myUser.getRole()))
+        {
+            btnOption.setVisibility(View.VISIBLE);
+        }
+        btnOption.setOnClickListener( v -> {
+            PopupMenu popupMenu = new PopupMenu(getContext(), btnOption);
+            popupMenu.getMenuInflater().inflate(R.menu.menu_set_status_user, popupMenu.getMenu());
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.menu_active) {
+                    userViewModel.toggleUserAccountStatus(user.getId(), "ACTIVE");
+                    Toast.makeText(getContext(), "User has been activated successfully", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                else if (itemId == R.id.menu_locked) {
+                    userViewModel.toggleUserAccountStatus(user.getId(), "LOCKED");
+                    Toast.makeText(getContext(), "User has been locked successfully", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                else if (itemId == R.id.menu_banned) {
+                    userViewModel.toggleUserAccountStatus(user.getId(), "BANNED");
+                    Toast.makeText(getContext(), "User has been banned successfully", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            });
+
+            popupMenu.show();
+        });
+
+        //Khoi tao adapter
+        adapterJobPost = new JobPostAdapter(new ArrayList<>(), new JobPostAdapter.OnJobPostClickListener() {
+            @Override
+            public void onJobPostClick(JobPost jobPost) {
+                // Handle item click
+                Bundle bundle = new Bundle();
+                jobPostViewModel.setCurrentJobPost(jobPost);
+                bundle.putSerializable("user", user);
+                ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
+                nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+            }
+
+            @Override
+            public void onSaveClick(JobPost jobpost) {
+                jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
+                    if(result != null)
+                        Log.e("Watchcompany", "createJobSavedResult: " + result + "");
+                    else
+                        Log.e("Watchcompany", "createJobSavedResult: null");
+                });
+                if(myUser.getApplicantId() != null)
+                {
+                    JobSavedRequest jobSave = new JobSavedRequest(myUser.getApplicantId(), jobpost.getId());
+                    jobPostViewModel.createJobSaved(jobSave);
+                }
+                return;
+            }
+
+            @Override
+            public void onReportClick(JobPost jobpost) {
+                return;
+            }
+        });
+        // Setup RecyclerView
+        recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewJobPost.setAdapter(adapterJobPost);
+        adapterJobPost.showShimmer(); //Loading
 
         //observe to Set value from company
         companyViewModel.getGetCompanyData().observe(getViewLifecycleOwner(), company -> {
@@ -169,6 +244,7 @@ public class WatchCompanyProfileFragment extends Fragment {
             });
             jobPostViewModel.getJobPostsByCompanyData().observe(getViewLifecycleOwner(), jobPosts ->
             {
+                adapterJobPost.hideShimmer(jobPosts);
                 if(jobPosts == null)
                 {
                     Log.e("watchcompanyprofile", "jobposts NULL");
@@ -177,41 +253,7 @@ public class WatchCompanyProfileFragment extends Fragment {
                 {
                     Log.e("eeeee", String.valueOf(jobPosts.size()));
                 }
-                // Setup RecyclerView
-                recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
-                adapterJobPost = new JobPostAdapter(jobPosts, new JobPostAdapter.OnJobPostClickListener() {
-                    @Override
-                    public void onJobPostClick(JobPost jobPost) {
-                        // Handle item click
-                        Bundle bundle = new Bundle();
-                        jobPostViewModel.setCurrentJobPost(jobPost);
-                        bundle.putSerializable("user", user);
-                        ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
-                        nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
-                    }
-
-                    @Override
-                    public void onSaveClick(JobPost jobpost) {
-                        jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
-                            if(result != null)
-                                Log.e("Watchcompany", "createJobSavedResult: " + result + "");
-                            else
-                                Log.e("Watchcompany", "createJobSavedResult: null");
-                        });
-                        if(myUser.getApplicantId() != null)
-                        {
-                            JobSavedRequest jobSave = new JobSavedRequest(myUser.getApplicantId(), jobpost.getId());
-                            jobPostViewModel.createJobSaved(jobSave);
-                        }
-                        return;
-                    }
-
-                    @Override
-                    public void onReportClick(JobPost jobpost) {
-                        return;
-                    }
-                });
-                recyclerViewJobPost.setAdapter(adapterJobPost);
+                adapterJobPost.hideShimmer(jobPosts);
             });
         });
         companyViewModel.getGetCompanyResult().observe(getViewLifecycleOwner(), result ->{
@@ -285,7 +327,8 @@ public class WatchCompanyProfileFragment extends Fragment {
         btnPrev.setOnClickListener(v -> {
             if (pageJobPost > 1) {
                 pageJobPost--;
-
+                //Loading
+                adapterJobPost.showShimmer();
                 jobPostViewModel.getJobPostsByCompany(companyId, pageJobPost, pageSizeJobPost);
 
                 tvPageNumber.setText(String.valueOf(pageJobPost));
@@ -293,7 +336,8 @@ public class WatchCompanyProfileFragment extends Fragment {
         });
         btnNext.setOnClickListener(v -> {
             pageJobPost++;
-
+            //Loading
+            adapterJobPost.showShimmer();
             jobPostViewModel.getJobPostsByCompany(companyId, pageJobPost, pageSizeJobPost);
 
             tvPageNumber.setText(String.valueOf(pageJobPost));

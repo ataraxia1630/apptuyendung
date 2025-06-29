@@ -7,16 +7,18 @@
     tools:context=".ui.view.auth.LoginSignupFragment">
 
     <!-- Logo của ứng dụng -->
-    <ImageView
-        android:id="@+id/logoImageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
-        android:src="@drawable/logo" />
 
     <!-- Button Đăng nhập -->
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="496dp"
+        android:layout_height="501dp"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:background="@android:color/white"
+        android:src="@drawable/work_leap" />
+
     <Button
         android:id="@+id/buttonLogin"
         android:layout_width="match_parent"

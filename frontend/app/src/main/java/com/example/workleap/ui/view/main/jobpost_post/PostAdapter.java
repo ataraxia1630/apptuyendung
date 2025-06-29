@@ -240,8 +240,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             if (user.getRole().equalsIgnoreCase("ADMIN")) {
                 popupMenu.inflate(R.menu.menu_options_adminjobpost);
             } else {
-                //popupMenu.inflate(R.menu.menu_options_myjobpost); // Load menu từ file XML
-                return;
+                popupMenu.inflate(R.menu.menu_report_applicant); // Load menu từ file XML
             }
             popupMenu.setOnMenuItemClickListener(item -> {
                     if(item.getItemId() == R.id.menu_edit) {
@@ -276,6 +275,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         postList.remove(position);
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position, postList.size());
+                        return true;
+                    }
+                    else if(item.getItemId() == R.id.action_report)
+                    {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("type", "post");
+                        bundle.putString("targetId", post.getId());
+                        bundle.putString("targetName", post.getTitle());
+                        nav.navigate(R.id.sendReportFragment, bundle);
                         return true;
                     }
                     else

@@ -35,14 +35,7 @@
                 android:layout_marginTop="4dp"
                 android:textColor="#444444" />
 
-            <Button
-                android:id="@+id/btnReadMore"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Read more"
-                android:textAllCaps="false"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="#EEEEEE" />
+
 
             <!-- Contact Information -->
             <TextView

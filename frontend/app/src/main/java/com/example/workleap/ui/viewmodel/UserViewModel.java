@@ -10,11 +10,13 @@ import androidx.lifecycle.ViewModel;
 import com.example.workleap.data.model.entity.Follower;
 import com.example.workleap.data.model.entity.UserToken;
 import com.example.workleap.data.model.request.FCMRequest;
+import com.example.workleap.data.model.request.StatusRequest;
 import com.example.workleap.data.model.response.FCMResponse;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.UpdateUserRequest;
 import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.ListFollowerResponse;
+import com.example.workleap.data.model.response.ListUserResponse;
 import com.example.workleap.data.model.response.MessageResponse;
 import com.example.workleap.data.model.response.UpdateUserResponse;
 import com.example.workleap.data.model.entity.User;
@@ -33,8 +35,11 @@ import retrofit2.Response;
 public class UserViewModel extends ViewModel {
     private UserRepository userRepository;
     private MutableLiveData<User> getUserData = new MutableLiveData<>();
+    private MutableLiveData<List<User>> getAllUserData = new MutableLiveData<>();
     private MutableLiveData<String> getUserResult = new MutableLiveData<>();
+    private MutableLiveData<String> getAllUserResult = new MutableLiveData<>();
     private MutableLiveData<String> updateUserResult = new MutableLiveData<>();
+    private MutableLiveData<String> toggleUserAccountStatusResult = new MutableLiveData<>();
     private MutableLiveData<String> toggleFollowResult = new MutableLiveData<>();
     private MutableLiveData<String> getFollowingResult = new MutableLiveData<>();
     private MutableLiveData<String> getFollowerResult = new MutableLiveData<>();
@@ -60,11 +65,20 @@ public class UserViewModel extends ViewModel {
     public LiveData<User> getGetUserData() {
         return getUserData;
     }
+    public LiveData<List<User>> getGetAllUserData() {
+        return getAllUserData;
+    }
     public LiveData<String> getGetUserResult() {
         return getUserResult;
     }
+    public LiveData<String> getGetallUserResult() {
+        return getAllUserResult;
+    }
     public LiveData<String> getUpdateUserResult() {
         return updateUserResult;
+    }
+    public LiveData<String> getToggleUserAccountStatusResult() {
+        return toggleUserAccountStatusResult;
     }
     public LiveData<String> getToggleFollowResult() { return toggleFollowResult; }
     public LiveData<String> getGetFollowingResult() { return getFollowingResult; }
@@ -120,6 +134,32 @@ public class UserViewModel extends ViewModel {
             }
         });
     }
+    public void getAllUser() {
+        Call<ListUserResponse> call = userRepository.getAllUser();
+        call.enqueue(new Callback<ListUserResponse>() {
+            @Override
+            public void onResponse(Call<ListUserResponse> call, Response<ListUserResponse> response) {
+                if (response.isSuccessful()) {
+                    ListUserResponse getResponse = response.body();
+                    getAllUserResult.setValue("success");
+                    getAllUserData.setValue(getResponse.getListUser());
+                } else {
+                    try {
+                        String errorJson = response.errorBody().string();
+                        Log.e("ErrorBody", errorJson);
+                        getAllUserResult.setValue("Lỗi");
+                    } catch (Exception e) {
+                        getAllUserResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ListUserResponse> call, Throwable t) {
+                getAllUserResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
 
     // Update người dùng
     public void updateUser(String id, String username, String password, String email, String phoneNumber, String avatar, String background) {
@@ -145,6 +185,33 @@ public class UserViewModel extends ViewModel {
             public void onFailure(Call<UpdateUserResponse> call, Throwable t) {
                 updateUserResult.setValue("Lỗi kết nối: " + t.getMessage());
 
+            }
+        });
+    }
+    public void toggleUserAccountStatus(String id, String status) {
+        StatusRequest request = new StatusRequest(status);
+        Call<GetUserResponse> call = userRepository.toggleUserAccountStatus(id, request);
+        call.enqueue(new Callback<GetUserResponse>() {
+            @Override
+            public void onResponse(Call<GetUserResponse> call, Response<GetUserResponse> response) {
+                if (response.isSuccessful()) {
+                    GetUserResponse updateResponse = response.body();
+                    toggleUserAccountStatusResult.setValue("success");
+                    Log.e("eeeee", "dn");
+                } else {
+                    try {
+                        GetUserResponse error = new Gson().fromJson(response.errorBody().string(), GetUserResponse.class);
+                        toggleUserAccountStatusResult.setValue("Lỗi: ");
+                        Log.e("ooooo", "dn");
+                    } catch (Exception e) {
+                        toggleUserAccountStatusResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetUserResponse> call, Throwable t) {
+                toggleUserAccountStatusResult.setValue("Lỗi kết nối: ");
             }
         });
     }

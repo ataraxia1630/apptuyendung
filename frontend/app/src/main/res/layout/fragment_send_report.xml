@@ -13,15 +13,22 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ic_back_left"
+            android:contentDescription="Back" />
         <!-- Title -->
         <TextView
             android:id="@+id/tvReportTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Report"
+            android:layout_marginBottom="16dp"
+            android:text="REPORT"
+            android:textAlignment="center"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:textStyle="bold" />
 
         <!-- Reported Target -->
         <TextView
@@ -34,7 +41,7 @@
             android:id="@+id/tvReportedTarget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User: John Doe"
+            android:text="this target"
             android:textColor="@android:color/holo_red_dark"
             android:layout_marginBottom="12dp" />
 
@@ -70,5 +77,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:srcCompat="@drawable/report_photo" />
+
     </LinearLayout>
 </ScrollView>
