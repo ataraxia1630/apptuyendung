@@ -30,7 +30,7 @@
         android:id="@+id/tvNoReports"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No reports found."
+        android:text="No report found."
         android:textColor="@android:color/darker_gray"
         android:visibility="gone"
         android:layout_gravity="center_horizontal" />

@@ -21,6 +21,9 @@ import com.example.workleap.data.model.request.JobSavedRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
 import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
 import com.example.workleap.data.model.request.ListMemberIdRequest;
+import com.example.workleap.data.model.request.ReportJobPostRequest;
+import com.example.workleap.data.model.request.ReportPostRequest;
+import com.example.workleap.data.model.request.ReportUserRequest;
 import com.example.workleap.data.model.request.StatusRequest;
 import com.example.workleap.data.model.request.UserIdRequest;
 import com.example.workleap.data.model.response.CVResponse;
@@ -74,6 +77,7 @@ import com.example.workleap.data.model.response.OverviewResponse;
 import com.example.workleap.data.model.response.PostResponse;
 import com.example.workleap.data.model.response.ReactionResponse;
 import com.example.workleap.data.model.response.RegisterResponse;
+import com.example.workleap.data.model.response.ReportResponse;
 import com.example.workleap.data.model.response.UpdateApplicantEducationResponse;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
@@ -468,5 +472,11 @@ public interface ApiService {
     //Report
     @GET("/api/reports/")
     Call<ListReportResponse> getAllReports();
+    @POST("/api/reports/")
+    Call<ReportResponse> createReportUser(@Body ReportUserRequest request);
+    @POST("/api/reports/")
+    Call<ReportResponse> createReportJobPost(@Body ReportJobPostRequest request);
+    @POST("/api/reports/")
+    Call<ReportResponse> createReportPost(@Body ReportPostRequest request);
 
 }

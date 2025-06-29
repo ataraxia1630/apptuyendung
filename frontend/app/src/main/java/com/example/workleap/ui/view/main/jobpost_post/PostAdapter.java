@@ -240,8 +240,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             if (user.getRole().equalsIgnoreCase("ADMIN")) {
                 popupMenu.inflate(R.menu.menu_options_adminjobpost);
             } else {
-                //popupMenu.inflate(R.menu.menu_options_myjobpost); // Load menu từ file XML
-                return;
+                popupMenu.inflate(R.menu.menu_report_applicant); // Load menu từ file XML
             }
             popupMenu.setOnMenuItemClickListener(item -> {
                     if(item.getItemId() == R.id.menu_edit) {

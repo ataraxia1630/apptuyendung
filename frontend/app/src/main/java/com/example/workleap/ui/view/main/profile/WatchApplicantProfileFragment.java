@@ -447,8 +447,7 @@ public class WatchApplicantProfileFragment extends Fragment {
                 popupMenu.getMenuInflater().inflate(R.menu.menu_set_status_user, popupMenu.getMenu());
             }
             else {
-                popupMenu.getMenuInflater().inflate(R.menu.menu_options, popupMenu.getMenu());
-
+                popupMenu.getMenuInflater().inflate(R.menu.menu_report_applicant, popupMenu.getMenu());
             }
 
             popupMenu.setOnMenuItemClickListener(item -> {
@@ -477,6 +476,15 @@ public class WatchApplicantProfileFragment extends Fragment {
                 else if (itemId == R.id.menu_banned) {
                     userViewModel.toggleUserAccountStatus(user.getId(), "BANNED");
                     Toast.makeText(getContext(), "User has been banned successfully", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                else if(itemId == R.id.action_report)
+                {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("type", "user");
+                    bundle.putSerializable("targetId", user.getId());
+                    bundle.putSerializable("targetName", String.valueOf(tvApplicantName.getText()));
+                    nav.navigate(R.id.sendReportFragment);
                     return true;
                 }
                 return false;

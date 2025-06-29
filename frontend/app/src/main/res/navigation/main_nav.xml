@@ -128,6 +128,10 @@
         android:name="com.example.workleap.ui.view.main.admin.ReportFragment"
         android:label="Report" />
     <fragment
+        android:id="@+id/sendReportFragment"
+        android:name="com.example.workleap.ui.view.main.SendReportFragment"
+        android:label="SendReport" />
+    <fragment
         android:id="@+id/followingFragment"
         android:name="com.example.workleap.ui.view.main.message_notification.FollowingFragment"
         android:label="Following" />
