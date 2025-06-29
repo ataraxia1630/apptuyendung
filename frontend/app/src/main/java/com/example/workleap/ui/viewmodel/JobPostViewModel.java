@@ -44,6 +44,7 @@ public class JobPostViewModel  extends ViewModel {
     //job post
     private MutableLiveData<List<JobPost>> getAllJobPostData = new MutableLiveData<>();
     private MutableLiveData<List<JobPost>> getJobPostsRecommendData = new MutableLiveData<>();
+    private MutableLiveData<String> getJobPostsRecommendResult = new MutableLiveData<>();
     private MutableLiveData<List<JobPost>> getJobPostByStatusData = new MutableLiveData<>();
     private MutableLiveData<JobPost> toggleJobPostStatusData = new MutableLiveData<>();
     private MutableLiveData<String> toggleJobPostStatusResult = new MutableLiveData<>();
@@ -56,7 +57,6 @@ public class JobPostViewModel  extends ViewModel {
     private MutableLiveData<JobApplied> processCvAppliedData = new MutableLiveData<>();
 
     private MutableLiveData<String> getAllJobPostResult = new MutableLiveData<>();
-    private MutableLiveData<String> getJobPostsRecommendResult = new MutableLiveData<>();
     private MutableLiveData<String> getJobPostByStatusResult = new MutableLiveData<>();
     private MutableLiveData<String> getJobPostsByCompanyResult = new MutableLiveData<>();
     private MutableLiveData<String> getJobPostResult = new MutableLiveData<>();
