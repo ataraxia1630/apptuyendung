@@ -86,13 +86,6 @@ const PostController = {
         const pageSize = parseInt(req.query.pageSize) || 10;
         const { skip, take } = getPagination(page, pageSize);
 
-        const role = req.user?.role;
-        const userCompanyId = req.user?.companyId;
-
-        if (role !== 'ADMIN' && userCompanyId !== companyId) {
-            return res.status(403).json({ message: 'Forbidden: You do not own this company' });
-        }
-
         try {
             const { posts, total } = await PostService.getPostsByCompany(companyId, skip, take);
             const meta = buildMeta(total, page, pageSize);
