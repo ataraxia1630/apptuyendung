@@ -37,16 +37,32 @@
                     android:layout_centerVertical="true"
                     android:queryHint="Tìm kiếm công việc..." />
 
-                <!-- Button đè lên bên phải -->
-                <ImageButton
-                    android:id="@+id/btnAdvanceSearch"
+                <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_binoculars"
-                    android:background="@null"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"/>
+                    android:layout_centerVertical="true">
+
+                    <!-- Button bên trái của Advance Search -->
+                    <ImageButton
+                        android:id="@+id/btnClose"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_cancel"
+                        android:background="@null"
+                        android:visibility="gone"
+                        android:layout_marginEnd="50dp"
+                        android:layout_gravity="start|center_vertical" />
+
+                    <!-- Nút Advance Search -->
+                    <ImageButton
+                        android:id="@+id/btnAdvanceSearch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_binoculars"
+                        android:background="@null"
+                        android:layout_gravity="end|center_vertical" />
+                </FrameLayout>
             </RelativeLayout>
 
 

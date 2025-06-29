@@ -338,8 +338,8 @@ public class JobPostViewModel  extends ViewModel {
         });
     }
 
-    public void searchJobPosts(String title, String location, String position, String educationRequirement, String companyName) {
-        jobPostRepository.searchJobPosts(title, location, position, educationRequirement, companyName).enqueue(new Callback<ListJobPostResponse>() {
+    public void searchJobPosts(int page, int pageSize, String title, String location, String position, String educationRequirement, String companyName) {
+        jobPostRepository.searchJobPosts(page, pageSize, title, location, position, educationRequirement, companyName).enqueue(new Callback<ListJobPostResponse>() {
             @Override
             public void onResponse(Call<ListJobPostResponse> call, Response<ListJobPostResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

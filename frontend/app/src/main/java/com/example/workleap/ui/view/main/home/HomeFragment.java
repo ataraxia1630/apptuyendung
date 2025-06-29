@@ -63,8 +63,12 @@ public class HomeFragment extends Fragment {
     private int pageSizeJobPost = 4;
     private int pagePost = 1;
     private int pageSizePost = 4;
+    private boolean isSearching = false;
+    private boolean isAdvancedSearching = false;
+    String title, location, position, company, educationRequirement;
+    private String searchText = "";
 
-    private ImageButton btnPrev, btnNext, btnAdvancedSearch;
+    private ImageButton btnPrev, btnNext, btnAdvancedSearch, btnClose;
     private ProgressBar progressLoadMore;
     private Button btnMorePost;
     private TextView tvPageNumber;
@@ -109,6 +113,7 @@ public class HomeFragment extends Fragment {
         tvPageNumber = view.findViewById(R.id.tvPageNumber);
         btnMorePost = view.findViewById(R.id.btnLoadMorePosts);
         btnAdvancedSearch = view.findViewById(R.id.btnAdvanceSearch);
+        btnClose = view.findViewById(R.id.btnClose);
         progressLoadMore = view.findViewById(R.id.progressLoadMore);
 
         jobPostViewModel  = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
@@ -302,6 +307,21 @@ public class HomeFragment extends Fragment {
                 //Loading
                 adapterJobPost.showShimmer(); // trước khi load
 
+                if(isAdvancedSearching)
+                {
+                    jobPostViewModel.searchJobPosts(pageJobPost, pageSizeJobPost, title, location, position, company, educationRequirement);
+                    tvPageNumber.setText(String.valueOf(pageJobPost));
+                    return;
+                }
+
+                if(isSearching)
+                {
+                    jobPostViewModel.searchJobPosts(pageJobPost, pageSizeJobPost, searchText, "", "", "", "");
+                    tvPageNumber.setText(String.valueOf(pageJobPost));
+                    return;
+                }
+
+
                 //Tuy thuoc tab filter
                 switch (tabName) {
                     case "New":
@@ -324,6 +344,21 @@ public class HomeFragment extends Fragment {
         btnNext.setOnClickListener(v -> {
             pageJobPost++;
             adapterJobPost.showShimmer(); // trước khi load
+
+            if(isAdvancedSearching)
+            {
+                jobPostViewModel.searchJobPosts(pageJobPost, pageSizeJobPost, title, location, position, company, educationRequirement);
+                tvPageNumber.setText(String.valueOf(pageJobPost));
+                return;
+            }
+
+            if(isSearching)
+            {
+                jobPostViewModel.searchJobPosts(pageJobPost, pageSizeJobPost, searchText, "", "", "", "");
+                tvPageNumber.setText(String.valueOf(pageJobPost));
+                return;
+            }
+
             //Tuy thuoc tab filter
             switch (tabName) {
                 case "New":
@@ -407,7 +442,23 @@ public class HomeFragment extends Fragment {
             isMorePost = true;
             postViewModel.getAllPost(pagePost, pageSizePost);
         });
-        
+
+        //observe search
+        jobPostViewModel.getSearchJobPostResult().observe(getViewLifecycleOwner(), result -> {
+            if(result != null)
+                Log.e("HomeFragment", "getSearchJobPostResult: " + result + "");
+            else
+                Log.e("HomeFragment", "getSearchJobPostResult: null");
+        });
+        jobPostViewModel.getSearchJobPostData().observe(getViewLifecycleOwner(), data -> {
+            allJobs.clear();
+            if(data != null)
+            {
+                allJobs.addAll(data);
+            }
+            adapterJobPost.hideShimmer(allJobs);
+            adapterJobPost.notifyDataSetChanged();
+        });
         
         //Search
         SearchView searchView = view.findViewById(R.id.searchView);
@@ -417,25 +468,14 @@ public class HomeFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String title) {
+                isSearching = true;
+                searchText = title;
                 //Loading
                 adapterJobPost.showShimmer();
                 // Tim theo title neu search thong thuong
-                jobPostViewModel.getSearchJobPostResult().observe(getViewLifecycleOwner(), result -> {
-                    if(result != null)
-                        Log.e("HomeFragment", "getSearchJobPostResult: " + result + "");
-                    else
-                        Log.e("HomeFragment", "getSearchJobPostResult: null");
-                });
-                jobPostViewModel.getSearchJobPostData().observe(getViewLifecycleOwner(), data -> {
-                    allJobs.clear();
-                    if(data != null)
-                    {
-                        allJobs.addAll(data);
-                    }
-                    adapterJobPost.hideShimmer(allJobs);
-                    adapterJobPost.notifyDataSetChanged();
-                });
-                jobPostViewModel.searchJobPosts(title, "", "", "", "");
+
+                pageJobPost = 1; //reset when search
+                jobPostViewModel.searchJobPosts(pageJobPost, pageSizeJobPost, title, "", "", "", "");
 
                 //search post
                 postViewModel.searchPostResult().observe(getViewLifecycleOwner(), result -> {
@@ -462,6 +502,8 @@ public class HomeFragment extends Fragment {
                     // Khi người dùng xóa hết chữ (bấm X)
                     pageJobPost = 1;
                     pagePost = 1;
+                    tvPageNumber.setText("1");
+                    isSearching = false;
                     jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
                     postViewModel.getAllPost(pagePost, pageSizePost);
                 }
@@ -476,13 +518,31 @@ public class HomeFragment extends Fragment {
                 // reset kết quả tìm kiếm
                 pageJobPost = 1;
                 pagePost = 1;
+                tvPageNumber.setText("1");
+                isSearching = false;
                 jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
                 postViewModel.getAllPost(pagePost, pageSizePost);
                 return false; // trả về true nếu đã xử lý hành vi đóng
             }
         });
 
+        //Close advanced search
+        btnClose.setOnClickListener( v -> {
+            btnClose.setVisibility(View.GONE);
+            isAdvancedSearching = false;
+            pageJobPost = 1;
+            pagePost = 1;
+            tvPageNumber.setText("1");
+            isSearching = false;
+            adapterJobPost.showShimmer();
+            jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
+            postViewModel.getAllPost(pagePost, pageSizePost);
+        });
+
         btnAdvancedSearch.setOnClickListener(v -> {
+            btnClose.setVisibility(View.VISIBLE);
+            isAdvancedSearching = true;
+
             LayoutInflater inflater = LayoutInflater.from(getContext());
             View dialogView = inflater.inflate(R.layout.dialog_advanced_search, null);
 
@@ -509,15 +569,19 @@ public class HomeFragment extends Fragment {
             AlertDialog dialog = new AlertDialog.Builder(getContext())
                     .setTitle("Advanced Search")
                     .setView(dialogView)
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton("Cancel", (d, i) -> {
+                        btnClose.setVisibility(View.GONE);
+                        isAdvancedSearching = false;
+                    })
                     .setPositiveButton("OK", (d, i) -> {
                         if (tabLayout.getSelectedTabPosition() == 0) {
+
                             // Tìm việc
-                            String title = ((EditText) dialogView.findViewById(R.id.edtJobTitle)).getText().toString();
-                            String location = ((EditText) dialogView.findViewById(R.id.edtLocation)).getText().toString();
-                            String position = ((EditText) dialogView.findViewById(R.id.edtPosition)).getText().toString();
-                            String company = ((EditText) dialogView.findViewById(R.id.edtCompanyNameJob)).getText().toString();
-                            String educationRequirement = ((EditText) dialogView.findViewById(R.id.edtEducationRequirement)).getText().toString();
+                            title = ((EditText) dialogView.findViewById(R.id.edtJobTitle)).getText().toString();
+                            location = ((EditText) dialogView.findViewById(R.id.edtLocation)).getText().toString();
+                            position = ((EditText) dialogView.findViewById(R.id.edtPosition)).getText().toString();
+                            company = ((EditText) dialogView.findViewById(R.id.edtCompanyNameJob)).getText().toString();
+                            educationRequirement = ((EditText) dialogView.findViewById(R.id.edtEducationRequirement)).getText().toString();
 
                             //Neu rong
                             if (title.isEmpty() && location.isEmpty() && position.isEmpty() && company.isEmpty() && educationRequirement.isEmpty()) {
@@ -526,29 +590,18 @@ public class HomeFragment extends Fragment {
                                 return;
                             }
 
-                            jobPostViewModel.getSearchJobPostResult().observe(getViewLifecycleOwner(), result -> {
-                                if(result != null)
-                                    Log.e("HomeFragment", "getSearchJobPostResult: " + result + "");
-                                else
-                                    Log.e("HomeFragment", "getSearchJobPostResult: null");
-                            });
-                            jobPostViewModel.getSearchJobPostData().observe(getViewLifecycleOwner(), data -> {
-                                if(data != null)
-                                {
-                                    allJobs.clear();
-                                    allJobs.addAll(data);
-                                }
-                                adapterJobPost.notifyDataSetChanged();
-                            });
+                            pageJobPost = 1; //reset when search
 
-                            jobPostViewModel.searchJobPosts(title, location, position, educationRequirement, company);
+                            //Load
+                            adapterJobPost.showShimmer();
+                            jobPostViewModel.searchJobPosts(pageJobPost, pageSizeJobPost, title, location, position, educationRequirement, company);
                         } else {
                             // Tìm bài đăng
-                            String title = ((EditText) dialogView.findViewById(R.id.edtPostTitle)).getText().toString();
-                            String companyName = ((EditText) dialogView.findViewById(R.id.edtCompanyNamePost)).getText().toString();
+                            title = ((EditText) dialogView.findViewById(R.id.edtPostTitle)).getText().toString();
+                            company = ((EditText) dialogView.findViewById(R.id.edtCompanyNamePost)).getText().toString();
 
                             //Neu rong
-                            if (title.isEmpty() && companyName.isEmpty()) {
+                            if (title.isEmpty() && company.isEmpty()) {
                                 pageJobPost = 1;
                                 postViewModel.getAllPost(pagePost, pageSizePost);
                                 return;
@@ -570,7 +623,7 @@ public class HomeFragment extends Fragment {
                                 adapterPost.notifyDataSetChanged();
                             });
 
-                            postViewModel.searchPosts(title, companyName);
+                            postViewModel.searchPosts(title, company);
                         }
                     })
                     .create();

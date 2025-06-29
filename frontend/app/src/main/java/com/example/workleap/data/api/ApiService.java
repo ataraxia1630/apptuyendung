@@ -251,6 +251,7 @@ public interface ApiService {
     Call<MessageResponse> deleteJobPost(@Path("id") String id);
     @GET("api/job-posts/search/query")
     Call<ListJobPostResponse> searchJobPosts(
+            @Query("page") int page, @Query("pageSize") int pageSize,
             @Query("title") String query,
             @Query("location") String location,
             @Query("position") String position,
