@@ -24,6 +24,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
 
     public interface OnReportActionListener {
         void onViewTarget(Report report);
+        void onViewReporter(Report report);
         void onApprove(Report report);
         void onReject(Report report);
     }
@@ -70,7 +71,11 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
                 if (item.getItemId() == R.id.menu_view_target) {
                     actionListener.onViewTarget(report);
                     return true;
-                } else if (item.getItemId() == R.id.menu_approve_report) {
+                }if (item.getItemId() == R.id.menu_view_reporter) {
+                    actionListener.onViewReporter(report);
+                    return true;
+                }
+                else if (item.getItemId() == R.id.menu_approve_report) {
                     actionListener.onApprove(report);
                     return true;
                 } else if (item.getItemId() == R.id.menu_reject_report) {

@@ -83,11 +83,22 @@ public class ReportFragment extends Fragment {
                     Log.e("eee","jobjobjob");
                     jobPostViewModel.getJobPostById(report.getJobPostId());
                 }
-                else if(report.getJobPostId() != null)
+                else if(report.getPostId() != null)
                 {
                     Log.e("eee","popopo");
                 }
                 else Log.e("eee","uauaa");
+            }
+            public void onViewReporter(Report report) {
+                // Xem nguoi bao cao (User/Post/JobPost)
+                Toast.makeText(getContext(), "View target: " + report.getId(), Toast.LENGTH_SHORT).show();
+                if(report.getUserId() != null)
+                {
+                    userViewModel.getUser(report.getUserId());
+                }
+                else {
+                    Toast.makeText(getContext(), "Unknown sender" + report.getId(), Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
@@ -134,6 +145,9 @@ public class ReportFragment extends Fragment {
             jobPostViewModel.setCurrentJobPost(jobPost);
             bundle.putSerializable("jobPost", jobPost);
             bundle.putSerializable("user", user);
+
+            //tranh viec quay lai thi lai mo jobpost
+            jobPostViewModel.resetJobPostData();
             ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
             navController.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
         });
