@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
-        android:text="Login"
+        android:text="Welcome to WorkLeap"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -42,35 +42,12 @@
         android:hint="Password"
         android:inputType="textPassword" />
 
-    <CheckBox
-        android:id="@+id/remember_me_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="52dp"
-        android:layout_marginBottom="16dp"
-        android:text="Remember me" />
-
-    <TextView
-        android:id="@+id/forgot_password_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
-        android:text="Forgot password?"
-        android:textColor="@android:color/holo_blue_dark" />
-
     <Button
         android:id="@+id/login_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="Login" />
-
-    <Button
-        android:id="@+id/google_signin_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Sign in with Google" />
 
     <LinearLayout
         android:layout_width="wrap_content"

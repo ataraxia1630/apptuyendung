@@ -15,6 +15,7 @@ import com.example.workleap.data.model.request.RegisterRequest;
 import com.example.workleap.data.model.response.RegisterResponse;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.data.repository.UserRepository;
+import com.example.workleap.utils.ToastUtil;
 import com.google.gson.Gson;
 
 import retrofit2.Call;
@@ -210,7 +211,7 @@ public class AuthViewModel extends ViewModel {
 
                     if(loginResponse.getUser()==null) Log.e("authviewmodel", "user null");
 
-                    loginResult.setValue(loginResponse.getMessage() + " - Token: " + loginResponse.getToken());
+                    loginResult.setValue("Log in successfull, welcome " + loginResponse.getUser().getUsername());
                     loginUser.setValue(loginResponse.getUser());
 
                 } else {

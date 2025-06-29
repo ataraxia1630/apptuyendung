@@ -4,7 +4,9 @@ import static androidx.core.content.ContentProviderCompat.requireContext;
 
 import android.content.Context;
 import android.net.Uri;
+import android.view.Gravity;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -75,4 +77,9 @@ public class Utils {
         }
     }
 
+    public static void showTopToast(Context context, String message) {
+        Toast toast = Toast.makeText(context.getApplicationContext(), message, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
+        toast.show();
+    }
 }

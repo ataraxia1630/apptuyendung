@@ -38,6 +38,7 @@ import com.example.workleap.ui.view.main.jobpost_post.PostAdapter;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.PostViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
+import com.example.workleap.utils.ToastUtil;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -115,11 +116,19 @@ public class HomeFragment extends Fragment {
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         userViewModel.InitiateRepository(getContext());
 
+        //lay user cho detail jobpost applied cv
+        user = (User) getArguments().getSerializable("user");
+        if(user==null) Log.e("HomeFragment", "user null");
+
         //filter tab
         tabFilter = view.findViewById(R.id.tabLayout);
         tabFilter.addTab(tabFilter.newTab().setText("New"));
-        tabFilter.addTab(tabFilter.newTab().setText("For You"));
-        tabFilter.addTab(tabFilter.newTab().setText("Saved"));
+        if(user.getApplicantId() != null)
+        {
+            tabFilter.addTab(tabFilter.newTab().setText("For You"));
+            tabFilter.addTab(tabFilter.newTab().setText("Saved"));
+        }
+
         tabFilter.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -153,10 +162,6 @@ public class HomeFragment extends Fragment {
             @Override public void onTabReselected(TabLayout.Tab tab) {}
         });
 
-
-        //lay user cho detail jobpost applied cv
-        user = (User) getArguments().getSerializable("user");
-        if(user==null) Log.e("HomeFragment", "user null");
 
         //Khoi tao adapter voi loading effect
         adapterJobPost = new JobPostAdapter(new ArrayList<>(), new JobPostAdapter.OnJobPostClickListener() {
@@ -356,10 +361,9 @@ public class HomeFragment extends Fragment {
 
             if(posts != null && !posts.isEmpty()) {
                 allPosts.addAll(posts);
-                Toast.makeText(this.getContext(), "Loading Posts...", Toast.LENGTH_SHORT).show();
             }
             else
-                Toast.makeText(this.getContext(), "No more posts", Toast.LENGTH_SHORT).show();
+                ToastUtil.showToast(this.getContext(), "No more posts", ToastUtil.TYPE_ERROR);
 
 
             // Setup RecyclerView

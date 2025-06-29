@@ -1,6 +1,7 @@
 package com.example.workleap.ui.view.auth;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,9 @@ import android.widget.Toast;
 import com.example.workleap.R;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
+import com.example.workleap.utils.Utils;
+import com.example.workleap.utils.ToastUtil;
+import com.google.android.material.snackbar.Snackbar;
 
 public class LoginFragment extends Fragment {
 
@@ -59,11 +63,18 @@ public class LoginFragment extends Fragment {
         });
 
         authViewModel.getLoginResult().observe(getViewLifecycleOwner(), result ->
-                Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show()
+            {
+                if(result != null)
+                {
+                    ToastUtil.showToast(this.getContext(), result, ToastUtil.TYPE_WARNING);
+                    Log.d("LoginFragment", "getLoginResult: " + result + "");
+                }
+            }
         );
 
         authViewModel.getLoginUser().observe(getViewLifecycleOwner(), user -> {
             if (user == null) {
+                ToastUtil.showToast(this.getContext(), "Login failed, please try again!", ToastUtil.TYPE_ERROR);
                 Log.e("LoginFragment", "user null");
             } else {
                 Intent intent = new Intent(requireActivity(), NavigationActivity.class);
