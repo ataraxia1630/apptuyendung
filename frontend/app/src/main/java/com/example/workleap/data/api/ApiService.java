@@ -5,10 +5,8 @@ import com.example.workleap.data.model.entity.Conversation;
 import com.example.workleap.data.model.entity.JobCategory;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.JobPost;
-import com.example.workleap.data.model.entity.JobSaved;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.data.model.entity.Message;
-import com.example.workleap.data.model.entity.Notification;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.request.ApplyAJobRequest;
@@ -23,6 +21,9 @@ import com.example.workleap.data.model.request.JobSavedRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
 import com.example.workleap.data.model.request.ProcessCvAppliedRequest;
 import com.example.workleap.data.model.request.ListMemberIdRequest;
+import com.example.workleap.data.model.request.ReportJobPostRequest;
+import com.example.workleap.data.model.request.ReportPostRequest;
+import com.example.workleap.data.model.request.ReportUserRequest;
 import com.example.workleap.data.model.request.StatusRequest;
 import com.example.workleap.data.model.request.UserIdRequest;
 import com.example.workleap.data.model.response.CVResponse;
@@ -44,7 +45,9 @@ import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.JobAppliedResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
+import com.example.workleap.data.model.response.ListApplicantResponse;
 import com.example.workleap.data.model.response.ListCommentResponse;
+import com.example.workleap.data.model.response.ListCompanyResponse;
 import com.example.workleap.data.model.response.ListConversationUserResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
 import com.example.workleap.data.model.response.ListExperienceResponse;
@@ -56,6 +59,7 @@ import com.example.workleap.data.model.response.ListMessageResponse;
 import com.example.workleap.data.model.response.ListMonthlyStatResponse;
 import com.example.workleap.data.model.response.ListNotificationResponse;
 import com.example.workleap.data.model.response.ListPostResponse;
+import com.example.workleap.data.model.response.ListReportResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListCVResponse;
 import com.example.workleap.data.model.response.ListJobAppliedResponse;
@@ -63,6 +67,7 @@ import com.example.workleap.data.model.response.ListJobCategoryResponse;
 import com.example.workleap.data.model.response.ListJobTypeResponse;
 import com.example.workleap.data.model.response.ListTopCompanyResponse;
 import com.example.workleap.data.model.response.ListTopJobPostResponse;
+import com.example.workleap.data.model.response.ListUserResponse;
 import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
 import com.example.workleap.data.model.response.MessageChatResponse;
@@ -72,7 +77,7 @@ import com.example.workleap.data.model.response.OverviewResponse;
 import com.example.workleap.data.model.response.PostResponse;
 import com.example.workleap.data.model.response.ReactionResponse;
 import com.example.workleap.data.model.response.RegisterResponse;
-import com.example.workleap.data.model.response.TopCompanyResponse;
+import com.example.workleap.data.model.response.ReportResponse;
 import com.example.workleap.data.model.response.UpdateApplicantEducationResponse;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
@@ -95,6 +100,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
@@ -129,6 +135,8 @@ public interface ApiService {
 
 
     //User
+    @GET("api/users/all")
+    Call<ListUserResponse> getAllUser();
     @GET("api/users/{id}")
     Call<GetUserResponse> getUser(@Path("id") String id);
     @PUT("api/users/{id}")
@@ -148,9 +156,13 @@ public interface ApiService {
     Call<GetUserResponse> uploadAvatar(@Part MultipartBody.Part file);
     @GET("api/avatar/url/{path}")
     Call<ImageUrlResponse> getAvatarUrl(@Path("path") String path);
-
+    @PATCH("api/users/admin/{id}/status")
+    Call<GetUserResponse> toggleUserAccountStatus(@Path("id") String id, @Body StatusRequest request);
 
     //Applicant
+    @GET("api/users/applicant/all")
+    Call<ListApplicantResponse> getAllApplicant();
+
     @GET("api/users/applicant/{id}")
     Call<GetApplicantResponse> getApplicant(@Path("id") String id);
     @PUT("api/users/applicant/{id}")
@@ -158,6 +170,9 @@ public interface ApiService {
 
 
     //Company
+    @GET("api/users/company/all")
+    Call<ListCompanyResponse> getAllCompany();
+
     @GET("api/users/company/{id}")
     Call<GetCompanyResponse> getCompany(@Path("id") String id);
     @PUT("api/users/company/{id}")
@@ -453,5 +468,15 @@ public interface ApiService {
     Call<ListNotificationResponse> getAllNotification();
     @DELETE("api/notification/{id}")
     Call<Void> deleteNotification(@Path("id") String id);
+
+    //Report
+    @GET("/api/reports/")
+    Call<ListReportResponse> getAllReports();
+    @POST("/api/reports/")
+    Call<ReportResponse> createReportUser(@Body ReportUserRequest request);
+    @POST("/api/reports/")
+    Call<ReportResponse> createReportJobPost(@Body ReportJobPostRequest request);
+    @POST("/api/reports/")
+    Call<ReportResponse> createReportPost(@Body ReportPostRequest request);
 
 }

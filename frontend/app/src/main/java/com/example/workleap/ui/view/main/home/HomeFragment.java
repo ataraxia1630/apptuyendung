@@ -194,6 +194,11 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onReportClick(JobPost jobpost) {
+                Bundle bundle = new Bundle();
+                bundle.putString("type", "jobpost");
+                bundle.putString("targetId", jobpost.getId());
+                bundle.putString("targetName", jobpost.getTitle());
+                nav.navigate(R.id.sendReportFragment, bundle);
                 return;
             }
         });

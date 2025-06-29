@@ -8,12 +8,14 @@ import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.model.request.EmailOtpRequest;
 import com.example.workleap.data.model.request.EmailRequest;
 import com.example.workleap.data.model.request.FCMRequest;
+import com.example.workleap.data.model.request.StatusRequest;
 import com.example.workleap.data.model.response.FCMResponse;
 import com.example.workleap.data.model.entity.Message;
 import com.example.workleap.data.model.response.GetUserResponse;
 import com.example.workleap.data.model.request.LoginRequest;
 import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.ListFollowerResponse;
+import com.example.workleap.data.model.response.ListUserResponse;
 import com.example.workleap.data.model.response.LoginResponse;
 import com.example.workleap.data.model.request.LogoutRequest;
 import com.example.workleap.data.model.response.MessageResponse;
@@ -103,6 +105,9 @@ public class UserRepository {
     public Call<GetUserResponse> getUser(String id) {
         return apiService.getUser(id);
     }
+    public Call<ListUserResponse> getAllUser() {
+        return apiService.getAllUser();
+    }
 
     //Update
     public Call<UpdateUserResponse> updateUser(String id, UpdateUserRequest request) {
@@ -136,6 +141,9 @@ public class UserRepository {
     }
     public Call<ImageUrlResponse> getAvatarUrl(String path) {
         return apiService.getAvatarUrl(path);
+    }
+    public Call<GetUserResponse> toggleUserAccountStatus(String id, StatusRequest request) {
+        return apiService.toggleUserAccountStatus(id, request);
     }
 }
 

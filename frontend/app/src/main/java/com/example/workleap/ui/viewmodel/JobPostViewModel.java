@@ -50,6 +50,9 @@ public class JobPostViewModel  extends ViewModel {
     private MutableLiveData<String> toggleJobPostStatusResult = new MutableLiveData<>();
     private MutableLiveData<List<JobPost>> getJobPostsByCompanyData = new MutableLiveData<>();
     private MutableLiveData<JobPost> getJobPostData = new MutableLiveData<>();
+    public void resetJobPostData() {
+        getJobPostData.setValue(null);
+    }
     private MutableLiveData<JobPost> getMyJobPostByIdData = new MutableLiveData<>();
     private MutableLiveData<JobPost> createJobPostData = new MutableLiveData<>();
     private MutableLiveData<JobPost> updateJobPostData = new MutableLiveData<>();

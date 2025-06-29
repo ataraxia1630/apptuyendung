@@ -6,9 +6,6 @@
         android:id="@+id/menu_view_reporter"
         android:title="View Reporter"/>
     <item
-        android:id="@+id/menu_approve_report"
-        android:title="Approve" />
-    <item
-        android:id="@+id/menu_reject_report"
-        android:title="Reject" />
+        android:id="@+id/menu_reply_report"
+        android:title="Reply" />
 </menu>

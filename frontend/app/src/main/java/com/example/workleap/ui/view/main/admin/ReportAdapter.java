@@ -24,6 +24,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
 
     public interface OnReportActionListener {
         void onViewTarget(Report report);
+        void onViewReporter(Report report);
         void onApprove(Report report);
         void onReject(Report report);
     }
@@ -48,14 +49,13 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
     @Override
     public void onBindViewHolder(@NonNull ReportViewHolder holder, int position) {
         Report report = reportList.get(position);
-        holder.tvReportedBy.setText("From: " + report.getUserId());
         holder.tvReason.setText(report.getReason());
 
         String target = "Unknown";
         if (report.getReportedUserId() != null) target = "User ID: " + report.getReportedUserId();
         else if (report.getPostId() != null) target = "Post ID: " + report.getPostId();
         else if (report.getJobPostId() != null) target = "JobPost ID: " + report.getJobPostId();
-        holder.tvTarget.setText("Target: " + target);
+        holder.tvTarget.setText(target);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
         holder.tvDate.setText(sdf.format(report.getCreated_at()));
@@ -71,11 +71,12 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
                 if (item.getItemId() == R.id.menu_view_target) {
                     actionListener.onViewTarget(report);
                     return true;
-                } else if (item.getItemId() == R.id.menu_approve_report) {
-                    actionListener.onApprove(report);
+                }if (item.getItemId() == R.id.menu_view_reporter) {
+                    actionListener.onViewReporter(report);
                     return true;
-                } else if (item.getItemId() == R.id.menu_reject_report) {
-                    actionListener.onReject(report);
+                }
+                else if (item.getItemId() == R.id.menu_reply_report) {
+                    actionListener.onApprove(report);
                     return true;
                 }
                 return false;
@@ -90,7 +91,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
     }
 
     public static class ReportViewHolder extends RecyclerView.ViewHolder {
-        TextView tvReportedBy, tvTarget, tvReason, tvDate;
+        TextView tvTarget, tvReason, tvDate;
         ImageButton btnOption;
 
         public ReportViewHolder(@NonNull View itemView) {

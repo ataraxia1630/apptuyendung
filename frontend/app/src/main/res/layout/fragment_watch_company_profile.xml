@@ -102,6 +102,22 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_chat"
                     android:contentDescription="Chat" />
+
+                <!--chi hien cho admin-->
+                <ImageButton
+                    android:id="@+id/btnOptions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="8dp"
+
+                    android:layout_marginBottom="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Log out"
+                    android:src="@drawable/ic_options"
+                    android:visibility="gone" />
+
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
 
