@@ -44,6 +44,7 @@ import com.example.workleap.data.model.response.ImageUrlResponse;
 import com.example.workleap.data.model.response.JobAppliedResponse;
 import com.example.workleap.data.model.response.JobPostResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
+import com.example.workleap.data.model.response.ListApplicantResponse;
 import com.example.workleap.data.model.response.ListCommentResponse;
 import com.example.workleap.data.model.response.ListConversationUserResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
@@ -152,6 +153,9 @@ public interface ApiService {
 
 
     //Applicant
+    @GET("api/users/applicant/all")
+    Call<ListApplicantResponse> getAllApplicant();
+
     @GET("api/users/applicant/{id}")
     Call<GetApplicantResponse> getApplicant(@Path("id") String id);
     @PUT("api/users/applicant/{id}")

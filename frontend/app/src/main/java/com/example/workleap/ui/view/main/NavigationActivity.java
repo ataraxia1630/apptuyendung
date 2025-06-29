@@ -116,7 +116,7 @@ public class NavigationActivity extends AppCompatActivity {
                 } else if ("company".equalsIgnoreCase( user.getRole())) {
                     navController.navigate(R.id.companyProfileFragment, bundle);
                 } else {
-                    navController.navigate(R.id.applicantProfileFragment, bundle);
+                    navController.navigate(R.id.adminProfileFragment, bundle);
                     Toast.makeText(this, "Vai trò không hợp lệ!", Toast.LENGTH_SHORT).show();
                 }
                 return true;

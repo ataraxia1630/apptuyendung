@@ -11,10 +11,10 @@ import com.example.workleap.data.model.entity.ApplicantEducation;
 import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.Experience;
 import com.example.workleap.data.model.entity.Field;
-import com.example.workleap.data.model.entity.InterestedField;
 import com.example.workleap.data.model.entity.Skill;
 import com.example.workleap.data.model.request.CreateApplicantExperienceRequest;
 import com.example.workleap.data.model.request.ListFieldIdRequest;
+import com.example.workleap.data.model.response.ListApplicantResponse;
 import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.CreateApplicantExperienceResponse;
 import com.example.workleap.data.model.response.CreateInterestedFieldResponse;
@@ -22,7 +22,6 @@ import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
 import com.example.workleap.data.model.response.FieldResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
-import com.example.workleap.data.model.response.ListInterestedFieldResponse;
 import com.example.workleap.data.model.response.ListSkillResponse;
 import com.example.workleap.data.model.response.ListApplicantEducationResponse;
 import com.example.workleap.data.model.response.ListEducationResponse;
@@ -54,7 +53,9 @@ public class ApplicantViewModel extends ViewModel {
 
     private MutableLiveData<String> updateApplicantResult = new MutableLiveData<>();
     private MutableLiveData<String> getApplicantResult = new MutableLiveData<>();
+    private MutableLiveData<String> getAllApplicantResult = new MutableLiveData<>();
     private MutableLiveData<Applicant> getApplicantData = new MutableLiveData<>();
+    private MutableLiveData<List<Applicant>> getAllApplicantData = new MutableLiveData<>();
 
 
     private MutableLiveData<List<Skill>> getApplicantSkillData = new MutableLiveData<>();
@@ -98,7 +99,9 @@ public class ApplicantViewModel extends ViewModel {
     // Getter cho LiveData
     public LiveData<String> getUpdateApplicantResult() { return updateApplicantResult; }
     public LiveData<String> getGetApplicantResult() { return getApplicantResult; }
+    public LiveData<String> getGetAllApplicantResult() { return getAllApplicantResult; }
     public LiveData<Applicant> getGetApplicantData() { return getApplicantData; }
+    public LiveData<List<Applicant>> getGetAllApplicantData() { return getAllApplicantData; }
 
     public LiveData<List<Skill>> getGetApplicantSkillData() { return getApplicantSkillData; }
     public LiveData<String> getGetApplicantSkillResult() { return getApplicantSkillResult; }
@@ -168,7 +171,39 @@ public class ApplicantViewModel extends ViewModel {
             }
         });
     }
+    public void getAllApplicant() {
+        Call<ListApplicantResponse> call = applicantRepository.getAllApplicant();
+        call.enqueue(new Callback<ListApplicantResponse>() {
+            @Override
+            public void onResponse(Call<ListApplicantResponse> call, Response<ListApplicantResponse> response) {
+                if (response.isSuccessful()) {
+                    ListApplicantResponse getResponse = response.body();
+                    getAllApplicantResult.setValue(getResponse.getMessage());
+                    getAllApplicantData.setValue(getResponse.getApplicants());
+                    Log.e("applicantviewmodel","successful");
+                    //Log.e("applicantviewmodel",getResponse.getApplicant().getProfileSummary());
+                    if(getResponse.getApplicants()==null) Log.e("applicantviewmodel", "applicant null");
 
+                } else {
+                    try {
+                        String errorJson = response.errorBody().string();
+                        Log.e("applicantviewmodel, try", errorJson);
+                        ListApplicantResponse error = new Gson().fromJson(response.errorBody().string(), ListApplicantResponse.class);
+                        getApplicantResult.setValue("Lỗi: " + error.getMessage());
+                        getApplicantResult.setValue("Lỗi không xác định: " + response.code());
+
+                    } catch (Exception e) {
+                        getApplicantResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ListApplicantResponse> call, Throwable t) {
+                getAllApplicantResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
     // Update applicant
     public void updateApplicant(String id,  String address, String firstName, String lastName, String profileSummary, byte[] cvFile) {
         UpdateApplicantRequest request = new UpdateApplicantRequest(address, firstName, lastName, profileSummary, cvFile);

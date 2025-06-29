@@ -13,6 +13,7 @@ import com.example.workleap.data.api.ApiService;
 import com.example.workleap.data.model.request.UpdateApplicantEducationRequest;
 import com.example.workleap.data.model.request.UpdateApplicantExperienceRequest;
 import com.example.workleap.data.model.response.FieldResponse;
+import com.example.workleap.data.model.response.ListApplicantResponse;
 import com.example.workleap.data.model.response.ListExperienceResponse;
 import com.example.workleap.data.model.response.ListFieldResponse;
 import com.example.workleap.data.model.response.ListInterestedFieldResponse;
@@ -50,6 +51,10 @@ public class ApplicantRepository {
     //Get
     public Call<GetApplicantResponse> getApplicant(String id) {
         return apiService.getApplicant(id);
+    }
+    public Call<ListApplicantResponse> getAllApplicant()
+    {
+        return apiService.getAllApplicant();
     }
 
     //Update

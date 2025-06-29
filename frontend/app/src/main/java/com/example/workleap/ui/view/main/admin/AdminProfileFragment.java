@@ -24,7 +24,9 @@ import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.auth.MainActivity;
+import com.example.workleap.ui.viewmodel.ApplicantViewModel;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
+import com.example.workleap.ui.viewmodel.CompanyViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.tabs.TabLayout;
@@ -43,6 +45,8 @@ public class AdminProfileFragment extends Fragment {
     private RecyclerView recyclerUserList;
 
     private UserViewModel userViewModel;
+    private ApplicantViewModel applicantViewModel;
+    private CompanyViewModel companyViewModel;
     private AuthViewModel authViewModel;
     private UserListAdapter userAdapter;
     private List<User> allUsers = new ArrayList<>();
@@ -72,6 +76,10 @@ public class AdminProfileFragment extends Fragment {
         userViewModel.InitiateRepository(getContext());
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
         authViewModel.InitiateRepository(getContext());
+        applicantViewModel = new ViewModelProvider(requireActivity()).get(ApplicantViewModel.class);
+        applicantViewModel.InitiateRepository(getContext());
+        companyViewModel = new ViewModelProvider(requireActivity()).get(CompanyViewModel.class);
+        companyViewModel.InitiateRepository(getContext());
 
         User currentUser = (User) getArguments().getSerializable("user");  // Giả sử bạn có phương thức này
         if (currentUser != null) {
@@ -143,19 +151,26 @@ public class AdminProfileFragment extends Fragment {
     }
 
     private void loadUsers(String role) {
+        /*if(currentRoleFilter=="applicant")
+        {
+            applicantViewModel.getAllApplicant();
+        }else{
+            companyViewModel.geta,
+        }
         userViewModel.get(role).observe(getViewLifecycleOwner(), users -> {
-            allUsers.clear();
-            if (users != null) {
-                allUsers.addAll(users);
-            }
-            userAdapter.notifyDataSetChanged();
+
         });
+        allUsers.clear();
+        if (users != null) {
+            allUsers.addAll(users);
+        }
+        userAdapter.notifyDataSetChanged();*/
     }
 
     private void filterUsers(String query) {
         List<User> filtered = new ArrayList<>();
         for (User user : allUsers) {
-            if (user.getName().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))) {
+            if (user.getUsername().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))) {
                 filtered.add(user);
             }
         }
