@@ -67,12 +67,10 @@ const JobPostSchema = Joi.object({
             const today = new Date();
             today.setHours(0, 0, 0, 0); // reset giờ
 
-            const tomorrow = new Date(today);
-            tomorrow.setDate(today.getDate() + 1);
-
-            if (applyDate < tomorrow) {
-                return helpers.message("Apply until must be at least 1 day after today");
+            if (applyDate < today) {
+                return helpers.message("Apply until must be today or a future date");
             }
+
 
             return value;
         })

@@ -29,8 +29,8 @@ const RegisterSchema = Joi.object({
       'string.empty': 'Phone Number cannot be empty',
       'string.pattern.base': 'Phone Number must be a valid 10-digit number',
     }),
-  avatar: Joi.string().optional,
-  background: Joi.string().optional,
+  avatar: Joi.string().optional(),
+  background: Joi.string().optional(),
   role: Joi.string().valid('APPLICANT', 'COMPANY').required().messages({
     'string.base': 'Role must be a string',
     'any.required': 'Role is required',

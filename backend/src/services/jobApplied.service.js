@@ -1,6 +1,30 @@
 const prisma = require('../config/db/prismaClient');
 
 const JobAppliedService = {
+  getUserIdsAppliedToJobPost: async (jobpostId) => {
+    try {
+      const appliedUsers = await prisma.jobApplied.findMany({
+        where: { jobpostId },
+        select: {
+          applicant: {
+            select: {
+              User: {
+                select: { id: true }
+              }
+            }
+          }
+        }
+      });
+
+      return appliedUsers
+        .map(app => app.applicant?.User?.[0]?.id)
+        .filter(id => id);
+    } catch (error) {
+      throw new Error(
+        'Error fetching userIds applied to jobpost: ' + error.message
+      );
+    }
+  },
   getAllCvAppliedToJob: async (jobpostId) => {
     try {
       const jobApplieds = await prisma.jobApplied.findMany({

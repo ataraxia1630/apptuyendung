@@ -1,5 +1,6 @@
 const { sendToPostRoom } = require('../socket');
 const { ReactionService } = require('../services/reaction.service');
+const NotiEmitter = require('../emitters/notification.emitter');
 
 const ReactionController = {
     toggleReaction: async (req, res) => {
@@ -11,6 +12,8 @@ const ReactionController = {
         }
 
         try {
+
+
             const result = await ReactionService.toggleReaction({ postId, userId, reactionType });
 
             // Emit sau khi xử lý thành công
@@ -20,6 +23,16 @@ const ReactionController = {
                 reactionType,
                 removed: result.removed
             });
+
+            // Gửi noti nếu là tạo hoặc update reaction
+            if (!result.removed && result.postOwnerId !== userId) {
+                NotiEmitter.emit('reaction.post', {
+                    userId: result.postOwnerId,
+                    fromUserId: userId,
+                    postId,
+                    reactionType
+                });
+            }
 
             return res.status(result.removed ? 200 : 201).json(result);
         } catch (err) {
