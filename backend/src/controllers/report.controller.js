@@ -39,6 +39,19 @@ const ReportController = {
             return res.status(500).json({ message: 'Failed to fetch reports', error: error.message });
         }
     },
+    getAllUnsolvedReports: async (req, res) => {
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 10;
+        const { skip, take } = getPagination(page, pageSize);
+
+        try {
+            const { reports, total } = await ReportService.getAllUnsolvedReports(skip, take);
+            const meta = buildMeta(total, page, pageSize);
+            return res.status(200).json({ reports, meta });
+        } catch (error) {
+            return res.status(500).json({ message: 'Failed to fetch reports', error: error.message });
+        }
+    },
 
     getReportsByType: async (req, res) => {
         const { type } = req.params;

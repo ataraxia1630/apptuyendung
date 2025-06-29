@@ -2,9 +2,17 @@ const prisma = require('../config/db/prismaClient');
 
 const ReportReplyService = {
     createReply: async ({ reportId, adminId, message }) => {
-        return prisma.reportReply.create({
+        const reply = await prisma.reportReply.create({
             data: { reportId, adminId, message },
         });
+
+        // 2. Cập nhật report thành đã phản hồi
+        await prisma.report.update({
+            where: { id: reportId },
+            data: { status: true },
+        });
+
+        return reply;
     },
 
     getRepliesByReportId: async (reportId) => {
