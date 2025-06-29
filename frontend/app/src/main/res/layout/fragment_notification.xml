@@ -1,8 +1,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
     android:padding="16dp">
+
+    <!-- ProgressBar giữa màn hình -->
+    <ProgressBar
+        android:id="@+id/progressCenterLoading"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:indeterminate="true"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
 
     <!-- Thanh tiêu đề -->
     <RelativeLayout
@@ -31,6 +42,7 @@
             android:contentDescription="Back to messages"/>
     </RelativeLayout>
 
+
     <!-- Danh sách thông báo -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerNotifications"
@@ -39,4 +51,5 @@
         android:layout_below="@id/headerLayout"
         android:clipToPadding="false"
         android:paddingTop="8dp"/>
+
 </RelativeLayout>

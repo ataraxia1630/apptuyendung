@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,10 +64,11 @@ public class HomeFragment extends Fragment {
     private int pageSizePost = 4;
 
     private ImageButton btnPrev, btnNext, btnAdvancedSearch;
+    private ProgressBar progressLoadMore;
     private Button btnMorePost;
     private TextView tvPageNumber;
     private TabLayout tabFilter;
-    private String tabName;
+    private String tabName = "New";
 
     private boolean isMorePost = false; // Kiểm tra đang tải lại fragment hay tải thêm bài đăng
     private NavController nav;
@@ -98,6 +100,7 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         //JOBPOST LIST
         recyclerViewJobPost = view.findViewById(R.id.recyclerJobPosts); // ID trong layout
         btnPrev = view.findViewById(R.id.btnPrev);
@@ -105,6 +108,7 @@ public class HomeFragment extends Fragment {
         tvPageNumber = view.findViewById(R.id.tvPageNumber);
         btnMorePost = view.findViewById(R.id.btnLoadMorePosts);
         btnAdvancedSearch = view.findViewById(R.id.btnAdvanceSearch);
+        progressLoadMore = view.findViewById(R.id.progressLoadMore);
 
         jobPostViewModel  = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
@@ -121,6 +125,9 @@ public class HomeFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 tabName = tab.getText().toString();
                 Log.d("TabFilter", "Selected tab: " + tabName);
+
+                //Loading
+                adapterJobPost.showShimmer(); // trước khi load
 
                 //Reset page
                 pageJobPost = 1;
@@ -151,6 +158,44 @@ public class HomeFragment extends Fragment {
         user = (User) getArguments().getSerializable("user");
         if(user==null) Log.e("HomeFragment", "user null");
 
+        //Khoi tao adapter voi loading effect
+        adapterJobPost = new JobPostAdapter(new ArrayList<>(), new JobPostAdapter.OnJobPostClickListener() {
+            @Override
+            public void onJobPostClick(JobPost jobPost) {
+                // Handle item click
+                Bundle bundle = new Bundle();
+                jobPostViewModel.setCurrentJobPost(jobPost);
+                bundle.putSerializable("jobPost", jobPost);
+                bundle.putSerializable("user", user);
+                ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
+                nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+            }
+
+            @Override
+            public void onSaveClick(JobPost jobpost) {
+                jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
+                    if(result != null)
+                        Log.e("HomeFragment", "createJobSavedResult: " + result + "");
+                    else
+                        Log.e("HomeFragment", "createJobSavedResult: null");
+                });
+                if(user.getApplicantId() != null)
+                {
+                    JobSavedRequest jobSave = new JobSavedRequest(user.getApplicantId(), jobpost.getId());
+                    jobPostViewModel.createJobSaved(jobSave);
+                }
+                return;
+            }
+
+            @Override
+            public void onReportClick(JobPost jobpost) {
+                return;
+            }
+        });
+        adapterJobPost.showShimmer(); // trước khi load
+        recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewJobPost.setAdapter(adapterJobPost);
+
         //observe list jobpost
         jobPostViewModel.getAllJobPostResult().observe(getViewLifecycleOwner(), result ->
         {
@@ -165,39 +210,7 @@ public class HomeFragment extends Fragment {
             // Setup RecyclerView
             recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
             //adapterJobPost = new JobPostAdapter(allJobs, jobPostViewModel); // mặc định show tất cả
-            adapterJobPost = new JobPostAdapter(allJobs, new JobPostAdapter.OnJobPostClickListener() {
-                @Override
-                public void onJobPostClick(JobPost jobPost) {
-                    // Handle item click
-                    Bundle bundle = new Bundle();
-                    jobPostViewModel.setCurrentJobPost(jobPost);
-                    bundle.putSerializable("jobPost", jobPost);
-                    bundle.putSerializable("user", user);
-                    ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
-                    nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
-                }
-
-                @Override
-                public void onSaveClick(JobPost jobpost) {
-                    jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
-                        if(result != null)
-                            Log.e("HomeFragment", "createJobSavedResult: " + result + "");
-                        else
-                            Log.e("HomeFragment", "createJobSavedResult: null");
-                    });
-                    if(user.getApplicantId() != null)
-                    {
-                        JobSavedRequest jobSave = new JobSavedRequest(user.getApplicantId(), jobpost.getId());
-                        jobPostViewModel.createJobSaved(jobSave);
-                    }
-                    return;
-                }
-
-                @Override
-                public void onReportClick(JobPost jobpost) {
-                    return;
-                }
-            });
+            adapterJobPost.hideShimmer(allJobs); //An shimmer, hien thi du lieu
 
             //Logo jobpost bang usermodel
             userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
@@ -213,6 +226,12 @@ public class HomeFragment extends Fragment {
         jobPostViewModel.getAllJobPosts(pageJobPost, pageSizeJobPost);
 
         //observe recommend jobpost
+        jobPostViewModel.getJobPostsRecommendResult().observe(getViewLifecycleOwner(), result -> {
+            if(result != null)
+                Log.d("HomeFragment", "getjobrecommendResult: " + result + "");
+            else
+                Log.d("HomeFragment", "getjobrecommendResult: null");
+                });
         jobPostViewModel.getJobPostsRecommendData().observe(getViewLifecycleOwner(), jobPosts ->
         {
             allJobs.clear();
@@ -221,39 +240,7 @@ public class HomeFragment extends Fragment {
             // Setup RecyclerView
             recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
             //adapterJobPost = new JobPostAdapter(allJobs, jobPostViewModel); // mặc định show tất cả
-            adapterJobPost = new JobPostAdapter(allJobs, new JobPostAdapter.OnJobPostClickListener() {
-                @Override
-                public void onJobPostClick(JobPost jobPost) {
-                    // Handle item click
-                    Bundle bundle = new Bundle();
-                    jobPostViewModel.setCurrentJobPost(jobPost);
-                    bundle.putSerializable("jobPost", jobPost);
-                    bundle.putSerializable("user", user);
-                    ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
-                    nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
-                }
-
-                @Override
-                public void onSaveClick(JobPost jobpost) {
-                    jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
-                        if(result != null)
-                            Log.e("HomeFragment", "createJobSavedResult: " + result + "");
-                        else
-                            Log.e("HomeFragment", "createJobSavedResult: null");
-                    });
-                    if(user.getApplicantId() != null)
-                    {
-                        JobSavedRequest jobSave = new JobSavedRequest(user.getApplicantId(), jobpost.getId());
-                        jobPostViewModel.createJobSaved(jobSave);
-                    }
-                    return;
-                }
-
-                @Override
-                public void onReportClick(JobPost jobpost) {
-                    return;
-                }
-            });
+            adapterJobPost.hideShimmer(jobPosts);
 
             //Logo jobpost bang usermodel
             userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
@@ -282,39 +269,7 @@ public class HomeFragment extends Fragment {
             // Setup RecyclerView
             recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
             //adapterJobPost = new JobPostAdapter(allJobs, jobPostViewModel); // mặc định show tất cả
-            adapterJobPost = new JobPostAdapter(allJobs, new JobPostAdapter.OnJobPostClickListener() {
-                @Override
-                public void onJobPostClick(JobPost jobPost) {
-                    // Handle item click
-                    Bundle bundle = new Bundle();
-                    jobPostViewModel.setCurrentJobPost(jobPost);
-                    bundle.putSerializable("jobPost", jobPost);
-                    bundle.putSerializable("user", user);
-                    ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
-                    nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
-                }
-
-                @Override
-                public void onSaveClick(JobPost jobpost) {
-                    jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
-                        if(result != null)
-                            Log.e("HomeFragment", "createJobSavedResult: " + result + "");
-                        else
-                            Log.e("HomeFragment", "createJobSavedResult: null");
-                    });
-                    if(user.getApplicantId() != null)
-                    {
-                        JobSavedRequest jobSave = new JobSavedRequest(user.getApplicantId(), jobpost.getId());
-                        jobPostViewModel.createJobSaved(jobSave);
-                    }
-                    return;
-                }
-
-                @Override
-                public void onReportClick(JobPost jobpost) {
-                    return;
-                }
-            });
+            adapterJobPost.hideShimmer(jobPosts);
 
             //Logo jobpost bang usermodel
             userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
@@ -333,6 +288,9 @@ public class HomeFragment extends Fragment {
         btnPrev.setOnClickListener(v -> {
             if (pageJobPost > 1) {
                 pageJobPost--;
+
+                //Loading
+                adapterJobPost.showShimmer(); // trước khi load
 
                 //Tuy thuoc tab filter
                 switch (tabName) {
@@ -355,7 +313,7 @@ public class HomeFragment extends Fragment {
         });
         btnNext.setOnClickListener(v -> {
             pageJobPost++;
-
+            adapterJobPost.showShimmer(); // trước khi load
             //Tuy thuoc tab filter
             switch (tabName) {
                 case "New":
@@ -387,6 +345,10 @@ public class HomeFragment extends Fragment {
         });
         postViewModel.getAllPostData().observe(getViewLifecycleOwner(), posts ->
         {
+            // Dữ liệu đã load xong
+            btnMorePost.setVisibility(View.VISIBLE);
+            progressLoadMore.setVisibility(View.GONE);
+
             if(!isMorePost)
                allPosts.clear(); //Neu khong phai tai them thi clear de tranh bi trung
 
@@ -398,9 +360,6 @@ public class HomeFragment extends Fragment {
             }
             else
                 Toast.makeText(this.getContext(), "No more posts", Toast.LENGTH_SHORT).show();
-
-
-
 
 
             // Setup RecyclerView
@@ -432,6 +391,10 @@ public class HomeFragment extends Fragment {
 
         //Load more posts
         btnMorePost.setOnClickListener(v -> {
+            //Loading
+            btnMorePost.setVisibility(View.GONE);
+            progressLoadMore.setVisibility(View.VISIBLE);
+
             pagePost++;
             isMorePost = true;
             postViewModel.getAllPost(pagePost, pageSizePost);
@@ -446,6 +409,8 @@ public class HomeFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String title) {
+                //Loading
+                adapterJobPost.showShimmer();
                 // Tim theo title neu search thong thuong
                 jobPostViewModel.getSearchJobPostResult().observe(getViewLifecycleOwner(), result -> {
                     if(result != null)
@@ -454,12 +419,13 @@ public class HomeFragment extends Fragment {
                         Log.e("HomeFragment", "getSearchJobPostResult: null");
                 });
                 jobPostViewModel.getSearchJobPostData().observe(getViewLifecycleOwner(), data -> {
-                if(data != null)
-                    {
                     allJobs.clear();
-                    allJobs.addAll(data);
+                    if(data != null)
+                    {
+                        allJobs.addAll(data);
                     }
-                adapterJobPost.notifyDataSetChanged();
+                    adapterJobPost.hideShimmer(allJobs);
+                    adapterJobPost.notifyDataSetChanged();
                 });
                 jobPostViewModel.searchJobPosts(title, "", "", "", "");
 

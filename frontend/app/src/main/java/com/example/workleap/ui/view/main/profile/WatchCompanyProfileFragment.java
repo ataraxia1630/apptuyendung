@@ -183,6 +183,44 @@ public class WatchCompanyProfileFragment extends Fragment {
             popupMenu.show();
         });
 
+        //Khoi tao adapter
+        adapterJobPost = new JobPostAdapter(new ArrayList<>(), new JobPostAdapter.OnJobPostClickListener() {
+            @Override
+            public void onJobPostClick(JobPost jobPost) {
+                // Handle item click
+                Bundle bundle = new Bundle();
+                jobPostViewModel.setCurrentJobPost(jobPost);
+                bundle.putSerializable("user", user);
+                ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
+                nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
+            }
+
+            @Override
+            public void onSaveClick(JobPost jobpost) {
+                jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
+                    if(result != null)
+                        Log.e("Watchcompany", "createJobSavedResult: " + result + "");
+                    else
+                        Log.e("Watchcompany", "createJobSavedResult: null");
+                });
+                if(myUser.getApplicantId() != null)
+                {
+                    JobSavedRequest jobSave = new JobSavedRequest(myUser.getApplicantId(), jobpost.getId());
+                    jobPostViewModel.createJobSaved(jobSave);
+                }
+                return;
+            }
+
+            @Override
+            public void onReportClick(JobPost jobpost) {
+                return;
+            }
+        });
+        // Setup RecyclerView
+        recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewJobPost.setAdapter(adapterJobPost);
+        adapterJobPost.showShimmer(); //Loading
+
         //observe to Set value from company
         companyViewModel.getGetCompanyData().observe(getViewLifecycleOwner(), company -> {
             if(!isAdded() || getView()==null) return;
@@ -206,6 +244,7 @@ public class WatchCompanyProfileFragment extends Fragment {
             });
             jobPostViewModel.getJobPostsByCompanyData().observe(getViewLifecycleOwner(), jobPosts ->
             {
+                adapterJobPost.hideShimmer(jobPosts);
                 if(jobPosts == null)
                 {
                     Log.e("watchcompanyprofile", "jobposts NULL");
@@ -214,41 +253,7 @@ public class WatchCompanyProfileFragment extends Fragment {
                 {
                     Log.e("eeeee", String.valueOf(jobPosts.size()));
                 }
-                // Setup RecyclerView
-                recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
-                adapterJobPost = new JobPostAdapter(jobPosts, new JobPostAdapter.OnJobPostClickListener() {
-                    @Override
-                    public void onJobPostClick(JobPost jobPost) {
-                        // Handle item click
-                        Bundle bundle = new Bundle();
-                        jobPostViewModel.setCurrentJobPost(jobPost);
-                        bundle.putSerializable("user", user);
-                        ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
-                        nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
-                    }
-
-                    @Override
-                    public void onSaveClick(JobPost jobpost) {
-                        jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
-                            if(result != null)
-                                Log.e("Watchcompany", "createJobSavedResult: " + result + "");
-                            else
-                                Log.e("Watchcompany", "createJobSavedResult: null");
-                        });
-                        if(myUser.getApplicantId() != null)
-                        {
-                            JobSavedRequest jobSave = new JobSavedRequest(myUser.getApplicantId(), jobpost.getId());
-                            jobPostViewModel.createJobSaved(jobSave);
-                        }
-                        return;
-                    }
-
-                    @Override
-                    public void onReportClick(JobPost jobpost) {
-                        return;
-                    }
-                });
-                recyclerViewJobPost.setAdapter(adapterJobPost);
+                adapterJobPost.hideShimmer(jobPosts);
             });
         });
         companyViewModel.getGetCompanyResult().observe(getViewLifecycleOwner(), result ->{
@@ -322,7 +327,8 @@ public class WatchCompanyProfileFragment extends Fragment {
         btnPrev.setOnClickListener(v -> {
             if (pageJobPost > 1) {
                 pageJobPost--;
-
+                //Loading
+                adapterJobPost.showShimmer();
                 jobPostViewModel.getJobPostsByCompany(companyId, pageJobPost, pageSizeJobPost);
 
                 tvPageNumber.setText(String.valueOf(pageJobPost));
@@ -330,7 +336,8 @@ public class WatchCompanyProfileFragment extends Fragment {
         });
         btnNext.setOnClickListener(v -> {
             pageJobPost++;
-
+            //Loading
+            adapterJobPost.showShimmer();
             jobPostViewModel.getJobPostsByCompany(companyId, pageJobPost, pageSizeJobPost);
 
             tvPageNumber.setText(String.valueOf(pageJobPost));

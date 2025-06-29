@@ -21,11 +21,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostViewHolder> {
+public class JobPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int VIEW_TYPE_SKELETON = 0;
+    private static final int VIEW_TYPE_DATA = 1;
 
     private List<JobPost> jobPostList;
     private Map<String, String> logoUrlMap = new HashMap<>();
     private String logoFilePath;
+    private boolean isLoading = false;
+    private final int skeletonCount = 4;
+
     private OnJobPostClickListener clickListener;
 
     public interface OnJobPostClickListener {
@@ -33,6 +39,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
         void onSaveClick(JobPost jobPost);
         void onReportClick(JobPost jobPost);
     }
+
     public JobPostAdapter(List<JobPost> jobPostList, OnJobPostClickListener clickListener) {
         this.jobPostList = jobPostList;
         this.clickListener = clickListener;
@@ -44,76 +51,91 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
         notifyDataSetChanged();
     }
 
-    @NonNull
-    @Override
-    public JobPostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_jobpost, parent, false);
-        return new JobPostViewHolder(view);
+    public void showShimmer() {
+        isLoading = true;
+        notifyDataSetChanged();
+    }
+
+    public void hideShimmer(List<JobPost> newList) {
+        isLoading = false;
+        setData(newList);
+    }
+
+    public void setLogoUrlMap(Map<String, String> map) {
+        this.logoUrlMap = map;
+        notifyDataSetChanged();
     }
 
     @Override
-    public void onBindViewHolder(@NonNull JobPostViewHolder holder, int position) {
-        JobPost post = jobPostList.get(position);
-        holder.txtTitle.setText(post.getTitle());
-        holder.txtCompany.setText(post.getCompany().getName());
-        holder.txtSalary.setText(post.getSalaryStart() + " - " + post.getSalaryEnd() + " " + post.getCurrency());
-        holder.txtTime.setText(new SimpleDateFormat("dd/MM/yyyy").format(post.getUpdatedAt()));
-        holder.txtLocation.setText(post.getPosition());
-        holder.txtTag1.setText(post.getJobCategory().getName());
-        holder.txtTag2.setText(post.getJobType().getName());
-        holder.txtTag3.setText(post.getPosition());
+    public int getItemViewType(int position) {
+        return isLoading ? VIEW_TYPE_SKELETON : VIEW_TYPE_DATA;
+    }
 
-        //Xu li logo company jobpost
-        logoFilePath = post.getCompany().getUser().get(0).getAvatar(); // dùng làm key
-        if(logoFilePath != null)
-        {
-            String imageUrl = logoUrlMap.get(logoFilePath);
-            if(holder.imgPost == null)
-                Log.d("JobPostAdapter", "logoPost is null");
-            if (imageUrl != null && holder.imgPost != null) {
-                Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.imgPost);
-            }
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE_SKELETON) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_jobpost_skeleton, parent, false);
+            return new SkeletonViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_jobpost, parent, false);
+            return new JobPostViewHolder(view);
         }
+    }
 
-        // Thêm sự kiện nhấp vào item
-        holder.itemView.setOnClickListener(v -> {
-            if (clickListener != null) {
-                clickListener.onJobPostClick(post);
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof JobPostViewHolder) {
+            JobPost post = jobPostList.get(position);
+            JobPostViewHolder h = (JobPostViewHolder) holder;
+
+            h.txtTitle.setText(post.getTitle());
+            h.txtCompany.setText(post.getCompany().getName());
+            h.txtSalary.setText(post.getSalaryStart() + " - " + post.getSalaryEnd() + " " + post.getCurrency());
+            h.txtTime.setText(new SimpleDateFormat("dd/MM/yyyy").format(post.getUpdatedAt()));
+            h.txtLocation.setText(post.getPosition());
+            h.txtTag1.setText(post.getJobCategory().getName());
+            h.txtTag2.setText(post.getJobType().getName());
+            h.txtTag3.setText(post.getPosition());
+
+            logoFilePath = post.getCompany().getUser().get(0).getAvatar();
+            if (logoFilePath != null) {
+                String imageUrl = logoUrlMap.get(logoFilePath);
+                if (imageUrl != null) {
+                    Glide.with(holder.itemView.getContext()).load(imageUrl).into(h.imgPost);
+                }
             }
-        });
 
-        // Thêm PopupMenu cho btnOption
-        holder.btnOption.setOnClickListener(v -> {
-            PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.btnOption);
-            popupMenu.inflate(R.menu.menu_options_jobpost); // Load menu từ file XML
-            popupMenu.setOnMenuItemClickListener(item -> {
-                    if(item.getItemId() == R.id.menu_save) {
-                        //Save
+            h.itemView.setOnClickListener(v -> {
+                if (clickListener != null) clickListener.onJobPostClick(post);
+            });
+
+            h.btnOption.setOnClickListener(v -> {
+                PopupMenu popupMenu = new PopupMenu(v.getContext(), h.btnOption);
+                popupMenu.inflate(R.menu.menu_options_jobpost);
+                popupMenu.setOnMenuItemClickListener(item -> {
+                    if (item.getItemId() == R.id.menu_save) {
                         clickListener.onSaveClick(post);
                         return true;
-                    }
-                    else if(item.getItemId() == R.id.menu_report)
-                    {
-                       //report
+                    } else if (item.getItemId() == R.id.menu_report) {
                         clickListener.onReportClick(post);
                         return true;
                     }
-                    else
-                        return false;
+                    return false;
+                });
+                popupMenu.show();
             });
-            popupMenu.show();
-        });
+        }
     }
 
     @Override
     public int getItemCount() {
-        return jobPostList.size();
+        return isLoading ? skeletonCount : jobPostList.size();
     }
 
     static class JobPostViewHolder extends RecyclerView.ViewHolder {
         TextView txtTitle, txtCompany, txtSalary, txtLocation, txtTime, txtTag1, txtTag2, txtTag3;
         ImageView imgPost;
-
         ImageButton btnOption;
 
         public JobPostViewHolder(@NonNull View itemView) {
@@ -131,8 +153,9 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.JobPostV
         }
     }
 
-    public void setLogoUrlMap(Map<String, String> map) {
-        this.logoUrlMap = map;
-        notifyDataSetChanged();
+    static class SkeletonViewHolder extends RecyclerView.ViewHolder {
+        public SkeletonViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
     }
 }

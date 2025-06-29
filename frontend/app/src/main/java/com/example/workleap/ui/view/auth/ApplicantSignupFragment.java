@@ -18,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Patterns;
+
 
 import com.example.workleap.R;
 import com.example.workleap.ui.view.main.profile.EditProfileDialogFragment;
@@ -136,12 +138,26 @@ public class ApplicantSignupFragment extends Fragment {
         String confirmPassword = etConfirmPassword.getText().toString().trim();
         String phone = etPhoneNumber.getText().toString().trim();
 
-        if (fullName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+        if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Gọi check user exist
+        if (!password.equals(confirmPassword)) {
+            Toast.makeText(getContext(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(getContext(), "Invalid email format", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (password.length() < 8) {
+            Toast.makeText(getContext(), "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         authViewModel.checkUserExist(fullName, password, confirmPassword, email, phone, "APPLICANT");
     }
 

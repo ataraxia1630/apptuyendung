@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Patterns;
 
 import com.example.workleap.R;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
@@ -146,14 +147,33 @@ public class CompanySignupFragment extends Fragment {
         String tax = etTaxCode.getText().toString().trim();
         String phone = etPhoneNumber.getText().toString().trim();
 
-        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) ||
-                TextUtils.isEmpty(name) || TextUtils.isEmpty(phone)|| TextUtils.isEmpty(address) ||
-                TextUtils.isEmpty(year) || TextUtils.isEmpty(tax)) {
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)
+                || TextUtils.isEmpty(name) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(address)
+                || TextUtils.isEmpty(year) || TextUtils.isEmpty(tax)) {
             Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Gọi check user exist
+        if (!password.equals(confirmPassword)) {
+            Toast.makeText(getContext(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(getContext(), "Invalid email format", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (password.length() < 8) {
+            Toast.makeText(getContext(), "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!year.matches("\\d{4}")) {
+            Toast.makeText(getContext(), "Invalid year", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         authViewModel.checkUserExist(name, password, confirmPassword, email, phone, "COMPANY");
     }
 
