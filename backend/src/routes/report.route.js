@@ -9,6 +9,7 @@ const { ReportSchema } = require('../validators/report.validator');
 
 router.post('/', verifyToken, validate(ReportSchema), ReportController.createReport);
 router.get('/', verifyToken, requireRole('ADMIN'), ReportController.getAllReports);
+router.get('/unsolved', verifyToken, requireRole('ADMIN'), ReportController.getAllUnsolvedReports);
 router.get('/type/:type', verifyToken, requireRole('ADMIN'), cache, ReportController.getReportsByType);
 router.get('/:id', verifyToken, requireRole('ADMIN'), cache, ReportController.getReportById);
 

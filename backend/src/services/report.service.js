@@ -25,6 +25,21 @@ const ReportService = {
 
         return { reports, total };
     },
+    getAllUnsolvedReports: async (skip, take) => {
+        const [reports, total] = await Promise.all([
+            prisma.report.findMany({
+                where: { status: false },
+                skip,
+                take,
+                orderBy: { created_at: 'desc' },
+            }),
+            prisma.report.count({
+                where: { status: false },
+            }),
+        ]);
+
+        return { reports, total };
+    },
 
     getReportById: async (id) => {
         return await prisma.report.findUnique({
