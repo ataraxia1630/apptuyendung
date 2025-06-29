@@ -304,10 +304,6 @@ const JobPostService = {
         return { jobPosts, total };
     },
     deleteJobPost: async (id) => {
-        const jobPost = await prisma.jobPost.findUnique({ where: { id } });
-        if (!jobPost) {
-            throw new Error('Job post not found');
-        }
 
         await prisma.jobPost.update({
             where: { id },

@@ -128,6 +128,11 @@ const PostController = {
 
         try {
             const post = await PostService.updatePostStatus(id, status);
+            NotiEmitter.emit('job.adminUpdatedStatus', {
+                userId: post.companyId,
+                jobTitle: post.title,
+                status: status,
+            });
             return res.status(200).json({ post: post });
         } catch (error) {
             return res.status(500).json({ message: 'Failed to update post status', error: error.message });

@@ -1,5 +1,8 @@
 const { JobPostService } = require('../services/jobPost.service');
 const { getPagination, buildMeta } = require('../utils/paginate');
+const NotiEmitter = require('../emitters/notification.emitter');
+const { JobAppliedService } = require('../services/jobApplied.service');
+
 
 const JobPostController = {
     // Lấy tất cả các bài đăng công việc
@@ -79,6 +82,16 @@ const JobPostController = {
         const { id } = req.params;
         try {
             const jobPost = await JobPostService.updateJobPost(id, req.body);
+
+            const userIds = await JobAppliedService.getUserIdsAppliedToJobPost(id);
+
+            userIds.forEach(userId => {
+                NotiEmitter.emit('job.updated', {
+                    userId,
+                    jobTitle: jobPost.title,
+                });
+            });
+
             return res.status(200).json({ jobPost: jobPost });
         } catch (error) {
             console.log(error);
@@ -92,6 +105,18 @@ const JobPostController = {
     deleteJobPost: async (req, res) => {
         const { id } = req.params;
         try {
+            const jobPost = await JobPostService.getJobPostById(id);
+            if (!jobPost) {
+                return res.status(404).json({ message: 'Job post not found' });
+            }
+            const userIds = await JobAppliedService.getUserIdsAppliedToJobPost(id);
+
+            userIds.forEach(userId => {
+                NotiEmitter.emit('job.deleted', {
+                    userId,
+                    jobTitle: jobPost.title,
+                });
+            });
             await JobPostService.deleteJobPost(id);
             return res.status(200).json({ message: 'Delete successfully' });
         } catch (error) {
@@ -166,6 +191,13 @@ const JobPostController = {
 
         try {
             const jobPost = await JobPostService.updateJobPostStatus(id, status);
+
+            NotiEmitter.emit('job.adminUpdatedStatus', {
+                userId: jobPost.companyId,
+                jobTitle: jobPost.title,
+                status: status,
+            });
+
             return res.status(200).json({ jobPost: jobPost });
         } catch (error) {
             return res.status(500).json({ message: 'Failed to update post status', error: error.message });
