@@ -63,8 +63,8 @@ public class JobPostRepository {
         return apiService.deleteJobPost(id);
     }
 
-    public Call<ListJobPostResponse> searchJobPosts(String title, String location, String position, String educationRequirement, String companyName) {
-        return apiService.searchJobPosts(title, location, position, educationRequirement, companyName);
+    public Call<ListJobPostResponse> searchJobPosts(int page, int pageSize, String title, String location, String position, String educationRequirement, String companyName) {
+        return apiService.searchJobPosts(page, pageSize, title, location, position, educationRequirement, companyName);
     }
 
     public Call<JobPostResponse> getMyJobPostById(String id) {return apiService.getMyJobPostById(id);}
