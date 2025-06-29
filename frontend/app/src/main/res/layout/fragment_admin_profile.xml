@@ -108,7 +108,7 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.tabs.TabLayout
+        <!--<com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayoutUserType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
             android:background="@color/white"
             app:tabIndicatorColor="@color/black"
             app:tabTextColor="@color/black"
-            app:tabSelectedTextColor="@color/black" />
+            app:tabSelectedTextColor="@color/black" />-->
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchViewUser"
@@ -133,7 +133,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:nestedScrollingEnabled="false"
-            android:overScrollMode="never" />
+            android:overScrollMode="never"/>
 
 
     </LinearLayout>

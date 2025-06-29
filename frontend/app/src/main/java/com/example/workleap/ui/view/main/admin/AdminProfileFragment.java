@@ -11,12 +11,15 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,8 +53,7 @@ public class AdminProfileFragment extends Fragment {
     private AuthViewModel authViewModel;
     private UserListAdapter userAdapter;
     private List<User> allUsers = new ArrayList<>();
-
-    private String currentRoleFilter = "applicant"; // or "company"
+    private NavController navController;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,7 +70,7 @@ public class AdminProfileFragment extends Fragment {
         tvEmail = view.findViewById(R.id.emailInfo);
         tvPhone = view.findViewById(R.id.phoneInfo);
         btnOptions = view.findViewById(R.id.btnOptions);
-        tabLayoutUserType = view.findViewById(R.id.tabLayoutUserType);
+        //tabLayoutUserType = view.findViewById(R.id.tabLayoutUserType);
         searchViewUser = view.findViewById(R.id.searchViewUser);
         recyclerUserList = view.findViewById(R.id.recyclerUserList);
 
@@ -80,6 +82,8 @@ public class AdminProfileFragment extends Fragment {
         applicantViewModel.InitiateRepository(getContext());
         companyViewModel = new ViewModelProvider(requireActivity()).get(CompanyViewModel.class);
         companyViewModel.InitiateRepository(getContext());
+
+        navController = NavHostFragment.findNavController(this);
 
         User currentUser = (User) getArguments().getSerializable("user");  // Giả sử bạn có phương thức này
         if (currentUser != null) {
@@ -116,7 +120,7 @@ public class AdminProfileFragment extends Fragment {
         });
 
         // Tab setup
-        tabLayoutUserType.addTab(tabLayoutUserType.newTab().setText("Applicant"));
+        /*tabLayoutUserType.addTab(tabLayoutUserType.newTab().setText("Applicant"));
         tabLayoutUserType.addTab(tabLayoutUserType.newTab().setText("Company"));
 
         tabLayoutUserType.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -126,11 +130,38 @@ public class AdminProfileFragment extends Fragment {
             }
             @Override public void onTabUnselected(TabLayout.Tab tab) {}
             @Override public void onTabReselected(TabLayout.Tab tab) {}
-        });
+        });*/
 
         // RecyclerView setup
         recyclerUserList.setLayoutManager(new LinearLayoutManager(getContext()));
-        userAdapter = new UserListAdapter(allUsers);
+        userAdapter = new UserListAdapter(allUsers, new UserListAdapter.OnUserClickListener() {
+            @Override
+            public void onUserClick(User user) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("user", user);
+                bundle.putSerializable("userId", user.getId());
+                bundle.putSerializable("myUser", currentUser);
+
+                //Check company or applicant
+                if("admin".equalsIgnoreCase(user.getRole()))
+                {
+                    Toast.makeText(getContext(), "Sorry, this section is currently unavailable for you.", Toast.LENGTH_SHORT).show();
+                }
+                else if(user.getCompanyId() == null)
+                {
+                    navController.navigate(R.id.watchApplicantProfileFragment, bundle);
+                }
+                else if(user.getApplicantId() == null)
+                {
+                    bundle.putString("companyId", user.getCompanyId());
+                    navController.navigate(R.id.watchCompanyProfileFragment, bundle);
+                }
+                else
+                {
+                    Toast.makeText(getContext(), "Sorry, this section is currently unavailable for you.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         recyclerUserList.setAdapter(userAdapter);
 
         // Search
@@ -147,26 +178,18 @@ public class AdminProfileFragment extends Fragment {
         });
 
         // Load initial users
-        loadUsers("applicant");
-    }
-
-    private void loadUsers(String role) {
-        /*if(currentRoleFilter=="applicant")
-        {
-            applicantViewModel.getAllApplicant();
-        }else{
-            companyViewModel.geta,
-        }
-        userViewModel.get(role).observe(getViewLifecycleOwner(), users -> {
-
+        userViewModel.getAllUser();
+        userViewModel.getGetAllUserData().observe(getViewLifecycleOwner(), users->{
+            allUsers.clear();
+            if (users != null) {
+                allUsers.addAll(users);
+            }
+            userAdapter.notifyDataSetChanged();
         });
-        allUsers.clear();
-        if (users != null) {
-            allUsers.addAll(users);
-        }
-        userAdapter.notifyDataSetChanged();*/
-    }
 
+
+
+    }
     private void filterUsers(String query) {
         List<User> filtered = new ArrayList<>();
         for (User user : allUsers) {

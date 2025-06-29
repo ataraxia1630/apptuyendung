@@ -20,6 +20,8 @@ public class User implements Serializable {
     private ArrayList<Follower> following;
     private ArrayList<Follower> followers;
 
+    private String status;
+
 
     //Constructor rong cho Gson
     public User() {}
@@ -27,7 +29,7 @@ public class User implements Serializable {
     // Constructor đầy đủ
     public User(String id, String username, String password, String email, String phoneNumber,
                 String avatar, String background, String role, Date created_at, Date updated_at,
-                String company, String applicant) {
+                String company, String applicant, String status) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -40,6 +42,7 @@ public class User implements Serializable {
         this.updated_at = updated_at;
         this.companyId = company;
         this.applicantId = applicant;
+        this.status = status;
     }
 
     // Getter và Setter
@@ -138,6 +141,9 @@ public class User implements Serializable {
     public void setApplicantId(String applicant) {
         this.applicantId = applicant;
     }
+    public String getStatus(){ return status;}
+    public void setStatus(String status){ this.status=status;}
+
     public void setFollowing(ArrayList<Follower> following) {
         this.following = following;
     }

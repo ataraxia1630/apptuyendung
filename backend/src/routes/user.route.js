@@ -10,7 +10,7 @@ const { SettingSchema } = require('../validators/User/changeSetting.validator');
 const route = Router();
 
 // lấy tất cả người dùng
-route.get('/all', verifyToken, cache, UserController.getAllUsers);
+route.get('/all', verifyToken, UserController.getAllUsers);
 
 // search người dùng theo tên
 route.get(

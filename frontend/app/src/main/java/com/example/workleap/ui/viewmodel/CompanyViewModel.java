@@ -10,9 +10,12 @@ import androidx.lifecycle.ViewModel;
 import com.example.workleap.data.model.entity.Company;
 import com.example.workleap.data.model.response.GetCompanyResponse;
 import com.example.workleap.data.model.request.UpdateCompanyRequest;
+import com.example.workleap.data.model.response.ListCompanyResponse;
 import com.example.workleap.data.model.response.UpdateCompanyResponse;
 import com.example.workleap.data.repository.CompanyRepository;
 import com.google.gson.Gson;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,7 +25,9 @@ public class CompanyViewModel extends ViewModel {
     private CompanyRepository companyRepository;
     private MutableLiveData<String> updateCompanyResult = new MutableLiveData<>();
     private MutableLiveData<String> getCompanyResult = new MutableLiveData<>();
+    private MutableLiveData<String> getAllCompanyResult = new MutableLiveData<>();
     private MutableLiveData<Company> getCompanyData = new MutableLiveData<>();
+    private MutableLiveData<List<Company>> getAllCompanyData = new MutableLiveData<>();
 
     public CompanyViewModel(){}
     public void InitiateRepository(Context context) {
@@ -32,7 +37,9 @@ public class CompanyViewModel extends ViewModel {
     // Getter cho LiveData
     public LiveData<String> getUpdateCompanyResult() { return updateCompanyResult; }
     public LiveData<String> getGetCompanyResult() { return getCompanyResult; }
+    public LiveData<String> getGetAllCompanyResult() { return getAllCompanyResult; }
     public LiveData<Company> getGetCompanyData() { return getCompanyData; }
+    public LiveData<List<Company>> getGetAllCompanyData() { return getAllCompanyData; }
 
     // Get company
     public void getCompany(String id) {
@@ -57,6 +64,31 @@ public class CompanyViewModel extends ViewModel {
             @Override
             public void onFailure(Call<GetCompanyResponse> call, Throwable t) {
                 getCompanyResult.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+    public void getAllCompany() {
+        Call<ListCompanyResponse> call = companyRepository.getAllCompany();
+        call.enqueue(new Callback<ListCompanyResponse>() {
+            @Override
+            public void onResponse(Call<ListCompanyResponse> call, Response<ListCompanyResponse> response) {
+                if (response.isSuccessful()) {
+                    ListCompanyResponse getResponse = response.body();
+                    getAllCompanyResult.setValue(getResponse.getMessage());
+                    getAllCompanyData.setValue(getResponse.getListCompany());
+                } else {
+                    try {
+                        ListCompanyResponse error = new Gson().fromJson(response.errorBody().string(), ListCompanyResponse.class);
+                        getAllCompanyResult.setValue("Lỗi: " + error.getMessage());
+                    } catch (Exception e) {
+                        getAllCompanyResult.setValue("Lỗi không xác định: " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ListCompanyResponse> call, Throwable t) {
+                getAllCompanyResult.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }

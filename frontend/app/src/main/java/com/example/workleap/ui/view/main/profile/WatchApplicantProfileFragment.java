@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -441,7 +442,14 @@ public class WatchApplicantProfileFragment extends Fragment {
         //button options
         btnOptions.setOnClickListener( v -> {
             PopupMenu popupMenu = new PopupMenu(getContext(), btnOptions);
-            popupMenu.getMenuInflater().inflate(R.menu.menu_options, popupMenu.getMenu());
+            if("admin".equalsIgnoreCase(myUser.getRole()))
+            {
+                popupMenu.getMenuInflater().inflate(R.menu.menu_set_status_user, popupMenu.getMenu());
+            }
+            else {
+                popupMenu.getMenuInflater().inflate(R.menu.menu_options, popupMenu.getMenu());
+
+            }
 
             popupMenu.setOnMenuItemClickListener(item -> {
                 int itemId = item.getItemId();
@@ -454,6 +462,21 @@ public class WatchApplicantProfileFragment extends Fragment {
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     requireActivity().finish();
+                    return true;
+                }
+                else if (itemId == R.id.menu_active) {
+                    userViewModel.toggleUserAccountStatus(user.getId(), "ACTIVE");
+                    Toast.makeText(getContext(), "User has been activated successfully", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                else if (itemId == R.id.menu_locked) {
+                    userViewModel.toggleUserAccountStatus(user.getId(), "LOCKED");
+                    Toast.makeText(getContext(), "User has been locked successfully", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                else if (itemId == R.id.menu_banned) {
+                    userViewModel.toggleUserAccountStatus(user.getId(), "BANNED");
+                    Toast.makeText(getContext(), "User has been banned successfully", Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;
