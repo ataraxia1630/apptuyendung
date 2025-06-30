@@ -18,7 +18,7 @@ public class CompanyRepository {
     public CompanyRepository(Context context) {
         preferencesManager = new PreferencesManager(context);
         String token = preferencesManager.getToken();
-        apiService = RetrofitClient.getClient(token).create(ApiService.class);
+        apiService = RetrofitClient.getClient(context).create(ApiService.class);
     }
 
     //Get

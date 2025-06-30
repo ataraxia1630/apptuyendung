@@ -1,6 +1,9 @@
 package com.example.workleap.data.repository;
 
 import android.content.Context;
+import android.util.Log;
+
+import androidx.appcompat.widget.AppCompatRadioButton$InspectionCompanion;
 
 import com.example.workleap.data.api.RetrofitClient;
 
@@ -36,13 +39,14 @@ import retrofit2.http.Path;
 public class UserRepository {
     private ApiService apiService;
     private PreferencesManager preferencesManager;
-
-    private String token;
+    private Context context;
     public UserRepository(Context context) {
+        this.context = context;
         preferencesManager = new PreferencesManager(context);
-        token = preferencesManager.getToken();
-        apiService = RetrofitClient.getClient(token).create(ApiService.class);
+        String token = preferencesManager.getToken();
+        apiService = RetrofitClient.getClient(context).create(ApiService.class);
     }
+
 
     //Xac thuc
     public Call<MessageResponse> checkUserExist(RegisterRequest request) {
@@ -77,7 +81,7 @@ public class UserRepository {
                     preferencesManager.saveUserId(response.body().getUser().getId());
 
                     // Cập nhật lại ApiService với token mới (nếu cần dùng ngay)
-                    apiService = RetrofitClient.getClient(response.body().getToken()).create(ApiService.class);
+                    apiService = RetrofitClient.getClient(context).create(ApiService.class);
 
                     // Gọi callback cho ViewModel/Activity
                     callback.onResponse(call, response);
@@ -96,8 +100,10 @@ public class UserRepository {
 
     //Đăng xuất
     public Call<MessageResponse> logoutUser() {
+        String currentToken = preferencesManager.getToken();
+        LogoutRequest logoutRequest = new LogoutRequest(currentToken);
         preferencesManager.clearSession();
-        LogoutRequest logoutRequest = new LogoutRequest(token);
+        apiService = RetrofitClient.getClient(context).create(ApiService.class);
         return apiService.logoutUser(logoutRequest);
     }
 
