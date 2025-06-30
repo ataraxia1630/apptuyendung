@@ -1,4 +1,6 @@
 const { ReportReplyService } = require('../services/reportReply.service');
+const { ReportService } = require('../services/report.service');
+const NotiEmitter = require('../emitters/notification.emitter')
 
 const ReportReplyController = {
     createReply: async (req, res) => {
@@ -7,6 +9,14 @@ const ReportReplyController = {
 
         try {
             const reply = await ReportReplyService.createReply({ reportId, adminId, message });
+            const report = await ReportService.getReportById(reportId);
+            const reporterId = report.userId;
+            if (reporterId) {
+                NotiEmitter.emit('report.replied', {
+                    userId: reporterId,
+                    reportId,
+                });
+            }
             res.status(201).json({ reply });
         } catch (error) {
             res.status(500).json({ message: 'Error creating reply', error: error.message });
