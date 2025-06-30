@@ -75,7 +75,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             if(holder.imgAvatar == null)
                 Log.d("MessageAdapter", "Avatar is null");
             if (imageUrl != null && holder.imgAvatar != null) {
-                Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.imgAvatar);
+                Glide.with(holder.itemView.getContext())
+                        .load(imageUrl)
+                        .placeholder(R.drawable.ic_loading) // Ảnh loading tạm thời
+                        .error(R.drawable.ic_edit_pen)         // Ảnh fallback nếu load lỗi (tùy chọn)
+                        .into(holder.imgAvatar);
             }
         }
 
