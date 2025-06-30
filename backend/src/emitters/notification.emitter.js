@@ -157,7 +157,7 @@ NotiEmitter.on('reaction.post', async ({ userId, fromUserId, postId, reactionTyp
     where: { id: fromUserId },
     select: { username: true }
   });
-  const message = `${fromUser?.username || 'Ai đó'} vừa "${reactionType}" vào bài viết của bạn.`;
+  const message = `${fromUser?.username || 'Ai đó'} vừa thả cảm xúc vào bài viết của bạn.`;
 
   await NotiEventHandler.notify(
     userId,
