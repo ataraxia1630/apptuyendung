@@ -189,7 +189,6 @@ const JobPostService = {
 
         // Tạo object mới để update, tránh thay đổi trực tiếp data đầu vào
         const updateData = {};
-
         if (data.title !== undefined) updateData.title = data.title;
         if (data.description !== undefined) updateData.description = data.description;
         if (data.position !== undefined) updateData.position = data.position;
