@@ -12,24 +12,21 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.workleap.R;
-import com.example.workleap.data.model.entity.Comment;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.entity.User;
-import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.view.main.home.CommentBottomSheet;
 import com.example.workleap.ui.viewmodel.PostViewModel;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,13 +43,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private FragmentManager fragmentManager;
     private User user; //My User to reaction
     private NavController nav;
-    public PostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager, User user, NavController nav) {
+    private RecyclerView recyclerView;
+    private boolean hasObserved = false;
+    private boolean hasObservedGetPostById = false;
+
+    public PostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager, User user, NavController nav, RecyclerView recyclerView) {
         this.postList = postList;
         this.postViewModel = postViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.fragmentManager = fragmentManager;
         this.user = user;
         this.nav = nav;
+        this.recyclerView = recyclerView;
     }
 
     @NonNull
@@ -101,26 +103,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         //Xu li nut reaction
         if(post.getReaction().size() > 0)
         {
+            boolean hasReaction = false;
             for (Reaction reaction : post.getReaction()) {
                 if (reaction.getUserId().equals(user.getId())) {
+                    hasReaction = true;
                     switch (reaction.getReactionType()) {
-                        case "LIKE":
-                            holder.imgReaction.setImageResource(R.drawable.ic_like);
-                            break;
-                        case "LOVE":
-                            holder.imgReaction.setImageResource(R.drawable.ic_love);
-                            break;
-                        case "WOW":
-                            holder.imgReaction.setImageResource(R.drawable.ic_wow);
-                            break;
-                        case "SAD":
-                            holder.imgReaction.setImageResource(R.drawable.ic_sad);
-                            break;
-                        case "IDEA":
-                            holder.imgReaction.setImageResource(R.drawable.ic_idea);
-                            break;
+                        case "LIKE": holder.imgReaction.setImageResource(R.drawable.ic_like); break;
+                        case "LOVE": holder.imgReaction.setImageResource(R.drawable.ic_love); break;
+                        case "WOW":  holder.imgReaction.setImageResource(R.drawable.ic_wow);  break;
+                        case "SAD":  holder.imgReaction.setImageResource(R.drawable.ic_sad);  break;
+                        case "IDEA": holder.imgReaction.setImageResource(R.drawable.ic_idea); break;
                     }
+                    break;
                 }
+            }
+            if (!hasReaction) {
+                holder.imgReaction.setImageResource(R.drawable.ic_reaction);
             }
         }
 
@@ -132,26 +130,43 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
 
 
-        postViewModel.toggleReactionResult().observe(lifecycleOwner, result -> {
-            if(result != null)
-                Log.d("Reaction toggle", "Result: " + result);
-            else
-                Log.d("Reaction toggle", "Result is null");
-        });
+        if(!hasObserved)
+        {
+            postViewModel.toggleReactionResult().observe(lifecycleOwner, result -> {
+                if(result != null)
+                {
+                    Log.d("Reaction toggle", "Result: " + result);
+                }
+                else
+                    Log.d("Reaction toggle", "Result is null");
+            });
+            postViewModel.toggleReactionData().observe(lifecycleOwner, data -> {
+                if(data != null)
+                {
+                    Log.d("Reaction toggle", "Data toggle reaction: " + new Gson().toJson(data));
+                    if(data.isRemoved())
+                        holder.imgReaction.setImageResource(R.drawable.ic_reaction);
+                }
+                else
+                    Log.d("Reaction toggle", "Data toggle reaction is null");
+            });
+            hasObserved = true;
+        }
 
-        //React click to remove
-        postViewModel.removeReactionResult().observe(lifecycleOwner, result -> {
-            if(result != null)
-                Log.d("Reaction remove", "Result: " + result);
-            else
-                Log.d("Reaction remove", "Result is null");
-        });
-        holder.btnReaction.setOnClickListener( v -> {
-            holder.imgReaction.setImageResource(R.drawable.ic_reaction);
-            postViewModel.removeReaction(post.getId());
-        });
-        //Long click to react
-        holder.btnReaction.setOnLongClickListener(v -> {
+
+        //click same reaction to remove
+        holder.btnReaction.setOnClickListener(v -> {
+            //Lay ra reaction hien tai
+            String currentReaction = "OLD";
+            String newReaction = "NEW";
+            for (Reaction reaction : post.getReaction()) {
+                if (reaction.getUserId().equals(user.getId()))
+                {
+                    currentReaction = reaction.getReactionType();
+                }
+            }
+            //holder.imgReaction.setImageResource(R.drawable.ic_reaction);
+
             View popupView = LayoutInflater.from(v.getContext()).inflate(R.layout.layout_popup_reaction, null);
             PopupWindow popupWindow = new PopupWindow(popupView,
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -202,7 +217,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 holder.imgReaction.setImageResource(R.drawable.ic_idea);
                 popupWindow.dismiss();
             });
-            return true;
         });
 
 
@@ -335,5 +349,31 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void setLogoUrlMap(Map<String, String> map) {
         this.logoUrlMap = map;
         notifyDataSetChanged();
+    }
+
+    public void updateAPost(int position, Post post, LifecycleOwner lifecycleOwner)
+    {
+        if(!hasObservedGetPostById)
+        {
+            postViewModel.getPostByIdData().observe(lifecycleOwner, data -> {
+                if(data != null)
+                {
+                    Log.d("PostAdapter", "getpostbyid: " + new Gson().toJson(data));
+                    if (!recyclerView.isComputingLayout()) {
+                        postList.set(position, data);
+                        notifyItemChanged(position);
+                    } else {
+                        recyclerView.post(() -> {
+                            postList.set(position, data);
+                            notifyItemChanged(position);
+                        });
+                    }
+                }
+                else
+                    Log.d("PostAdapter", "data: null");
+            });
+            hasObservedGetPostById = true;
+        }
+        postViewModel.getPostById(post.getId());
     }
 }

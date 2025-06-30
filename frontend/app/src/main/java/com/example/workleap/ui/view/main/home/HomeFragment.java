@@ -408,7 +408,7 @@ public class HomeFragment extends Fragment {
 
             // Setup RecyclerView
             recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
-            adapterPost = new PostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager(), user, nav); // mặc định show tất cả
+            adapterPost = new PostAdapter(allPosts, postViewModel, this, requireActivity().getSupportFragmentManager(), user, nav, recyclerViewPost); // mặc định show tất cả
 
             //Xu li anh cua post bang postviewmodel va logo cua post bang usermodel
             postViewModel.getImageUrlMap().observe(getViewLifecycleOwner(), map -> {
@@ -631,6 +631,4 @@ public class HomeFragment extends Fragment {
             dialog.show();
         });
     }
-
-
 }

@@ -34,7 +34,7 @@ const ReactionController = {
                 });
             }
 
-            return res.status(result.removed ? 200 : 201).json(result);
+            return res.status(result.removed ? 200 : 201).json({reaction: result});
         } catch (err) {
             return res.status(500).json({ message: err.message });
         }

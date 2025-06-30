@@ -26,6 +26,7 @@ import com.example.workleap.data.model.entity.Reaction;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.home.CommentBottomSheet;
 import com.example.workleap.ui.viewmodel.PostViewModel;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +43,7 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
     private String logoFilePath;
     private User user;
     private NavController nav;
+    private boolean hasObserved = false;
     public MyPostAdapter(List<Post> postList, PostViewModel postViewModel, LifecycleOwner lifecycleOwner, FragmentManager fragmentManager, User user, NavController nav) {
         this.postList = postList;
         this.postViewModel = postViewModel;
@@ -86,26 +88,22 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
         //Xu li nut reaction
         if(post.getReaction().size() > 0)
         {
+            boolean hasReaction = false;
             for (Reaction reaction : post.getReaction()) {
                 if (reaction.getUserId().equals(user.getId())) {
+                    hasReaction = true;
                     switch (reaction.getReactionType()) {
-                        case "LIKE":
-                            holder.imgReaction.setImageResource(R.drawable.ic_like);
-                            break;
-                        case "LOVE":
-                            holder.imgReaction.setImageResource(R.drawable.ic_love);
-                            break;
-                        case "WOW":
-                            holder.imgReaction.setImageResource(R.drawable.ic_wow);
-                            break;
-                        case "SAD":
-                            holder.imgReaction.setImageResource(R.drawable.ic_sad);
-                            break;
-                        case "IDEA":
-                            holder.imgReaction.setImageResource(R.drawable.ic_idea);
-                            break;
+                        case "LIKE": holder.imgReaction.setImageResource(R.drawable.ic_like); break;
+                        case "LOVE": holder.imgReaction.setImageResource(R.drawable.ic_love); break;
+                        case "WOW":  holder.imgReaction.setImageResource(R.drawable.ic_wow);  break;
+                        case "SAD":  holder.imgReaction.setImageResource(R.drawable.ic_sad);  break;
+                        case "IDEA": holder.imgReaction.setImageResource(R.drawable.ic_idea); break;
                     }
+                    break;
                 }
+            }
+            if (!hasReaction) {
+                holder.imgReaction.setImageResource(R.drawable.ic_reaction);
             }
         }
 
@@ -115,26 +113,44 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
             bottomSheet.show(fragmentManager, "commentSheet");
         });
 
-        postViewModel.toggleReactionResult().observe(lifecycleOwner, result -> {
-            if(result != null)
-                Log.d("Reaction toggle", "Result: " + result);
-            else
-                Log.d("Reaction toggle", "Result is null");
-        });
 
-        //React click to remove
-        postViewModel.removeReactionResult().observe(lifecycleOwner, result -> {
-            if(result != null)
-                Log.d("Reaction remove", "Result: " + result);
-            else
-                Log.d("Reaction remove", "Result is null");
-        });
-        holder.btnReaction.setOnClickListener( v -> {
-            holder.imgReaction.setImageResource(R.drawable.ic_reaction);
-            postViewModel.removeReaction(post.getId());
-        });
-        //Long click to react
-        holder.btnReaction.setOnLongClickListener(v -> {
+        if(!hasObserved)
+        {
+            postViewModel.toggleReactionResult().observe(lifecycleOwner, result -> {
+                if(result != null)
+                {
+                    Log.d("Reaction toggle", "Result: " + result);
+                }
+                else
+                    Log.d("Reaction toggle", "Result is null");
+            });
+            postViewModel.toggleReactionData().observe(lifecycleOwner, data -> {
+                if(data != null)
+                {
+                    Log.d("Reaction toggle", "Data toggle reaction: " + new Gson().toJson(data));
+                    if(data.isRemoved())
+                        holder.imgReaction.setImageResource(R.drawable.ic_reaction);
+                }
+                else
+                    Log.d("Reaction toggle", "Data toggle reaction is null");
+            });
+            hasObserved = true;
+        }
+
+
+        //click same reaction to remove
+        holder.btnReaction.setOnClickListener(v -> {
+            //Lay ra reaction hien tai
+            String currentReaction = "OLD";
+            String newReaction = "NEW";
+            for (Reaction reaction : post.getReaction()) {
+                if (reaction.getUserId().equals(user.getId()))
+                {
+                    currentReaction = reaction.getReactionType();
+                }
+            }
+            //holder.imgReaction.setImageResource(R.drawable.ic_reaction);
+
             View popupView = LayoutInflater.from(v.getContext()).inflate(R.layout.layout_popup_reaction, null);
             PopupWindow popupWindow = new PopupWindow(popupView,
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -185,7 +201,6 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.PostViewHo
                 holder.imgReaction.setImageResource(R.drawable.ic_idea);
                 popupWindow.dismiss();
             });
-            return true;
         });
 
 

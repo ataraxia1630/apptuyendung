@@ -54,6 +54,7 @@ public class PostViewModel extends ViewModel {
     private MutableLiveData<String> deleteCommentByIdResult = new MutableLiveData<>();
 
     private MutableLiveData<String> toggleReactionResult = new MutableLiveData<>();
+    private MutableLiveData<Reaction> toggleReactionData = new MutableLiveData<>();
     private MutableLiveData<String> removeReactionResult = new MutableLiveData<>();
 
     private MutableLiveData<String> uploadImageResult = new MutableLiveData<>();
@@ -96,6 +97,7 @@ public class PostViewModel extends ViewModel {
 
     //reaction
     public LiveData<String> toggleReactionResult() { return toggleReactionResult; }
+    public LiveData<Reaction> toggleReactionData() { return toggleReactionData; }
     public LiveData<String> removeReactionResult() { return removeReactionResult; }
 
     //image
@@ -366,7 +368,8 @@ public class PostViewModel extends ViewModel {
             @Override
             public void onResponse(Call<ReactionResponse> call, Response<ReactionResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-
+                    toggleReactionData.setValue(response.body().getReaction());
+                    toggleReactionResult.setValue("Toggle reaction success");
                 } else {
                     try {
                         ReactionResponse error = new Gson().fromJson(response.errorBody().string(), ReactionResponse.class);

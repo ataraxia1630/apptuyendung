@@ -9,6 +9,8 @@ public class Reaction implements Serializable {
     private String reactionType; // Assuming ReactionType is an enum, represented as String for simplicity
     private Date created_at;
     private Date updated_at;
+    private String postOwnerId;
+    private boolean removed;
 
     // Default constructor
     public Reaction() {
@@ -60,5 +62,11 @@ public class Reaction implements Serializable {
 
     public void setUpdatedAt(Date updated_at) {
         this.updated_at = updated_at;
+    }
+    public void getRemoved(boolean removed) {
+        this.removed = removed;
+    }
+    public boolean isRemoved() {
+        return removed;
     }
 }

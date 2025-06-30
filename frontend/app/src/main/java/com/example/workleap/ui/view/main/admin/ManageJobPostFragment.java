@@ -101,7 +101,7 @@ public class ManageJobPostFragment extends Fragment {
         recyclerViewJobPost.setAdapter(adapterJobPost);
 
         //adapterPost
-        adapterPost = new PostAdapter(postList, postViewModel, this, requireActivity().getSupportFragmentManager(), user, nav);
+        adapterPost = new PostAdapter(postList, postViewModel, this, requireActivity().getSupportFragmentManager(), user, nav, recyclerViewPost);
         recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewPost.setAdapter(adapterPost);
 
