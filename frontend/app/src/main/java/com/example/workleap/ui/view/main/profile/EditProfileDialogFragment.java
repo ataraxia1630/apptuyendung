@@ -1,5 +1,10 @@
 package com.example.workleap.ui.view.main.profile;
 
+import android.text.TextWatcher;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.view.inputmethod.EditorInfo;
+import android.view.Gravity;
 import android.app.Dialog;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -29,7 +34,9 @@ import com.example.workleap.data.model.entity.Education;
 import com.example.workleap.data.model.entity.Experience;
 import com.example.workleap.data.model.entity.Field;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
+import com.example.workleap.utils.ToastUtil;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -71,12 +78,19 @@ public class EditProfileDialogFragment extends DialogFragment {
             addField(container, "Status");
         } else if ("AboutMe".equals(cardType)) {
             addField(container, "About me");
+            editTexts.get(0).setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            editTexts.get(0).setGravity(Gravity.TOP | Gravity.START);
+            editTexts.get(0).setLines(5);
+            editTexts.get(0).setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+            editTexts.get(0).setFilters(new InputFilter[] { new InputFilter.LengthFilter(2000)});
             editTexts.get(0).setText(getArguments().getString("aboutMe"));
 
         } else if ("ApplicantInfo".equals(cardType)) {
             addField(container, "First Name");
+            editTexts.get(0).setFilters(new InputFilter[] { new InputFilter.LengthFilter(15)});
             editTexts.get(0).setText(getArguments().getString("firstName"));
             addField(container, "Last Name");
+            editTexts.get(1).setFilters(new InputFilter[] { new InputFilter.LengthFilter(15)});
             editTexts.get(1).setText(getArguments().getString("lastName"));
             //addField(container, "Gender");
             //addField(container, "Age");
@@ -84,11 +98,28 @@ public class EditProfileDialogFragment extends DialogFragment {
             //addField(container, "Mobile");
             //addField(container, "Email");
             addField(container, "Address");
+            editTexts.get(2).setFilters(new InputFilter[] { new InputFilter.LengthFilter(30)});
             editTexts.get(2).setText(getArguments().getString("address"));
         }
         else if("ApplicantSkill".equalsIgnoreCase(cardType))
         {
             addField(container, "Skill");
+            editTexts.get(0).addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (s.length() < 3) {
+                        editTexts.get(0).setError("Nhập ít nhất 3 ký tự");
+                    } else {
+                        editTexts.get(0).setError(null); // Xoá lỗi nếu đã đủ
+                    }
+                }
+            });
         }
         else if("ApplicantEdu".equalsIgnoreCase(cardType))
         {
@@ -239,6 +270,7 @@ public class EditProfileDialogFragment extends DialogFragment {
             //addField(container, "Phone");
             //addField(container, "Email");
             addField(container, "Tax code");
+            editTexts.get(2).setFilters(new InputFilter[] { new InputFilter.LengthFilter(30)});
             editTexts.get(2).setText(getArguments().getString("taxCode"));
         }
 
