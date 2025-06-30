@@ -18,12 +18,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.Post;
 import com.example.workleap.data.model.entity.User;
-import com.example.workleap.data.repository.PreferencesManager;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.PostViewModel;
@@ -49,6 +49,7 @@ public class JobpostFragment extends Fragment{
     private int pageSizeJobPost = 4;
     private boolean isMorePost = false;
     private boolean isMoreJobPost = false;
+    private ProgressBar progressLoadMoreJobPost, progressLoadMorePost;
     private User user;
     private Bundle bundle;
     private NavController nav;
@@ -90,6 +91,11 @@ public class JobpostFragment extends Fragment{
         recyclerViewPost = view.findViewById(R.id.recyclerPosts);
         btnMorePost = view.findViewById(R.id.btnLoadMorePosts);
         btnLoadMoreJobPosts = view.findViewById(R.id.btnLoadMoreJobPosts);
+        progressLoadMoreJobPost = view.findViewById(R.id.progressLoadMoreJobPost);
+        progressLoadMorePost = view.findViewById(R.id.progressLoadMorePost);
+
+        isOnJobPostTab = true; //Mac dinh te tab jobpost
+        progressLoadMoreJobPost.setVisibility(View.VISIBLE); //loading khi vao fragment
 
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
@@ -139,6 +145,8 @@ public class JobpostFragment extends Fragment{
         });
         jobPostViewModel.getJobPostsByCompanyData().observe(getViewLifecycleOwner(), jobPosts ->
         {
+            progressLoadMoreJobPost.setVisibility(View.GONE); //finish loading
+
             if(!isMoreJobPost)
                 allJobs.clear(); //Neu khong phai tai them thi clear de tranh bi trung
 
@@ -178,12 +186,14 @@ public class JobpostFragment extends Fragment{
         btnMorePost.setOnClickListener(v -> {
                 pagePost++;
                 isMorePost = true;
+                progressLoadMorePost.setVisibility(View.VISIBLE);
                 postViewModel.getPostByCompany(user.getCompanyId(), pagePost, pageSizePost);
         });
         //Load more jobpost
         btnLoadMoreJobPosts.setOnClickListener(v -> {
                 pageJobPost++;
                 isMoreJobPost = true;
+                progressLoadMoreJobPost.setVisibility(View.VISIBLE);
                 jobPostViewModel.getJobPostsByCompany(user.getCompanyId(), pageJobPost, pageSizeJobPost);
         });
 
@@ -203,6 +213,8 @@ public class JobpostFragment extends Fragment{
         });
         postViewModel.getPostCompanyData().observe(getViewLifecycleOwner(), posts ->
         {
+            progressLoadMorePost.setVisibility(View.GONE); //finish loading
+
             if(!isMorePost)
                 allPosts.clear(); //Neu khong phai tai them thi clear de tranh bi trung
 
