@@ -106,7 +106,7 @@ const JobAppliedController = {
                 ? 'jobApplied.success'
                 : 'jobApplied.fail',
               {
-                userId: applicant.User.id,
+                userId: applicant.User[0].id,
                 jobTitle: jobpost.title,
               }
             );
