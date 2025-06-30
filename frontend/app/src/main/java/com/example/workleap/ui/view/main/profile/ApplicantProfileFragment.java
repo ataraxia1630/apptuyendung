@@ -74,10 +74,10 @@ public class ApplicantProfileFragment extends Fragment {
     String applicantLastName = "last name";
 
     TextView tvAboutMe;
-    TextView tvApplicantName, tvApplicantNameInfo, tvMailInfo, tvPhoneInfo, tvAddressInfo;
+    TextView tvGender, tvApplicantName, tvApplicantNameInfo, tvMailInfo, tvPhoneInfo, tvAddressInfo;
     User user;
 
-    ImageButton btnAddExperience, btnAddInterestedField, btnAddEdu, btnAddSkill, btnOptions, btnEditApplicantName, btnEditAboutMe, btnEditApplicantInfo;
+    ImageButton btnAddExperience, btnAddInterestedField, btnAddEdu, btnAddSkill, btnOptions, btnEditAboutMe, btnEditApplicantInfo;
 
     ImageView avatar;
 
@@ -152,9 +152,9 @@ public class ApplicantProfileFragment extends Fragment {
         tvMailInfo = (TextView) view.findViewById(R.id.emailInfo);
         tvPhoneInfo= (TextView) view.findViewById(R.id.phoneInfo);
         tvAddressInfo= (TextView) view.findViewById(R.id.addressInfo);
+        //tvGender = (TextView) view.findViewById(R.id.gender);
 
         btnOptions = view.findViewById(R.id.btnOptions);
-        btnEditApplicantName = view.findViewById(R.id.btnEditUserName);
         btnEditAboutMe = view.findViewById(R.id.btnEditAboutMe);
         btnEditApplicantInfo = view.findViewById(R.id.btnApplicantInfo);
         btnAddSkill = view.findViewById(R.id.btnEditSkill);
@@ -271,6 +271,7 @@ public class ApplicantProfileFragment extends Fragment {
                 tvApplicantName.setText(applicant.getFirstName() + " " + applicant.getLastName());
                 tvAboutMe.setText(applicant.getProfileSummary());
                 tvAddressInfo.setText(applicant.getAddress());
+                //tvGender.setText(applicant.getGender());
                 tvApplicantNameInfo.setText(applicant.getFirstName() + " " + applicant.getLastName());
             }
         });
@@ -458,10 +459,7 @@ public class ApplicantProfileFragment extends Fragment {
 
             popupMenu.show();
         });
-        btnEditApplicantName.setOnClickListener(v -> {
-            EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("ApplicantName");
-            dialog.show(getParentFragmentManager(), "EditApplicantNameDialog");
-        });
+
         btnEditAboutMe.setOnClickListener(v -> {
             EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("AboutMe");
 

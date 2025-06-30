@@ -32,14 +32,14 @@ android:paddingBottom="100dp">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/shapeableImageView"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="centerCrop"
-                android:adjustViewBounds="true"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="left"
-                android:src="@drawable/sample_logo"
+                android:adjustViewBounds="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_home"
                 app:shapeAppearanceOverlay="@style/CircleImageView" />
 
             <!-- Icon nhỏ nằm ở góc dưới phải của avatar -->

@@ -39,7 +39,7 @@ public class MultiPdfFragment extends Fragment {
 
     private JobPostViewModel jobPostViewModel;
 
-    private String urlSupabase = "https://epuxazakjgtmjuhuwkza.supabase.co/storage/v1/object/public/cv-storage/";
+    private String urlSupabase = "https://uoqlxeqtvtwacknpjpsn.supabase.co/storage/v1/object/public/cv-storage/";
 
 
     public static MultiPdfFragment newInstance(ArrayList<String> pdfUrls, ArrayList<String> applicantNames) {
