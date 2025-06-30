@@ -13,7 +13,6 @@ NotiEmitter.on('job.apply', async ({ userId, jobTitle }) => {
     message,
     'both'
   );
-  console.log(message);
 });
 
 // Ứng tuyển thành công
@@ -25,7 +24,6 @@ NotiEmitter.on('jobApplied.success', async ({ userId, jobTitle }) => {
     message,
     'both'
   );
-  console.log(message);
 });
 
 // Ứng tuyển thất bại
@@ -37,7 +35,6 @@ NotiEmitter.on('jobApplied.fail', async ({ userId, jobTitle }) => {
     message,
     'both'
   );
-  console.log(message);
 });
 
 // Tin nhắn mới
@@ -49,7 +46,6 @@ NotiEmitter.on('mess.new', async ({ userId }) => {
     message,
     'fcm'
   );
-  console.log(message);
 });
 
 // Công việc hết hạn (cho công ty)
@@ -63,7 +59,6 @@ NotiEmitter.on('job.expired', async ({ userId, jobTitle }) => {
     message,
     'both'
   );
-  console.log(message);
 });
 
 // Công việc ứng tuyển hết hạn (cho ứng viên)
@@ -77,7 +72,6 @@ NotiEmitter.on('job.statusChanged', async ({ userId, jobTitle }) => {
     message,
     'both'
   );
-  console.log(message);
 });
 
 // Công việc bị xoá
@@ -91,7 +85,6 @@ NotiEmitter.on('job.deleted', async ({ userId, jobTitle }) => {
     message,
     'both'
   );
-  console.log(message);
 });
 
 // Công việc được cập nhật
@@ -105,11 +98,10 @@ NotiEmitter.on('job.updated', async ({ userId, jobTitle }) => {
     message,
     'both'
   );
-  console.log(message);
 });
 
 // Admin cập nhật trạng thái bài đăng
-NotiEmitter.on('job.adminUpdatedStatus', async ({ userId, jobTitle, status }) => {
+NotiEmitter.on('job.adminUpdatedStatusforCompany', async ({ userId, jobTitle, status }) => {
   let title = '';
   let message = '';
 
@@ -131,7 +123,30 @@ NotiEmitter.on('job.adminUpdatedStatus', async ({ userId, jobTitle, status }) =>
       message,
       'both'
     );
-    console.log(message);
+  }
+});
+
+NotiEmitter.on('job.adminUpdatedStatusforUser', async ({ userId, jobTitle, status }) => {
+  let title = '';
+  let message = '';
+  if (status === 'CANCELLED') {
+    title = 'Bài đăng bạn ứng tuyển đã bị huỷ';
+    message = `Bài đăng "${jobTitle}" đã bị quản trị viên huỷ.`;
+  } else if (status === 'OPENING') {
+    title = 'Bài đăng bạn ứng tuyển đã được mở lại';
+    message = `Bài đăng "${jobTitle}" đã được quản trị viên cho phép mở lại.`;
+  } else if (status === 'TERMINATED') {
+    title = 'Bài đăng bạn ứng tuyển đã bị tạm ngưng';
+    message = `Bài đăng "${jobTitle}" đã bị quản trị viên tạm ngưng.`;
+  }
+
+  if (title && message) {
+    await NotiEventHandler.notify(
+      userId,
+      title,
+      message,
+      'both'
+    );
   }
 });
 
@@ -142,7 +157,7 @@ NotiEmitter.on('reaction.post', async ({ userId, fromUserId, postId, reactionTyp
     where: { id: fromUserId },
     select: { username: true }
   });
-  const message = `${fromUser?.username || 'Ai đó'} vừa phản ứng "${reactionType}" vào bài viết của bạn.`;
+  const message = `${fromUser?.username || 'Ai đó'} vừa "${reactionType}" vào bài viết của bạn.`;
 
   await NotiEventHandler.notify(
     userId,
@@ -150,7 +165,6 @@ NotiEmitter.on('reaction.post', async ({ userId, fromUserId, postId, reactionTyp
     message,
     'both'
   );
-  console.log(message);
 });
 
 // Bình luận trên post
@@ -173,8 +187,6 @@ NotiEmitter.on('comment.onPost', async ({ userId, fromUserId, postId, commentId 
     message,
     'both'
   );
-
-  console.log(message);
 });
 
 
@@ -195,7 +207,6 @@ NotiEmitter.on('comment.onReply', async ({ userId, fromUserId, postId, commentId
     message,
     'both'
   );
-  console.log(message);
 });
 
 NotiEmitter.on('report.replied', async ({ userId, reportId }) => {

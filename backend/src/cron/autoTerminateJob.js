@@ -30,24 +30,25 @@ const autoTerminateExpiredJobPosts = async () => {
                 data: { status: 'TERMINATED' },
             });
 
-            NotiEmitter.emit('job.expired', {
-                userId: job.companyId,
-                jobTitle: job.title,
+            const companyUser = await prisma.user.findFirst({
+                where: { companyId: job.companyId },
+                select: { id: true }
             });
 
-            for (const applied of job.JobApplied) {
-                const user = await prisma.user.findFirst({
-                    where: { applicantId: applied.applicantId },
-                    select: { id: true },
+            if (companyUser) {
+                NotiEmitter.emit('job.expired', {
+                    userId: companyUser.id,
+                    jobTitle: job.title,
                 });
-
-                if (user) {
-                    NotiEmitter.emit('job.statusChanged', {
-                        userId: user.id,
-                        jobTitle: job.title
-                    });
-                }
             }
+
+            const userIds = await JobAppliedService.getUserIdsAppliedToJobPost(job.id);
+            userIds.forEach(userId => {
+                NotiEmitter.emit('job.statusChanged', {
+                    userId,
+                    jobTitle: job.title,
+                });
+            });
         }
 
         if (expiredJobs.length > 0) {
