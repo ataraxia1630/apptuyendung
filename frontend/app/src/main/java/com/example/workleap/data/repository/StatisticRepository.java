@@ -28,7 +28,7 @@ public class StatisticRepository {
     public StatisticRepository(Context context) {
         preferencesManager = new PreferencesManager(context);
         String token = preferencesManager.getToken();
-        apiService = RetrofitClient.getClient(token).create(ApiService.class);
+        apiService = RetrofitClient.getClient(context).create(ApiService.class);
     }
 
     public Call<OverviewResponse> getOverview() {

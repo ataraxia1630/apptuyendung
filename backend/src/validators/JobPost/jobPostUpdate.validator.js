@@ -69,6 +69,10 @@ const JobPostUpdateSchema = Joi.object({
     jobType: Joi.string().allow(null, '').messages({
         'string.base': 'Job Type ID must be a string',
     }),
+    status: Joi.string().valid('OPENING', 'TERMINATED').allow(null).messages({
+        'string.base': 'Status must be a string',
+        'any.only': 'Status must be one of: OPENING, CLOSED, TERMINATED',
+    }),
 });
 
 module.exports = {

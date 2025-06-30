@@ -90,7 +90,11 @@ public class DetailHomeJobPostFragment extends Fragment {
         currentJobPost = (JobPost) getArguments().getSerializable("currentJobPost");
         user = (User) getArguments().getSerializable("user");
         //tat nut apply doi voi company
-        if(user.getApplicantId()==null) btnApply.setVisibility(GONE);
+        Toast.makeText(getContext(), "status" + currentJobPost.getStatus(), Toast.LENGTH_SHORT).show();
+        if(!currentJobPost.getStatus().equals("OPENING"))
+            btnApply.setVisibility(GONE);
+        if(user.getApplicantId()==null)
+            btnApply.setVisibility(GONE);
 
         if (currentJobPost != null) {
             company = currentJobPost.getCompany();
@@ -196,7 +200,7 @@ public class DetailHomeJobPostFragment extends Fragment {
                     break;
                 }
             }
-            if(!hasSubmitted)
+            if(!hasSubmitted && currentJobPost.getStatus().equals("OPENING"))
             {
                 btnApply.setVisibility(View.VISIBLE);
                 btnApply.setOnClickListener(v -> {

@@ -1,36 +1,35 @@
 package com.example.workleap.data.api;
 
+import android.util.Log;
+
+import com.example.workleap.ui.view.auth.TokenProvider;
+
 import java.io.IOException;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class AuthInterceptor implements Interceptor {
-    private String token;
+    private final TokenProvider tokenProvider;
 
-    public AuthInterceptor(String token) {
-        this.token = token;
+    public AuthInterceptor(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Request originalRequest = chain.request();
+        String token = tokenProvider.getToken(); // lấy token mới nhất mỗi lần gửi
 
-        // Nếu không có token, gửi request không thêm header
+        //Gui request ko token neu token null
+        Request originalRequest = chain.request();
         if (token == null || token.isEmpty()) {
             return chain.proceed(originalRequest);
         }
 
-        // Thêm header Authorization
         Request newRequest = originalRequest.newBuilder()
                 .header("Authorization", "Bearer " + token)
                 .build();
 
         return chain.proceed(newRequest);
-    }
-
-    // Cập nhật token nếu cần (ví dụ: sau khi làm mới token)
-    public void setToken(String token) {
-        this.token = token;
     }
 }
