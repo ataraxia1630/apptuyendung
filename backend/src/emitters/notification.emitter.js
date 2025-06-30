@@ -57,7 +57,12 @@ NotiEmitter.on('job.expired', async ({ userId, jobTitle }) => {
   const title = 'Công việc đã hết hạn';
   const message = `Công việc "${jobTitle}" bạn đăng đã hết hạn.`;
 
-  await NotiEventHandler.notify({ userId, title, message, type: 'both' });
+  await NotiEventHandler.notify(
+    userId,
+    title,
+    message,
+    'both'
+  );
   console.log(message);
 });
 
@@ -66,7 +71,12 @@ NotiEmitter.on('job.statusChanged', async ({ userId, jobTitle }) => {
   const title = 'Công việc đã hết hạn';
   const message = `Công việc "${jobTitle}" bạn ứng tuyển đã hết hạn và ngừng tuyển.`;
 
-  await NotiEventHandler.notify({ userId, title, message, type: 'both' });
+  await NotiEventHandler.notify(
+    userId,
+    title,
+    message,
+    'both'
+  );
   console.log(message);
 });
 
@@ -75,7 +85,12 @@ NotiEmitter.on('job.deleted', async ({ userId, jobTitle }) => {
   const title = 'Công việc đã bị xoá';
   const message = `Công việc "${jobTitle}" bạn đã ứng tuyển đã bị xoá.`;
 
-  await NotiEventHandler.notify({ userId, title, message, type: 'both' });
+  await NotiEventHandler.notify(
+    userId,
+    title,
+    message,
+    'both'
+  );
   console.log(message);
 });
 
@@ -84,7 +99,12 @@ NotiEmitter.on('job.updated', async ({ userId, jobTitle }) => {
   const title = 'Công việc vừa được cập nhật';
   const message = `Công việc "${jobTitle}" bạn ứng tuyển đã thay đổi thông tin.`;
 
-  await NotiEventHandler.notify({ userId, title, message, type: 'both' });
+  await NotiEventHandler.notify(
+    userId,
+    title,
+    message,
+    'both'
+  );
   console.log(message);
 });
 
@@ -105,69 +125,88 @@ NotiEmitter.on('job.adminUpdatedStatus', async ({ userId, jobTitle, status }) =>
   }
 
   if (title && message) {
-    await NotiEventHandler.notify({
+    await NotiEventHandler.notify(
       userId,
       title,
       message,
-      type: 'both',
-    });
+      'both'
+    );
     console.log(message);
   }
 });
 
 // Phản ứng mới lên bài viết
 NotiEmitter.on('reaction.post', async ({ userId, fromUserId, postId, reactionType }) => {
+  const title = 'Có phản ứng mới trên bài viết của bạn';
   const fromUser = await prisma.user.findUnique({
     where: { id: fromUserId },
     select: { username: true }
   });
   const message = `${fromUser?.username || 'Ai đó'} vừa phản ứng "${reactionType}" vào bài viết của bạn.`;
 
-  await NotiEventHandler.notify({
+  await NotiEventHandler.notify(
     userId,
-    title: 'Phản ứng mới',
+    title,
     message,
-    type: 'both'
-  });
+    'both'
+  );
   console.log(message);
 });
 
 // Bình luận trên post
 NotiEmitter.on('comment.onPost', async ({ userId, fromUserId, postId, commentId }) => {
   if (userId === fromUserId) return;
-  const message = 'Có ai đó vừa bình luận vào bài viết của bạn.';
-  await NotiEventHandler.notify({
-    userId,
-    title: 'Bài viết của bạn có bình luận mới',
-    message,
-    metadata: { postId, commentId, fromUserId },
-    type: 'both'
+
+  // 1. Truy vấn thông tin người bình luận
+  const fromUser = await prisma.user.findUnique({
+    where: { id: fromUserId },
+    select: { username: true }
   });
+
+  // 2. Tạo message
+  const message = `${fromUser?.username || 'Ai đó'} vừa bình luận vào bài viết của bạn.`;
+
+  // 3. Gửi thông báo
+  await NotiEventHandler.notify(
+    userId,
+    'Bài viết của bạn có bình luận mới',
+    message,
+    'both'
+  );
+
   console.log(message);
 });
+
 
 // Phản hồi vào bình luận
 NotiEmitter.on('comment.onReply', async ({ userId, fromUserId, postId, commentId }) => {
   if (userId === fromUserId) return;
-  const message = 'Có ai đó vừa trả lời bình luận của bạn.';
-  await NotiEventHandler.notify({
-    userId,
-    title: 'Phản hồi bình luận',
-    message,
-    metadata: { postId, commentId, fromUserId },
-    type: 'both'
+  // 1. Truy vấn thông tin người bình luận
+  const fromUser = await prisma.user.findUnique({
+    where: { id: fromUserId },
+    select: { username: true }
   });
+
+  // 2. Tạo message
+  const message = `${fromUser?.username || 'Ai đó'} vừa trả lời bình luận của bạn.`;
+  await NotiEventHandler.notify(
+    userId,
+    'Phản hồi bình luận',
+    message,
+    'both'
+  );
   console.log(message);
 });
 
 NotiEmitter.on('report.replied', async ({ userId, reportId }) => {
-  await NotiEventHandler.notify({
+  const title = 'Báo cáo đã được phản hồi';
+  const message = 'Báo cáo của bạn đã được quản trị viên xem xét và phản hồi.';
+  await NotiEventHandler.notify(
     userId,
-    title: 'Báo cáo đã được phản hồi',
-    message: 'Báo cáo của bạn đã được quản trị viên xem xét và phản hồi.',
-    metadata: { reportId },
-    type: 'both'
-  });
+    title,
+    message,
+    'both'
+  );
 });
 
 module.exports = NotiEmitter;
