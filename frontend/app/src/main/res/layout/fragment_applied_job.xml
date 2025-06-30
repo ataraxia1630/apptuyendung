@@ -21,13 +21,13 @@
             android:orientation="horizontal"
             android:paddingLeft="16dp">
 
-            <ImageButton
+            <!--<ImageButton
                 android:id="@+id/btnRearrange"
                 android:src="@drawable/ic_sort"
                 android:background="@android:color/transparent"
                 android:contentDescription="Rearrange"
                 android:layout_width="50dp"
-                android:layout_height="50dp"/>
+                android:layout_height="50dp"/>-->
 
             <View
                 android:layout_width="0dp"

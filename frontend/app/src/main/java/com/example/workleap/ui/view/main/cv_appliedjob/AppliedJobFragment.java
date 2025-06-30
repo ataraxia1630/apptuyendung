@@ -83,7 +83,7 @@ public class AppliedJobFragment extends Fragment {
 
         //JOBPOST LIST
         recyclerViewAppliedJob = view.findViewById(R.id.recyclerAppliedJob); // ID trong layout
-        btnRearrange = view.findViewById(R.id.btnRearrange);
+        //btnRearrange = view.findViewById(R.id.btnRearrange);
         jobPostViewModel  = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
 
         //lay user cho detail jobpost applied cv

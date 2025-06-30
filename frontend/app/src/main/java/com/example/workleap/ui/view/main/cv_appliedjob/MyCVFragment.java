@@ -63,7 +63,7 @@ public class MyCVFragment extends Fragment {
     private ActivityResultLauncher<Intent> filePickerLauncher;
     private ActivityResultLauncher<Intent> createFileLauncher;
     private CV downloadingCV;
-    private String urlSupabase = "https://epuxazakjgtmjuhuwkza.supabase.co/storage/v1/object/public/cv-storage/";
+    private String urlSupabase = "https://uoqlxeqtvtwacknpjpsn.supabase.co/storage/v1/object/public/cv-storage/";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -136,6 +136,11 @@ public class MyCVFragment extends Fragment {
             });
 
             // Setup RecyclerView
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setAdapter(adapter);
+        }
+        else //adapter khac null
+        {
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.setAdapter(adapter);
         }
