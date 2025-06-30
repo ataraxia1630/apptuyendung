@@ -195,6 +195,7 @@ public class WatchCompanyProfileFragment extends Fragment {
                 nav.navigate(R.id.HomeJobPostFragment, bundle); // Navigate to DetailJobPostFragment
             }
 
+
             @Override
             public void onSaveClick(JobPost jobpost) {
                 jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
@@ -446,30 +447,32 @@ public class WatchCompanyProfileFragment extends Fragment {
             userViewModel.toggleFollow(userId);
         });
 
+        //Nhan id created chat
+        conversationViewModel.getSingleChatData().observe(getViewLifecycleOwner(), data -> {
+            if (data != null) {
+                conversationViewModel.getChatById(data.getId());
+            }
+            else
+                Log.d("conversation", "null");
+        });
+        conversationViewModel.getCreatedChatData().observe(getViewLifecycleOwner(), data -> {
+            if (data != null) {
+                Bundle bundle = new Bundle();
+                Log.d("Chat company detail", new Gson().toJson(data));
+                bundle.putSerializable("conversationUser", data.getMembers().get(1));
+                bundle.putSerializable("conversation", data);
+                bundle.putSerializable("myUser", myUser);
+                nav.navigate(R.id.messageDetailFragment, bundle);
+            }
+            else
+                Log.d("conversation", "null");
+        });
         //Chat
         btnChat.setOnClickListener(v -> {
-            //Nhan id created chat
-            conversationViewModel.getSingleChatData().observe(getViewLifecycleOwner(), data -> {
-                if (data != null) {
-                    conversationViewModel.getChatById(data.getId());
-                }
-                else
-                    Log.d("conversation", "null");
-            });
-            conversationViewModel.getCreatedChatData().observe(getViewLifecycleOwner(), data -> {
-                if (data != null) {
-                    Bundle bundle = new Bundle();
-                    Log.d("Chat company detail", new Gson().toJson(data));
-                    bundle.putSerializable("conversationUser", data.getMembers().get(1));
-                    bundle.putSerializable("conversation", data);
-                    nav.navigate(R.id.messageDetailFragment, bundle);
-                }
-                else
-                    Log.d("conversation", "null");
-            });
             //Tim thong tin day du created chat de cho vao bundle
-            conversationViewModel.createChat(new FriendIdRequest(user.getId()));
-
+            //Ko chat vs ban than
+            if(!user.getId().equals(myUser.getId()))
+                conversationViewModel.createChat(new FriendIdRequest(user.getId()));
         });
 
         //Back

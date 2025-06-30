@@ -89,6 +89,11 @@ public class CreateJobpostFragment extends Fragment {
 
         //Lay danh sach jobcategory
         ArrayList<String> jobCategoriesName = new ArrayList<>();
+
+        //Xu li Auto complete textview jobcategory
+        ArrayAdapter<String> adapterCategory = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, jobCategoriesName);
+        autoJobCategory.setAdapter(adapterCategory);
+
         jobPostViewModel.getAllJobCategoryResult().observe(getViewLifecycleOwner(), result ->
         {
             if(result != null)
@@ -105,15 +110,14 @@ public class CreateJobpostFragment extends Fragment {
                 jobCategories.addAll(data);
                 for(JobCategory jobCategory : jobCategories)
                     jobCategoriesName.add(jobCategory.getName());
+
+                adapterCategory.notifyDataSetChanged();
             }
             else
                 Log.e("Load jobcategory data", "Jobcategory data null");
         });
         jobPostViewModel.getAllJobCategory();
 
-        //Xu li Auto complete textview jobcategory
-        ArrayAdapter<String> adapterCategory = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, jobCategoriesName);
-        autoJobCategory.setAdapter(adapterCategory);
         // Hiển thị danh sách khi nhận focus hoac click, kiem tra ton tai
         autoJobCategory.setThreshold(0); // Hiển thị danh sách ngay khi click, không cần nhập ký tự
         autoJobCategory.setOnClickListener(v -> autoJobCategory.showDropDown()); // Hiển thị danh sách khi click
@@ -127,9 +131,13 @@ public class CreateJobpostFragment extends Fragment {
         });
 
 
-
         //Lay danh sach jobtype
         ArrayList<String> jobTypesName = new ArrayList<>();
+
+        //Xu li Auto complete textview jobtype
+        ArrayAdapter<String> adapterType = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, jobTypesName);
+        autoJobType.setAdapter(adapterType);
+
         jobPostViewModel.getAllJobTypeResult().observe(getViewLifecycleOwner(), result ->
         {
             if(result != null)
@@ -146,15 +154,14 @@ public class CreateJobpostFragment extends Fragment {
                 jobTypes.addAll(data);
                 for(JobType jobType : jobTypes)
                     jobTypesName.add(jobType.getName());
+
+                adapterType.notifyDataSetChanged();
             }
             else
                 Log.e("Load jobtype data", "Jobtype data null");
         });
         jobPostViewModel.getAllJobType();
 
-        //Xu li Auto complete textview jobtype
-        ArrayAdapter<String> adapterType = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, jobTypesName);
-        autoJobType.setAdapter(adapterType);
         // Hiển thị danh sách khi nhận focus hoac click, kiem tra ton tai
         autoJobType.setThreshold(0); // Hiển thị danh sách ngay khi click, không cần nhập ký tự
         autoJobType.setOnClickListener(v -> autoJobType.showDropDown()); // Hiển thị danh sách khi click

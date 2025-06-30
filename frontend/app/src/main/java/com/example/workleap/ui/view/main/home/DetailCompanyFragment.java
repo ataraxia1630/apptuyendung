@@ -177,29 +177,30 @@ public class DetailCompanyFragment extends Fragment {
         });
 
 
+        //Nhan id created chat
+        conversationViewModel.getSingleChatData().observe(getViewLifecycleOwner(), data -> {
+            if (data != null) {
+                conversationViewModel.getChatById(data.getId());
+            }
+            else
+                Log.d("conversation", "null");
+        });
+        conversationViewModel.getCreatedChatData().observe(getViewLifecycleOwner(), data -> {
+            if (data != null) {
+                bundle = new Bundle();
+                Log.d("Chat company detail", new Gson().toJson(data));
+                bundle.putSerializable("conversationUser", data.getMembers().get(1));
+                bundle.putSerializable("conversation", data);
+                nav.navigate(R.id.messageDetailFragment, bundle);
+            }
+            else
+                Log.d("conversation", "null");
+        });
         //Chat
         btnChat.setOnClickListener(v -> {
-            //Nhan id created chat
-            conversationViewModel.getSingleChatData().observe(getViewLifecycleOwner(), data -> {
-                if (data != null) {
-                    conversationViewModel.getChatById(data.getId());
-                }
-                else
-                    Log.d("conversation", "null");
-            });
-            conversationViewModel.getCreatedChatData().observe(getViewLifecycleOwner(), data -> {
-                if (data != null) {
-                    bundle = new Bundle();
-                    Log.d("Chat company detail", new Gson().toJson(data));
-                    bundle.putSerializable("conversationUser", data.getMembers().get(1));
-                    bundle.putSerializable("conversation", data);
-                    nav.navigate(R.id.messageDetailFragment, bundle);
-                }
-                else
-                    Log.d("conversation", "null");
-            });
             //Tim thong tin day du created chat de cho vao bundle
-            conversationViewModel.createChat(new FriendIdRequest(userIdOfCompany));
+            if(!(myUser.getId().equals(userIdOfCompany)))
+                conversationViewModel.createChat(new FriendIdRequest(userIdOfCompany));
         });
     }
 

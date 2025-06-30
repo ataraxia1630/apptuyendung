@@ -18,7 +18,9 @@ const ChatService = {
                 take: 1,
               },
               members: {
-                include: { User: { select: { id: true, avatar: true, username: true } } },
+                include: {
+                  User: { select: { id: true, avatar: true, username: true } },
+                },
               },
             },
           },
@@ -105,14 +107,21 @@ const ChatService = {
         where: {
           isGroup: false,
           members: {
-            some: {
-              userId: userId,
-            },
+            some: { userId: userId },
           },
           AND: {
             members: {
-              some: {
-                userId: friendId,
+              some: { userId: friendId },
+            },
+          },
+        },
+        include: {
+          members: {
+            include: {
+              User: {
+                select: {
+                  username: true,
+                },
               },
             },
           },

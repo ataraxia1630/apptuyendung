@@ -70,6 +70,8 @@ public class MessageDetailFragment extends Fragment {
            currentConversationUser = (ConversationUser) getArguments().getSerializable("conversationUser");
            currentConversation = (Conversation) getArguments().getSerializable("conversation");
            myUser = (User) getArguments().getSerializable("myUser");
+            Log.d("Detailchat", new Gson().toJson(currentConversationUser));
+            Log.d("DetailchatcurConv", new Gson().toJson(currentConversation));
            Log.d("conversationUser rc", new Gson().toJson(currentConversationUser));
         }
     }
@@ -102,7 +104,17 @@ public class MessageDetailFragment extends Fragment {
         txtName = view.findViewById(R.id.txtName);
         txtEmail = view.findViewById(R.id.txtEmail);
 
-        txtName.setText(currentConversationUser.getConversation().getMembers().get(1).getUser().getUsername());
+        //Header chat
+        userViewModel.getGetUserData().observe(getViewLifecycleOwner(), user -> {
+            if(user != null)
+            {
+                txtName.setText(user.getUsername());
+            }
+            else
+                Log.d("Detailchat", "user null");
+        });
+        userViewModel.getUser(currentConversation.getMembers().get(1).getUserId());
+
 
         //Get all messages
         conversationViewModel.getGetMessageOfChatData().observe(getViewLifecycleOwner(), data -> {
