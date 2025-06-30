@@ -11,7 +11,7 @@ NotiEmitter.on('job.apply', async ({ userId, jobTitle }) => {
     userId,
     'Có ứng viên vừa ứng tuyển!',
     message,
-    'both'
+    'save'
   );
   console.log(message);
 });
@@ -23,7 +23,7 @@ NotiEmitter.on('jobApplied.success', async ({ userId, jobTitle }) => {
     userId,
     'Ứng tuyển thành công!',
     message,
-    'both'
+    'save'
   );
   console.log(message);
 });
@@ -31,24 +31,14 @@ NotiEmitter.on('jobApplied.success', async ({ userId, jobTitle }) => {
 // Ứng tuyển thất bại
 NotiEmitter.on('jobApplied.fail', async ({ userId, jobTitle }) => {
   const message = `Rất tiếc, bạn đã ứng tuyển thất bại vào công việc: ${jobTitle}`;
-  await NotiEventHandler.notify(
-    userId,
-    'Ứng tuyển thất bại!',
-    message,
-    'both'
-  );
+  await NotiEventHandler.notify(userId, 'Ứng tuyển thất bại!', message, 'save');
   console.log(message);
 });
 
 // Tin nhắn mới
 NotiEmitter.on('mess.new', async ({ userId }) => {
   const message = 'Kiểm tra hộp thư ngay ✉️';
-  await NotiEventHandler.notify(
-    userId,
-    'Bạn có tin nhắn mới!',
-    message,
-    'fcm'
-  );
+  await NotiEventHandler.notify(userId, 'Bạn có tin nhắn mới!', message, 'fcm');
   console.log(message);
 });
 
@@ -89,76 +79,90 @@ NotiEmitter.on('job.updated', async ({ userId, jobTitle }) => {
 });
 
 // Admin cập nhật trạng thái bài đăng
-NotiEmitter.on('job.adminUpdatedStatus', async ({ userId, jobTitle, status }) => {
-  let title = '';
-  let message = '';
+NotiEmitter.on(
+  'job.adminUpdatedStatus',
+  async ({ userId, jobTitle, status }) => {
+    let title = '';
+    let message = '';
 
-  if (status === 'OPENING') {
-    title = 'Bài đăng đã được mở lại';
-    message = `Bài đăng "${jobTitle}" đã được quản trị viên cho phép mở lại.`;
-  } else if (status === 'TERMINATED') {
-    title = 'Bài đăng đã bị tạm ngưng';
-    message = `Bài đăng "${jobTitle}" đã bị quản trị viên tạm ngưng.`;
-  } else if (status === 'CANCELLED') {
-    title = 'Bài đăng đã bị huỷ';
-    message = `Bài đăng "${jobTitle}" đã bị quản trị viên huỷ.`;
+    if (status === 'OPENING') {
+      title = 'Bài đăng đã được mở lại';
+      message = `Bài đăng "${jobTitle}" đã được quản trị viên cho phép mở lại.`;
+    } else if (status === 'TERMINATED') {
+      title = 'Bài đăng đã bị tạm ngưng';
+      message = `Bài đăng "${jobTitle}" đã bị quản trị viên tạm ngưng.`;
+    } else if (status === 'CANCELLED') {
+      title = 'Bài đăng đã bị huỷ';
+      message = `Bài đăng "${jobTitle}" đã bị quản trị viên huỷ.`;
+    }
+
+    if (title && message) {
+      await NotiEventHandler.notify({
+        userId,
+        title,
+        message,
+        type: 'both',
+      });
+      console.log(message);
+    }
   }
+);
 
-  if (title && message) {
+// Phản ứng mới lên bài viết
+NotiEmitter.on(
+  'reaction.post',
+  async ({ userId, fromUserId, postId, reactionType }) => {
+    const fromUser = await prisma.user.findUnique({
+      where: { id: fromUserId },
+      select: { username: true },
+    });
+    const message = `${
+      fromUser?.username || 'Ai đó'
+    } vừa phản ứng "${reactionType}" vào bài viết của bạn.`;
+
     await NotiEventHandler.notify({
       userId,
-      title,
+      title: 'Phản ứng mới',
       message,
       type: 'both',
     });
     console.log(message);
   }
-});
-
-// Phản ứng mới lên bài viết
-NotiEmitter.on('reaction.post', async ({ userId, fromUserId, postId, reactionType }) => {
-  const fromUser = await prisma.user.findUnique({
-    where: { id: fromUserId },
-    select: { username: true }
-  });
-  const message = `${fromUser?.username || 'Ai đó'} vừa phản ứng "${reactionType}" vào bài viết của bạn.`;
-
-  await NotiEventHandler.notify({
-    userId,
-    title: 'Phản ứng mới',
-    message,
-    type: 'both'
-  });
-  console.log(message);
-});
+);
 
 // Bình luận trên post
-NotiEmitter.on('comment.onPost', async ({ userId, fromUserId, postId, commentId }) => {
-  if (userId === fromUserId) return;
-  const message = 'Có ai đó vừa bình luận vào bài viết của bạn.';
-  await NotiEventHandler.notify({
-    userId,
-    title: 'Bài viết của bạn có bình luận mới',
-    message,
-    metadata: { postId, commentId, fromUserId },
-    type: 'both'
-  });
-  console.log(message);
-});
+NotiEmitter.on(
+  'comment.onPost',
+  async ({ userId, fromUserId, postId, commentId }) => {
+    if (userId === fromUserId) return;
+    const message = 'Có ai đó vừa bình luận vào bài viết của bạn.';
+    await NotiEventHandler.notify({
+      userId,
+      title: 'Bài viết của bạn có bình luận mới',
+      message,
+      metadata: { postId, commentId, fromUserId },
+      type: 'both',
+    });
+    console.log(message);
+  }
+);
 
 // Phản hồi vào bình luận
-NotiEmitter.on('comment.onReply', async ({ userId, fromUserId, postId, commentId }) => {
-  if (userId === fromUserId) return;
-  const message = 'Có ai đó vừa trả lời bình luận của bạn.';
-  await NotiEventHandler.notify({
-    userId,
-    title: 'Phản hồi bình luận',
-    message,
-    metadata: { postId, commentId, fromUserId },
-    type: 'both'
-  });
-  console.log(message);
-});
+NotiEmitter.on(
+  'comment.onReply',
+  async ({ userId, fromUserId, postId, commentId }) => {
+    if (userId === fromUserId) return;
+    const message = 'Có ai đó vừa trả lời bình luận của bạn.';
+    await NotiEventHandler.notify({
+      userId,
+      title: 'Phản hồi bình luận',
+      message,
+      metadata: { postId, commentId, fromUserId },
+      type: 'both',
+    });
+    console.log(message);
+  }
+);
 
 NotiEmitter.on('report.replied', async ({ userId, reportId }) => {
   await NotiEventHandler.notify({
@@ -166,7 +170,7 @@ NotiEmitter.on('report.replied', async ({ userId, reportId }) => {
     title: 'Báo cáo đã được phản hồi',
     message: 'Báo cáo của bạn đã được quản trị viên xem xét và phản hồi.',
     metadata: { reportId },
-    type: 'both'
+    type: 'both',
   });
 });
 
