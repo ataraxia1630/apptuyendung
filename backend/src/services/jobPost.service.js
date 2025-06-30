@@ -222,6 +222,15 @@ const JobPostService = {
 
                 updateData.status = 'OPENING';
             }
+            else if (data.status === 'TERMINATED') {
+                const existing = await prisma.jobPost.findUnique({ where: { id } });
+
+                if (!existing) throw new Error('JobPost not found');
+                if (existing.status !== 'OPENING') {
+                    throw new Error(`Only OPENING job posts can be terminated`);
+                }
+                updateData.status = 'TERMINATED';
+            }
             else if (data.status !== existing.status) {
                 throw new Error('Changing job post status is not allowed in this route');
             }

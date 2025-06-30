@@ -160,4 +160,14 @@ NotiEmitter.on('comment.onReply', async ({ userId, fromUserId, postId, commentId
   console.log(message);
 });
 
+NotiEmitter.on('report.replied', async ({ userId, reportId }) => {
+  await NotiEventHandler.notify({
+    userId,
+    title: 'Báo cáo đã được phản hồi',
+    message: 'Báo cáo của bạn đã được quản trị viên xem xét và phản hồi.',
+    metadata: { reportId },
+    type: 'both'
+  });
+});
+
 module.exports = NotiEmitter;
