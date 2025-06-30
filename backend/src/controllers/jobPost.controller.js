@@ -190,12 +190,35 @@ const JobPostController = {
         }
 
         try {
+            const currentPost = await prisma.jobPost.findUnique({
+                where: { id },
+                select: { status: true }
+            });
+            if (!currentPost) {
+                return res.status(404).json({ message: 'Job post not found' });
+            }
+            if (currentPost.status === status) {
+                return res.status(200).json({ message: 'Status is already up to date' });
+            }
             const jobPost = await JobPostService.updateJobPostStatus(id, status);
 
-            NotiEmitter.emit('job.adminUpdatedStatus', {
-                userId: jobPost.companyId,
+            const user = await prisma.user.findFirst({
+                where: { companyId: jobPost.companyId },
+                select: { id: true }
+            });
+            NotiEmitter.emit('job.adminUpdatedStatusforCompany', {
+                userId: user.id,
                 jobTitle: jobPost.title,
                 status: status,
+            });
+
+            const userIds = await JobAppliedService.getUserIdsAppliedToJobPost(id);
+            userIds.forEach(userId => {
+                NotiEmitter.emit('job.adminUpdatedStatusforUser', {
+                    userId,
+                    jobTitle: jobPost.title,
+                    status: status,
+                });
             });
 
             return res.status(200).json({ jobPost: jobPost });
