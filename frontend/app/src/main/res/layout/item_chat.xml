@@ -21,7 +21,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_edit_pen"
+            android:src="@drawable/ic_loading"
             android:contentDescription="Avatar"
             android:padding="4dp"
             app:shapeAppearanceOverlay="@style/CircleImageView"/>

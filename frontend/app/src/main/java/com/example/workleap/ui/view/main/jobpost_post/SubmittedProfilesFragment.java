@@ -65,7 +65,7 @@ public class SubmittedProfilesFragment extends Fragment {
     private Uri zipOutputUri;
     private ActivityResultLauncher<Intent> zipFileLauncher;
 
-    private String urlSupabase = "https://epuxazakjgtmjuhuwkza.supabase.co/storage/v1/object/public/cv-storage/";
+    private String urlSupabase = "https://uoqlxeqtvtwacknpjpsn.supabase.co/storage/v1/object/public/cv-storage/";
 
     SubmittedProfilesAdapter adapter;
 

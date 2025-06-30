@@ -113,7 +113,12 @@ public class MessageDetailFragment extends Fragment {
             else
                 Log.d("Detailchat", "user null");
         });
-        userViewModel.getUser(currentConversation.getMembers().get(1).getUserId());
+
+        if(currentConversationUser.getConversation() != null)
+            userViewModel.getUser(currentConversationUser.getConversation().getMembers().get(1).getUserId());
+        else
+            userViewModel.getUser(currentConversation.getMembers().get(1).getUserId());
+
 
 
         //Get all messages
@@ -157,10 +162,14 @@ public class MessageDetailFragment extends Fragment {
         });
         conversationViewModel.getMessageByChatId(currentConversationUser.getConversationId());
 
-        //Quay lai
+        //Quay lai chat fragment
         btnBack.setOnClickListener(v -> {
             NavController navController = NavHostFragment.findNavController(MessageDetailFragment.this);
             ((NavigationActivity) getActivity()).showBottomNav(true); // Show bottom navigation
+            //navController.navigateUp();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("user", myUser);
+            //navController.navigate(R.id.menu_notifications, bundle);
             navController.navigateUp();
         });
 

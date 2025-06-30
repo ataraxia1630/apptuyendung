@@ -147,7 +147,9 @@ public class FollowingFragment extends Fragment {
 
         btnBack.setOnClickListener(v -> {
             NavController navController = NavHostFragment.findNavController(FollowingFragment.this);
-            navController.navigateUp();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("user", myUser);
+            navController.navigate(R.id.menu_notifications, bundle);
         });
     }
 }

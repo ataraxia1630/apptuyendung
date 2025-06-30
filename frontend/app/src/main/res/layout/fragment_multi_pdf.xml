@@ -84,24 +84,24 @@
             android:id="@+id/btnPrevious"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/ic_back_left"
             android:background="@android:color/transparent"
-            android:contentDescription="Previous PDF" />
+            android:contentDescription="Previous PDF"
+            android:src="@drawable/ic_arrow_left" />
 
         <ImageButton
             android:id="@+id/btnDismiss"
-            android:layout_width="48dp"
+            android:layout_width="68dp"
             android:layout_height="48dp"
-            android:background="@android:color/transparent"
+            android:background="@drawable/bg_button"
             android:contentDescription="Dismiss PDF"
-            android:src="@android:drawable/btn_dialog" />
+            android:src="@drawable/ic_remove" />
 
         <ImageButton
             android:id="@+id/btnApprove"
-            android:layout_width="48dp"
+            android:layout_width="68dp"
             android:layout_height="48dp"
             android:src="@drawable/ic_success"
-            android:background="@android:color/transparent"
+            android:background="@drawable/bg_button"
             android:contentDescription="Approve PDF" />
 
         <ImageButton

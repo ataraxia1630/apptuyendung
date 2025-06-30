@@ -5,12 +5,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +36,7 @@ public class NotificationFragment extends Fragment {
 
     private ConversationViewModel conversationViewModel;
     private ProgressBar progressCenterLoading;
+    private ImageButton btnNotification;
 
     public NotificationFragment() {}
 
@@ -51,6 +55,10 @@ public class NotificationFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recyclerNotifications);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        btnNotification = view.findViewById(R.id.btnBackNotification);
+        btnNotification.setOnClickListener(v->{
+            NavHostFragment.findNavController(this).navigateUp();
+        });
 
         adapter = new NotificationAdapter(notificationList, notification -> {
             // Xử lý khi click vào notification

@@ -26,6 +26,7 @@ import com.example.workleap.data.model.request.JobSavedRequest;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.view.main.jobpost_post.JobPostAdapter;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
+import com.example.workleap.ui.viewmodel.PostViewModel;
 import com.example.workleap.ui.viewmodel.ReportViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
 
@@ -42,8 +43,11 @@ public class ReportFragment extends Fragment {
 
     private UserViewModel userViewModel;
     private JobPostViewModel jobPostViewModel;
+    private PostViewModel postViewModel;
     private NavController navController;
     private User user;
+
+    private Boolean isNavigateFragment;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -55,6 +59,8 @@ public class ReportFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        isNavigateFragment = true;
+
         tvTitleReports = view.findViewById(R.id.tvTitleReports);
         tvNoReports = view.findViewById(R.id.tvNoReports);
         recyclerViewReports = view.findViewById(R.id.recyclerViewReports);
@@ -63,6 +69,8 @@ public class ReportFragment extends Fragment {
         userViewModel.InitiateRepository(getContext());
         jobPostViewModel  = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
+        postViewModel  = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
+        postViewModel.InitiateRepository(getContext());
 
         user = (User) getArguments().getSerializable("user");
 
@@ -72,6 +80,7 @@ public class ReportFragment extends Fragment {
         reportAdapter = new ReportAdapter(requireContext(), reportList, new ReportAdapter.OnReportActionListener() {
             @Override
             public void onViewTarget(Report report) {
+                isNavigateFragment = false;
                 // Xem đối tượng bị báo cáo (User/Post/JobPost)
                 Toast.makeText(getContext(), "View target: " + report.getId(), Toast.LENGTH_SHORT).show();
                 if(report.getReportedUserId() != null)
@@ -85,6 +94,7 @@ public class ReportFragment extends Fragment {
                 }
                 else if(report.getPostId() != null)
                 {
+                    postViewModel.getPostById(report.getPostId());
                     Log.e("eee","popopo");
                 }
                 else Log.e("eee","uauaa");
@@ -133,8 +143,21 @@ public class ReportFragment extends Fragment {
         });
         reportViewModel.getAllReports();
 
+        postViewModel.getPostByIdData().observe(getViewLifecycleOwner(), post->{
+            if(!isNavigateFragment) //tranh mo khi quay lai
+            {
+                //mo post fragment
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("post", post);
+
+                //tranh viec quay lai thi lai mo jobpost
+                //postViewModel.ResetGetPostByIdData();
+                ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
+                navController.navigate(R.id.watchPostFragment, bundle);
+            }
+        });
         jobPostViewModel.getJobPostData().observe(getViewLifecycleOwner(), jobPost -> {
-            Log.e("iii", "ysus");
+            Log.e("reportfragment", "ysus");
             if(jobPost==null)
             {
                 Log.e("ReportFragment","getMyJobPostByIdData NULL");

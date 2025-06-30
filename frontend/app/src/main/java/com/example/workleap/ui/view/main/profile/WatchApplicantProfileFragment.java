@@ -37,6 +37,7 @@ import com.example.workleap.ui.viewmodel.ApplicantViewModel;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.ConversationViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
+import com.example.workleap.utils.ToastUtil;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.chip.Chip;
 import com.google.gson.Gson;
@@ -80,6 +81,7 @@ public class WatchApplicantProfileFragment extends Fragment {
     List<Education> listEducation;
     List<Experience> applicantExperience;
     private NavController nav;
+    private boolean isNavigatedToChat = false;
 
     public WatchApplicantProfileFragment() {
         // Required empty public constructor
@@ -112,6 +114,9 @@ public class WatchApplicantProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //Avoid auto navigate to chat
+        isNavigatedToChat = true;
 
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         userViewModel.InitiateRepository(getContext());
@@ -531,7 +536,9 @@ public class WatchApplicantProfileFragment extends Fragment {
                 bundle.putSerializable("conversationUser", data.getMembers().get(1));
                 bundle.putSerializable("conversation", data);
                 bundle.putSerializable("myUser", myUser);
-                nav.navigate(R.id.messageDetailFragment, bundle);
+
+                if(!isNavigatedToChat)
+                    nav.navigate(R.id.messageDetailFragment, bundle);
             }
             else
                 Log.d("conversation", "null");
@@ -539,6 +546,12 @@ public class WatchApplicantProfileFragment extends Fragment {
         //Chat
         btnChat.setOnClickListener(v -> {
             //Tim thong tin day du created chat de cho vao bundle
+            isNavigatedToChat = false; //reset to navigate
+            if(user == null)
+            {
+                ToastUtil.showToast(v.getContext(), "Loading...", ToastUtil.TYPE_WARNING);
+                return;
+            }
             //Ko chat vs ban than
             if(!user.getId().equals(myUser.getId()))
                 conversationViewModel.createChat(new FriendIdRequest(user.getId()));

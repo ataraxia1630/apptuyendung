@@ -15,7 +15,7 @@
         android:scaleType="centerCrop"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:src="@drawable/ic_edit_pen"
+        android:src="@drawable/ic_loading"
         android:layout_marginEnd="8dp"
         android:visibility="visible"
         app:shapeAppearanceOverlay="@style/CircleImageView"/>
