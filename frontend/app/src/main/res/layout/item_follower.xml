@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:padding="16dp">
 
     <!-- Phần bình luận cha -->
     <LinearLayout
@@ -15,15 +15,15 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgAvatar"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:src="@drawable/sample_avatar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_loading"
             android:scaleType="centerCrop"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="12dp"
             android:clickable="true"
             android:focusable="true"
             android:contentDescription="Avatar"
-            app:shapeAppearanceOverlay="@style/CircleImageView"/>
+            app:shapeAppearanceOverlay="@style/CircleImageView" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -42,14 +42,14 @@
                     android:layout_height="wrap_content"
                     android:text="Username"
                     android:textStyle="bold"
-                    android:textSize="17sp" />
+                    android:textSize="24sp" />
 
                 <TextView
                     android:id="@+id/tvRole"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="APPLICANT"
-                    android:textSize="12sp"
+                    android:textSize="14sp"
                     android:textColor="#888888"
                     android:paddingLeft="10dp"/>
             </LinearLayout>
@@ -59,8 +59,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="xxxxx.@gmail.com"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp" />
+                android:textSize="16sp"
+                android:layout_marginTop="6dp" />
         </LinearLayout>
 
     </LinearLayout>

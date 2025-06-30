@@ -40,6 +40,7 @@ import com.example.workleap.ui.viewmodel.ConversationViewModel;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.PostViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
+import com.example.workleap.utils.ToastUtil;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -80,6 +81,7 @@ public class WatchCompanyProfileFragment extends Fragment {
     RecyclerView recyclerViewJobPost, recyclerViewPost;
     private JobPostAdapter adapterJobPost;
     private PostAdapter adapterPost;
+    private boolean isNavigatedToChat = false;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -117,6 +119,9 @@ public class WatchCompanyProfileFragment extends Fragment {
         nav = NavHostFragment.findNavController(this);
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_watch_company_profile, container, false);
+
+        //Avoid auto navigate to chat
+        isNavigatedToChat = true;
 
         //Viewmodel
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
@@ -285,7 +290,6 @@ public class WatchCompanyProfileFragment extends Fragment {
 
             if(posts != null && !posts.isEmpty()) {
                 allPosts.addAll(posts);
-                Toast.makeText(this.getContext(), "Loading Posts...", Toast.LENGTH_SHORT).show();
             }
             else
                 Toast.makeText(this.getContext(), "No more posts", Toast.LENGTH_SHORT).show();
@@ -344,6 +348,24 @@ public class WatchCompanyProfileFragment extends Fragment {
             tvPageNumber.setText(String.valueOf(pageJobPost));
         });
 
+        //Lay avatar
+        //Observe
+        userViewModel.getUrlAvatarResult().observe(getViewLifecycleOwner(), result -> {
+            if(result != null)
+                Log.d("CompanyProfile avatar", result);
+            else
+                Log.d("Companyprofile avatar", "getUrlAvatarResult NULL");
+        });
+        userViewModel.getUrlAvatarData().observe(getViewLifecycleOwner(), dataImage -> {
+            if(dataImage != null)
+            {
+                Glide.with(this.getContext()).load(dataImage).into(avatar);
+                Log.d("ApplicantProfile avatar", "Set avatar success");
+            }
+            else
+                Log.d("ApplicantProfile avatar", "getUrlAvatarData NULL");
+        });
+
         //Set value from user, call api
         userViewModel.getGetUserData().observe(getViewLifecycleOwner(), data -> {
             if(data != null)
@@ -392,23 +414,6 @@ public class WatchCompanyProfileFragment extends Fragment {
                 tvMailInfo.setText(user.getEmail());
                 tvPhoneInfo.setText(user.getPhoneNumber());
 
-                //Lay avatar
-                //Observe
-                userViewModel.getUrlAvatarResult().observe(getViewLifecycleOwner(), result -> {
-                    if(result != null)
-                        Log.d("CompanyProfile avatar", result);
-                    else
-                        Log.d("Companyprofile avatar", "getUrlAvatarResult NULL");
-                });
-                userViewModel.getUrlAvatarData().observe(getViewLifecycleOwner(), dataImage -> {
-                    if(dataImage != null)
-                    {
-                        Glide.with(this.getContext()).load(dataImage).into(avatar);
-                        Log.d("ApplicantProfile avatar", "Set avatar success");
-                    }
-                    else
-                        Log.d("ApplicantProfile avatar", "getUrlAvatarData NULL");
-                });
                 //Check and get avatar
                 if(user.getAvatar() != null)
                 {
@@ -462,13 +467,21 @@ public class WatchCompanyProfileFragment extends Fragment {
                 bundle.putSerializable("conversationUser", data.getMembers().get(1));
                 bundle.putSerializable("conversation", data);
                 bundle.putSerializable("myUser", myUser);
-                nav.navigate(R.id.messageDetailFragment, bundle);
+                if(!isNavigatedToChat)
+                    nav.navigate(R.id.messageDetailFragment, bundle);
             }
             else
                 Log.d("conversation", "null");
         });
+
         //Chat
         btnChat.setOnClickListener(v -> {
+            isNavigatedToChat = false; //reset to navigate
+            if(user == null)
+            {
+                ToastUtil.showToast(v.getContext(), "Loading...", ToastUtil.TYPE_WARNING);
+                return;
+            }
             //Tim thong tin day du created chat de cho vao bundle
             //Ko chat vs ban than
             if(!user.getId().equals(myUser.getId()))

@@ -47,6 +47,7 @@ public class DetailCompanyFragment extends Fragment {
     private NavController nav;
     private Bundle bundle;
     private String userIdOfCompany;
+    private boolean isNavigatedToChat = false;
     private boolean isJobPostSubmitted = false; // Biến trạng thái đảm bảo chỉ trở về khi đã tạo thành công
 
     public DetailCompanyFragment() {
@@ -72,6 +73,8 @@ public class DetailCompanyFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        isNavigatedToChat = true;//Dont navigate
 
         jobPostViewModel = new ViewModelProvider(requireActivity()).get(JobPostViewModel.class);
         jobPostViewModel.InitiateRepository(getContext());
@@ -191,13 +194,17 @@ public class DetailCompanyFragment extends Fragment {
                 Log.d("Chat company detail", new Gson().toJson(data));
                 bundle.putSerializable("conversationUser", data.getMembers().get(1));
                 bundle.putSerializable("conversation", data);
-                nav.navigate(R.id.messageDetailFragment, bundle);
+                bundle.putSerializable("myUser", myUser);
+
+                if(!isNavigatedToChat)
+                    nav.navigate(R.id.messageDetailFragment, bundle);
             }
             else
                 Log.d("conversation", "null");
         });
         //Chat
         btnChat.setOnClickListener(v -> {
+            isNavigatedToChat = false; //reset to navigate
             //Tim thong tin day du created chat de cho vao bundle
             if(!(myUser.getId().equals(userIdOfCompany)))
                 conversationViewModel.createChat(new FriendIdRequest(userIdOfCompany));

@@ -57,8 +57,9 @@ public class ConversationUserAdapter extends RecyclerView.Adapter<ConversationUs
         String displayName = conversationUser.getConversation().getMembers().get(1).getUser().getUsername() != null ? conversationUser.getConversation().getMembers().get(1).getUser().getUsername() : "Đoạn chat";
         holder.txtName.setText(displayName);
 
-        // Set tin nhắn gần nhất (chỉ placeholder nếu backend chưa có)
-        holder.txtLastMessage.setText("Tin nhắn gần nhất...");
+        // Role of user
+        String role = conversationUser.getConversation().getMembers().get(1).getUser().getEmail() != null ? conversationUser.getConversation().getMembers().get(1).getUser().getEmail() : "Messages...";
+        holder.txtLastMessage.setText(role);
 
         //Xu li logo chat
         logoFilePath = conversationUser.getConversation().getMembers().get(1).getUser().getAvatar(); // dùng làm key
