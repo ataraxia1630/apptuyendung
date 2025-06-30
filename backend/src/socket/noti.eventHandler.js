@@ -6,12 +6,29 @@ const NotiEventHandler = {
   notify: async (userId, title, message, type) => {
     // 1. Lưu vào DB
     // 2. Emit socket để cập nhật UI
-    if (type == 'both' || type == 'save') {
+    if (type === 'both' || type === 'save') {
       const created_at = new Date();
-      await supabase
-        .from('Notification')
-        .insert([{ userId: userId, title, message, created_at }]);
-
+      try {
+        const { error } = await supabase.from('Notification').insert([
+          {
+            id: created_at + userId,
+            userId,
+            title,
+            message,
+            created_at,
+            status: 'UNREAD',
+          },
+        ]);
+        if (error) {
+          console.error(
+            'Error inserting notification into Supabase:',
+            error.message
+          );
+          throw error; // Optional: rethrow to stop execution or handle differently
+        }
+      } catch (error) {
+        console.error('Failed to save notification:', error.message);
+      }
       sendToUser(userId, 'notification.new', { title, message, created_at });
     }
 
