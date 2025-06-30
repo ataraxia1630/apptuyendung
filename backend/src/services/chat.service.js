@@ -105,14 +105,21 @@ const ChatService = {
         where: {
           isGroup: false,
           members: {
-            some: {
-              userId: userId,
-            },
+            some: { userId: userId },
           },
           AND: {
             members: {
-              some: {
-                userId: friendId,
+              some: { userId: friendId },
+            },
+          },
+        },
+        include: {
+          members: {
+            include: {
+              user: {
+                select: {
+                  userName: true,
+                },
               },
             },
           },
