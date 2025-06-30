@@ -78,6 +78,7 @@ public class PostViewModel extends ViewModel {
     public LiveData<List<Post>> getAllPostData() { return getAllPostData; }
     public LiveData<List<Post>> getPostCompanyData() { return getPostCompanyData; }
     public LiveData<Post> getPostByIdData() { return getPostByIdData; }
+    public void ResetGetPostByIdData(){getPostByIdData.setValue(null);}
     public LiveData<String> getAllPostResult() { return getAllPostResult; }
     public LiveData<String> getPostCompanyResult() { return getPostCompanyResult; }
     public LiveData<String> createPostResult() { return createPostResult; }

@@ -15,10 +15,13 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -56,7 +59,9 @@ public class WatchPostFragment extends Fragment {
     private EditText edtTitle, edtTextContent;
     private Button btnCancel;
     private ImageView imgContent;
+    private ImageButton btnOptions;
     private Post currentPost;
+
 
     public WatchPostFragment() {
         // Required empty public constructor
@@ -74,7 +79,7 @@ public class WatchPostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_post, container, false);
+        return inflater.inflate(R.layout.fragment_watch_post, container, false);
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -88,11 +93,44 @@ public class WatchPostFragment extends Fragment {
         edtTextContent = view.findViewById(R.id.edtTextContent);
         imgContent = view.findViewById(R.id.imgContent);
         btnCancel = view.findViewById(R.id.btnCancel);
+        btnOptions = view.findViewById(R.id.btnOptions);
 
         //Set current value
         currentPost = (Post) getArguments().getSerializable("post");
         edtTitle.setText(currentPost.getTitle());
         edtTextContent.setText(currentPost.getContents().get(0).getValue());
+
+        btnOptions.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(requireContext(), btnOptions);
+            popupMenu.getMenuInflater().inflate(R.menu.menu_options_adminjobpost, popupMenu.getMenu());
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                int id = item.getItemId();
+
+                if (id == R.id.menu_delete) {
+                    // Gọi ViewModel hoặc mở Fragment chỉnh sửa
+                    Toast.makeText(getContext(), "Post Deleted", Toast.LENGTH_SHORT).show();
+                    postViewModel.deletePostById(currentPost.getId());
+                    return true;
+
+                } else if (id == R.id.menu_approve) {
+                    // Gọi ViewModel xoá bài viết
+                    postViewModel.updatePostStatus(currentPost.getId(), "OPENING");
+                    Toast.makeText(getContext(), "Post Opened", Toast.LENGTH_SHORT).show();
+                    return true;
+
+                } else if (id == R.id.menu_reject) {
+                    // Cập nhật trạng thái bài viết
+                    postViewModel.updatePostStatus(currentPost.getId(), "CANCELLED");
+                    Toast.makeText(getContext(), "Post Cancelled", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                return false;
+            });
+
+            popupMenu.show();
+        });
 
         //Load anh hien tai
         postViewModel.getImageUrlData().observe(getViewLifecycleOwner(), data -> {
@@ -118,5 +156,6 @@ public class WatchPostFragment extends Fragment {
             ((NavigationActivity) getActivity()).showBottomNav(true);
             NavHostFragment.findNavController(this).navigateUp();
         });
+
     }
 }
