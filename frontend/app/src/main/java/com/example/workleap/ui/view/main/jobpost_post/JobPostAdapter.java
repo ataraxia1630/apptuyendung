@@ -112,7 +112,12 @@ public class JobPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (logoFilePath != null) {
                 String imageUrl = logoUrlMap.get(logoFilePath);
                 if (imageUrl != null) {
-                    Glide.with(holder.itemView.getContext()).load(imageUrl).into(h.imgPost);
+                    Glide.with(holder.itemView.getContext())
+                            .asBitmap() // Load ảnh chính là bitmap
+                            .load(imageUrl)
+                            .placeholder(R.drawable.ic_loading) // Ảnh tạm (có thể là GIF nếu ảnh chính là bitmap)
+                            .error(R.drawable.ic_edit_pen)   // Ảnh fallback nếu lỗi
+                            .into(h.imgPost);
                 }
             }
 

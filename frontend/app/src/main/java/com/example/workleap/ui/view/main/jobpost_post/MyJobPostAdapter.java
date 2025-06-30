@@ -78,7 +78,12 @@ public class MyJobPostAdapter extends RecyclerView.Adapter<MyJobPostAdapter.JobP
             if(holder.imgPost == null)
                 Log.d("JobPostAdapter", "logoPost is null");
             if (imageUrl != null && holder.imgPost != null) {
-                Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.imgPost);
+                Glide.with(holder.itemView.getContext())
+                        .asBitmap() // Load ảnh chính là bitmap
+                        .load(imageUrl)
+                        .placeholder(R.drawable.ic_loading) // Ảnh tạm (có thể là GIF nếu ảnh chính là bitmap)
+                        .error(R.drawable.ic_edit_pen)   // Ảnh fallback nếu lỗi
+                        .into(holder.imgPost);
             }
         }
 

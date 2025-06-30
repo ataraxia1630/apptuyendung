@@ -28,6 +28,7 @@ public class HomeJobPostFragment extends Fragment {
     private ImageButton btnBack, btnOption;
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
+    private ImageButton btnProfile;
     private JobPostViewModel jobPostViewModel;
 
     private User user;
@@ -59,9 +60,9 @@ public class HomeJobPostFragment extends Fragment {
         txtSalary = view.findViewById(R.id.txtSalary);
         txtLocation = view.findViewById(R.id.txtLocation);
         btnBack = view.findViewById(R.id.btnBack);
-        btnOption = view.findViewById(R.id.btnOption);
         tabLayout = view.findViewById(R.id.tabLayout);
         viewPager = view.findViewById(R.id.viewPager);
+        btnProfile = view.findViewById(R.id.btnProfile);
 
         // Back navigation
         btnBack.setOnClickListener(v -> {
@@ -69,9 +70,12 @@ public class HomeJobPostFragment extends Fragment {
             NavHostFragment.findNavController(this).navigateUp();
         });
 
-        // Option (can be customized)
-        btnOption.setOnClickListener(v -> {
-            // TODO: handle options
+        btnProfile.setOnClickListener(v -> {
+            //Move to profile company
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("myUser", user);
+            bundle.putString("userId", currentJobPost.getCompany().getUser().get(0).getId());
+            NavHostFragment.findNavController(this).navigate(R.id.watchCompanyProfileFragment, bundle);
         });
 
         // Get current jobpost

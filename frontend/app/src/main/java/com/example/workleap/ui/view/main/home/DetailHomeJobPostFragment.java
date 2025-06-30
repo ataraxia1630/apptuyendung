@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,7 @@ public class DetailHomeJobPostFragment extends Fragment {
 
     private TextView txtDescription, txtResponsibilities, txtPosition, txtWorkingAddress, txtEducationRequirement, txtSkillRequirement, txtApplyUntil, txtCvName;
     private Button btnApply, btnChangeCv;
+
     private NavController nav;
     private List<CV> cvList;
 
@@ -85,6 +87,7 @@ public class DetailHomeJobPostFragment extends Fragment {
         btnApply = view.findViewById(R.id.btnApply);
         layoutSubmittedCV = view.findViewById(R.id.layoutSubmittedCV);
         btnChangeCv = view.findViewById(R.id.btnChangeCV);
+
 
         // Lấy jobPost và user từ arguments
         currentJobPost = (JobPost) getArguments().getSerializable("currentJobPost");

@@ -84,7 +84,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             if(holder.imgPost == null)
                 Log.d("MyPostAdapter", "imgPost is null");
             if (imageUrl != null && holder.itemView.getContext() != null && holder.imgPost != null) {
-                Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.imgPost);
+                Glide.with(holder.itemView.getContext())
+                        .asBitmap() // Load ảnh chính là bitmap
+                        .load(imageUrl)
+                        .placeholder(R.drawable.loading_icon) // Ảnh tạm (có thể là GIF nếu ảnh chính là bitmap)
+                        .error(R.drawable.sample_photo)   // Ảnh fallback nếu lỗi
+                        .into(holder.imgPost);
             }
         }
 
@@ -96,7 +101,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             if(holder.logoPost == null)
                 Log.d("MyPostAdapter", "logoPost is null");
             if (imageUrl != null && holder.logoPost != null) {
-                Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.logoPost);
+                Glide.with(holder.itemView.getContext())
+                        .asBitmap() // Load ảnh chính là bitmap
+                        .load(imageUrl)
+                        .placeholder(R.drawable.loading_icon) // Ảnh tạm (có thể là GIF nếu ảnh chính là bitmap)
+                        .error(R.drawable.sample_photo)   // Ảnh fallback nếu lỗi
+                        .into(holder.logoPost);
             }
         }
 

@@ -15,7 +15,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
         android:text="Welcome to WorkLeap"
-        android:textSize="24sp"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
     <EditText
@@ -42,6 +42,13 @@
         android:hint="Password"
         android:inputType="textPassword" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/blue"
+        android:text="Your account will be automatically logged in next time" />
+
     <Button
         android:id="@+id/login_button"
         android:layout_width="match_parent"
@@ -49,15 +56,19 @@
         android:layout_marginBottom="8dp"
         android:text="Login" />
 
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal">
 
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:paddingTop="30dp"
             android:text="You don't have an account yet?" />
 
         <TextView
@@ -65,6 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
+            android:textSize="20dp"
             android:text="Sign Up"
             android:textColor="@android:color/holo_blue_dark" />
 
