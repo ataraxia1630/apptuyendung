@@ -65,6 +65,7 @@ public class WatchCompanyProfileFragment extends Fragment {
     private TextView tvPageNumber;
     private boolean isMorePost = false; // Kiểm tra đang tải lại fragment hay tải thêm bài đăng
     private List<Post> allPosts = new ArrayList<>();
+    private ArrayList<JobPost> allJobs = new ArrayList<>();
     User user, myUser;
 
     AuthViewModel authViewModel;
@@ -250,8 +251,13 @@ public class WatchCompanyProfileFragment extends Fragment {
             });
             jobPostViewModel.getJobPostsByCompanyData().observe(getViewLifecycleOwner(), jobPosts ->
             {
-                adapterJobPost.hideShimmer(jobPosts);
-                if(jobPosts == null)
+                allJobs.clear();
+
+                if(jobPosts != null)
+                    allJobs.addAll(jobPosts);
+
+                adapterJobPost.hideShimmer(allJobs);
+                if(allJobs == null)
                 {
                     Log.e("watchcompanyprofile", "jobposts NULL");
                     return;
@@ -259,7 +265,7 @@ public class WatchCompanyProfileFragment extends Fragment {
                 {
                     Log.e("eeeee", String.valueOf(jobPosts.size()));
                 }
-                adapterJobPost.hideShimmer(jobPosts);
+                adapterJobPost.hideShimmer(allJobs);
             });
         });
         companyViewModel.getGetCompanyResult().observe(getViewLifecycleOwner(), result ->{
@@ -340,6 +346,12 @@ public class WatchCompanyProfileFragment extends Fragment {
             }
         });
         btnNext.setOnClickListener(v -> {
+            if(allJobs.size() < pageSizeJobPost)
+            {
+                ToastUtil.showToast(this.getContext(), "No more posts", ToastUtil.TYPE_ERROR);
+                return;
+            }
+
             pageJobPost++;
             //Loading
             adapterJobPost.showShimmer();

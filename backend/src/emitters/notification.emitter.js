@@ -220,4 +220,23 @@ NotiEmitter.on('report.replied', async ({ userId, reportId }) => {
   );
 });
 
+NotiEmitter.on('user.followed', async ({ userId, fromUserId }) => {
+  if (userId === fromUserId) return;
+
+  const fromUser = await prisma.user.findUnique({
+    where: { id: fromUserId },
+    select: { username: true }
+  });
+
+  const message = `${fromUser?.username || 'Ai đó'} đã bắt đầu theo dõi bạn.`;
+
+  await NotiEventHandler.notify(
+    userId,
+    'Bạn có người theo dõi mới!',
+    message,
+    'both'
+  );
+});
+
+
 module.exports = NotiEmitter;
