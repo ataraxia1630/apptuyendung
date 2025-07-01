@@ -1,5 +1,6 @@
 const { PostService } = require('../services/post.service');
 const { getPagination, buildMeta } = require('../utils/paginate');
+const { FollowerService } = require('../services/follower.service');
 
 const PostController = {
     getAllPosts: async (req, res) => {
@@ -35,6 +36,30 @@ const PostController = {
                 return res.status(400).json({ message: 'Post contents are required' });
             }
             const post = await PostService.createPost({ companyId, title, contents });
+            const companyUser = await prisma.user.findFirst({
+                where: {
+                    companyId: post.companyId,
+                },
+                select: { id: true }
+            });
+
+            const companyUserId = companyUser?.id;
+
+            const followers = await FollowerService.getFollowers(companyUserId);
+            const followerIds = followers.map((f) => f.followId); // vì follower.followId là người theo dõi
+
+            // Lấy tên công ty
+            const company = await prisma.company.findUnique({
+                where: { id: post.companyId },
+                select: { name: true }, // hoặc username / displayName
+            });
+            const companyName = company?.name || 'Một công ty';
+
+            // Emit sự kiện
+            NotiEmitter.emit('post.created', {
+                followerIds,
+                companyName,
+            });
             return res.status(201).json({ post: post });
         } catch (error) {
             return res.status(500).json({ message: 'Error creating post', error });
