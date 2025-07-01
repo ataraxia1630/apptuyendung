@@ -232,10 +232,9 @@ public class AuthViewModel extends ViewModel {
                 } else {
                     loginUser.setValue(null);
                     try {
-                        loginResult.setValue(response.errorBody().string());
+                        loginResult.setValue("Wrong user name or password");
                         MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
                         //loginResult.setValue("Lỗi: " + error.getMessage());
-
                     } catch (Exception e) {
                         loginResult.setValue("Lỗi không xác định: " + response.code());
                     }
@@ -244,7 +243,7 @@ public class AuthViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                loginResult.setValue("Lỗi kết nối: " + t.getMessage());
+                loginResult.setValue("Wrong user name or password");
             }
         });
     }

@@ -177,7 +177,6 @@ public class CompanyProfileFragment extends Fragment {
         {
             if(data != null)
             {
-                Log.d("get url sau upload", user.getAvatar());
                 userViewModel.getAvatarUrl(data.getAvatar());
             }
             else

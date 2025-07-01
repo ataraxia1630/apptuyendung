@@ -185,7 +185,10 @@ public class HomeFragment extends Fragment {
             public void onSaveClick(JobPost jobpost) {
                 jobPostViewModel.createJobSavedResult().observe(getViewLifecycleOwner(), result -> {
                     if(result != null)
+                    {
                         Log.e("HomeFragment", "createJobSavedResult: " + result + "");
+                        ToastUtil.showToast(getContext(), "You has saved this jobpost", ToastUtil.TYPE_SUCCESS);
+                    }
                     else
                         Log.e("HomeFragment", "createJobSavedResult: null");
                 });
@@ -222,6 +225,7 @@ public class HomeFragment extends Fragment {
             allJobs.clear();
             if(jobPosts != null)
                 allJobs.addAll(jobPosts);
+
             // Setup RecyclerView
             recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
             //adapterJobPost = new JobPostAdapter(allJobs, jobPostViewModel); // mặc định show tất cả
@@ -342,6 +346,12 @@ public class HomeFragment extends Fragment {
             }
         });
         btnNext.setOnClickListener(v -> {
+            if(allJobs.size() < pageSizeJobPost)
+            {
+                ToastUtil.showToast(this.getContext(), "No more posts", ToastUtil.TYPE_ERROR);
+                return;
+            }
+
             pageJobPost++;
             adapterJobPost.showShimmer(); // trước khi load
 

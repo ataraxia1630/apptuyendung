@@ -74,10 +74,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.txtReactionCount.setText(post.getReaction().size() + " Reactions    •");
         holder.txtCommentShareCount.setText(post.getComment().size() + " Comments");
 
+        //if
 
-        //Xu li anh jobpost
+        //Xu li anh post
         if(post.getContents().size() > 1)
+        {
+            holder.imgPost.setVisibility(View.VISIBLE);
             filePath = post.getContents().get(1).getValue(); // dùng làm key
+        }
+
+        else
+            holder.imgPost.setVisibility(View.GONE);
+
         if(filePath != null)
         {
             String imageUrl = imageUrlMap.get(filePath);

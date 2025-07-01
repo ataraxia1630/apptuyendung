@@ -9,7 +9,6 @@ const route = Router();
 route.get(
   '/:applicantId',
   verifyToken,
-  cache,
   JobSavedController.getAllJobSaved
 );
 
