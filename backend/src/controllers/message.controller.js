@@ -6,7 +6,7 @@ const NotiEmitter = require('../emitters/notification.emitter');
 const MessController = {
   sendMess: async (req, res) => {
     try {
-      const { userId } = req.user;
+      const { userId } = req.user; // ID của người gửi tin nhắn
       const { conversationId, content } = req.body;
       const mess = await MessService.createNew(userId, conversationId, content);
       sendToChatRoom(conversationId, 'newMess', { mess });
@@ -16,7 +16,13 @@ const MessController = {
           const chat = await ChatService.getChatById(conversationId);
           const members = chat.members;
 
-          members.map((member) => {
+          // Lọc bỏ người gửi tin nhắn khỏi danh sách members
+          const otherMembers = members.filter(
+            (member) => member.userId !== userId
+          );
+
+          // Gửi thông báo cho các thành viên khác
+          otherMembers.forEach((member) => {
             NotiEmitter.emit('mess.new', {
               userId: member.userId,
             });
