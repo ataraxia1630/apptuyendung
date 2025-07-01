@@ -140,6 +140,7 @@ const JobPostService = {
             status,
             apply_until,
             educationRequirement,
+            location,
         } = data;
 
         function convertDDMMYYYYtoISO(str) {
@@ -162,7 +163,7 @@ const JobPostService = {
                     status,
                     educationRequirement,
                     apply_until: new Date(convertDDMMYYYYtoISO(apply_until)),
-
+                    location,
                     companyId,
                     jobCategoryId: jobCategoryId,
                     jobTypeId: jobTypeId,
@@ -193,6 +194,7 @@ const JobPostService = {
         if (data.description !== undefined) updateData.description = data.description;
         if (data.position !== undefined) updateData.position = data.position;
         if (data.workingAddress !== undefined) updateData.workingAddress = data.workingAddress;
+        if (data.location !== undefined) updateData.location = data.location;
         if (data.skillRequirement !== undefined) updateData.skillRequirement = data.skillRequirement;
         if (data.responsibility !== undefined) updateData.responsibility = data.responsibility;
         if (data.salary_start !== undefined) updateData.salary_start = data.salary_start;

@@ -1,4 +1,5 @@
 package com.example.workleap.data.api;
+
 import android.content.Context;
 
 import com.example.workleap.data.repository.PreferencesManager;
@@ -32,6 +33,5 @@ public class RetrofitClient {
         }
         return retrofit;
     }
-
 
 }
