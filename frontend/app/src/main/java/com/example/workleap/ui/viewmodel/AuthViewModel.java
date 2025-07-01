@@ -202,6 +202,12 @@ public class AuthViewModel extends ViewModel {
                     registerResult.setValue(registerResponse.getMessage() + " - Username: " + registerResponse.getUser().getUsername());
                 } else {
                     try {
+                        if (response.errorBody() != null) {
+                            String errorBodyString = response.errorBody().string();
+                            Log.d("API_ERROR", "Lỗi từ server: " + errorBodyString);
+                        } else {
+                            Log.d("API_ERROR", "Không có errorBody");
+                        }
                         MessageResponse error = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
                         Log.d("authviewmodel", "error: " + error.getMessage());
                     } catch (Exception e) {

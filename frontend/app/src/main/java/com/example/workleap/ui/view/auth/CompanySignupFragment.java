@@ -29,13 +29,11 @@ import com.example.workleap.ui.viewmodel.CompanyViewModel;
 public class CompanySignupFragment extends Fragment {
 
     private AuthViewModel authViewModel;
-    private CompanyViewModel companyViewModel;
-
     private EditText etEmail, etPassword, etConfirmPassword, etCompanyName/*, etAddress, etEstablishedYear, etTaxCode*/, etPhoneNumber;
     private Button btnRegister;
     private TextView tvLoginRedirect;
-    private boolean isOtpDialogShown = false;
-    private boolean triggeredFromCompany = false;
+    //private boolean isOtpDialogShown = false;
+    //private boolean triggeredFromCompany = false;
 
     public CompanySignupFragment() {}
 
@@ -50,8 +48,6 @@ public class CompanySignupFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
-        authViewModel.InitiateRepository(getContext());
-        companyViewModel = new ViewModelProvider(requireActivity()).get(CompanyViewModel.class);
         authViewModel.InitiateRepository(getContext());
 
         etEmail = view.findViewById(R.id.etEmail);
@@ -77,19 +73,24 @@ public class CompanySignupFragment extends Fragment {
 
             if (result.contains("successfully")) {
                 Log.d("ApplicantSignupFragment", "Register success");
-                authViewModel.ResetRegisterResult();
                 NavHostFragment.findNavController(CompanySignupFragment.this).navigate(R.id.loginFragment);
+
+                authViewModel.ResetRegisterResult();
             }
         });
 
         // Observe
         authViewModel.getCheckExistData().observe(getViewLifecycleOwner(), data -> {
-            if (!triggeredFromCompany) return;  // Bỏ qua nếu không phải từ tab Company
-            triggeredFromCompany = false;
+            /*if (!triggeredFromCompany) return;  // Bỏ qua nếu không phải từ tab Company
+            triggeredFromCompany = false;*/
+
+            if(data==null) return;
 
             if (data == 1) {
                 String email = etEmail.getText().toString().trim();
                 authViewModel.sendOtp(email);
+
+                authViewModel.ResetGetCheckExistData();
             }
             else
                 Toast.makeText(getContext(), "User already exists or wrong confirm password", Toast.LENGTH_LONG).show();
@@ -103,19 +104,21 @@ public class CompanySignupFragment extends Fragment {
         });
 
         authViewModel.getSendOtpResult().observe(getViewLifecycleOwner(), result -> {
-            if (!isAdded() || getView() == null || isOtpDialogShown || result==null) return;
-            authViewModel.ResetSendOtpResult();
+            if (!isAdded() || getView() == null /*|| isOtpDialogShown*/ || result==null) return;
+
             if (result != null) {
-                isOtpDialogShown = true;
+                //isOtpDialogShown = true;
                 Log.e("eeeee", "kakakaka");
                 String email = etEmail.getText().toString().trim();
                 showOtpDialog(email);
+
+                authViewModel.ResetSendOtpResult();
             }
         });
 
         authViewModel.getVerifyOtpData().observe(getViewLifecycleOwner(), data -> {
             if(data==null) return;
-            authViewModel.ResetVerifyOtpData();
+
             if (data == 1) {
                 String email = etEmail.getText().toString().trim();
                 String password = etPassword.getText().toString().trim();
@@ -128,6 +131,7 @@ public class CompanySignupFragment extends Fragment {
 
                 authViewModel.register(name, password, confirmPassword, email, phone, "COMPANY");
                 Toast.makeText(getContext(), "OTP verified successfully", Toast.LENGTH_SHORT).show();
+                authViewModel.ResetVerifyOtpData();
             }
             else
                 Toast.makeText(getContext(), "OTP verification failed", Toast.LENGTH_SHORT).show();
@@ -158,15 +162,18 @@ public class CompanySignupFragment extends Fragment {
         String tax = etTaxCode.getText().toString().trim();*/
         String phone = etPhoneNumber.getText().toString().trim();
 
-        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)
-                || TextUtils.isEmpty(name) || TextUtils.isEmpty(phone) /*|| TextUtils.isEmpty(address)
-                || TextUtils.isEmpty(year) || TextUtils.isEmpty(tax)*/) {
-            Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword) || phone.isEmpty()) {
+            Toast.makeText(getContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (!password.equals(confirmPassword)) {
-            Toast.makeText(getContext(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+        if (name.length() < 6) {
+            Toast.makeText(getContext(), "Company name must be at least 6 characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (name.length() > 30) {
+            Toast.makeText(getContext(), "Company name must be at most 30 characters", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -175,9 +182,27 @@ public class CompanySignupFragment extends Fragment {
             return;
         }
 
+        if (!password.equals(confirmPassword)) {
+            Toast.makeText(getContext(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (password.length() < 8) {
             Toast.makeText(getContext(), "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        if (password.length() > 30) {
+            Toast.makeText(getContext(), "Password must be at most 30 characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!phone.isEmpty()) {
+            String vietnamPhoneRegex = "^(0|\\+84)(3[2-9]|5[6|8|9]|7[06-9]|8[1-9]|9[0-9])[0-9]{7}$";
+            if (!phone.matches(vietnamPhoneRegex)) {
+                Toast.makeText(getContext(), "Phone number must be a valid 10-digit number in Vietnam", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
         /*if (!year.matches("\\d{4}")) {
@@ -185,7 +210,7 @@ public class CompanySignupFragment extends Fragment {
             return;
         }*/
 
-        triggeredFromCompany = true;
+        //triggeredFromCompany = true;
         authViewModel.checkUserExist(name, password, confirmPassword, email, phone, "COMPANY");
     }
 
@@ -221,10 +246,9 @@ public class CompanySignupFragment extends Fragment {
         btnBack.setOnClickListener(v -> {
             Log.e("eeee", "dong");
             otpDialog.dismiss();
-            isOtpDialogShown = false;
+            /*isOtpDialogShown = false;*/
         });
 
         otpDialog.show();
-
     }
 }
