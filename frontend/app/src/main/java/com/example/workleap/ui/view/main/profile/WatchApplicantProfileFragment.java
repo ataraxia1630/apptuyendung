@@ -587,7 +587,7 @@ public class WatchApplicantProfileFragment extends Fragment {
                 TextView tvEduLevel   = eduItem.findViewById(R.id.tvEduLevel);
                 TextView tvMajor   = eduItem.findViewById(R.id.tvMajor);
                 TextView tvTimeRange    = eduItem.findViewById(R.id.tvTimeRange);
-                TextView tvAchievements = eduItem.findViewById(R.id.tvAchievements);
+                //TextView tvAchievements = eduItem.findViewById(R.id.tvAchievements);
                 TextView tvSchoolLink   = eduItem.findViewById(R.id.tvSchoolLink);
                 ImageButton btnEdit     = eduItem.findViewById(R.id.btnEditEducation);
 

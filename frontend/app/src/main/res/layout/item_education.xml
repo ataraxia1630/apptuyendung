@@ -56,14 +56,14 @@
             android:text="0000 - 0000"
             android:textSize="14sp" />
 
-        <TextView
+        <!--<TextView
             android:id="@+id/tvAchievements"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Achievements"
             android:textSize="14sp"
             android:ellipsize="end"
-            android:maxLines="2" />
+            android:maxLines="2" />-->
 
         <TextView
             android:id="@+id/tvSchoolLink"
