@@ -2,6 +2,7 @@ const { JobPostService } = require('../services/jobPost.service');
 const { getPagination, buildMeta } = require('../utils/paginate');
 const NotiEmitter = require('../emitters/notification.emitter');
 const { JobAppliedService } = require('../services/jobApplied.service');
+const { FollowerService } = require('../services/follower.service');
 
 
 const JobPostController = {
@@ -68,6 +69,33 @@ const JobPostController = {
     createJobPost: async (req, res) => {
         try {
             const jobPost = await JobPostService.createJobPost(req.body);
+
+            // Lấy danh sách follower
+            const companyUser = await prisma.user.findFirst({
+                where: {
+                    companyId: jobPost.companyId,
+                },
+                select: { id: true }
+            });
+
+            const companyUserId = companyUser?.id;
+
+            const followers = await FollowerService.getFollowers(companyUserId);
+            const followerIds = followers.map((f) => f.followId); // vì follower.followId là người theo dõi
+
+            // Lấy tên công ty
+            const company = await prisma.company.findUnique({
+                where: { id: jobPost.companyId },
+                select: { name: true }, // hoặc username / displayName
+            });
+            const companyName = company?.name || 'Một công ty';
+
+            // Emit sự kiện
+            NotiEmitter.emit('post.created', {
+                followerIds,
+                companyName,
+            });
+
             return res.status(201).json({ jobPost: jobPost });
         } catch (error) {
             console.log(error);

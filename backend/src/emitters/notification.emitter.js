@@ -125,9 +125,8 @@ NotiEmitter.on(
       where: { id: fromUserId },
       select: { username: true },
     });
-    const message = `${
-      fromUser?.username || 'Ai đó'
-    } vừa thả cảm xúc vào bài viết của bạn.`;
+    const message = `${fromUser?.username || 'Ai đó'
+      } vừa thả cảm xúc vào bài viết của bạn.`;
 
     await NotiEventHandler.notify(userId, title, message, 'both');
   }
@@ -146,9 +145,8 @@ NotiEmitter.on(
     });
 
     // 2. Tạo message
-    const message = `${
-      fromUser?.username || 'Ai đó'
-    } vừa bình luận vào bài viết của bạn.`;
+    const message = `${fromUser?.username || 'Ai đó'
+      } vừa bình luận vào bài viết của bạn.`;
 
     // 3. Gửi thông báo
     await NotiEventHandler.notify(
@@ -172,9 +170,8 @@ NotiEmitter.on(
     });
 
     // 2. Tạo message
-    const message = `${
-      fromUser?.username || 'Ai đó'
-    } vừa trả lời bình luận của bạn.`;
+    const message = `${fromUser?.username || 'Ai đó'
+      } vừa trả lời bình luận của bạn.`;
     await NotiEventHandler.notify(
       userId,
       'Phản hồi bình luận',
@@ -207,5 +204,15 @@ NotiEmitter.on('user.followed', async ({ userId, fromUserId }) => {
     'both'
   );
 });
+
+NotiEmitter.on('post.created', async ({ followerIds, companyName }) => {
+  const title = 'Công ty bạn theo dõi vừa đăng tin!';
+  const message = `Công ty ${companyName} bạn theo dõi vừa đăng tin mới.`;
+
+  for (const userId of followerIds) {
+    await NotiEventHandler.notify(userId, title, message, 'both');
+  }
+});
+
 
 module.exports = NotiEmitter;

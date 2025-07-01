@@ -2,6 +2,8 @@
 const prisma = require('../config/db/prismaClient');
 const NotiEmitter = require('../emitters/notification.emitter');
 const cron = require('node-cron');
+const { JobAppliedService } = require('../services/jobApplied.service');
+
 
 const autoTerminateExpiredJobPosts = async () => {
     try {
