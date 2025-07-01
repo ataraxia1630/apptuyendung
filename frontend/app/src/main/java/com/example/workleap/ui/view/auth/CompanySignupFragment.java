@@ -33,6 +33,8 @@ public class CompanySignupFragment extends Fragment {
     private EditText etEmail, etPassword, etConfirmPassword, etCompanyName, etAddress, etEstablishedYear, etTaxCode, etPhoneNumber;
     private Button btnRegister;
     private TextView tvLoginRedirect;
+    private boolean isOtpDialogShown = false;
+    private boolean triggeredFromCompany = false;
 
     public CompanySignupFragment() {}
 
@@ -80,6 +82,9 @@ public class CompanySignupFragment extends Fragment {
 
         // Observe
         authViewModel.getCheckExistData().observe(getViewLifecycleOwner(), data -> {
+            if (!triggeredFromCompany) return;  // Bỏ qua nếu không phải từ tab Company
+            triggeredFromCompany = false;
+
             if (data == 1) {
                 String email = etEmail.getText().toString().trim();
                 authViewModel.sendOtp(email);
@@ -96,9 +101,11 @@ public class CompanySignupFragment extends Fragment {
         });
 
         authViewModel.getSendOtpResult().observe(getViewLifecycleOwner(), result -> {
-            if (!isAdded() || getView() == null) return;
+            if (!isAdded() || getView() == null || isOtpDialogShown) return;
 
             if (result != null) {
+                isOtpDialogShown = true;
+                Log.e("eeeee", "kakakaka");
                 String email = etEmail.getText().toString().trim();
                 showOtpDialog(email);
             }
@@ -174,10 +181,12 @@ public class CompanySignupFragment extends Fragment {
             return;
         }
 
+        triggeredFromCompany = true;
         authViewModel.checkUserExist(name, password, confirmPassword, email, phone, "COMPANY");
     }
 
     private void showOtpDialog(String email) {
+        Log.e("eeee", "khai");
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         LayoutInflater inflater = LayoutInflater.from(requireContext());
         View dialogView = inflater.inflate(R.layout.dialog_otp, null);
@@ -189,7 +198,7 @@ public class CompanySignupFragment extends Fragment {
         ImageButton btnBack = dialogView.findViewById(R.id.btn_back);
 
         AlertDialog otpDialog = builder.create();
-        otpDialog.setCancelable(false);
+        otpDialog.setCancelable(true);
 
         btnVerify.setOnClickListener(v -> {
             String otp = etOtp.getText().toString().trim();
@@ -206,9 +215,12 @@ public class CompanySignupFragment extends Fragment {
         });
 
         btnBack.setOnClickListener(v -> {
+            Log.e("eeee", "dong");
             otpDialog.dismiss();
+            isOtpDialogShown = false;
         });
 
         otpDialog.show();
+
     }
 }

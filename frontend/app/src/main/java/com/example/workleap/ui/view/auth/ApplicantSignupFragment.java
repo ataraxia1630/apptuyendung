@@ -29,11 +29,13 @@ public class ApplicantSignupFragment extends Fragment {
 
     private AuthViewModel authViewModel;
 
-    private EditText etFullName, etEmail, etPassword, etConfirmPassword, etPhoneNumber;
+    private EditText etUserName, etEmail, etPassword, etConfirmPassword, etPhoneNumber;
     private Button btnSignUp;
     private TextView tvLogIn;
 
     EditProfileDialogFragment dialog;
+    private boolean isOtpDialogShown = false;
+
 
     public ApplicantSignupFragment() {}
 
@@ -50,7 +52,7 @@ public class ApplicantSignupFragment extends Fragment {
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
         authViewModel.InitiateRepository(getContext());
 
-        etFullName = view.findViewById(R.id.editTextFullName);
+        etUserName = view.findViewById(R.id.editTextUserName);
         etEmail = view.findViewById(R.id.editTextEmail);
         etPassword = view.findViewById(R.id.editTextPassword);
         etConfirmPassword = view.findViewById(R.id.editTextConfirmPassword);
@@ -93,17 +95,18 @@ public class ApplicantSignupFragment extends Fragment {
         });
 
         authViewModel.getSendOtpResult().observe(getViewLifecycleOwner(), result -> {
-            if (!isAdded() || getView() == null) return;
+            if (!isAdded() || getView() == null || isOtpDialogShown) return;
 
             if (result != null) {
                 String email = etEmail.getText().toString().trim();
+                isOtpDialogShown = true; // Đánh dấu đã hiển thị
                 showOtpDialog(email);
             }
         });
 
         authViewModel.getVerifyOtpData().observe(getViewLifecycleOwner(), data -> {
             if (data == 1) {
-                String fullName = etFullName.getText().toString().trim();
+                String fullName = etUserName.getText().toString().trim();
                 String password = etPassword.getText().toString().trim();
                 String confirmPassword = etConfirmPassword.getText().toString().trim();
                 String email = etEmail.getText().toString().trim();
@@ -132,14 +135,22 @@ public class ApplicantSignupFragment extends Fragment {
     }
 
     private void signup() {
-        String fullName = etFullName.getText().toString().trim();
+        String userName = etUserName.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
         String phone = etPhoneNumber.getText().toString().trim();
 
-        if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+        if (userName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (userName.length() < 6 ) {
+            Toast.makeText(getContext(), "Username must be at least 6 characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (userName.length() > 25) {
+            Toast.makeText(getContext(), "Username must not exceed 25 characters", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -158,7 +169,11 @@ public class ApplicantSignupFragment extends Fragment {
             return;
         }
 
-        authViewModel.checkUserExist(fullName, password, confirmPassword, email, phone, "APPLICANT");
+        if (phone.length() > 12) {
+            Toast.makeText(getContext(), "Phone number must not exceed 15 digits", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        authViewModel.checkUserExist(userName, password, confirmPassword, email, phone, "APPLICANT");
     }
 
     private void showOtpDialog(String email) {
@@ -191,6 +206,7 @@ public class ApplicantSignupFragment extends Fragment {
 
         btnBack.setOnClickListener(v -> {
             otpDialog.dismiss();
+            isOtpDialogShown = false;
         });
 
         otpDialog.show();

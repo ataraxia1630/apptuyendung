@@ -25,11 +25,11 @@
             android:layout_marginBottom="24dp"/>
 
         <EditText
-            android:id="@+id/editTextFullName"
+            android:id="@+id/editTextUserName"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_marginBottom="16dp"
-            android:hint="Full Name"
+            android:hint="User name"
             android:inputType="textPersonName" />
 
         <EditText

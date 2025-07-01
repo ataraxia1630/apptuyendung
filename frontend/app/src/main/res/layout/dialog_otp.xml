@@ -76,5 +76,5 @@
         android:elevation="10dp"
         android:src="@drawable/ic_cancel"
         android:background="@android:color/transparent"
-        android:contentDescription="Close OTP dialog" />
+        android:contentDescription="Close OTP dialog"/>
 </FrameLayout>

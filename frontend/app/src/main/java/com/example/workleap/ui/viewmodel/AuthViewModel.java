@@ -1,5 +1,7 @@
 package com.example.workleap.ui.viewmodel;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -44,7 +46,9 @@ public class AuthViewModel extends ViewModel {
     }
     public LiveData<String> getCheckExistResult() { return checkExistResult;}
     public LiveData<Integer> getCheckExistData() { return checkExistData;}
+    public void ResetGetCheckExistData() { checkExistData.setValue(null);}
     public LiveData<String> getSendOtpResult() { return sendOtpResult;}
+    public void ResetSendOtpResult(){sendOtpResult.setValue(null);}
     public LiveData<String> getReSendOtpResult() { return reSendOtpResult;}
     public LiveData<String> getVerifyOtpResult() { return verifyOtpResult; }
     public LiveData<Integer> getVerifyOtpData() { return verifyOtpData; }
@@ -91,9 +95,10 @@ public class AuthViewModel extends ViewModel {
     }
 
     //Send
-    public void sendOtp(String email)
-    {   EmailRequest request = new EmailRequest(email);
+    public void sendOtp(String email) {
+        EmailRequest request = new EmailRequest(email);
         Call<MessageResponse> call = userRepository.sendOtp(request);
+
         call.enqueue(new Callback<MessageResponse>() {
             @Override
             public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
@@ -108,14 +113,24 @@ public class AuthViewModel extends ViewModel {
                         sendOtpResult.setValue("Lỗi không xác định: " + response.code());
                     }
                 }
+                //reset sau khoang thoi gian
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    sendOtpResult.setValue(null);
+                }, 300);
             }
 
             @Override
             public void onFailure(Call<MessageResponse> call, Throwable t) {
                 sendOtpResult.setValue("Lỗi kết nối: " + t.getMessage());
+
+                //reset
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    sendOtpResult.setValue(null);
+                }, 300);
             }
         });
     }
+
 
     //Resend
     public void reSendOtp(String email)
