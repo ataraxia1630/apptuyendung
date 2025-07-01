@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
@@ -235,6 +236,25 @@ public class EditProfileDialogFragment extends DialogFragment {
         {
             addField(container, "Company name");
             addField(container, "Company link");
+            editTexts.get(1).addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String input = s.toString().trim();
+                    String urlPattern = "^https?://[\\w.-]+(?:\\.[\\w\\.-]+)+[/\\w\\.-]*$";
+
+                    if (!input.matches(urlPattern)) {
+                        editTexts.get(1).setError("Invalid URL format");
+                    } else {
+                        editTexts.get(1).setError(null); // Hợp lệ, xoá lỗi
+                    }
+                }
+            });
             addField(container, "Position");
             addDateField(container, "Work start");
             addDateField(container, "Work end");
@@ -246,6 +266,25 @@ public class EditProfileDialogFragment extends DialogFragment {
             editTexts.get(0).setText(getArguments().getString("companyName"));
             addField(container, "Company link");
             editTexts.get(1).setText(getArguments().getString("companyLink"));
+            editTexts.get(1).addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String input = s.toString().trim();
+                    String urlPattern = "^https?://[\\w.-]+(?:\\.[\\w\\.-]+)+[/\\w\\.-]*$";
+
+                    if (!input.matches(urlPattern)) {
+                        editTexts.get(1).setError("Invalid URL format");
+                    } else {
+                        editTexts.get(1).setError(null); // Hợp lệ, xoá lỗi
+                    }
+                }
+            });
             addField(container, "Position");
             editTexts.get(2).setText(getArguments().getString("position"));
             addDateField(container, "Work start");
@@ -408,6 +447,30 @@ public class EditProfileDialogFragment extends DialogFragment {
                     }
 
                     if (hasEmptyField) return; // khong gui va khong dong dialog
+
+                    //check years
+                    if("ApplicantExperience".equalsIgnoreCase(cardType)){
+                        String yearStartStr = editTexts.get(3).getText().toString().trim();
+                        String yearEndStr = editTexts.get(4).getText().toString().trim();
+
+                        if (!yearStartStr.matches("\\d{4}") || !yearEndStr.matches("\\d{4}")) {
+                            Toast.makeText(getContext(), "Years must be 4-digit numbers with no spaces", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        int yearStart = Integer.parseInt(yearStartStr);
+                        int yearEnd = Integer.parseInt(yearEndStr);
+                        int currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
+
+                        if (yearStart >= yearEnd) {
+                            Toast.makeText(getContext(), "End year must be after start year", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if (yearStart > currentYear || yearEnd > currentYear) {
+                            Toast.makeText(getContext(), "Years must not exceed current year", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
 
                     // ApplicantEdu
                     if ("ApplicantEdu".equalsIgnoreCase(cardType)) {

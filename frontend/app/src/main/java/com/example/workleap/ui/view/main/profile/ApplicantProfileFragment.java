@@ -405,7 +405,10 @@ public class ApplicantProfileFragment extends Fragment {
                         {
                             ReloadExperience();
                             if(result != null)
+                            {
                                 Log.e("ApplicantProfile", "getCreateApplicantEduResult " + result);
+                                Toast.makeText(getContext(), "Failed to save experience", Toast.LENGTH_SHORT).show();
+                            }
                             else
                                 Log.e("ApplicantProfile", "getCreateApplicantEduResult NULL");
                         });
