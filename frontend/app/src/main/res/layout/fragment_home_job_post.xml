@@ -44,9 +44,10 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
+            android:id="@+id/imgAvatar"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/sample_logo"
+            android:src="@drawable/ic_profile"
             android:layout_marginTop="8dp" />
 
         <TextView

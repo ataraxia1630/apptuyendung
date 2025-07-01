@@ -444,12 +444,14 @@ public class HomeFragment extends Fragment {
 
         //Load more posts
         btnMorePost.setOnClickListener(v -> {
+            if(isMorePost)
+                return;
+            else
+                isMorePost = true;
             //Loading
             btnMorePost.setVisibility(View.GONE);
             progressLoadMore.setVisibility(View.VISIBLE);
-
             pagePost++;
-            isMorePost = true;
             postViewModel.getAllPost(pagePost, pageSizePost);
         });
 

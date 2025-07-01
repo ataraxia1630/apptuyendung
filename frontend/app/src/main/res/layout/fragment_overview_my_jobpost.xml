@@ -48,9 +48,10 @@
             android:background="#3303A9F4">
 
             <ImageView
+                android:id="@+id/imgAvatar"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/sample_logo" />
+                android:src="@drawable/ic_profile" />
 
             <TextView
                 android:id="@+id/txtJobName"

@@ -197,24 +197,6 @@ public class WatchApplicantProfileFragment extends Fragment {
             listEducation = allEducation;
         });
 
-        //applicant education
-        applicantViewModel.getDeleteApplicantEducationResult().observe(getViewLifecycleOwner(), result ->{
-            ReloadEducation();
-            if(result != null)
-                Log.e("ApplicantProfile", "getDeleteApplicantEducationResult " + result);
-            else
-                Log.e("ApplicantProfile", "getDeleteApplicantEducationResult null");
-
-        });
-
-        //applicant experience
-        applicantViewModel.getDeleteApplicantExperienceResult().observe(getViewLifecycleOwner(), result ->{
-            ReloadExperience();
-            if(result != null)
-                Log.e("ApplicantProfile", "getDeleteApplicantExperienceResult " + result);
-            else
-                Log.e("ApplicantProfile", "getDeleteApplicantExperienceResult null");
-        });
 
         //get all fields for interested fields
         applicantViewModel.getAllFields();
@@ -589,7 +571,6 @@ public class WatchApplicantProfileFragment extends Fragment {
                 TextView tvTimeRange    = eduItem.findViewById(R.id.tvTimeRange);
                 //TextView tvAchievements = eduItem.findViewById(R.id.tvAchievements);
                 TextView tvSchoolLink   = eduItem.findViewById(R.id.tvSchoolLink);
-                ImageButton btnEdit     = eduItem.findViewById(R.id.btnEditEducation);
 
                 tvSchoolName.setText(applicantEdu.getEducation().getUniName());
                 tvSchoolAddress.setText(applicantEdu.getEducation().getAddress());
@@ -600,21 +581,6 @@ public class WatchApplicantProfileFragment extends Fragment {
                 tvTimeRange.setText(start + " – " + end);
                 //tvAchievements.setText(applicantEdu.getAchievement().get(0));
                 tvSchoolLink.setText(applicantEdu.getEducation().getUniLink());
-
-                btnEdit.setOnClickListener(v -> {
-                    EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("UpdateApplicantEducation");
-
-                    Bundle args = dialog.getArguments();
-                    args.putSerializable("deleteApplicantEducation", (Serializable) applicantEdu);
-                    args.putSerializable("listEducation", (Serializable) listEducation);
-                    args.putString("schoolName", String.valueOf(tvSchoolName.getText()));
-                    args.putString("eduLevel", String.valueOf(tvEduLevel.getText()));
-                    args.putString("major", String.valueOf(tvMajor.getText()));
-                    args.putString("yearStart", start);
-                    args.putString("yearEnd", end);
-                    dialog.setArguments(args);
-                    dialog.show(getParentFragmentManager(), "UpdateApplicantEducation");
-                });
 
 
                 //line
@@ -692,7 +658,6 @@ public class WatchApplicantProfileFragment extends Fragment {
                 TextView tvPosition   = expItem.findViewById(R.id.tvPosition);
                 TextView tvTimeRange    = expItem.findViewById(R.id.tvTimeRange);
                 TextView tvJobResponsibility    = expItem.findViewById(R.id.tvJobResponsibility);
-                ImageButton btnEdit     = expItem.findViewById(R.id.btnEditExperience);
 
                 tvCompanyName.setText(experience.getCompanyName());
                 tvCompanyLink.setText(experience.getCompanyLink());
@@ -702,21 +667,6 @@ public class WatchApplicantProfileFragment extends Fragment {
                 tvTimeRange.setText(start + " – " + end);
                 tvJobResponsibility.setText(experience.getJobResponsibility());
 
-                btnEdit.setOnClickListener(v -> {
-                    EditProfileDialogFragment dialog = EditProfileDialogFragment.newInstance("UpdateApplicantExperience");
-
-                    Bundle args = dialog.getArguments();
-                    args.putSerializable("deleteApplicantExperience", (Serializable) experience);
-                    args.putSerializable("listField", (Serializable) listField);
-                    args.putString("companyName", String.valueOf(tvCompanyName.getText()));
-                    args.putString("companyLink", String.valueOf(tvCompanyLink.getText()));
-                    args.putString("position", String.valueOf(tvPosition.getText()));
-                    args.putString("yearStart", start);
-                    args.putString("yearEnd", end);
-                    args.putString("jobResponsibility", String.valueOf(tvJobResponsibility.getText()));
-                    dialog.setArguments(args);
-                    dialog.show(getParentFragmentManager(), "UpdateApplicantExperienceDialog");
-                });
                 //line
                 View divider = new View(getContext());
                 divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
@@ -743,22 +693,12 @@ public class WatchApplicantProfileFragment extends Fragment {
         Chip chip = new Chip(requireContext());
         chip.setText(skillName);
         chip.setCloseIconVisible(true);
-        chip.setOnCloseIconClickListener(v ->
-        {
-            applicantViewModel.deleteApplicantSkill(skillId);
-            skillContainer.removeView(chip);
-        });
         skillContainer.addView(chip);
     }
     private void AddFieldChip(String fieldName, String fieldId) {
         Chip chip = new Chip(requireContext());
         chip.setText(fieldName);
         chip.setCloseIconVisible(true);
-        chip.setOnCloseIconClickListener(v ->
-        {
-            applicantViewModel.deleteInterestedField(user.getApplicantId(), fieldId);
-            fieldContainer.removeView(chip);
-        });
         fieldContainer.addView(chip);
         Log.e("appprofile", "add field chip");
     }

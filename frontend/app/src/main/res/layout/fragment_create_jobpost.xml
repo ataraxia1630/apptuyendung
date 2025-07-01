@@ -163,7 +163,7 @@
 
             <!-- Salary Start -->
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Salary Start" android:textSize="16sp" android:textStyle="bold"
+                android:text="Salary Start (/Month)" android:textSize="16sp" android:textStyle="bold"
                 android:paddingTop="8dp"/>
             <EditText
                 android:id="@+id/edtSalaryStart"
@@ -177,7 +177,7 @@
 
             <!-- Salary End -->
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Salary End" android:textSize="16sp" android:textStyle="bold"
+                android:text="Salary End (/Month)" android:textSize="16sp" android:textStyle="bold"
                 android:paddingTop="8dp"/>
             <EditText
                 android:id="@+id/edtSalaryEnd"
@@ -193,27 +193,13 @@
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="Currency" android:textSize="16sp" android:textStyle="bold"
                 android:paddingTop="8dp"/>
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/edtCurrency"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="56dp"
-                android:padding="12dp"
-                android:textSize="16sp"
-                android:hint="Enter currency (e.g. USD)"/>
+                android:hint="Choose your currency"
+                android:inputType="none" />
 
-            <!-- Status -->
-            <!-- <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="Status" android:textSize="16sp" android:textStyle="bold"
-                android:paddingTop="8dp"/>
-            <EditText
-                android:id="@+id/edtStatus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="56dp"
-                android:padding="12dp"
-                android:textSize="16sp"
-                android:hint="e.g. OPENING"/> -->
 
             <!-- Apply Until -->
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"

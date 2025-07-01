@@ -16,7 +16,7 @@
         android:layout_marginEnd="12dp"
         android:contentDescription="Avatar"
         android:scaleType="centerCrop"
-        android:src="@drawable/sample_avatar" />
+        android:src="@drawable/ic_profile" />
 
     <!-- Tên và tiêu đề CV -->
     <LinearLayout

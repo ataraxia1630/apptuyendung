@@ -46,7 +46,7 @@
                     android:scaleType="centerCrop"
                     android:adjustViewBounds="true"
                     android:layout_gravity="left"
-                    android:src="@drawable/sample_avatar"
+                    android:src="@drawable/ic_profile"
                     app:shapeAppearanceOverlay="@style/CircleImageView" />
 
                 <TextView

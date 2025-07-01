@@ -114,7 +114,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                 txtDateTime = childView.findViewById(R.id.tvDateTime);
                 txtCommentDetail = childView.findViewById(R.id.tvCommentDetail);
                 imgAvatar = childView.findViewById(R.id.imgAvatar);
-                btnOptions = childView.findViewById(R.id.btnOption);
 
                 txtUsername.setText(child.getUser().getUsername());
                 txtDateTime.setText(new SimpleDateFormat("dd/MM/yyyy").format(child.getCreatedAt()));

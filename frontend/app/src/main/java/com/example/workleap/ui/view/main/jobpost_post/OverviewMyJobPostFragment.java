@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.bumptech.glide.Glide;
 import com.example.workleap.R;
 import com.example.workleap.data.model.entity.JobApplied;
 import com.example.workleap.data.model.entity.JobPost;
@@ -27,6 +29,7 @@ import com.example.workleap.data.model.entity.User;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.view.main.home.DetailCompanyFragment;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
+import com.example.workleap.ui.viewmodel.UserViewModel;
 import com.example.workleap.utils.ToastUtil;
 import com.example.workleap.utils.Utils;
 import com.google.android.material.tabs.TabLayout;
@@ -38,11 +41,12 @@ public class OverviewMyJobPostFragment extends Fragment {
     private FrameLayout fragmentContainer;
     private TextView txtJobName, txtCompanyName, txtSalary, txtLocation;
     private ImageButton btnBack, btnOption;
-
+    private ImageView imgAvatar;
     private User user;
     private JobPost currentJobPost;
 
     private JobPostViewModel jobPostViewModel;
+    private UserViewModel userViewModel;
 
     @Nullable
     @Override
@@ -53,6 +57,9 @@ public class OverviewMyJobPostFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        userViewModel.InitiateRepository(getContext());
 
         user = (User) getArguments().getSerializable("user");
         currentJobPost = (JobPost) getArguments().getSerializable("currentJobPost");
@@ -70,6 +77,7 @@ public class OverviewMyJobPostFragment extends Fragment {
         txtLocation = view.findViewById(R.id.txtLocation);
         btnBack = view.findViewById(R.id.btnBack);
         btnOption = view.findViewById(R.id.btnOption);
+        imgAvatar = view.findViewById(R.id.imgAvatar);
 
         txtJobName.setText(currentJobPost.getTitle());
         txtCompanyName.setText(currentJobPost.getCompany().getName());
@@ -105,6 +113,43 @@ public class OverviewMyJobPostFragment extends Fragment {
             else
                 Log.d("JobPostViewModel", "toggleJobPostResult NULL");
         });
+
+        //Lay avatar
+        //Observe
+        userViewModel.getUrlAvatarResult().observe(getViewLifecycleOwner(), result -> {
+            if(result != null)
+                Log.d("CompanyProfile avatar", result);
+            else
+                Log.d("Companyprofile avatar", "getUrlAvatarResult NULL");
+        });
+        userViewModel.getUrlAvatarData().observe(getViewLifecycleOwner(), dataImage -> {
+            if(dataImage != null)
+            {
+                Glide.with(this.getContext()).load(dataImage).into(imgAvatar);
+                Log.d("ApplicantProfile avatar", "Set avatar success");
+            }
+            else
+                Log.d("ApplicantProfile avatar", "getUrlAvatarData NULL");
+        });
+
+        //Set value from user, call api
+        userViewModel.getGetUserData().observe(getViewLifecycleOwner(), data -> {
+            if(data != null)
+            {
+                //Check and get avatar
+                if(data.getAvatar() != null)
+                {
+                    //Load avatar from database
+                    userViewModel.getAvatarUrl(data.getAvatar());
+                }
+                else
+                    Log.d("Logo jobpost avatar", "user avatar null");
+            }
+            else
+                Log.d("Logo jobpost avatar", "user null");
+        });
+        //Lay user de lay avatar
+        userViewModel.getUser(currentJobPost.getCompany().getUser().get(0).getId());
 
         jobPostViewModel.getUpdateJobPostResult().observe(getViewLifecycleOwner(), result -> {
             if(result != null) {

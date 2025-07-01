@@ -91,7 +91,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             h.txtTitle.setText(post.getTitle());
             h.txtCompany.setText(post.getCompany().getName());
-            h.txtSalary.setText(post.getSalaryStart() + " - " + post.getSalaryEnd() + " " + post.getCurrency());
+            h.txtSalary.setText(post.getSalaryStart() + "-" + post.getSalaryEnd() + "" + post.getCurrency() + "/Mon");
             h.txtTime.setText(new SimpleDateFormat("dd/MM/yyyy").format(post.getUpdatedAt()));
             h.txtLocation.setText(post.getPosition());
             h.txtTag1.setText(post.getJobCategory().getName());

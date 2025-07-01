@@ -43,7 +43,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/sample_logo"
+                    android:src="@drawable/ic_profile"
                     app:shapeAppearanceOverlay="@style/CircleImageView" />
 
                 <TextView

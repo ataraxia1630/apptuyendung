@@ -1,5 +1,6 @@
 package com.example.workleap.ui.view.main.jobpost_post;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,9 +25,11 @@ import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
+import com.example.workleap.utils.ToastUtil;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,12 +42,14 @@ public class CreateJobpostFragment extends Fragment {
     private AutoCompleteTextView autoJobCategory, autoJobType;
     private EditText edtTitle, edtDescription, edtLocation, edtPosition, edtWorkingAddress;
     private EditText edtEducation, edtSkillRequirement, edtResponsibility;
-    private EditText edtSalaryStart, edtSalaryEnd, edtCurrency, edtApplyUntil;
+    private EditText edtSalaryStart, edtSalaryEnd, edtApplyUntil;
+    private AutoCompleteTextView edtCurrency;
     private Button btnSaveJob, btnCancel;
 
     private ArrayList<JobCategory> jobCategories = new ArrayList<>();
     private ArrayList<JobType> jobTypes = new ArrayList<>();
     private boolean isJobPostSubmitted = false; // Biến trạng thái đảm bảo chỉ trở về khi đã tạo thành công
+
     public CreateJobpostFragment() {
         // Required empty public constructor
     }
@@ -86,6 +92,38 @@ public class CreateJobpostFragment extends Fragment {
         edtApplyUntil = view.findViewById(R.id.edtApplyUntil);
         btnSaveJob = view.findViewById(R.id.btnSaveJob);
         btnCancel = view.findViewById(R.id.btnCancel);
+
+        // Áp dụng DatePicker cho edtApplyUntil
+        final Calendar calendar = Calendar.getInstance();
+
+        // Ngăn bàn phím xuất hiện
+        edtApplyUntil.setFocusable(false);
+        edtApplyUntil.setKeyListener(null);
+        edtApplyUntil.setOnClickListener(v -> {
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    getContext(),
+                    (view1, selectedYear, selectedMonth, selectedDay) -> {
+                        // Format: dd-MM-yyyy
+                        String formattedDate = String.format("%02d-%02d-%04d", selectedDay, selectedMonth + 1, selectedYear);
+                        edtApplyUntil.setText(formattedDate);
+                    },
+                    year, month, day
+            );
+
+            // Không cho chọn ngày trong quá khứ
+            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+            datePickerDialog.show();
+        });
+
+        //Currency
+        String[] currencies = {"USD", "VND", "EUR"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_dropdown_item_1line, currencies);
+        edtCurrency.setAdapter(adapter);
+        edtCurrency.setOnClickListener(v -> edtCurrency.showDropDown());
 
         //Lay danh sach jobcategory
         ArrayList<String> jobCategoriesName = new ArrayList<>();
@@ -193,8 +231,6 @@ public class CreateJobpostFragment extends Fragment {
 
         // TODO: Add listeners or bind ViewModel here
         btnSaveJob.setOnClickListener(v -> {
-            Toast.makeText(this.getActivity(), "Create new job post sucessful", Toast.LENGTH_SHORT).show();
-
             // Tìm JobCategory tương ứng
             String categoryId = null;
             for (JobCategory jobCategory : jobCategories) {
@@ -210,6 +246,101 @@ public class CreateJobpostFragment extends Fragment {
                     typeId = jobType.getId(); // Gán vào typeSelected
                     break;
                 }
+            }
+
+            String title = edtTitle.getText().toString().trim();
+            String description = edtDescription.getText().toString().trim();
+            String location = edtLocation.getText().toString().trim();
+            String position = edtPosition.getText().toString().trim();
+            String workingAddress = edtWorkingAddress.getText().toString().trim();
+            String education = edtEducation.getText().toString().trim();
+            String skillRequirement = edtSkillRequirement.getText().toString().trim();
+            String responsibility = edtResponsibility.getText().toString().trim();
+            String salaryStart = edtSalaryStart.getText().toString().trim();
+            String salaryEnd = edtSalaryEnd.getText().toString().trim();
+            String currency = edtCurrency.getText().toString().trim();
+            String applyUntil = edtApplyUntil.getText().toString().trim();
+
+            //Validation
+            if (typeId == null || typeId.isEmpty()) {
+                ToastUtil.showToast(getContext(), "Job Type ID cannot be empty", ToastUtil.TYPE_WARNING);
+                return;
+            }
+
+            if (title.isEmpty()) {
+                ToastUtil.showToast(getContext(), "Title cannot be empty", ToastUtil.TYPE_WARNING);
+                return;
+            }
+
+            if (title.length() > 255) {
+                ToastUtil.showToast(getContext(), "Title must be at most 255 characters", ToastUtil.TYPE_WARNING);
+                return;
+            }
+
+            if (description.length() > 1000) {
+                ToastUtil.showToast(getContext(), "Description must be at most 1000 characters", ToastUtil.TYPE_WARNING);
+                return;
+            }
+
+            if (location.length() > 255) {
+                ToastUtil.showToast(getContext(), "Location must be at most 255 characters", ToastUtil.TYPE_WARNING);
+                return;
+            }
+
+            if (position.length() > 255) {
+                ToastUtil.showToast(getContext(), "Position must be at most 255 characters", ToastUtil.TYPE_WARNING);
+                return;
+            }
+
+            if (education.length() > 1000) {
+                ToastUtil.showToast(getContext(), "Education requirement must be at most 1000 characters", ToastUtil.TYPE_WARNING);
+                return;
+            }
+
+            if (skillRequirement.length() > 1000) {
+                ToastUtil.showToast(getContext(), "Skill requirement must be at most 1000 characters", ToastUtil.TYPE_WARNING);
+                return;
+            }
+
+            if (responsibility.length() > 2000) {
+                ToastUtil.showToast(getContext(), "Responsibility must be at most 2000 characters", ToastUtil.TYPE_WARNING);
+                return;
+            }
+
+            if (!salaryStart.isEmpty()) {
+                try {
+                    Double.parseDouble(salaryStart);
+                } catch (NumberFormatException e) {
+                    ToastUtil.showToast(getContext(), "Salary start must be a number", ToastUtil.TYPE_WARNING);
+                    return;
+                }
+            }
+
+            if (!salaryEnd.isEmpty()) {
+                try {
+                    Double.parseDouble(salaryEnd);
+                } catch (NumberFormatException e) {
+                    ToastUtil.showToast(getContext(), "Salary end must be a number", ToastUtil.TYPE_WARNING);
+                    return;
+                }
+            }
+
+            if (!currency.isEmpty()) {
+                if (!currency.equals("USD") && !currency.equals("VND") && !currency.equals("EUR")) {
+                    ToastUtil.showToast(getContext(), "Currency must be USD, VND or EUR", ToastUtil.TYPE_WARNING);
+                    return;
+                }
+            }
+
+            if (applyUntil.isEmpty()) {
+                ToastUtil.showToast(getContext(), "Apply until cannot be empty", ToastUtil.TYPE_WARNING);
+                return;
+            }
+
+            // Kiểm tra định dạng dd-MM-yyyy
+            if (!applyUntil.matches("^([0-2][0-9]|(3)[0-1])\\-(0[1-9]|1[0-2])\\-\\d{4}$")) {
+                ToastUtil.showToast(getContext(), "Apply until must be in format dd-MM-yyyy", ToastUtil.TYPE_WARNING);
+                return;
             }
 
             // Handle save logic here

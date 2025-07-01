@@ -31,6 +31,7 @@ import com.example.workleap.data.model.entity.JobPost;
 import com.example.workleap.data.model.entity.JobType;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
+import com.example.workleap.utils.ToastUtil;
 import com.google.gson.Gson;
 import static android.app.Activity.RESULT_OK;
 
@@ -152,6 +153,12 @@ public class CreatePostFragment extends Fragment {
         // TODO: Add listeners or bind ViewModel here
 
         btnSavePost.setOnClickListener(v -> {
+            if(edtTextContent.getText().toString().trim().isEmpty() || edtTitle.getText().toString().trim().isEmpty())
+            {
+                ToastUtil.showToast(v.getContext(), "Please fill all fields", ToastUtil.TYPE_WARNING);
+                return;
+            }
+
             ArrayList<PostContent> contents = new ArrayList<PostContent>();
             String companyId = getArguments().getString("companyId");
 

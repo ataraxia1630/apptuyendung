@@ -28,6 +28,7 @@ import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
 import com.example.workleap.ui.viewmodel.PostViewModel;
 import com.example.workleap.ui.viewmodel.UserViewModel;
+import com.example.workleap.utils.ToastUtil;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -153,7 +154,12 @@ public class JobpostFragment extends Fragment{
             isMoreJobPost = false; //Dat lai neu dang la true
 
             if(jobPosts != null)
+            {
                 allJobs.addAll(jobPosts);
+                if(jobPosts.isEmpty())
+                    ToastUtil.showToast(getContext(),"No jobpost found", ToastUtil.TYPE_WARNING);
+            }
+
             // Setup RecyclerView
             recyclerViewJobPost.setLayoutManager(new LinearLayoutManager(getContext()));
             //show tat ca jobpost va vao detail fragment khi click vao item
@@ -184,17 +190,23 @@ public class JobpostFragment extends Fragment{
 
         //Load more posts
         btnMorePost.setOnClickListener(v -> {
+                if(isMorePost)
+                    return;
+                else
+                    isMorePost = true;
                 pagePost++;
-                isMorePost = true;
                 progressLoadMorePost.setVisibility(View.VISIBLE);
                 postViewModel.getPostByCompany(user.getCompanyId(), pagePost, pageSizePost);
         });
         //Load more jobpost
         btnLoadMoreJobPosts.setOnClickListener(v -> {
-                pageJobPost++;
+            if(isMoreJobPost)
+                return;
+            else
                 isMoreJobPost = true;
-                progressLoadMoreJobPost.setVisibility(View.VISIBLE);
-                jobPostViewModel.getJobPostsByCompany(user.getCompanyId(), pageJobPost, pageSizeJobPost);
+            pageJobPost++;
+            progressLoadMoreJobPost.setVisibility(View.VISIBLE);
+            jobPostViewModel.getJobPostsByCompany(user.getCompanyId(), pageJobPost, pageSizeJobPost);
         });
 
         //Observe image
@@ -221,9 +233,12 @@ public class JobpostFragment extends Fragment{
             isMorePost = false; //Dat lai neu dang la true
 
             if(posts != null)
+            {
                 allPosts.addAll(posts);
-            else
-                Log.d("posts: ", "null");
+                if(posts.isEmpty())
+                    ToastUtil.showToast(getContext(),"No post found", ToastUtil.TYPE_WARNING);
+            }
+
             // Setup RecyclerView
             recyclerViewPost.setLayoutManager(new LinearLayoutManager(getContext()));
             //show tat ca jobpost va vao detail fragment khi click vao item
