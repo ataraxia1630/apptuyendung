@@ -17,6 +17,12 @@ const FollowerController = {
                 followedId,
                 removed: result.removed
             });
+            if (!result.removed) {
+                NotiEmitter.emit('user.followed', {
+                    userId: followedId,
+                    fromUserId: followId
+                });
+            }
             return res.status(result.removed ? 200 : 201).json(result);
         } catch (err) {
             return res.status(500).json({ message: err.message });
@@ -28,7 +34,7 @@ const FollowerController = {
 
         try {
             const followers = await FollowerService.getFollowers(userId);
-            return res.status(200).json({followers});
+            return res.status(200).json({ followers });
         } catch (err) {
             return res.status(500).json({ message: err.message });
         }
@@ -39,7 +45,7 @@ const FollowerController = {
 
         try {
             const followers = await FollowerService.getFollowing(userId);
-            return res.status(200).json({followers});
+            return res.status(200).json({ followers });
         } catch (err) {
             return res.status(500).json({ message: err.message });
         }
