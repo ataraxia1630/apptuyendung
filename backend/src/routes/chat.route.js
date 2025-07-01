@@ -7,19 +7,19 @@ const { validate } = require('../middlewares/validate.middleware');
 const route = Router();
 
 // lấy tất cả các cuộc trò chuyện của user
-route.get('/all', verifyToken, cache, ChatController.getAllChats);
+route.get('/all', verifyToken, ChatController.getAllChats);
 
 // lấy tất cả đoạn chat có tin nhắn chưa đọc của user
-route.get('/unread', verifyToken, cache, ChatController.getAllUnreadChats);
+route.get('/unread', verifyToken, ChatController.getAllUnreadChats);
 
 // lấy tất cả các nhóm chat của user
-route.get('/group', verifyToken, cache, ChatController.getAllGroupChats);
+route.get('/group', verifyToken, ChatController.getAllGroupChats);
 
 // lấy thông tin của một cuộc trò chuyện có id là chatId
 route.get('/:chatId', verifyToken, cache, ChatController.getChatById);
 
 // lấy tất cả tin nhắn của 1 cuộc trò chuyện
-route.get('/:chatId/mess', verifyToken, cache, ChatController.getAllMessages);
+route.get('/:chatId/mess', verifyToken, ChatController.getAllMessages);
 
 // tạo một cuộc trò chuyện mới
 route.post('/', verifyToken, ChatController.createChat);
