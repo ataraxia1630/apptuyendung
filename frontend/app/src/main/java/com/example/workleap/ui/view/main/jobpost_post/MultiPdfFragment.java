@@ -2,6 +2,7 @@ package com.example.workleap.ui.view.main.jobpost_post;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +75,8 @@ public class MultiPdfFragment extends Fragment {
         jobPostViewModel.getProcessCvAppliedData().observe(getViewLifecycleOwner(), jobApplied -> {
             if(jobApplied==null)
             {
-                Toast.makeText(getContext(), "An error occurred while updating the CV evaluation result. Please try again later.", Toast.LENGTH_SHORT).show();
+                Log.e("multipdf", "getProcessCvAppliedData NULL");
+                //Toast.makeText(getContext(), "An error occurred while updating the CV evaluation result. Please try again later.", Toast.LENGTH_SHORT).show();
             }
             else {
                 Toast.makeText(getContext(), "CV review updated successfully.", Toast.LENGTH_SHORT).show();
@@ -82,6 +84,8 @@ public class MultiPdfFragment extends Fragment {
                 //cap nhat cho jobapplied trong danh sach
                 jobApplieds.get(currentIndex).setStatus(jobApplied.getStatus());
                 SetColorForStatus();
+
+                jobPostViewModel.ResetGetProcessCVAppliedData();
             }
         });
 

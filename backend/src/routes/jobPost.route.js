@@ -22,7 +22,6 @@ router.get(
     '/admin/by-status',
     verifyToken,
     requireRole('ADMIN'),
-    cache,
     JobPostController.getJobPostsByStatus
 );
 

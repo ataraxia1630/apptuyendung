@@ -117,6 +117,7 @@ public class JobPostViewModel  extends ViewModel {
     public LiveData<String> getMyJobPostByIdResult() { return getMyJobPostByIdResult; }
     public LiveData<String> getProcessCvAppliedResult() { return processCvAppliedResult; }
     public LiveData<JobApplied> getProcessCvAppliedData() { return processCvAppliedData; }
+    public void ResetGetProcessCVAppliedData(){processCvAppliedData.setValue(null);}
     public LiveData<String> getWithDrawCvResult() { return withDrawCvResult; }
 
     public LiveData<String> getAllJobPostResult() { return getAllJobPostResult; }
