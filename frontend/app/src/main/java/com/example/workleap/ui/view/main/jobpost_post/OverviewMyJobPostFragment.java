@@ -63,7 +63,7 @@ public class OverviewMyJobPostFragment extends Fragment {
 
         user = (User) getArguments().getSerializable("user");
         currentJobPost = (JobPost) getArguments().getSerializable("currentJobPost");
-        Toast.makeText(getContext(), "currentJobPost: " + currentJobPost.getStatus(), Toast.LENGTH_SHORT).show();
+
         jobPostViewModel = new JobPostViewModel();
         jobPostViewModel.InitiateRepository(getContext());
 
@@ -86,7 +86,6 @@ public class OverviewMyJobPostFragment extends Fragment {
 
         btnBack.setOnClickListener(v ->
         {
-            Toast.makeText(getContext(), "current stt" + currentJobPost.getStatus(), Toast.LENGTH_SHORT).show();
             ((NavigationActivity) getActivity()).showBottomNav(true);
             NavHostFragment.findNavController(this).navigateUp();
         });

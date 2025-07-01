@@ -27,6 +27,7 @@ import com.example.workleap.data.model.request.ApplyAJobRequest;
 import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.CVViewModel;
 import com.example.workleap.ui.viewmodel.JobPostViewModel;
+import com.example.workleap.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +96,7 @@ public class DetailMyJobPostFragment extends Fragment {
                 txtPosition.setText(currentJobPost.getPosition());
                 txtSkillRequirement.setText(currentJobPost.getSkillRequirement());
                 txtEducationRequirement.setText(currentJobPost.getEducationRequirement());
-                txtApplyUntil.setText(currentJobPost.getApplyUntil());
+                txtApplyUntil.setText(Utils.formatDate(currentJobPost.getApplyUntil()));
             }
         });
     }

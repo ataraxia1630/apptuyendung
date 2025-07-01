@@ -21,7 +21,7 @@ route.get(
 );
 
 // lấy 1 người dùng theo id
-route.get('/:id', verifyToken, cache, UserController.getUserById);
+route.get('/:id', verifyToken, UserController.getUserById);
 
 // cập nhật người dùng
 route.put('/:id', verifyToken, validate(userSchema), UserController.updateUser);

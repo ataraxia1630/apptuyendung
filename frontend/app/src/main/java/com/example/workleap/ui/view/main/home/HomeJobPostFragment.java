@@ -99,7 +99,7 @@ public class HomeJobPostFragment extends Fragment {
                 txtJobName.setText(jobPost.getTitle());
                 txtCompanyName.setText(jobPost.getCompany().getName());
                 txtSalary.setText(jobPost.getSalaryStart() + " - " + jobPost.getSalaryEnd() + " " + jobPost.getCurrency());
-                txtLocation.setText(jobPost.getLocation());
+                txtLocation.setText(jobPost.getWorkingAddress());
                 //Lay user de lay avatar
                 userViewModel.getUser(currentJobPost.getCompany().getUser().get(0).getId());
             }
