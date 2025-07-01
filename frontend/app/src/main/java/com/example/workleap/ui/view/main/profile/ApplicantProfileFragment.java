@@ -701,6 +701,17 @@ public class ApplicantProfileFragment extends Fragment {
         Chip chip = new Chip(requireContext());
         chip.setText(skillName);
         chip.setCloseIconVisible(true);
+
+        //cach deu cac chip
+        ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        int marginInDp = 8;
+        int marginInPx = (int) (marginInDp * getResources().getDisplayMetrics().density);
+        params.setMargins(marginInPx, 0, marginInPx, 0);
+        chip.setLayoutParams(params);
+
         chip.setOnCloseIconClickListener(v ->
         {
             applicantViewModel.deleteApplicantSkill(skillId);
@@ -708,10 +719,22 @@ public class ApplicantProfileFragment extends Fragment {
         });
         skillContainer.addView(chip);
     }
+
     private void AddFieldChip(String fieldName, String fieldId) {
         Chip chip = new Chip(requireContext());
         chip.setText(fieldName);
         chip.setCloseIconVisible(true);
+
+        //cach deu cac chip
+        ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        int marginInDp = 8;
+        int marginInPx = (int) (marginInDp * getResources().getDisplayMetrics().density);
+        params.setMargins(marginInPx, 0, marginInPx, 0);
+        chip.setLayoutParams(params);
+
         chip.setOnCloseIconClickListener(v ->
         {
             applicantViewModel.deleteInterestedField(user.getApplicantId(), fieldId);

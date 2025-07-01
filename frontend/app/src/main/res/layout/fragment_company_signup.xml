@@ -62,30 +62,30 @@
             android:inputType="textPassword" />
 
         <!-- Address -->
-        <EditText
+        <!--<EditText
             android:id="@+id/etAddress"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginBottom="16dp"
-            android:hint="Address" />
+            android:hint="Address" />-->
 
         <!-- Established Year -->
-        <EditText
+        <!--<EditText
             android:id="@+id/etEstablishedYear"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginBottom="16dp"
             android:hint="Established Year"
-            android:inputType="number" />
+            android:inputType="number" />-->
 
         <!-- Tax Code -->
-        <EditText
+        <!--<EditText
             android:id="@+id/etTaxCode"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginBottom="24dp"
             android:hint="Tax Code"
-            android:inputType="text" />
+            android:inputType="text" />-->
 
         <!-- Phone -->
         <EditText

@@ -44,6 +44,7 @@ public class AuthViewModel extends ViewModel {
     public LiveData<String> getRegisterResult() {
         return registerResult;
     }
+    public void ResetRegisterResult(){registerResult.setValue(null);}
     public LiveData<String> getCheckExistResult() { return checkExistResult;}
     public LiveData<Integer> getCheckExistData() { return checkExistData;}
     public void ResetGetCheckExistData() { checkExistData.setValue(null);}
@@ -52,6 +53,7 @@ public class AuthViewModel extends ViewModel {
     public LiveData<String> getReSendOtpResult() { return reSendOtpResult;}
     public LiveData<String> getVerifyOtpResult() { return verifyOtpResult; }
     public LiveData<Integer> getVerifyOtpData() { return verifyOtpData; }
+    public void ResetVerifyOtpData(){verifyOtpData.setValue(null);}
 
     public LiveData<String> getLoginResult() {
         return loginResult;
