@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -63,17 +64,18 @@ public class ApplicantSignupFragment extends Fragment {
         btnSignUp.setOnClickListener(v -> signup());
 
         tvLogIn.setOnClickListener(v -> {
-            Navigation.findNavController(view).navigate(R.id.loginFragment);
+            NavHostFragment.findNavController(ApplicantSignupFragment.this).navigate(R.id.loginFragment);
         });
 
         authViewModel.getRegisterResult().observe(getViewLifecycleOwner(), result -> {
-            if (!isAdded() || getView() == null) return;
+            if (!isAdded() || getView() == null || result==null) return;
 
             Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
 
             if (result.contains("successfully")) {
                 Log.d("ApplicantSignupFragment", "Register success");
-                Navigation.findNavController(view).navigate(R.id.loginFragment);
+                authViewModel.ResetRegisterResult();
+                NavHostFragment.findNavController(ApplicantSignupFragment.this).navigate(R.id.loginFragment);
             }
         });
 
@@ -95,9 +97,10 @@ public class ApplicantSignupFragment extends Fragment {
         });
 
         authViewModel.getSendOtpResult().observe(getViewLifecycleOwner(), result -> {
-            if (!isAdded() || getView() == null || isOtpDialogShown) return;
+            if (!isAdded() || getView() == null || isOtpDialogShown || result==null) return;
 
             if (result != null) {
+                authViewModel.ResetSendOtpResult();
                 String email = etEmail.getText().toString().trim();
                 isOtpDialogShown = true; // Đánh dấu đã hiển thị
                 showOtpDialog(email);
@@ -105,6 +108,8 @@ public class ApplicantSignupFragment extends Fragment {
         });
 
         authViewModel.getVerifyOtpData().observe(getViewLifecycleOwner(), data -> {
+            if(data==null) return;
+            authViewModel.ResetVerifyOtpData();
             if (data == 1) {
                 String fullName = etUserName.getText().toString().trim();
                 String password = etPassword.getText().toString().trim();

@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,7 +31,7 @@ public class CompanySignupFragment extends Fragment {
     private AuthViewModel authViewModel;
     private CompanyViewModel companyViewModel;
 
-    private EditText etEmail, etPassword, etConfirmPassword, etCompanyName, etAddress, etEstablishedYear, etTaxCode, etPhoneNumber;
+    private EditText etEmail, etPassword, etConfirmPassword, etCompanyName/*, etAddress, etEstablishedYear, etTaxCode*/, etPhoneNumber;
     private Button btnRegister;
     private TextView tvLoginRedirect;
     private boolean isOtpDialogShown = false;
@@ -57,9 +58,9 @@ public class CompanySignupFragment extends Fragment {
         etPassword = view.findViewById(R.id.etPassword);
         etConfirmPassword = view.findViewById(R.id.etConfirmPassword);
         etCompanyName = view.findViewById(R.id.etCompanyName);
-        etAddress = view.findViewById(R.id.etAddress);
+        /*etAddress = view.findViewById(R.id.etAddress);
         etEstablishedYear = view.findViewById(R.id.etEstablishedYear);
-        etTaxCode = view.findViewById(R.id.etTaxCode);
+        etTaxCode = view.findViewById(R.id.etTaxCode);*/
         etPhoneNumber = view.findViewById(R.id.etPhone);
         btnRegister = view.findViewById(R.id.btnRegister);
         tvLoginRedirect = view.findViewById(R.id.tvLoginRedirect);
@@ -67,16 +68,17 @@ public class CompanySignupFragment extends Fragment {
         btnRegister.setOnClickListener(v -> signup());
 
         tvLoginRedirect.setOnClickListener(v ->
-                Navigation.findNavController(view).navigate(R.id.loginFragment));
+                NavHostFragment.findNavController(CompanySignupFragment.this).navigate(R.id.loginFragment));
 
         authViewModel.getRegisterResult().observe(getViewLifecycleOwner(), result -> {
-            if (!isAdded() || getView() == null) return;
+            if (!isAdded() || getView() == null || result==null) return;
 
             Toast.makeText(getContext(), result, Toast.LENGTH_LONG).show();
 
             if (result.contains("successfully")) {
                 Log.d("ApplicantSignupFragment", "Register success");
-                Navigation.findNavController(view).navigate(R.id.loginFragment);
+                authViewModel.ResetRegisterResult();
+                NavHostFragment.findNavController(CompanySignupFragment.this).navigate(R.id.loginFragment);
             }
         });
 
@@ -101,8 +103,8 @@ public class CompanySignupFragment extends Fragment {
         });
 
         authViewModel.getSendOtpResult().observe(getViewLifecycleOwner(), result -> {
-            if (!isAdded() || getView() == null || isOtpDialogShown) return;
-
+            if (!isAdded() || getView() == null || isOtpDialogShown || result==null) return;
+            authViewModel.ResetSendOtpResult();
             if (result != null) {
                 isOtpDialogShown = true;
                 Log.e("eeeee", "kakakaka");
@@ -112,14 +114,16 @@ public class CompanySignupFragment extends Fragment {
         });
 
         authViewModel.getVerifyOtpData().observe(getViewLifecycleOwner(), data -> {
+            if(data==null) return;
+            authViewModel.ResetVerifyOtpData();
             if (data == 1) {
                 String email = etEmail.getText().toString().trim();
                 String password = etPassword.getText().toString().trim();
                 String confirmPassword = etConfirmPassword.getText().toString().trim();
                 String name = etCompanyName.getText().toString().trim();
-                String address = etAddress.getText().toString().trim();
+                /*String address = etAddress.getText().toString().trim();
                 String year = etEstablishedYear.getText().toString().trim();
-                String tax = etTaxCode.getText().toString().trim();
+                String tax = etTaxCode.getText().toString().trim();*/
                 String phone = etPhoneNumber.getText().toString().trim();
 
                 authViewModel.register(name, password, confirmPassword, email, phone, "COMPANY");
@@ -149,14 +153,14 @@ public class CompanySignupFragment extends Fragment {
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
         String name = etCompanyName.getText().toString().trim();
-        String address = etAddress.getText().toString().trim();
+        /*String address = etAddress.getText().toString().trim();
         String year = etEstablishedYear.getText().toString().trim();
-        String tax = etTaxCode.getText().toString().trim();
+        String tax = etTaxCode.getText().toString().trim();*/
         String phone = etPhoneNumber.getText().toString().trim();
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)
-                || TextUtils.isEmpty(name) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(address)
-                || TextUtils.isEmpty(year) || TextUtils.isEmpty(tax)) {
+                || TextUtils.isEmpty(name) || TextUtils.isEmpty(phone) /*|| TextUtils.isEmpty(address)
+                || TextUtils.isEmpty(year) || TextUtils.isEmpty(tax)*/) {
             Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -176,10 +180,10 @@ public class CompanySignupFragment extends Fragment {
             return;
         }
 
-        if (!year.matches("\\d{4}")) {
+        /*if (!year.matches("\\d{4}")) {
             Toast.makeText(getContext(), "Invalid year", Toast.LENGTH_SHORT).show();
             return;
-        }
+        }*/
 
         triggeredFromCompany = true;
         authViewModel.checkUserExist(name, password, confirmPassword, email, phone, "COMPANY");
