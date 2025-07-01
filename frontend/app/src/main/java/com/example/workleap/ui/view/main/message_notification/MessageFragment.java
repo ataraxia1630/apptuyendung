@@ -124,7 +124,7 @@ public class MessageFragment extends Fragment {
                 });
                 for (ConversationUser conversationUser : conversationUsers) {
                     int indexOfUser;
-                    if(conversationUser.getUserId().equals(conversationUser.getConversation().getMembers().get(0)))
+                    if(conversationUser.getUserId().equals(conversationUser.getConversation().getMembers().get(0).getUserId()))
                         indexOfUser = 1;
                     else
                         indexOfUser = 0;

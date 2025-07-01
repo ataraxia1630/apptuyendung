@@ -105,24 +105,37 @@ public class MessageDetailFragment extends Fragment {
         txtEmail = view.findViewById(R.id.txtEmail);
 
         //Header chat
-        userViewModel.getGetUserData().observe(getViewLifecycleOwner(), user -> {
-            if(user != null)
+        userViewModel.getGetUserData().observe(getViewLifecycleOwner(), thisChatUser -> {
+            if(thisChatUser != null)
             {
-                txtName.setText(user.getUsername());
+                txtName.setText(thisChatUser.getUsername());
             }
             else
                 Log.d("Detailchat", "user null");
         });
 
-        int indexOfUser;
-        if(currentConversationUser.getUserId().equals(currentConversationUser.getConversation().getMembers().get(0)))
-            indexOfUser = 1;
-        else
-            indexOfUser = 0;
+        int indexOfThisChatUser;
         if(currentConversationUser.getConversation() != null)
-            userViewModel.getUser(currentConversationUser.getConversation().getMembers().get(indexOfUser).getUserId());
+        {
+            if(currentConversationUser.getUserId().equals(currentConversationUser.getConversation().getMembers().get(0).getUserId()))
+                indexOfThisChatUser = 1;
+            else
+                indexOfThisChatUser = 0;
+            userViewModel.getUser(currentConversationUser.getConversation().getMembers().get(indexOfThisChatUser).getUserId());
+            Log.d("index", indexOfThisChatUser + "");
+            Log.d("0", currentConversationUser.getConversation().getMembers().get(0).getUserId());
+        }
         else
-            userViewModel.getUser(currentConversation.getMembers().get(indexOfUser).getUserId());
+        {
+            if(currentConversationUser.getUserId().equals(currentConversation.getMembers().get(0).getUserId()))
+                indexOfThisChatUser = 1;
+            else
+                indexOfThisChatUser = 0;
+            userViewModel.getUser(currentConversation.getMembers().get(indexOfThisChatUser).getUserId());
+            Log.d("index", indexOfThisChatUser + "");
+            Log.d("index", currentConversationUser.getUserId());
+            Log.d("index", currentConversation.getMembers().get(0).getUserId());
+        }
 
 
 
@@ -186,16 +199,24 @@ public class MessageDetailFragment extends Fragment {
             newMessage = new Message(currentConversationUser.getConversationId(), currentConversationUser.getUserId(), messageContent);
 
             int indexOfSender;
-            if(currentConversationUser.getUserId().equals(currentConversationUser.getConversation().getMembers().get(0)))
-                indexOfSender = 1;
-            else
-                indexOfSender = 0;
-
             //Lay sender, gom 2 truong hop la chat co san hoac vua moi tao, vua moi tao thi conversation se null
             if(currentConversationUser.getConversation() != null)
+            {
+                if(currentConversationUser.getUserId().equals(currentConversationUser.getConversation().getMembers().get(0)))
+                    indexOfSender = 1;
+                else
+                    indexOfSender = 0;
                 newMessage.setSender(currentConversationUser.getConversation().getMembers().get(indexOfSender).getUser());
+            }
             else
+            {
+                if(currentConversationUser.getUserId().equals(currentConversation.getMembers().get(0)))
+                    indexOfSender = 1;
+                else
+                    indexOfSender = 0;
                 newMessage.setSender(currentConversation.getMembers().get(indexOfSender).getUser());
+            }
+
 
             //Nhan ket qua mes tra ve de them ngay vao danh sach
             conversationViewModel.getSendMessageData().observe(getViewLifecycleOwner(), data ->{

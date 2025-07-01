@@ -86,7 +86,7 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.Follow
 
         public FollowerViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgAvatar = itemView.findViewById(R.id.imgSenderAvatar);
+            imgAvatar = itemView.findViewById(R.id.imgAvatar);
             txtName = itemView.findViewById(R.id.tvUsername);
             txtRole = itemView.findViewById(R.id.tvRole);
             txtEmail = itemView.findViewById(R.id.tvEmail);

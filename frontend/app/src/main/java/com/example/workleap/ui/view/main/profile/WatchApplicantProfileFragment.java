@@ -33,6 +33,7 @@ import com.example.workleap.data.model.entity.Skill;
 import com.example.workleap.data.model.entity.User;
 import com.example.workleap.data.model.request.FriendIdRequest;
 import com.example.workleap.ui.view.auth.MainActivity;
+import com.example.workleap.ui.view.main.NavigationActivity;
 import com.example.workleap.ui.viewmodel.ApplicantViewModel;
 import com.example.workleap.ui.viewmodel.AuthViewModel;
 import com.example.workleap.ui.viewmodel.ConversationViewModel;
@@ -520,7 +521,10 @@ public class WatchApplicantProfileFragment extends Fragment {
                 bundle.putSerializable("myUser", myUser);
 
                 if(!isNavigatedToChat)
+                {
+                    ((NavigationActivity) getActivity()).showBottomNav(false);
                     nav.navigate(R.id.messageDetailFragment, bundle);
+                }
             }
             else
                 Log.d("conversation", "null");

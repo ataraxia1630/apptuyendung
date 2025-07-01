@@ -480,7 +480,10 @@ public class WatchCompanyProfileFragment extends Fragment {
                 bundle.putSerializable("conversation", data);
                 bundle.putSerializable("myUser", myUser);
                 if(!isNavigatedToChat)
+                {
+                    ((NavigationActivity) getActivity()).showBottomNav(false);
                     nav.navigate(R.id.messageDetailFragment, bundle);
+                }
             }
             else
                 Log.d("conversation", "null");
