@@ -114,10 +114,15 @@ public class MessageDetailFragment extends Fragment {
                 Log.d("Detailchat", "user null");
         });
 
-        if(currentConversationUser.getConversation() != null)
-            userViewModel.getUser(currentConversationUser.getConversation().getMembers().get(1).getUserId());
+        int indexOfUser;
+        if(currentConversationUser.getUserId().equals(currentConversationUser.getConversation().getMembers().get(0)))
+            indexOfUser = 1;
         else
-            userViewModel.getUser(currentConversation.getMembers().get(1).getUserId());
+            indexOfUser = 0;
+        if(currentConversationUser.getConversation() != null)
+            userViewModel.getUser(currentConversationUser.getConversation().getMembers().get(indexOfUser).getUserId());
+        else
+            userViewModel.getUser(currentConversation.getMembers().get(indexOfUser).getUserId());
 
 
 
@@ -179,11 +184,18 @@ public class MessageDetailFragment extends Fragment {
             String messageContent = edtMessage.getText().toString();
             Message newMessage = null;
             newMessage = new Message(currentConversationUser.getConversationId(), currentConversationUser.getUserId(), messageContent);
+
+            int indexOfSender;
+            if(currentConversationUser.getUserId().equals(currentConversationUser.getConversation().getMembers().get(0)))
+                indexOfSender = 1;
+            else
+                indexOfSender = 0;
+
             //Lay sender, gom 2 truong hop la chat co san hoac vua moi tao, vua moi tao thi conversation se null
             if(currentConversationUser.getConversation() != null)
-                newMessage.setSender(currentConversationUser.getConversation().getMembers().get(0).getUser());
+                newMessage.setSender(currentConversationUser.getConversation().getMembers().get(indexOfSender).getUser());
             else
-                newMessage.setSender(currentConversation.getMembers().get(0).getUser());
+                newMessage.setSender(currentConversation.getMembers().get(indexOfSender).getUser());
 
             //Nhan ket qua mes tra ve de them ngay vao danh sach
             conversationViewModel.getSendMessageData().observe(getViewLifecycleOwner(), data ->{

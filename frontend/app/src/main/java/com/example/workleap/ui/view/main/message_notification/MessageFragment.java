@@ -96,6 +96,19 @@ public class MessageFragment extends Fragment {
         //Loading
         progressCenterLoading.setVisibility(View.VISIBLE);
 
+        conversationUserAdapter = new ConversationUserAdapter(getContext(), conversationUsers, new ConversationUserAdapter.OnConversationClickListener() {
+            @Override
+            public void onConversationClick(ConversationUser conversationUser) {
+                // Xử lý khi click vào đoạn chat
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("conversationUser", conversationUser);
+                bundle.putSerializable("myUser", myUser);
+                ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
+                nav.navigate(R.id.messageDetailFragment, bundle); // Navigate to DetailJobPostFragment*/
+            }
+        }
+        );
+
         //Get all conversations
         conversationViewModel.getAllChatsData().observe(getViewLifecycleOwner(), data -> {
             progressCenterLoading.setVisibility(View.GONE);
@@ -103,26 +116,21 @@ public class MessageFragment extends Fragment {
             if(conversationUsers != null) {
                 this.conversationUsers.clear();
                 this.conversationUsers.addAll(data);
-                conversationUserAdapter = new ConversationUserAdapter(getContext(), conversationUsers, new ConversationUserAdapter.OnConversationClickListener() {
-                    @Override
-                    public void onConversationClick(ConversationUser conversationUser) {
-                        // Xử lý khi click vào đoạn chat
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("conversationUser", conversationUser);
-                        bundle.putSerializable("myUser", myUser);
-                        ((NavigationActivity) getActivity()).showBottomNav(false); // Hide bottom navigation
-                        nav.navigate(R.id.messageDetailFragment, bundle); // Navigate to DetailJobPostFragment*/
-                    }
-                }
-                );
-
+                conversationUserAdapter.notifyDataSetChanged();
 
                 //Logo chat bang usermodel
                 userViewModel.getLogoJobPostUrlMap().observe(getViewLifecycleOwner(), map -> {
                     conversationUserAdapter.setImageUrlMap(map);  // Truyền map xuống adapter
                 });
                 for (ConversationUser conversationUser : conversationUsers) {
-                    userViewModel.getLogoJobPostImageUrl(conversationUser.getConversation().getMembers().get(1).getUser().getAvatar()); //dung logopath lam key
+                    int indexOfUser;
+                    if(conversationUser.getUserId().equals(conversationUser.getConversation().getMembers().get(0)))
+                        indexOfUser = 1;
+                    else
+                        indexOfUser = 0;
+                    userViewModel.getLogoJobPostImageUrl(conversationUser.getConversation().getMembers().get(indexOfUser).getUser().getAvatar()); //dung logopath lam key
+                    Log.d("indexuser", conversationUser.getConversation().getMembers().get(indexOfUser).getUser().getUsername());
+                    Log.d("indexuser", conversationUser.getConversation().getMembers().get(indexOfUser).getUser().getAvatar());
                 }
 
 

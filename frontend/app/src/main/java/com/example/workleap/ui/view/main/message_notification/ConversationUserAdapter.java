@@ -53,16 +53,22 @@ public class ConversationUserAdapter extends RecyclerView.Adapter<ConversationUs
     public void onBindViewHolder(@NonNull ConversationUserViewHolder holder, int position) {
         ConversationUser conversationUser = conversationUserList.get(position);
 
+        int indexOfUser;
+        if(conversationUser.getUserId().equals(conversationUser.getConversation().getMembers().get(0)))
+            indexOfUser = 1;
+        else
+            indexOfUser = 0;
+
         // Set tên đoạn chat
-        String displayName = conversationUser.getConversation().getMembers().get(1).getUser().getUsername() != null ? conversationUser.getConversation().getMembers().get(1).getUser().getUsername() : "Đoạn chat";
+        String displayName = conversationUser.getConversation().getMembers().get(indexOfUser).getUser().getUsername() != null ? conversationUser.getConversation().getMembers().get(indexOfUser).getUser().getUsername() : "Đoạn chat";
         holder.txtName.setText(displayName);
 
         // Role of user
-        String role = conversationUser.getConversation().getMembers().get(1).getUser().getEmail() != null ? conversationUser.getConversation().getMembers().get(1).getUser().getEmail() : "Messages...";
+        String role = conversationUser.getConversation().getMembers().get(indexOfUser).getUser().getEmail() != null ? conversationUser.getConversation().getMembers().get(indexOfUser).getUser().getEmail() : "Messages...";
         holder.txtLastMessage.setText(role);
 
         //Xu li logo chat
-        logoFilePath = conversationUser.getConversation().getMembers().get(1).getUser().getAvatar(); // dùng làm key
+        logoFilePath = conversationUser.getConversation().getMembers().get(indexOfUser).getUser().getAvatar(); // dùng làm key
         if(logoFilePath != null)
         {
             String imageUrl = avatarUrlMap.get(logoFilePath);
