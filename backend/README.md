@@ -1,14 +1,10 @@
-# Project Name
-
-## 📌 Giới thiệu
-
-Mô tả ngắn gọn về dự án.
-
 ## 🚀 Cách chạy dự án
 
 ### Backend (ExpressJS)
 
 ```sh
+cd backend
 npm install
-npm start
+npm run dev
+npx prisma generate
 ```
