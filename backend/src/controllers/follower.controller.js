@@ -1,5 +1,6 @@
 const { FollowerService } = require('../services/follower.service');
 const { sendToUser } = require('../socket');
+const NotiEmitter = require('../emitters/notification.emitter');
 
 const FollowerController = {
     toggleFollow: async (req, res) => {
